@@ -1,0 +1,78 @@
+.admin-dashboard {
+    display: flex;
+}
+
+.dashboard-content {
+    margin-left: 250px; /* Shift content to the right to make space for sidebar */
+    padding: 20px;
+    width: 100%;
+    min-width: 80vh;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.dashboard-content h1 {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    flex: 1;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h3 {
+    color: #2c3e50;
+}
+
+.stat-card p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498db;
+}
+
+.table-title {
+    margin-top: 30px;
+    font-size: 22px;
+    color: #2c3e50;
+}
+
+.table-container {
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+thead {
+    background: #3498db;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background: #f1f1f1;
+}

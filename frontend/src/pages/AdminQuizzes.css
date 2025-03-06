@@ -1,0 +1,198 @@
+/* ✅ Main Quiz Container */
+.quiz-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+    width: 900px;
+    background: linear-gradient(to right, #2b5876, #4e4376);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ Heading Styling */
+.quiz-container h2 {
+    color: white;
+    text-align: center;
+    font-size: 28px;
+}
+
+/* ✅ Grid Layout for Quizzes */
+.quiz-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+/* ✅ Individual Quiz Box */
+/* ✅ Individual Quiz Box */
+.quiz-box {
+    background: white;
+    color: black;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 250px;
+    min-height: 270px; /* ✅ Ensure all quiz boxes have equal height */
+    max-height: 270px; /* ✅ Prevent overflowing */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* ✅ Fix for Long Titles */
+.quiz-box h3 {
+    max-width: 90%; /* ✅ Prevents overflow */
+    overflow-wrap: break-word; /* ✅ Forces wrapping for long words */
+    white-space: normal; /* ✅ Allows text wrapping */
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+/* ✅ Prevent Buttons from Moving Out of Box */
+.quiz-box .add-question-btn {
+    margin-top: auto; /* ✅ Pushes buttons to the bottom */
+    width: 100%;
+}
+
+/* ✅ Ensure List of Questions Stays Inside */
+.display-ans {
+    list-style: none;
+    text-align: center;
+    margin-left: -40px;
+    padding: 10px;
+    background: #ecf0f1;
+    border-radius: 8px;
+    max-height: 100px; /* ✅ Limit height */
+}
+
+/* ✅ Hover Effect */
+.quiz-box:hover {
+    transform: scale(1.05);
+}
+
+/* .quiz-box:first-child{
+    margin-top: 200px;
+} */
+
+.quiz-box:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ Quiz Title */
+.quiz-box h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+/* ✅ Buttons */
+.create-btn,
+.add-question-btn,
+.submit-btn {
+    background-color: #ff4d79;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+}
+
+.create-btn:hover,
+.add-question-btn:hover,
+.submit-btn:hover {
+    background-color: #e63e68;
+    transform: translateY(-2px);
+}
+
+/* ✅ Modal Styling */
+.modal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    min-width: 350px;
+    text-align: center;
+    max-width: 90%;
+}
+
+/* ✅ Close Button */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+}
+
+.close-btn:hover {
+    color: #ff4d79;
+}
+
+/* ✅ Input Fields */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* .display-ans {
+    list-style: none;
+    text-align: center;
+    margin-left: -40px;
+    padding: 10px;
+    background: #ecf0f1;
+    border-radius: 8px;
+} */
+
+.display-ans li{
+    margin-bottom: 10px;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
+    .quiz-container {
+        width: 95%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .quiz-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .modal {
+        min-width: 280px;
+        max-width: 90%;
+    }
+
+    .quiz-box {
+        width: 100%;
+        min-height: auto;
+    }
+}

@@ -1,0 +1,27 @@
+.home-container {
+    text-align: center;
+    padding: 50px;
+    min-width: 80vh;
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    height: 100vh;
+    color: white;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+.start-quiz-btn {
+    background: white;
+    color: #36d1dc;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.start-quiz-btn:hover {
+    background: #5b86e5;
+    color: white;
+}
