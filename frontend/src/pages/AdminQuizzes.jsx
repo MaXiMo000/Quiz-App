@@ -7,6 +7,8 @@ import "./AdminQuizzes.css";
 const AdminQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
     const [selectedQuizId, setSelectedQuizId] = useState(null); // Track quiz for adding questions
+    const [aiTopic, setAiTopic] = useState("");
+    const [aiNumQuestions, setAiNumQuestions] = useState("");
 
     // Fetch existing quizzes
     const getQuiz = () => {
@@ -27,6 +29,38 @@ const AdminQuizzes = () => {
         }
         setSelectedQuizId(quizId);
         document.getElementById("add_question_modal").showModal();
+    };
+
+    // ✅ Open AI Question Modal
+    const openAiQuestionModal = (quizId) => {
+        setSelectedQuizId(quizId);
+        document.getElementById("ai_question_modal").showModal();
+    };
+
+    // ✅ Handle AI-Powered Question Generation
+    const handleAiSubmit = async (event) => {
+        event.preventDefault();
+
+        if (!aiTopic || aiNumQuestions <= 0) {
+            alert("Please enter a valid topic and number of questions.");
+            return;
+        }
+
+        try {
+            const response = await axios.post(`http://localhost:5000/api/quizzes/${selectedQuizId}/generate-questions`, {
+                topic: aiTopic,
+                numQuestions: Number(aiNumQuestions)
+            },
+            { headers: { "Content-Type": "application/json" } }
+        );
+
+            alert("AI-generated questions added successfully!");
+            document.getElementById("ai_question_modal").close();
+            getQuiz(); // ✅ Refresh the quiz list
+        } catch (error) {
+            console.error("Error generating AI questions:", error);
+            alert("Failed to generate AI questions.");
+        }
     };
 
     // Handle Quiz Creation
@@ -131,6 +165,7 @@ const AdminQuizzes = () => {
                         <p>Category: {quiz.category}</p>
                         <p>Duration: {quiz.duration} minutes</p>
                         <button className="add-question-btn" onClick={() => deleteQuiz(quiz.title)}>Delete Quiz</button>
+                        <button className="add-question-btn" onClick={() => openAiQuestionModal(quiz._id)}>🤖 Add Question (AI)</button>
                         <button className="add-question-btn" onClick={() => openAddQuestionModal(quiz._id)}>➕ Add Question</button>
                         <ul className="display-ans">
                             {quiz.questions.map((q, i) => (
@@ -140,6 +175,23 @@ const AdminQuizzes = () => {
                     </li>
                 ))}
             </ul>
+
+            {/* AI Question Generation Modal */}
+            <dialog id="ai_question_modal" className="modal">
+                <div className="modal-box">
+                    <form onSubmit={handleAiSubmit}>
+                        <Link to="#" className="close-btn"
+                            onClick={() => document.getElementById("ai_question_modal").close()}>
+                            ✕
+                        </Link>
+
+                        <h3 className="modal-title">AI Question Generation</h3>
+                        <input type="text" name="aiTopic" placeholder="Enter Topic" value={aiTopic} onChange={(e) => setAiTopic(e.target.value)} required />
+                        <input type="number" name="aiNumQuestions" placeholder="Enter Number of Questions" value={aiNumQuestions} onChange={(e) => setAiNumQuestions(e.target.value)} required />
+                        <button className="submit-btn">Generate Questions</button>
+                    </form>
+                </div>
+            </dialog>
 
             {/* Create Quiz Modal */}
             <dialog id="create_quiz_modal" className="modal">

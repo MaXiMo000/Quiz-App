@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const router = Router();
 import { getQuizzes, createQuiz, addQuestion, deleteQuiz } from "../controllers/quizController.js";
 import { getReports, createReport, getReportsUser, deleteReport } from "../controllers/reportController.js";
+import { generateQuizQuestions } from "../controllers/aiQuestionController.js";
 
 // Quiz Routes
 router.get("/quizzes", getQuizzes);
@@ -34,6 +35,9 @@ router.get("/quizzes/:id", async (req, res) => {
         res.status(500).json({ error: "Server error", details: error.message });
     }
 });
+
+
+router.post("/quizzes/:id/generate-questions", generateQuizQuestions); // ✅ AI route
 
 // Report Routes
 router.get("/reports", getReports);
