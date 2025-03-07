@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Register.css"; // Import CSS for styling
 import "../app.css";
@@ -13,16 +13,15 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-        await axios.post("http://localhost:5000/api/users/register", {
-            name,
-            email,
-            password,
-        });
-        alert("Registration Successful!");
-        navigate("/login");
+            const response = await axios.post("http://localhost:5000/api/users/register",
+                { name, email, password },
+                { headers: { "Content-Type": "application/json" } } // ✅ Fix Content-Type
+            );
+            alert("Registration Successful! Please log in.");
+            navigate("/login");
         } catch (error) {
-            console.log(error);
-            alert("Registration Failed");
+            console.log("Error Response:", error.response?.data || error.message);
+            alert(error.response?.data?.message || "Registration Failed");
         }
     };
 
@@ -45,7 +44,9 @@ const Register = () => {
             </div>
             <button type="submit" className="register-btn">Register</button>
             </form>
-            <p className="login-link">Already have an account? <a href="/login">Login here</a></p>
+            <p className="login-link">
+                Already have an account? <Link to="/login">Login here</Link>
+            </p>
         </div>
         </div>
     );

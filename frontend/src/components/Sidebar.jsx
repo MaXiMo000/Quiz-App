@@ -9,7 +9,7 @@ const Sidebar = () => {
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser) {
-        navigate("/login");
+        // navigate("/register");
         } else {
         setUser(storedUser);
         }
@@ -17,7 +17,7 @@ const Sidebar = () => {
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate("/login");
+        navigate("/register");
     };
 
     return (

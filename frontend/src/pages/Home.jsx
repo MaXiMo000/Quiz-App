@@ -10,7 +10,7 @@ const Home = () => {
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser) {
-        navigate("/login");
+        navigate("/register");
         } else {
         setUser(storedUser);
         }
