@@ -17,7 +17,7 @@ const Register = () => {
                 { name, email, password },
                 { headers: { "Content-Type": "application/json" } } // ✅ Fix Content-Type
             );
-            // alert("Registration Successful! Please log in.");
+            alert("Registration Successful! Please log in.");
             navigate("/login");
         } catch (error) {
             console.log("Error Response:", error.response?.data || error.message);
