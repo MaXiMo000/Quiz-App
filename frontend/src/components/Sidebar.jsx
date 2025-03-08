@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , Link} from "react-router-dom";
 import "./Sidebar.css"; // Import Sidebar styles
 
 const Sidebar = () => {
@@ -17,28 +17,32 @@ const Sidebar = () => {
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate("/register");
+        navigate("/login");
     };
 
     return (
         <div className="sidebar">
-        <h2>Quiz App</h2>
-        <nav>
             {user?.role === "admin" ? (
-            <>
-                <a href="/admin">📊 Dashboard</a>
-                <a href="/admin/create">📚 Create Quiz</a>
-                <a href="/admin/report">📄 Reports</a>
-            </>
-            ) : (
-            <>
-                <a href="/">📊 Dashboard</a>
-                <a href="/user/test">📚 Quizzes</a>
-                <a href="/user/report">📄 Reports</a>
-            </>
-            )}
-        </nav>
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                    <a href="/admin"><h2>QuizNest</h2></a>
+                ) : (
+                    <a href="/"><h2>QuizNest</h2></a>
+                )}
+            <nav>
+                {user?.role === "admin" ? (
+                <>
+                    <a href="/admin">📊 Dashboard</a>
+                    <a href="/admin/create">📚 Create Quiz</a>
+                    <a href="/admin/report">📄 Reports</a>
+                </>
+                ) : (
+                <>
+                    <a href="/">📊 Dashboard</a>
+                    <a href="/user/test">📚 Quizzes</a>
+                    <a href="/user/report">📄 Reports</a>
+                </>
+                )}
+            </nav>
+            <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
     );
 };

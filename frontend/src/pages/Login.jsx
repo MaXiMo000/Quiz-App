@@ -12,7 +12,8 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost:5000/api/users/login", { email, password });
+            const res = await axios.post("http://localhost:5000/api/users/login", { email, password },
+                { headers: { "Content-Type": "application/json" } });
             localStorage.setItem("user", JSON.stringify(res.data.user));
             alert(res.data.message);
             if (res.data.user.role === "admin") {

@@ -60,7 +60,7 @@ const AdminReports = () => {
                         <tr key={index}>
                             <td>{report.username}</td>
                             <td>{report.quizName}</td>
-                            <td>{report.score}</td>
+                            <td>{report.score.toFixed(1)}</td>
                             <td>{report.total}</td>
                             <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
                             <td>

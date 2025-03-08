@@ -57,7 +57,7 @@ const UserReports = () => {
                     {reports.map((report, index) => (
                         <tr key={index}>
                             <td>{report.quizName}</td>
-                            <td>{report.score}</td>
+                            <td>{report.score.toFixed(1)}</td>
                             <td>{report.total}</td>
                             <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
                             <td>

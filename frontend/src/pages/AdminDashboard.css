@@ -3,7 +3,7 @@
 }
 
 .dashboard-content {
-    margin-left: 250px; /* Shift content to the right to make space for sidebar */
+    /* margin-left: 250px; Shift content to the right to make space for sidebar */
     padding: 20px;
     width: 100%;
     min-width: 80vh;
