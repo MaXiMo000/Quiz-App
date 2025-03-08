@@ -72,6 +72,12 @@ export const generateQuizQuestions = async (req, res) => {
 
         console.log("Quiz before adding questions:", quiz);
         quiz.questions.push(...aiGeneratedData.questions);
+
+        // ✅ Automatically update marks & duration
+        quiz.totalMarks = quiz.questions.length;
+        quiz.passingMarks = Math.ceil(quiz.totalMarks / 2);
+        quiz.duration = quiz.questions.length * 2;
+
         await quiz.save();
         console.log("Quiz after adding questions:", quiz);
 

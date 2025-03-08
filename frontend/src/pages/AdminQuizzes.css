@@ -1,145 +1,163 @@
-/* ✅ Main Quiz Container */
+/* ✅ MAIN QUIZ CONTAINER */
 .quiz-container {
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
-    gap: 20px;
-    justify-content: center;
-    height: 85vh;
-    overflow-y: auto;
+    align-items: center;
     padding: 20px;
-    width: 900px;
-    background: linear-gradient(to right, #2b5876, #4e4376);
+    width: 90%;
+    max-width: 1000px;
+    overflow-y: auto;
+    margin: auto;
+    background: linear-gradient(to right, #4b0082, #6a11cb);
     color: white;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* ✅ Heading Styling */
+/* ✅ HEADING */
 .quiz-container h2 {
-    color: white;
     text-align: center;
-    font-size: 28px;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
-/* ✅ Grid Layout for Quizzes */
-.quiz-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    justify-content: center;
-}
-
-/* ✅ Individual Quiz Box */
-/* ✅ Individual Quiz Box */
-.quiz-box {
-    background: white;
-    color: black;
-    border-radius: 10px;
-    padding: 15px;
+/* ✅ GRID LAYOUT */
+.quiz-header {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
-    width: 250px;
-    min-height: 270px; /* ✅ Ensure all quiz boxes have equal height */
-    max-height: 270px; /* ✅ Prevent overflowing */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease-in-out;
-    overflow-x: hidden;
-    overflow-y: auto;
+    margin-bottom: 20px;
 }
 
-/* ✅ Fix for Long Titles */
-.quiz-box h3 {
-    max-width: 90%; /* ✅ Prevents overflow */
-    overflow-wrap: break-word; /* ✅ Forces wrapping for long words */
-    white-space: normal; /* ✅ Allows text wrapping */
-    font-size: 18px;
-    font-weight: bold;
-    color: #2c3e50;
-    text-align: center;
-    margin-bottom: 8px;
-}
-
-/* ✅ Prevent Buttons from Moving Out of Box */
-.quiz-box .add-question-btn {
-    margin-top: auto; /* ✅ Pushes buttons to the bottom */
+/* ✅ QUIZ LIST (Ensures quizzes appear below the title & button) */
+.quiz-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
     width: 100%;
 }
 
-/* ✅ Ensure List of Questions Stays Inside */
-.display-ans {
-    list-style: none;
+/* ✅ QUIZ BOX */
+.quiz-box {
+    background: #ffffff;
+    color: #333;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    margin-left: -40px;
-    padding: 10px;
-    background: #ecf0f1;
-    border-radius: 8px;
-    max-height: 100px; /* ✅ Limit height */
+    width: 320px;
+    min-height: 350px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow-x: hidden;
 }
 
-/* ✅ Hover Effect */
+/* ✅ HOVER EFFECT */
 .quiz-box:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* .quiz-box:first-child{
-    margin-top: 200px;
-} */
-
-.quiz-box:hover {
-    transform: scale(1.05);
-}
-
-/* ✅ Quiz Title */
+/* ✅ QUIZ TITLE */
 .quiz-box h3 {
-    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: bold;
     color: #2c3e50;
+    margin-bottom: 10px;
 }
 
-/* ✅ Buttons */
+/* ✅ QUIZ DETAILS */
+.quiz-box p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+/* ✅ BUTTONS */
 .create-btn,
 .add-question-btn,
 .submit-btn {
-    background-color: #ff4d79;
+    background: linear-gradient(to right, #ff4d79, #ff6a95);
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 12px 18px;
+    border-radius: 6px;
     cursor: pointer;
     margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
     transition: background 0.3s ease-in-out, transform 0.2s;
+    width: 100%;
 }
 
 .create-btn:hover,
 .add-question-btn:hover,
 .submit-btn:hover {
-    background-color: #e63e68;
+    background: linear-gradient(to right, #e63e68, #ff4d79);
     transform: translateY(-2px);
 }
 
-/* ✅ Modal Styling */
+/* ✅ AI BUTTON */
+.ai-btn {
+    background: linear-gradient(to right, #ff8a00, #ff3d00);
+}
+
+.ai-btn:hover {
+    background: linear-gradient(to right, #ff6a00, #e63d00);
+}
+
+/* ✅ SCROLLABLE QUESTION LIST */
+.display-ans {
+    list-style: none;
+    padding: 10px;
+    background: #f4f4f4;
+    border-radius: 10px;
+    max-height: 140px;
+    overflow-y: auto;
+    font-size: 14px;
+    color: #444;
+    width: 100%;
+    text-align: left;
+}
+
+/* ✅ MODAL STYLING */
 .modal {
     position: fixed;
     left: 50%;
-    top: 50%;
+    top: 60%;
     transform: translate(-50%, -50%);
     background: white;
-    border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    min-width: 350px;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    min-width: 400px;
     text-align: center;
-    max-width: 90%;
+    max-width: 95%;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-/* ✅ Close Button */
+/* ✅ FADE-IN ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* ✅ CLOSE BUTTON */
 .close-btn {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 22px;
     position: absolute;
     right: 15px;
     top: 10px;
@@ -151,48 +169,28 @@
     color: #ff4d79;
 }
 
-/* ✅ Input Fields */
+/* ✅ INPUT FIELDS */
 input {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin: 10px 0;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
 }
 
-/* .display-ans {
-    list-style: none;
-    text-align: center;
-    margin-left: -40px;
-    padding: 10px;
-    background: #ecf0f1;
-    border-radius: 8px;
-} */
-
-.display-ans li{
-    margin-bottom: 10px;
-}
-
-/* ✅ Responsive Design */
+/* ✅ RESPONSIVE DESIGN */
 @media (max-width: 768px) {
     .quiz-container {
         width: 95%;
-        height: auto;
         padding: 15px;
     }
 
     .quiz-list {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
 
     .modal {
-        min-width: 280px;
-        max-width: 90%;
-    }
-
-    .quiz-box {
-        width: 100%;
-        min-height: auto;
+        min-width: 320px;
     }
 }

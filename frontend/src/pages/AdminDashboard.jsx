@@ -29,7 +29,7 @@ const AdminDashboard = () => {
     }, []);
 
     return (
-        <div className="admin-dashboard">
+        <div className="admin-dashboard ">
         <Sidebar />
         <div className="dashboard-content">
             <h1>Admin Dashboard</h1>
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
             </div>
             <div className="stat-card">
                 <h3>Total Quizzes</h3>
-                <p>{quizs.length}</p> {/* You can fetch quizzes count dynamically later */}
+                <p>{quizs.length}</p>
             </div>
             </div>
 

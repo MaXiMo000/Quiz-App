@@ -7,14 +7,14 @@ export async function getQuizzes(req, res) {
 
 export async function createQuiz(req, res) {
     try {
-        const { title, category, duration, totalMarks, passingMarks } = req.body;
+        const { title, category } = req.body;
 
         const newQuiz = new Quiz({
             title,
-            category,   // ✅ Save category
-            duration,   // ✅ Save duration
-            totalMarks,
-            passingMarks,
+            category,
+            duration: 0,       // Default to 0
+            totalMarks: 0,      // Default to 0
+            passingMarks: 0,    // Default to 0
             questions: [],
         });
 
@@ -52,8 +52,19 @@ export const deleteQuiz = async (req, res) => {
 };
 
 export async function addQuestion(req, res) {
-    const quiz = await Quiz.findById(req.params.id);
-    quiz.questions.push(req.body);
-    await quiz.save();
-    res.json(quiz);
+    try {
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        quiz.questions.push(req.body);
+        quiz.totalMarks += 1;
+        quiz.passingMarks = Math.floor(quiz.totalMarks / 2);
+        quiz.duration = quiz.questions.length * 2;
+
+        await quiz.save();
+        res.json(quiz);
+    } catch (error) {
+        console.error("Error adding question:", error);
+        res.status(500).json({ message: "Error adding question", error });
+    }
 }
