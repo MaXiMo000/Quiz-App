@@ -31,6 +31,10 @@
     margin-bottom: 20px;
 }
 
+.quiz-header h2{
+    color: white;
+}
+
 /* ✅ QUIZ LIST (Ensures quizzes appear below the title & button) */
 .quiz-list {
     display: flex;
@@ -81,7 +85,7 @@
 /* ✅ BUTTONS */
 .create-btn,
 .add-question-btn,
-.submit-btn {
+.submit-btn, .view-questions-btn {
     background: linear-gradient(to right, #ff4d79, #ff6a95);
     color: white;
     border: none;
@@ -97,7 +101,7 @@
 
 .create-btn:hover,
 .add-question-btn:hover,
-.submit-btn:hover {
+.submit-btn:hover, .view-questions-btn:hover {
     background: linear-gradient(to right, #e63e68, #ff4d79);
     transform: translateY(-2px);
 }

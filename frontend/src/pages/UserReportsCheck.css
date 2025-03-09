@@ -1,0 +1,82 @@
+/* ✅ MAIN CONTAINER */
+.report-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background: linear-gradient(to right, #4b0082, #6a11cb);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    max-height: 90vh;
+    text-align: center;
+}
+
+.report-container h2{
+    color: white;
+}
+
+/* ✅ SCORE DISPLAY */
+.score {
+    font-size: 18px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+/* ✅ QUESTION LIST */
+.question-list {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* ✅ QUESTION BOX */
+.question-box {
+    background: white;
+    color: #333;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 45%;
+    min-width: 300px;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .question-box {
+        width: 100%;
+    }
+}
+
+.question-box h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* ✅ CORRECT & INCORRECT ANSWERS */
+.correct {
+    border-left: 5px solid #28a745;
+    background: #d4edda;
+}
+
+.wrong {
+    border-left: 5px solid #dc3545;
+    background: #f8d7da;
+}
+
+.user-answer {
+    font-weight: bold;
+    color: #dc3545;
+}
+
+.correct-answer {
+    font-weight: bold;
+    color: #28a745;
+}

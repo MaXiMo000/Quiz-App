@@ -11,6 +11,13 @@ body {
   align-items: center;
 }
 
+.main-content {
+  margin-left: 250px; /* Pushes content to the right */
+  padding: 20px;
+  width: calc(100% - 250px); /* Ensures content doesn't overlap */
+  transition: margin-left 0.3s ease-in-out; /* Smooth transition */
+}
+
 /* ===== Container Styling (Keeps reports & quizzes in center) ===== */
 .container {
   max-width: 900px;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../app.css";
 import axios from "axios";
 
@@ -50,7 +51,8 @@ const UserReports = () => {
                         <th>Score</th>
                         <th>Total Marks</th>
                         <th>Passed</th>
-                        <th>Action</th>
+                        <th>View</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,6 +62,11 @@ const UserReports = () => {
                             <td>{report.score.toFixed(1)}</td>
                             <td>{report.total}</td>
                             <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
+                            <td>
+                                <Link to={`/report/${report.quizName}`}>
+                                    <button className="view-btn">View Report</button>
+                                </Link>
+                            </td>
                             <td>
                                 <button className="delete-btn" onClick={() => deleteReport(report.quizName)}>Delete</button>
                             </td>

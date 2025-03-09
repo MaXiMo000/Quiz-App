@@ -68,3 +68,38 @@ export async function addQuestion(req, res) {
         res.status(500).json({ message: "Error adding question", error });
     }
 }
+
+export async function getQuizById(req, res) {
+    try {
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        res.json(quiz);
+    } catch (error) {
+        console.error("Error fetching quiz:", error);
+        res.status(500).json({ message: "Error fetching quiz", error });
+    }
+}
+
+export async function deleteQuestion(req, res) {
+    try {
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        const questionIndex = req.params.questionIndex;
+        if (questionIndex < 0 || questionIndex >= quiz.questions.length) {
+            return res.status(400).json({ message: "Invalid question index" });
+        }
+
+        quiz.questions.splice(questionIndex, 1);
+        quiz.totalMarks -= 1;
+        quiz.passingMarks = Math.floor(quiz.totalMarks / 2);
+        quiz.duration = quiz.questions.length * 2;
+
+        await quiz.save();
+        res.json({ message: "Question deleted successfully", quiz });
+    } catch (error) {
+        console.error("Error deleting question:", error);
+        res.status(500).json({ message: "Error deleting question", error });
+    }
+}

@@ -21,6 +21,6 @@ Fourth commit // 10-03-2025 // made auto duration and marks on using AI question
 
 <!-- for future -->
 adding written test which uses ai to check and gives score accordingly
-better UI/UX
+better UI/UX = done
 better authorization
-adding Quizquestion which shows particular quiz's questions in detail and edit or delete a question
+adding Quizquestion which shows particular quiz's questions in detail and edit or delete a question =  done

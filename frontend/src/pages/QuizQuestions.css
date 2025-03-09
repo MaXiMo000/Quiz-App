@@ -1,0 +1,108 @@
+/* ✅ MAIN CONTAINER */
+.quiz-questions-container {
+    max-width: 1200px; /* Increased width */
+    margin: auto;
+    padding: 20px;
+    background: linear-gradient(to right, #4b0082, #6a11cb);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    max-height: 90vh;
+}
+/* ✅ BACK BUTTON */
+.back-btn {
+    background: linear-gradient(to right, #ff4d79, #ff6a95);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: linear-gradient(to right, #e63e68, #ff4d79);
+    transform: translateY(-2px);
+}
+
+/* ✅ QUIZ DETAILS */
+.quiz-details {
+    text-align: center;
+} 
+.quiz-details h2 {
+    text-align: center;
+    font-size: 28px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.quiz-details p {
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+/* ✅ Display Two Question Boxes per Row */
+.question-list {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping to the next row */
+    gap: 20px; /* Spacing between questions */
+    justify-content: center; /* Center questions horizontally */
+}
+
+/* ✅ Adjusting Question Box */
+.question-box {
+    background: white;
+    color: #333;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 45%; /* Ensures two boxes fit in a row */
+    min-width: 300px; /* Prevents the boxes from being too small */
+}
+
+@media (max-width: 768px) {
+    .question-box {
+        width: 100%; /* Stack on top of each other on small screens */
+    }
+}
+
+.question-box h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.question-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+.question-box ul li {
+    background: #f4f4f4;
+    margin: 4px 0;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+/* ✅ DELETE BUTTON */
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
