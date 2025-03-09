@@ -63,18 +63,25 @@ const TakeQuiz = () => {
 
     const handleSubmit = async () => {
         let correctCount = 0;
-
-        quiz.questions.forEach((q, index) => {
-            if (answers[index] === q.correctAnswer) {
+    
+        // ✅ Create detailed questions array
+        const detailedQuestions = quiz.questions.map((q, index) => {
+            const userAnswer = answers[index] || "Not Answered"; // Handle unanswered questions
+            const correctAnswer = q.correctAnswer;
+    
+            if (userAnswer === correctAnswer) {
                 correctCount++;
             }
+    
+            return { questionText: q.question, userAnswer, correctAnswer };
         });
-
+    
         const totalMarks = quiz.totalMarks;
         const scoreAchieved = (correctCount / quiz.questions.length) * totalMarks;
         setScore(scoreAchieved);
-
+    
         const user = JSON.parse(localStorage.getItem("user"));
+    
         try {
             const response = await fetch("http://localhost:5000/api/reports", {
                 method: "POST",
@@ -84,21 +91,21 @@ const TakeQuiz = () => {
                     quizName: quiz.title,
                     score: scoreAchieved,
                     total: totalMarks,
+                    questions: detailedQuestions, // ✅ Send questions array
                 }),
             });
-
+    
             if (!response.ok) {
                 throw new Error("Failed to save report");
             }
-
+    
             alert(`You scored ${scoreAchieved} out of ${totalMarks}`);
-            exitFullScreen();
             navigate("/user/report");
         } catch (error) {
             console.error("Error saving report:", error);
             alert("Failed to save your score. Please try again.");
         }
-    };
+    };    
 
     return (
         <div className="quiz-container">

@@ -30,7 +30,6 @@ const AdminDashboard = () => {
 
     return (
         <div className="admin-dashboard ">
-        <Sidebar />
         <div className="dashboard-content">
             <h1>Admin Dashboard</h1>
             <p>Manage users and view platform statistics.</p>

@@ -10,6 +10,8 @@ import UserReports from "./pages/UserReports";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import UserReportsCheck from "./pages/UserReportsCheck";
+import QuizQuestions from "./pages/QuizQuestions";
 import "./app.css"; // Import global styles
 
 const App = () => {
@@ -28,10 +30,14 @@ const App = () => {
                     <Route path="/admin/create" element={<AdminQuizzes />} />
                     <Route path="/admin/report" element={<AdminReports />} />
 
+                    <Route path="/admin/quiz/:id" element={<QuizQuestions />} />
+
                     {/* 🔹 User Routes */}
                     <Route path="/user/test" element={<UserQuizzes />} />
                     <Route path="/user/test/:id" element={<TakeQuiz />} />
                     <Route path="/user/report" element={<UserReports />} />
+
+                    <Route path="/report/:quizName" element={<UserReportsCheck />} />
                 </Routes>
             </div>
         </Router>

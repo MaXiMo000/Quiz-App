@@ -17,7 +17,7 @@ const Home = () => {
     }, [navigate]);
 
     return (
-        <div className="home-container main-content">
+        <div className="home-container">
         <h1>Welcome, {user?.name}!</h1>
         <p>Ready to take a quiz?</p>
         <button className="start-quiz-btn" onClick={() => navigate("/user/test")}>

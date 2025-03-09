@@ -6,15 +6,27 @@ export async function getReports(req, res) {
 }
 
 export async function createReport(req, res) {
-    const report = new Report(req.body);
-    await report.save();
-    res.json(report);
+    try {
+        const { username, quizName, score, total, questions } = req.body;
+
+        if (!username || !quizName || !questions || questions.length === 0) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const report = new Report({ username, quizName, score, total, questions }); // ✅ Save questions
+        await report.save();
+
+        res.status(201).json({ message: "Report saved successfully", report });
+    } catch (error) {
+        console.error("Error saving report:", error);
+        res.status(500).json({ message: "Error saving report", error: error.message });
+    }
 }
 
 export const getReportsUser = async (req, res) => {
     try {
         const username = req.query.username;
-        const reports = await Report.find(username ? { username } : {});
+        const reports = await Report.find(username ? { username } : {}).lean(); // Use .lean() for faster queries
         res.json(reports);
     } catch (error) {
         res.status(500).json({ message: "Error retrieving reports", error });

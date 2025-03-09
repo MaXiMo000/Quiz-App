@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../app.css";
 import "./AdminQuizzes.css";
+
 
 const AdminQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
     const [selectedQuizId, setSelectedQuizId] = useState(null); // Track quiz for adding questions
     const [aiTopic, setAiTopic] = useState("");
     const [aiNumQuestions, setAiNumQuestions] = useState("");
+    const navigate = useNavigate();
 
     // Fetch existing quizzes
     const getQuiz = () => {
@@ -152,7 +154,7 @@ const AdminQuizzes = () => {
 
 
     return (
-        <div className="quiz-container">
+        <div className="quiz-container main-content">
             <div className="quiz-header">
                 <h2>📚 Manage Quizzes</h2>
                 <button className="create-btn" onClick={() => document.getElementById("create_quiz_modal").showModal()}>
@@ -172,6 +174,7 @@ const AdminQuizzes = () => {
                         <button className="add-question-btn" onClick={() => deleteQuiz(quiz.title)}>Delete Quiz</button>
                         <button className="add-question-btn" onClick={() => openAiQuestionModal(quiz._id, quiz.category)}>🤖 Add Question (AI)</button>
                         <button className="add-question-btn" onClick={() => openAddQuestionModal(quiz._id)}>➕ Add Question</button>
+                        <button className="view-questions-btn" onClick={() => navigate(`/admin/quiz/${quiz._id}`)}>📜 View Questions</button>
                         <ul className="display-ans">
                             {quiz.questions.map((q, i) => (
                                 <li key={i}>Question: {q.question} <br /> Correct Answer: {q.correctAnswer}</li>

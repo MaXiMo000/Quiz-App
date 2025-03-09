@@ -2,14 +2,26 @@
     width: 250px;
     height: 100vh;
     background: #2c3e50;
-    color: white;
     position: fixed;
-    left: 0;
     top: 0;
+    left: 0;
+    padding: 20px;
+    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
+}
+
+/* ✅ Responsive Sidebar (for smaller screens) */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
 }
 
 .sidebar a h2 {
