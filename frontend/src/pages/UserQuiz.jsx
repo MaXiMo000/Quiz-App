@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "../app.css";
 import "./UserQuiz.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const UserQuiz = () => {
     const [quizzes, setQuizzes] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/quizzes")
+        fetch(`${BACKEND_URL}/api/quizzes`)
             .then((res) => res.json())
             .then((data) => setQuizzes(data))
             .catch((err) => console.error("Error fetching quizzes:", err));

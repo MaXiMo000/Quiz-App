@@ -4,6 +4,8 @@ import axios from "axios";
 import "./Register.css"; // Import CSS for styling
 import "../app.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Register = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -13,7 +15,7 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/api/users/register",
+            const response = await axios.post(`${BACKEND_URL}/api/users/register`,
                 { name, email, password },
                 { headers: { "Content-Type": "application/json" } } // ✅ Fix Content-Type
             );

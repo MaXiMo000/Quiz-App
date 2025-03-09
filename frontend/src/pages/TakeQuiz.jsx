@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../app.css";
 import "./TakeQuiz.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const TakeQuiz = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -13,7 +15,7 @@ const TakeQuiz = () => {
     const [isFullScreen, setIsFullScreen] = useState(false);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/quizzes/${id}`)
+        fetch(`${BACKEND_URL}/api/quizzes/${id}`)
             .then(res => res.json())
             .then(data => setQuiz(data))
             .catch(error => console.error("Error fetching quiz:", error));
@@ -83,7 +85,7 @@ const TakeQuiz = () => {
         const user = JSON.parse(localStorage.getItem("user"));
     
         try {
-            const response = await fetch("http://localhost:5000/api/reports", {
+            const response = await fetch(`${BACKEND_URL}/api/reports`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../app.css";
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const AdminReports = () => {
     const [reports, setReports] = useState([]);
 
     // Fetch all reports
     const getReports = () => {
-        fetch("http://localhost:5000/api/reports")
+        fetch(`${BACKEND_URL}/api/reports`)
             .then(res => res.json())
             .then(data => setReports(data))
             .catch(error => console.error("Error fetching reports:", error));
@@ -25,7 +27,7 @@ const AdminReports = () => {
         }
 
         try {
-            const response = await axios.delete(`http://localhost:5000/api/reports/delete?quizName=${encodeURIComponent(quizName)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/reports/delete?quizName=${encodeURIComponent(quizName)}`);
 
             if (response.status === 200) {
                 alert("Report deleted successfully!");
