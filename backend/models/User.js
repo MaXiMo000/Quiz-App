@@ -7,4 +7,4 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ["admin", "user"], default: "user" },
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("UserQuiz", userSchema);

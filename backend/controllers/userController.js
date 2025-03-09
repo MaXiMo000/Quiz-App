@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import UserQuiz from "../models/User.js";
 import bcrypt from "bcryptjs";
 
 export const registerUser = async (req, res) => {
@@ -10,7 +10,7 @@ export const registerUser = async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await UserQuiz.findOne({ email });
     if (existingUser) {
     return res.status(400).json({ success: false, message: "User already exists" });
     }
@@ -20,7 +20,7 @@ export const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create user
-    const newUser = new User({
+    const newUser = new UserQuiz({
     name,
     email,
     password: hashedPassword,
@@ -40,7 +40,7 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
     
         // Check if user exists
-        const user = await User.findOne({ email });
+        const user = await UserQuiz.findOne({ email });
         if (!user) return res.status(400).json({ error: "User not found" });
     
         // Validate password
@@ -57,7 +57,7 @@ export const loginUser = async (req, res) => {
 
 export const getAllUsers = async(req, res) =>{
     try {
-        const users = await User.find();
+        const users = await UserQuiz.find();
         res.json(users);
     } catch (error) {
         console.error("Error fetching users:", error);
