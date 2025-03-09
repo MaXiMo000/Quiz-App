@@ -4,12 +4,14 @@ import Sidebar from "../components/Sidebar";
 import "./AdminDashboard.css";
 import "../app.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [quizs, setQuizs] = useState([]);
     const fetchUsers = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/users");
+            const res = await axios.get(`${BACKEND_URL}/api/users`);
             setUsers(res.data);
         } catch (error) {
             console.error("Error fetching users:", error);
@@ -17,7 +19,7 @@ const AdminDashboard = () => {
     };
     const fetchQuizs = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/quizzes");
+            const res = await axios.get(`${BACKEND_URL}/api/quizzes`);
             setQuizs(res.data);
         } catch (error) {
             console.error("Error fetching users:", error);

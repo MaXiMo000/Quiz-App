@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import "../app.css";
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const UserReports = () => {
     const [reports, setReports] = useState([]);
     const user = JSON.parse(localStorage.getItem("user"));
 
     const getReport = () => {
-        fetch(`http://localhost:5000/api/reports/user?username=${user?.name}`)
+        fetch(`${BACKEND_URL}/api/reports/user?username=${user?.name}`)
             .then(res => res.json())
             .then(data => setReports(data))
             .catch(error => console.error("Error fetching reports:", error));
@@ -25,7 +27,7 @@ const UserReports = () => {
         }
 
         try {
-            const response = await axios.delete(`http://localhost:5000/api/reports/delete?quizName=${encodeURIComponent(quizName)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/reports/delete?quizName=${encodeURIComponent(quizName)}`);
 
             if (response.status === 200) {
                 alert("Quiz deleted successfully!");

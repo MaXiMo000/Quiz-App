@@ -4,6 +4,8 @@ import axios from "axios";
 import "./Login.css";
 import "../app.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -12,7 +14,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost:5000/api/users/login", { email, password },
+            const res = await axios.post(`${BACKEND_URL}/api/users/login`, { email, password },
                 { headers: { "Content-Type": "application/json" } });
             localStorage.setItem("user", JSON.stringify(res.data.user));
             alert(res.data.message);

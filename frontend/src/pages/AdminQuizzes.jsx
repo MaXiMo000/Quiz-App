@@ -4,6 +4,7 @@ import axios from "axios";
 import "../app.css";
 import "./AdminQuizzes.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const AdminQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -14,7 +15,7 @@ const AdminQuizzes = () => {
 
     // Fetch existing quizzes
     const getQuiz = () => {
-        fetch("http://localhost:5000/api/quizzes")
+        fetch(`${BACKEND_URL}/api/quizzes`)
             .then((res) => res.json())
             .then((data) => setQuizzes(data))
             .catch((err) => console.error("Error fetching quizzes:", err));
@@ -51,7 +52,7 @@ const AdminQuizzes = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:5000/api/quizzes/${selectedQuizId}/generate-questions`, {
+            const response = await axios.post(`${BACKEND_URL}/api/quizzes/${selectedQuizId}/generate-questions`, {
                 topic: aiTopic,
                 numQuestions: Number(aiNumQuestions)
             },
@@ -77,7 +78,7 @@ const AdminQuizzes = () => {
         };
 
         try {
-            const response = await fetch("http://localhost:5000/api/quizzes", {
+            const response = await fetch(`${BACKEND_URL}/api/quizzes`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(quizData),
@@ -114,7 +115,7 @@ const AdminQuizzes = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:5000/api/quizzes/${selectedQuizId}/questions`, {
+            const response = await fetch(`${BACKEND_URL}/api/quizzes/${selectedQuizId}/questions`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(questionData),
@@ -140,7 +141,7 @@ const AdminQuizzes = () => {
         }
     
         try {
-            const response = await axios.delete(`http://localhost:5000/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
     
             if (response.status === 200) {
                 alert("Quiz deleted successfully!");

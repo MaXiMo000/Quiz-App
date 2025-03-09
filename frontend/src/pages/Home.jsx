@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import "../app.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Home = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);

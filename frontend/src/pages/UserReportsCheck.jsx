@@ -4,6 +4,8 @@ import axios from "axios";
 import "../app.css";
 import "./UserReportsCheck.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const UserReportsCheck = () => {
     const { quizName } = useParams(); // Get quiz name from URL
     const [report, setReport] = useState(null);
@@ -12,7 +14,7 @@ const UserReportsCheck = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) return;
 
-        axios.get(`http://localhost:5000/api/reports/user?username=${user.name}`)
+        axios.get(`${BACKEND_URL}/api/reports/user?username=${user.name}`)
             .then(res => {
                 const quizReport = res.data.find(r => r.quizName === quizName);
                 setReport(quizReport);
