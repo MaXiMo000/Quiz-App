@@ -12,7 +12,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import UserReportsCheck from "./pages/UserReportsCheck";
 import QuizQuestions from "./pages/QuizQuestions";
-import "./app.css"; // Import global styles
+import "./App.css"; // Import global styles
 
 const App = () => {
     return (

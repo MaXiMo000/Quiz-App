@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import "./AdminDashboard.css";
-import "../app.css";
+import "../App.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 

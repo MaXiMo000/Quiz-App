@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../app.css";
+import "../App.css";
 import "./UserQuiz.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;

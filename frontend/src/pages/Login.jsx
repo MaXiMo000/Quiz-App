@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
-import "../app.css";
+import "../App.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
