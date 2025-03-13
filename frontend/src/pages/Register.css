@@ -4,19 +4,22 @@
     align-items: center;
     height: 100vh;
     background: linear-gradient(to right, #ff512f, #dd2476);
+    padding: 20px; /* Add padding for smaller screens */
 }
 
 .register-box {
     background: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 350px;
+    width: 100%;
+    max-width: 350px; /* Ensure the box doesn't get too wide on larger screens */
 }
 
 h2 {
     color: #333;
+    margin-bottom: 20px;
 }
 
 .input-group {
@@ -31,10 +34,11 @@ h2 {
 }
 
 .input-group input {
-    width: 100%;
+    width: 95%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
+    font-size: 14px; /* Ensure input text is readable on smaller screens */
 }
 
 .register-btn {
@@ -66,4 +70,34 @@ h2 {
 
 .login-link a:hover {
     text-decoration: underline;
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 480px) {
+    .register-container {
+        width: 90%;
+        padding: 10px; /* Reduce padding for very small screens */
+    }
+
+    .register-box {
+        padding: 15px; /* Reduce padding inside the box */
+    }
+
+    h2 {
+        font-size: 24px; /* Adjust heading size for smaller screens */
+    }
+
+    .input-group input {
+        width: 90%;
+        padding: 8px; /* Adjust input padding for smaller screens */
+    }
+
+    .register-btn {
+        padding: 8px; /* Adjust button padding for smaller screens */
+        font-size: 14px; /* Adjust button font size for smaller screens */
+    }
+
+    .login-link {
+        font-size: 12px; /* Adjust link font size for smaller screens */
+    }
 }

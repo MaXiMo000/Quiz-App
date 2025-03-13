@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "../App.css";
 import axios from "axios";
+import "./UserReports.css"; // Import the specific CSS file for UserReports
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -31,7 +31,7 @@ const UserReports = () => {
 
             if (response.status === 200) {
                 alert("Quiz deleted successfully!");
-                getReport(); // ✅ Refresh reports list after deletion
+                getReport(); // Refresh reports list after deletion
             }
         } catch (error) {
             console.error("Error deleting report:", error);
@@ -40,45 +40,45 @@ const UserReports = () => {
     };
 
     return (
-        <div className="container">
-    <h1>📄 My Quiz Reports</h1>
-    {reports.length === 0 ? (
-        <p>No reports found.</p>
-    ) : (
-        <div className="table-container"> {/* ✅ Scrollable Container */}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Quiz Name</th>
-                        <th>Score</th>
-                        <th>Total Marks</th>
-                        <th>Passed</th>
-                        <th>View</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {reports.map((report, index) => (
-                        <tr key={index}>
-                            <td>{report.quizName}</td>
-                            <td>{report.score.toFixed(1)}</td>
-                            <td>{report.total}</td>
-                            <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
-                            <td>
-                                <Link to={`/report/${report.quizName}`}>
-                                    <button className="view-btn">View Report</button>
-                                </Link>
-                            </td>
-                            <td>
-                                <button className="delete-btn" onClick={() => deleteReport(report.quizName)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="reports-container">
+            <h1>📄 My Quiz Reports</h1>
+            {reports.length === 0 ? (
+                <p>No reports found.</p>
+            ) : (
+                <div className="reports-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Quiz Name</th>
+                                <th>Score</th>
+                                <th>Total Marks</th>
+                                <th>Passed</th>
+                                <th>View</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {reports.map((report, index) => (
+                                <tr key={index}>
+                                    <td>{report.quizName}</td>
+                                    <td>{report.score.toFixed(1)}</td>
+                                    <td>{report.total}</td>
+                                    <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
+                                    <td>
+                                        <Link to={`/report/${report.quizName}`}>
+                                            <button className="view-btn">View Report</button>
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <button className="delete-btn" onClick={() => deleteReport(report.quizName)}>Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
-    )}
-</div>
     );
 };
 

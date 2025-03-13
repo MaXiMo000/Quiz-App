@@ -1,93 +1,164 @@
+/* === General Container Styling === */
 .quiz-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-left: -10px;
     text-align: center;
-    width: 100vw;
-    height: 100vh;
-    background-color: #f5f5f5;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6A0DAD, #4B0082); /* Modern gradient */
     padding: 20px;
+    box-sizing: border-box;
 }
 
-h1 {
-    color: #333;
+@media (min-width: 1024px) { 
+    .quiz-container {
+        margin-left: auto; 
+        margin-right: auto; 
+    }
 }
 
+
+/* === Adjust Sidebar and Question Box Positioning === */
+.sidebar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+}
+
+/* === Question Box Styling === */
 .question-box {
     background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 50%;
+    padding: 10px; /* Reduced padding */
+    border-radius: 8px;
+    width: 80%; /* Smaller width */
+    max-width: 320px; /* Reduced max width */
     color: black;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    margin-top: 40px; /* Reduced margin */
+    text-align: left;
 }
 
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    .question-box {
+        width: 90%;
+        padding: 12px;
+        margin-top: 70px; /* Lower for better spacing */
+    }
+}
+
+/* === Question Text Styling === */
 .question {
-    font-size: 18px;
+    font-size: 16px; /* Smaller font size */
     font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* === Options Styling (Compact & Touch-Friendly) === */
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .options button {
-    display: block;
     width: 100%;
-    padding: 10px;
-    margin: 5px 0;
+    padding: 10px; /* Reduced padding */
     background-color: #f8f9fa;
-    border: 2px solid #ddd;
-    border-radius: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 14px; /* Smaller font */
     transition: 0.3s;
+    font-weight: bold;
 }
 
+/* Hover Effect */
 .options button:hover {
     background-color: #ddd;
 }
 
+/* Selected Answer */
 .options .selected {
     background-color: #007bff;
     color: white;
     border-color: #0056b3;
 }
 
+/* === Navigation Buttons (Smaller & Well-Spaced) === */
 .navigation-buttons {
-    margin-top: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
 }
 
 .navigation-buttons button {
-    padding: 10px 15px;
-    margin: 5px;
-    font-size: 16px;
+    flex: 1;
+    min-width: 120px; /* Smaller width */
+    padding: 10px; /* Smaller padding */
+    font-size: 14px; /* Smaller font */
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+    font-weight: bold;
 }
 
-.navigation-buttons button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
+/* === Color Styling for Different Buttons === */
 .navigation-buttons button:nth-child(1) {
-    background-color: #28a745;
+    background-color: #28a745; /* Green */
     color: white;
 }
 
 .navigation-buttons button:nth-child(2) {
-    background-color: #ffc107;
-    color: white;
+    background-color: #ffc107; /* Yellow */
+    color: black;
 }
 
 .navigation-buttons button:nth-child(3) {
-    background-color: #17a2b8;
+    background-color: #17a2b8; /* Blue */
     color: white;
 }
 
-.navigation-buttons button:nth-child(4) {
-    background-color: #dc3545;
-    color: white;
-}
-
+/* === Disabled Button Override === */
 .disabled-btn {
     background-color: #ccc !important;
     cursor: not-allowed !important;
+}
+
+/* === Mobile Optimizations === */
+@media (max-width: 480px) {
+    .question-box {
+        width: 70% !important; /* Force smaller width */
+        max-width: 260px; /* Reduce max size */
+        padding: 5px; /* Minimize padding */
+        margin-top: 20px !important; /* Adjust spacing */
+    }
+
+    .question {
+        font-size: 14px !important; /* Smaller text */
+    }
+
+    .options button {
+        font-size: 12px;
+        padding: 6px; /* Smaller buttons */
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .navigation-buttons button {
+        width: 90%;
+        font-size: 13px;
+        padding: 9px;
+    }
 }

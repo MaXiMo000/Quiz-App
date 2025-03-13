@@ -41,7 +41,7 @@ const QuizQuestions = () => {
     };
 
     return (
-        <div className="quiz-questions-container main-content">
+        <div className="quiz-questions-container">
             <button className="back-btn" onClick={() => navigate("/admin/create")}>🔙 Back to Quizzes</button>
 
             {quiz ? (

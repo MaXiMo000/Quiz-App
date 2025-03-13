@@ -9,6 +9,8 @@ npm start
 
 <!-- for frontend -->
 cd frontend npm i
+.env => VITE_BACKEND_URL
+i deployed my backend and added the link and u can do the same 
 npm run dev
 
 <!-- done -->
