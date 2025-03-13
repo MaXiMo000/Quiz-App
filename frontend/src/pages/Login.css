@@ -6,6 +6,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    padding: 20px; /* Add padding for smaller screens */
 }
 
 .login-container {
@@ -17,11 +18,12 @@ body {
 
 .login-box {
     background: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 350px;
+    width: 100%;
+    max-width: 350px; /* Ensure the box doesn't get too wide on larger screens */
 }
 
 h2 {
@@ -78,4 +80,36 @@ h2 {
 
 .register-link a:hover {
     text-decoration: underline;
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 480px) {
+    body {
+        padding: 10px; /* Reduce padding for very small screens */
+    }
+
+    .login-container{
+        width: 90%;
+    }
+
+    .login-box {
+        padding: 15px; /* Reduce padding inside the box */
+    }
+
+    h2 {
+        font-size: 24px; /* Adjust heading size for smaller screens */
+    }
+
+    .input-group input {
+        padding: 8px; /* Adjust input padding for smaller screens */
+    }
+
+    .login-btn {
+        padding: 8px; /* Adjust button padding for smaller screens */
+        font-size: 14px; /* Adjust button font size for smaller screens */
+    }
+
+    .register-link {
+        font-size: 12px; /* Adjust link font size for smaller screens */
+    }
 }

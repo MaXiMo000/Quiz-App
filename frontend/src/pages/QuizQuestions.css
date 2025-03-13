@@ -1,7 +1,7 @@
 /* ✅ MAIN CONTAINER */
 .quiz-questions-container {
     max-width: 1200px; /* Increased width */
-    margin: auto;
+    margin-left: 300px;
     padding: 20px;
     background: linear-gradient(to right, #4b0082, #6a11cb);
     color: white;
@@ -105,4 +105,13 @@
 
 .delete-btn:hover {
     background: #c0392b;
+}
+
+@media (max-width: 768px) {
+    .quiz-questions-container{
+        margin-left: 0px;
+    }
+    .back-btn{
+        margin-top: 50px;
+    }
 }

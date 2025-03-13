@@ -1,0 +1,125 @@
+/* ===== General Styles ===== */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reports-container {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin: 0 auto; /* Center the container */
+}
+
+.reports-table-container {
+    max-height: 350px;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    color: black;
+    /* min-width: 600px; Ensure table has a minimum width */
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+th {
+    background: #3498db;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+tr:nth-child(odd) {
+    background: #e3f2fd;
+}
+
+.view-btn, .delete-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.view-btn:hover, .delete-btn:hover {
+    background: #0056b3;
+}
+
+.delete-btn {
+    background: #e63946;
+}
+
+.delete-btn:hover {
+    background: #d62839;
+}
+
+@media (max-width: 768px) {
+    .reports-container {
+        width: 70%; /* Adjust width for smaller screens */
+        padding: 10px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    .view-btn, .delete-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .reports-container {
+        width: 80%; /* Adjust width for very small screens */
+        padding: 5px;
+    }
+
+    .reports-container h1{
+        font-size: 24px;
+    }
+    table {
+        font-size: 12px;
+        min-width: 100%; /* Ensure table fits within the container */
+    }
+
+    th, td {
+        padding: 6px;
+    }
+
+    .view-btn, .delete-btn {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}

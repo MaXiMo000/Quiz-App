@@ -7,22 +7,34 @@ import "./UserReportsCheck.css";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserReportsCheck = () => {
-    const { quizName } = useParams(); // Get quiz name from URL
+    const { quizName } = useParams(); 
     const [report, setReport] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) return;
+        if (!user) {
+            setError("User not found. Please log in.");
+            setLoading(false);
+            return;
+        }
 
         axios.get(`${BACKEND_URL}/api/reports/user?username=${user.name}`)
             .then(res => {
                 const quizReport = res.data.find(r => r.quizName === quizName);
-                setReport(quizReport);
+                if (!quizReport) {
+                    setError("Report not found for this quiz.");
+                } else {
+                    setReport(quizReport);
+                }
             })
-            .catch(error => console.error("Error fetching report:", error));
+            .catch(() => setError("Error fetching report. Try again later."))
+            .finally(() => setLoading(false));
     }, [quizName]);
 
-    if (!report) return <p>Loading report...</p>;
+    if (loading) return <p>Loading report...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="report-container main-content">

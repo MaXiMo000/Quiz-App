@@ -1,27 +1,64 @@
+/* ✅ Home Page Container */
 .home-container {
+    margin-left: -10px;
     text-align: center;
     padding: 50px;
-    min-width: 80vh;
+    min-width: 100vw;
     background: linear-gradient(to right, #36d1dc, #5b86e5);
     height: 100vh;
     color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
+/* ✅ Heading */
 h1 {
     font-size: 40px;
+    margin-bottom: 20px;
 }
 
+/* ✅ Description Text */
+p {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+/* ✅ Start Quiz Button */
 .start-quiz-btn {
     background: white;
     color: #36d1dc;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
-    border-radius: 6px;
-    font-size: 18px;
+    border-radius: 8px;
+    font-size: 20px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .start-quiz-btn:hover {
     background: #5b86e5;
     color: white;
+}
+
+/* ✅ Make Everything Responsive */
+@media (max-width: 768px) {
+    .home-container {
+        min-width: 90vw;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    .start-quiz-btn {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
 }

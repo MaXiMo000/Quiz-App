@@ -6,6 +6,7 @@
     padding: 20px;
     width: 90%;
     max-width: 1000px;
+    max-height: 90vh;
     overflow-y: auto;
     margin: auto;
     background: linear-gradient(to right, #4b0082, #6a11cb);
@@ -18,6 +19,7 @@
 .quiz-container h2 {
     text-align: center;
     font-size: 32px;
+    margin-top: 50px;
     font-weight: bold;
     margin-bottom: 20px;
 }
@@ -132,17 +134,42 @@
 /* ✅ MODAL STYLING */
 .modal {
     position: fixed;
-    left: 50%;
-    top: 60%;
+    left: 48%;
+    top: 50%;
     transform: translate(-50%, -50%);
     background: white;
     border-radius: 12px;
-    padding: 30px;
+    padding: 25px;
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
-    min-width: 400px;
     text-align: center;
-    max-width: 95%;
     animation: fadeIn 0.3s ease-in-out;
+    /* max-width: 95%; Ensure it doesn't overflow on small screens */
+}
+
+#add_question_modal{
+    top: 80%;
+}
+
+/* ✅ MODAL BOX */
+.modal-box {
+    position: relative; /* Ensure the close button is positioned relative to this */
+    padding: 25px;
+    border-radius: 12px;
+    background: white;
+    text-align: center;
+    max-width: 95%; /* Adjust for smaller screens */
+}
+
+/* ✅ RESPONSIVE MODAL */
+@media (max-width: 480px) {
+    .modal {
+        width: 80%; /* Use 95% width for extra small screens */
+        padding: 15px; /* Reduce padding for small screens */
+    }
+
+    .modal-box {
+        padding: 15px;
+    }
 }
 
 /* ✅ FADE-IN ANIMATION */
@@ -163,9 +190,11 @@
     border: none;
     font-size: 22px;
     position: absolute;
+    z-index: 9999;
     right: 15px;
     top: 10px;
     cursor: pointer;
+    color: #333; /* Ensure it contrasts with the background */
     transition: color 0.3s ease-in-out;
 }
 
@@ -183,6 +212,13 @@ input {
     font-size: 16px;
 }
 
+@media (min-width: 768px) {
+    .close-btn {
+        display: block !important;
+        visibility: visible !important;
+    }
+}
+
 /* ✅ RESPONSIVE DESIGN */
 @media (max-width: 768px) {
     .quiz-container {
@@ -192,9 +228,5 @@ input {
 
     .quiz-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    }
-
-    .modal {
-        min-width: 320px;
     }
 }
