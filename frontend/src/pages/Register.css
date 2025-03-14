@@ -1,5 +1,6 @@
 .register-container {
     display: flex;
+    margin-left: 8px;
     justify-content: center;
     align-items: center;
     height: 100vh;

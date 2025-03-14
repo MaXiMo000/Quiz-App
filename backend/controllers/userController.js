@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
     }
 
     // Hash password before saving
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(8);;
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create user

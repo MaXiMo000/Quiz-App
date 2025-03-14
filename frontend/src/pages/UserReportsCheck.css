@@ -1,6 +1,7 @@
 /* ✅ MAIN CONTAINER - Centered & Responsive */
 .report-container {
     margin: auto;
+    width: 100%;
     max-width: 900px;
     padding:50px 20px;
     background: linear-gradient(to right, #4b0082, #6a11cb);
@@ -77,7 +78,7 @@
 @media (max-width: 480px) {
     .report-container{
         width: 90%;
-        margin-left:-10px ;
+        margin: auto;
     }
     .report-container h2 {
         margin-top: 40px;
