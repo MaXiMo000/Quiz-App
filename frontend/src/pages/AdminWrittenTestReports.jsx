@@ -9,7 +9,7 @@ const AdminWrittenTestReports = () => {
 
     // ✅ Fetch all reports
     const getReports = () => {
-        fetch(`http://localhost:4000/api/written-test-reports`)
+        fetch(`${BACKEND_URL}/api/written-test-reports`)
             .then(res => res.json())
             .then(data => setReports(data))
             .catch(error => console.error("Error fetching reports:", error));
@@ -27,7 +27,7 @@ const AdminWrittenTestReports = () => {
         }
 
         try {
-            const response = await axios.delete(`http://localhost:4000/api/written-test-reports/delete?testName=${encodeURIComponent(testName)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/written-test-reports/delete?testName=${encodeURIComponent(testName)}`);
 
             if (response.status === 200) {
                 alert("Report deleted successfully!");

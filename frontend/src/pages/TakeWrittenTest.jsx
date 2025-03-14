@@ -16,7 +16,7 @@ const TakeWrittenTest = () => {
     const [timeLeft, setTimeLeft] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:4000/api/written-tests/${id}`)
+        fetch(`${BACKEND_URL}/api/written-tests/${id}`)
             .then(res => res.json())
             .then(data => {
                 setTest(data);
@@ -103,7 +103,7 @@ const TakeWrittenTest = () => {
             const userAnswer = answers[index] || "";
 
             try {
-                const response = await fetch(`http://localhost:4000/api/written-tests/score-answer`, {
+                const response = await fetch(`${BACKEND_URL}/api/written-tests/score-answer`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ question: questionText, answer: userAnswer }),
@@ -141,7 +141,7 @@ const TakeWrittenTest = () => {
 
         // ✅ Store report in the database
         try {
-            await fetch(`http://localhost:4000/api/written-test-reports`, {
+            await fetch(`${BACKEND_URL}/api/written-test-reports`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

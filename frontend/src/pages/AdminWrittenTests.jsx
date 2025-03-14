@@ -18,7 +18,7 @@ const AdminWrittenTests = () => {
     // ✅ Fetch written tests from backend
     const fetchTests = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/written-tests`);
+            const response = await axios.get(`${BACKEND_URL}/api/written-tests`);
             setTests(response.data);
         } catch (error) {
             console.error("Error fetching written tests:", error);
@@ -34,7 +34,7 @@ const AdminWrittenTests = () => {
         event.preventDefault();
 
         try {
-            await axios.post(`http://localhost:4000/api/written-tests/create`, { title, category, questions: [] });
+            await axios.post(`${BACKEND_URL}/api/written-tests/create`, { title, category, questions: [] });
             alert("Written test created successfully!");
             fetchTests();
             document.getElementById("create_test_modal").close();
@@ -56,7 +56,7 @@ const AdminWrittenTests = () => {
         if (!selectedTestId) return alert("No test selected!");
 
         try {
-            await axios.post(`http://localhost:4000/api/written-tests/${selectedTestId}/add-question`, {
+            await axios.post(`${BACKEND_URL}/api/written-tests/${selectedTestId}/add-question`, {
                 question: newQuestion,
                 marks: newMarks
             });
@@ -76,7 +76,7 @@ const AdminWrittenTests = () => {
         }
     
         try {
-            const response = await axios.delete(`http://localhost:4000/api/written-tests/delete/Test?title=${encodeURIComponent(title)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/written-tests/delete/Test?title=${encodeURIComponent(title)}`);
     
             if (response.status === 200) {
                 alert("Quiz deleted successfully!");

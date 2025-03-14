@@ -14,7 +14,7 @@ const TestQuestions = () => {
     // ✅ Fetch test details
     const getTestDetails = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/written-tests/${id}`);
+            const response = await axios.get(`${BACKEND_URL}/api/written-tests/${id}`);
             setTest(response.data);
         } catch (error) {
             console.error("Error fetching test details:", error);
@@ -31,7 +31,7 @@ const TestQuestions = () => {
         if (!window.confirm("Are you sure you want to delete this question?")) return;
 
         try {
-            await axios.delete(`http://localhost:4000/api/written-tests/${id}/questions/${questionIndex}`);
+            await axios.delete(`${BACKEND_URL}/api/written-tests/${id}/questions/${questionIndex}`);
             alert("Question deleted successfully!");
             getTestDetails();
         } catch (error) {

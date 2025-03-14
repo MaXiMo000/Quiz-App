@@ -20,7 +20,7 @@ const UserWrittenReports = () => {
             return;
         }
 
-        axios.get(`http://localhost:4000/api/written-test-reports/user?username=${user.name}`)
+        axios.get(`${BACKEND_URL}/api/written-test-reports/user?username=${user.name}`)
             .then(res => setReports(res.data))
             .catch(() => setError("Error fetching reports. Try again later."))
             .finally(() => setLoading(false));
@@ -30,7 +30,7 @@ const UserWrittenReports = () => {
         if (!window.confirm(`Are you sure you want to delete the report for "${testName}"?`)) return;
 
         try {
-            const response = await axios.delete(`http://localhost:4000/api/written-test-reports/delete?testName=${encodeURIComponent(testName)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/written-test-reports/delete?testName=${encodeURIComponent(testName)}`);
             if (response.status === 200) {
                 alert("Report deleted successfully!");
                 setReports(reports.filter(report => report.testName !== testName));

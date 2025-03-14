@@ -10,7 +10,7 @@ const UserWrittenTests = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:4000/api/written-tests`)
+        fetch(`${BACKEND_URL}/api/written-tests`)
             .then((res) => res.json())
             .then((data) => setTests(data))
             .catch((err) => console.error("Error fetching written tests:", err));
