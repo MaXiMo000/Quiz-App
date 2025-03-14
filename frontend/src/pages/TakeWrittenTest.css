@@ -1,0 +1,115 @@
+/* ===== Written Test Container ===== */
+.written-test-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    min-height: 90vh;
+    background: linear-gradient(135deg, #FF6A00, #EE0979); /* Unique gradient */
+}
+
+/* ✅ Timer */
+.timer {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background: black;
+    padding: 8px 15px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+/* ✅ Question Box */
+.question-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    color: black;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+/* ✅ Textarea Styling */
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #FF6A00;
+    border-radius: 8px;
+    font-size: 16px;
+    resize: none;
+    outline: none;
+}
+
+/* ✅ Navigation Buttons */
+.navigation-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.navigation-buttons button {
+    background: #6A0DAD;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+.navigation-buttons button:hover {
+    background: #4B0082;
+}
+
+.navigation-buttons button:disabled {
+    background: #bbb;
+    cursor: not-allowed;
+}
+
+/* ✅ Fullscreen Toggle Button */
+.fullscreen-toggle {
+    margin-top: 20px;
+}
+
+.fullscreen-toggle button {
+    background: #ff4747;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.fullscreen-toggle button:hover {
+    background: #d32f2f;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
+    .written-test-container{
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    .question-box {
+        width: 95%;
+    }
+
+    .navigation-buttons {
+        margin-left: -20px;
+        width: 90%;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .navigation-buttons button {
+        width: 100%;
+    }
+}

@@ -45,7 +45,8 @@ p {
 /* ✅ Make Everything Responsive */
 @media (max-width: 768px) {
     .home-container {
-        min-width: 90vw;
+        min-width: 100vw;
+        margin-left: 2px;
         padding: 20px;
     }
 

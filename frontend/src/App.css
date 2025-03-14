@@ -13,7 +13,9 @@ body {
 
 .main-content {
   padding: 20px;
-  width: calc(100vw - 0px); /* Force full width */
+  width: 100vw; /* ✅ Fix potential extra spacing */
+  max-width: 1200px; /* Ensure it does not stretch too far */
+  margin: 0 auto; /* ✅ Centers it properly */
   transition: margin-left 0.3s ease-in-out;
 }
 

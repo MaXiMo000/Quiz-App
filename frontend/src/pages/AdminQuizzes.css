@@ -1,5 +1,5 @@
 /* ✅ MAIN QUIZ CONTAINER */
-.quiz-container {
+.admin-quiz-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,7 +8,7 @@
     max-width: 1000px;
     max-height: 90vh;
     overflow-y: auto;
-    margin: auto;
+    margin: 0 auto;
     background: linear-gradient(to right, #4b0082, #6a11cb);
     color: white;
     border-radius: 12px;
@@ -16,7 +16,7 @@
 }
 
 /* ✅ HEADING */
-.quiz-container h2 {
+.admin-quiz-container h2 {
     text-align: center;
     font-size: 32px;
     margin-top: 50px;
@@ -212,6 +212,36 @@ input {
     font-size: 16px;
 }
 
+textarea {
+    width: 100%;
+    min-height: 120px; /* Bigger textarea */
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    resize: vertical; /* Allows users to resize vertically */
+    background: #f9f9f9;
+    color: #333;
+    font-family: "Arial", sans-serif;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* ✅ Focus Effect */
+textarea:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 8px rgba(106, 17, 203, 0.3);
+    outline: none;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
+    textarea {
+        min-height: 100px; /* Adjust for smaller screens */
+        font-size: 14px;
+    }
+}
+
 @media (min-width: 768px) {
     .close-btn {
         display: block !important;
@@ -221,7 +251,7 @@ input {
 
 /* ✅ RESPONSIVE DESIGN */
 @media (max-width: 768px) {
-    .quiz-container {
+    .admin-quiz-container {
         width: 95%;
         padding: 15px;
     }

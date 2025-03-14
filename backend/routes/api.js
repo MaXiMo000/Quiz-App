@@ -5,6 +5,7 @@ const router = Router();
 import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQuestion } from "../controllers/quizController.js";
 import { getReports, createReport, getReportsUser, deleteReport } from "../controllers/reportController.js";
 import { generateQuizQuestions } from "../controllers/aiQuestionController.js";
+import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport } from "../controllers/writtenTestReportController.js";
 
 // Quiz Routes
 router.get("/quizzes", getQuizzes);
@@ -22,5 +23,10 @@ router.get("/reports", getReports);
 router.post("/reports", createReport);
 router.get("/reports/user", getReportsUser);
 router.delete("/reports/delete", deleteReport);
+
+router.get("/written-test-reports", getWrittenTestReports);
+router.post("/written-test-reports", createWrittenTestReport);
+router.get("/written-test-reports/user", getWrittenTestReportsUser);
+router.delete("/written-test-reports/delete", deleteWrittenTestReport);
 
 export default router;
