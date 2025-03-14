@@ -20,7 +20,7 @@ const UserWrittenReportCheck = () => {
             return;
         }
 
-        axios.get(`http://localhost:4000/api/written-test-reports/user?username=${user.name}`)
+        axios.get(`${BACKEND_URL}/api/written-test-reports/user?username=${user.name}`)
             .then(res => {
                 const testReport = res.data.find(r => r.testName === testName);
                 if (!testReport) {
