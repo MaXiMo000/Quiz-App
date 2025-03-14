@@ -13,15 +13,38 @@ const TakeQuiz = () => {
     const [score, setScore] = useState(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(null);
 
     useEffect(() => {
         fetch(`${BACKEND_URL}/api/quizzes/${id}`)
             .then(res => res.json())
-            .then(data => setQuiz(data))
+            .then(data => {setQuiz(data);
+                setTimeLeft(data.duration * 60);
+            })
             .catch(error => console.error("Error fetching quiz:", error));
 
         enterFullScreen();
     }, [id]);
+
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+    };
+
+    useEffect(() => {
+        if (timeLeft === null) return;
+        if (timeLeft <= 0) {
+            handleSubmit(); // ✅ Auto-submit when time runs out
+            return;
+        }
+
+        const timer = setInterval(() => {
+            setTimeLeft(prevTime => prevTime - 1);
+        }, 1000);
+
+        return () => clearInterval(timer); // Cleanup on unmount
+    }, [timeLeft]);
 
     const enterFullScreen = () => {
         const element = document.documentElement;
@@ -100,8 +123,12 @@ const TakeQuiz = () => {
             if (!response.ok) {
                 throw new Error("Failed to save report");
             }
-    
-            alert(`You scored ${scoreAchieved} out of ${totalMarks}`);
+            if(timeLeft <= 0){
+                alert(`Time's up! Your quiz has been auto-submitted. ${scoreAchieved} out of ${totalMarks}`);
+            }
+            else{
+                alert(`You scored ${scoreAchieved} out of ${totalMarks}`);
+            }
             navigate("/user/report");
         } catch (error) {
             console.error("Error saving report:", error);
@@ -114,6 +141,7 @@ const TakeQuiz = () => {
             {quiz ? (
                 <>
                     <h1>{quiz.title}</h1>
+                    <div className="timer">Time Left: {formatTime(timeLeft)}</div>
                     <div className="question-box">
                         <p className="question">{quiz.questions[currentQuestion].question}</p>
                         <div className="options">
