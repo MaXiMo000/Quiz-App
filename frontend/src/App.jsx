@@ -12,6 +12,13 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import UserReportsCheck from "./pages/UserReportsCheck";
 import QuizQuestions from "./pages/QuizQuestions";
+import UserWrittenTests from "./pages/UserWrittenTests";
+import TakeWrittenTest from "./pages/TakeWrittenTest";
+import AdminWrittenTests from "./pages/AdminWrittenTests";
+import TestQuestions from "./pages/TestQuestions";
+import AdminWrittenTestReports from "./pages/AdminWrittenTestReports";
+import UserWrittenReports from "./pages/UserWrittenReports";
+import UserWrittenReportCheck from "./pages/UserWrittenReportsCheck";
 import "./App.css"; // Import global styles
 
 const App = () => {
@@ -31,13 +38,23 @@ const App = () => {
                     <Route path="/admin/report" element={<AdminReports />} />
 
                     <Route path="/admin/quiz/:id" element={<QuizQuestions />} />
+                    <Route path="/admin/written-tests" element={<AdminWrittenTests />} />
+                    <Route path="/admin/written-test/question/:id" element={<TestQuestions />} />
 
+                    <Route path="/admin/written-test/report" element={<AdminWrittenTestReports />} />
+                    
                     {/* 🔹 User Routes */}
                     <Route path="/user/test" element={<UserQuizzes />} />
                     <Route path="/user/test/:id" element={<TakeQuiz />} />
                     <Route path="/user/report" element={<UserReports />} />
 
                     <Route path="/report/:quizName" element={<UserReportsCheck />} />
+
+                    <Route path="/written-tests" element={<UserWrittenTests />} />
+                    <Route path="/take-written-test/:id" element={<TakeWrittenTest />} />
+
+                    <Route path="/user/written-reports" element={<UserWrittenReports />} />
+                    <Route path="/user/written-test-report/:testName" element={<UserWrittenReportCheck />} />
                 </Routes>
             </div>
         </Router>

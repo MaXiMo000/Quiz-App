@@ -155,7 +155,7 @@ const AdminQuizzes = () => {
 
 
     return (
-        <div className="quiz-container main-content">
+        <div className="admin-quiz-container main-content">
             <div className="quiz-header">
                 <h2>📚 Manage Quizzes</h2>
                 <button className="create-btn" onClick={() => document.getElementById("create_quiz_modal").showModal()}>

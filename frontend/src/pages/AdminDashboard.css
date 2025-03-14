@@ -14,7 +14,9 @@
 /* ✅ Dashboard Content */
 .dashboard-content {
     width: 90%;
-    margin-left: 250px;
+    /* margin-left: 250px; */
+    max-height: 90vh;
+    overflow-y: auto;
     max-width: 1000px;
     background: white;
     padding: 20px;

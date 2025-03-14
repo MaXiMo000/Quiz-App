@@ -1,0 +1,114 @@
+/* ✅ MAIN REPORT CONTAINER */
+.report-container {
+    margin: auto;
+    width: 100%;
+    max-height: 90vh;
+    max-width: 900px;
+    padding: 50px 20px;
+    background: linear-gradient(to right, #4b0082, #6a11cb);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    max-height: 90vh;
+    text-align: center;
+}
+
+/* ✅ TITLE */
+.report-container h2 {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 15px;
+}
+
+/* ✅ SCORE DISPLAY */
+.score {
+    font-size: 20px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+/* ✅ QUESTION LIST */
+.question-list {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* ✅ QUESTION BOX */
+.question-box {
+    background: white;
+    color: #333;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 100%;
+    max-width: 300px;
+    text-align: left;
+}
+
+/* ✅ MOBILE RESPONSIVENESS */
+@media (min-width: 768px) and (max-width:1024px) {
+    .question-box {
+        width: 100%;
+        padding: 12px;
+    }
+    
+    .report-container {
+        padding: 15px;
+        max-height: 300px;
+    }
+    
+    .score {
+        font-size: 18px;
+        padding: 8px 16px;
+    }
+    
+    .report-container h2 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-container {
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        margin: auto;
+    }
+    .report-container h2 {
+        margin-top: 40px;
+        font-size: 18px;
+    }
+    .question-box {
+        padding: 10px;
+    }
+}
+
+/* ✅ CORRECT & INCORRECT ANSWERS */
+.correct {
+    border-left: 5px solid #28a745;
+    background: #d4edda;
+}
+
+.wrong {
+    border-left: 5px solid #dc3545;
+    background: #f8d7da;
+}
+
+.user-answer {
+    font-weight: bold;
+    color: #dc3545;
+}
+
+.correct-answer {
+    font-weight: bold;
+    color: #28a745;
+}

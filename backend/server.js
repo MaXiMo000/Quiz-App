@@ -1,22 +1,28 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import "./keepAlive.js";
 import mongoose from "mongoose";
 
 import userRoutes from "./routes/userRoutes.js";
 import apiRoutes from "./routes/api.js";
+import writtenTestRoutes from "./routes/writtenTestRoutes.js";
 
 dotenv.config();
 const app = express();
 
 // Middlewares
+app.use(cors({
+    origin: "http://localhost:5173", // Allow frontend to access backend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // Allow cookies & authentication headers
+}));
 app.use(express.json());
 app.use(cors());
 
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api", apiRoutes);
+app.use("/api/written-tests", writtenTestRoutes);
 
 const PORT = process.env.PORT || 4000;
 

@@ -76,7 +76,8 @@ h2 {
 /* Responsive Design for Mobile */
 @media (max-width: 480px) {
     .register-container {
-        width: 90%;
+        /* margin-left: -5px; */
+        width: 100%;
         padding: 10px; /* Reduce padding for very small screens */
     }
 
