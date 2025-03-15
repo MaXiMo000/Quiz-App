@@ -7,7 +7,7 @@ import "./UserReportsCheck.css";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserReportsCheck = () => {
-    const { quizName } = useParams(); 
+    const { id } = useParams();
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -20,18 +20,11 @@ const UserReportsCheck = () => {
             return;
         }
 
-        axios.get(`${BACKEND_URL}/api/reports/user?username=${user.name}`)
-            .then(res => {
-                const quizReport = res.data.find(r => r.quizName === quizName);
-                if (!quizReport) {
-                    setError("Report not found for this quiz.");
-                } else {
-                    setReport(quizReport);
-                }
-            })
+        axios.get(`${BACKEND_URL}/api/reports/${id}`)
+            .then(res => setReport(res.data))
             .catch(() => setError("Error fetching report. Try again later."))
             .finally(() => setLoading(false));
-    }, [quizName]);
+    }, [id]);
 
     if (loading) return <p>Loading report...</p>;
     if (error) return <p className="error-message">{error}</p>;

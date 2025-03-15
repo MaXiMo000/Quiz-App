@@ -33,24 +33,37 @@ export const getReportsUser = async (req, res) => {
     }
 };
 
-export const deleteReport = async (req, res) => {
+export const getReportsUserID = async (req, res) => {
     try {
-        const { quizName } = req.query; // ✅ Get title from request body
+        const { id } = req.params; // Get ID from URL params
+        const report = await Report.findById(id);
 
-        if (!quizName) {
-            return res.status(400).json({ message: "Quiz Report is required" });
+        if (!report) {
+            return res.status(404).json({ message: "Report not found" });
         }
 
-        // Find the quiz by title
-        const reportItem = await Report.findOne({ quizName });
+        res.json(report);
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving report", error });
+    }
+};
+
+export const deleteReport = async (req, res) => {
+    try {
+        const { id } = req.params; // ✅ Get report ID from request parameters
+
+        if (!id) {
+            return res.status(400).json({ message: "Report ID is required" });
+        }
+
+        const reportItem = await Report.findById(id);
 
         if (!reportItem) {
             return res.status(404).json({ message: "Report not found" });
         }
 
-        // Delete the report
-        await Report.deleteOne({ quizName });
-        return res.status(200).json({ message: "Quiz Report successfully!" });
+        await Report.findByIdAndDelete(id);
+        return res.status(200).json({ message: "Report deleted successfully!" });
 
     } catch (error) {
         console.error("Error deleting Report:", error);

@@ -48,13 +48,13 @@ const App = () => {
                     <Route path="/user/test/:id" element={<TakeQuiz />} />
                     <Route path="/user/report" element={<UserReports />} />
 
-                    <Route path="/report/:quizName" element={<UserReportsCheck />} />
+                    <Route path="/report/:id" element={<UserReportsCheck />} />
 
                     <Route path="/written-tests" element={<UserWrittenTests />} />
                     <Route path="/take-written-test/:id" element={<TakeWrittenTest />} />
 
                     <Route path="/user/written-reports" element={<UserWrittenReports />} />
-                    <Route path="/user/written-test-report/:testName" element={<UserWrittenReportCheck />} />
+                    <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
                 </Routes>
             </div>
         </Router>

@@ -7,7 +7,7 @@ import "./UserWrittenReportCheck.css"; // ✅ Import new CSS
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserWrittenReportCheck = () => {
-    const { testName } = useParams(); 
+    const { id } = useParams();
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -20,9 +20,9 @@ const UserWrittenReportCheck = () => {
             return;
         }
 
-        axios.get(`${BACKEND_URL}/api/written-test-reports/user?username=${user.name}`)
+        axios.get(`${BACKEND_URL}/api/written-test-reports/${id}`)
             .then(res => {
-                const testReport = res.data.find(r => r.testName === testName);
+                const testReport = res.data;
                 if (!testReport) {
                     setError("Report not found for this test.");
                 } else {
@@ -31,7 +31,7 @@ const UserWrittenReportCheck = () => {
             })
             .catch(() => setError("Error fetching report. Try again later."))
             .finally(() => setLoading(false));
-    }, [testName]);
+    }, [id]);
 
     if (loading) return <p>Loading report...</p>;
     if (error) return <p className="error-message">{error}</p>;
