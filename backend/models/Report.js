@@ -10,6 +10,6 @@ const ReportSchema = new Schema({
         userAnswer: { type: String, required: true },
         correctAnswer: { type: String, required: true },
     }]
-});
+}, { timestamps: true });
 
 export default model("Report", ReportSchema);

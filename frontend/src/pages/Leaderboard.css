@@ -1,0 +1,58 @@
+.leaderboard-container {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(to right, #4b0082, #6a11cb);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+h2{
+    color: white;
+}
+
+.leaderboard-buttons {
+    margin-bottom: 15px;
+}
+
+.leaderboard-buttons button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    color: black;
+    transition: 0.3s;
+}
+
+.leaderboard-buttons .active {
+    background-color: #ff9800;
+    color: white;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    color: black;
+}
+
+.leaderboard-table th, .leaderboard-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.leaderboard-table th {
+    background: #3498db;
+    color: white;
+}
+
+@media (max-width: 720px) {
+    .leaderboard-container{
+        
+    }
+}

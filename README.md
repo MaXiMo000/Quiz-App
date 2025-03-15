@@ -29,4 +29,19 @@ added time limit to test = done
 adding Quizquestion which shows particular quiz's questions in detail and edit or delete a question =  done
 adding written test which uses ai to check and gives score accordingly = done 
 change the reports get and check from name to id = done
-better authorization maybe using cookie
+
+✅ AI-Based Difficulty Leveling
+AI analyzes past performance and adjusts question difficulty dynamically.
+Beginner users get easier questions; advanced users get challenging ones.
+
+Leaderboards & Achievements
+Top scorers of the week/month displayed. = done
+Earn badges like “Quiz Master,” “Speed Genius,” “Perfect Score,” etc.
+
+ Live Quiz Battles
+Users can challenge friends to a live quiz.
+Compete in real-time, see opponent’s progress.
+
+✅ Subscription Plans
+Free users get limited quizzes.
+Premium users get AI-powered insights, unlimited access, etc.

@@ -43,7 +43,7 @@ const Sidebar = () => {
                             <a href="/admin/create">📚 Create Quiz</a>
                             <a href="/admin/report">📄 Reports</a>
                             <a href="/admin/written-tests">📝 Written Tests</a>
-                            <a href="/admin/written-test/report">📄 Written Tests Reports</a>
+                            <a href="/admin/written-test/report">📄Tests Reports</a>
                         </>
                     ) : (
                         <>
@@ -51,7 +51,8 @@ const Sidebar = () => {
                             <a href="/user/test">📚 Quizzes</a>
                             <a href="/user/report">📄 Reports</a>
                             <a href="/written-tests">📝 Written Tests</a>
-                            <a href="/user/written-reports">📄 Written Tests Reports</a>
+                            <a href="/user/written-reports">📄Tests Reports</a>
+                            <a href="/leaderboard">📝 LeaderBoard</a>
                         </>
                     )}
                 </nav>

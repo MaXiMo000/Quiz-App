@@ -3,7 +3,7 @@ import Quiz from "../models/Quiz.js";
 import mongoose from "mongoose";
 const router = Router();
 import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQuestion } from "../controllers/quizController.js";
-import { getReports, createReport, getReportsUser, deleteReport, getReportsUserID } from "../controllers/reportController.js";
+import { getReports, createReport, getReportsUser, deleteReport, getReportsUserID, getTopScorers } from "../controllers/reportController.js";
 import { generateQuizQuestions } from "../controllers/aiQuestionController.js";
 import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport, getWrittenReportsUserID } from "../controllers/writtenTestReportController.js";
 
@@ -22,6 +22,7 @@ router.post("/quizzes/:id/generate-questions", generateQuizQuestions); // ✅ AI
 router.get("/reports", getReports);
 router.post("/reports", createReport);
 router.get("/reports/user", getReportsUser);
+router.get("/reports/top-scorers", getTopScorers); 
 router.get("/reports/:id", getReportsUserID)
 router.delete("/reports/:id", deleteReport);
 
