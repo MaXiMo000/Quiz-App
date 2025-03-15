@@ -12,13 +12,17 @@ const AdminQuizzes = () => {
     const [aiTopic, setAiTopic] = useState("");
     const [aiNumQuestions, setAiNumQuestions] = useState("");
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     // Fetch existing quizzes
     const getQuiz = () => {
         fetch(`${BACKEND_URL}/api/quizzes`)
             .then((res) => res.json())
             .then((data) => setQuizzes(data))
-            .catch((err) => console.error("Error fetching quizzes:", err));
+            .catch((err) => {console.error("Error fetching Quizs:", err);
+                setError("Error fetching Quiz. Try again later.");
+            }).finally(() => setLoading(false));
     };
     useEffect(() => {
         getQuiz();
@@ -90,7 +94,7 @@ const AdminQuizzes = () => {
 
             document.getElementById("create_quiz_modal").close();
             getQuiz();
-            alert("Quiz created successfully!");
+            // alert("Quiz created successfully!");
         } catch (error) {
             console.error("Error creating quiz:", error);
             alert("Failed to create quiz. Check API response.");
@@ -127,7 +131,7 @@ const AdminQuizzes = () => {
 
             document.getElementById("add_question_modal").close();
             getQuiz();
-            alert("Question added successfully!");
+            // alert("Question added successfully!");
         } catch (error) {
             console.error("Error adding question:", error);
             alert("Failed to add question. Check API response.");
@@ -153,6 +157,8 @@ const AdminQuizzes = () => {
         }
     };
 
+    if (loading) return <p>Loading ...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="admin-quiz-container main-content">

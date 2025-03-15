@@ -8,12 +8,16 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const UserReports = () => {
     const [reports, setReports] = useState([]);
     const user = JSON.parse(localStorage.getItem("user"));
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     const getReport = () => {
         fetch(`${BACKEND_URL}/api/reports/user?username=${user?.name}`)
             .then(res => res.json())
             .then(data => setReports(data))
-            .catch(error => console.error("Error fetching reports:", error));
+            .catch((err) => {console.error("Error fetching Reports:", err);
+                setError("Error fetching Report. Try again later.");
+            }).finally(() => setLoading(false));
     };
 
     useEffect(() => {
@@ -38,6 +42,9 @@ const UserReports = () => {
             alert("Failed to delete report. Check the API response.");
         }
     };
+
+    if (loading) return <p>Loading report...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="reports-container">

@@ -8,6 +8,8 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [quizs, setQuizs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     
     useEffect(() => {
         const fetchUsers = async () => {
@@ -16,6 +18,10 @@ const AdminDashboard = () => {
                 setUsers(res.data);
             } catch (error) {
                 console.error("Error fetching users:", error);
+                setError("Error fetching users. Try again later.");
+            }
+            finally{
+                setLoading(false);
             }
         };
 
@@ -31,6 +37,9 @@ const AdminDashboard = () => {
         fetchUsers();
         fetchQuizs();
     }, []);
+
+    if (loading) return <p>Loading ...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="admin-dashboard">

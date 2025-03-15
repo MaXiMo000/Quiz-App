@@ -8,13 +8,20 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const UserWrittenTests = () => {
     const [tests, setTests] = useState([]);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         fetch(`${BACKEND_URL}/api/written-tests`)
             .then((res) => res.json())
             .then((data) => setTests(data))
-            .catch((err) => console.error("Error fetching written tests:", err));
+            .catch((err) => {console.error("Error fetching Tests:", err);
+                setError("Error fetching Tests. Try again later.");
+            }).finally(() => setLoading(false));
     }, []);
+
+    if (loading) return <p>Loading Tests...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="container">

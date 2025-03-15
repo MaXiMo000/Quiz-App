@@ -14,6 +14,8 @@ const TakeQuiz = () => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [timeLeft, setTimeLeft] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         fetch(`${BACKEND_URL}/api/quizzes/${id}`)
@@ -21,7 +23,9 @@ const TakeQuiz = () => {
             .then(data => {setQuiz(data);
                 setTimeLeft(data.duration * 60);
             })
-            .catch(error => console.error("Error fetching quiz:", error));
+            .catch((err) => {console.error("Error fetching quiz:", err);
+                setError("Error fetching Quiz. Try again later.");
+            }).finally(() => setLoading(false));
 
         enterFullScreen();
     }, [id]);
@@ -135,6 +139,9 @@ const TakeQuiz = () => {
             alert("Failed to save your score. Please try again.");
         }
     };    
+
+    if (loading) return <p>Loading Quiz...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="quiz-container">
