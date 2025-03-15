@@ -10,6 +10,9 @@ const TestQuestions = () => {
     const { id } = useParams(); // ✅ Get test ID from URL
     const navigate = useNavigate();
     const [test, setTest] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    
 
     // ✅ Fetch test details
     const getTestDetails = async () => {
@@ -18,7 +21,10 @@ const TestQuestions = () => {
             setTest(response.data);
         } catch (error) {
             console.error("Error fetching test details:", error);
-            alert("Failed to fetch test details.");
+            setError("Error fetching Tests. Try again later.");
+        }
+        finally{
+            setLoading(false);
         }
     };
 
@@ -39,6 +45,9 @@ const TestQuestions = () => {
             alert("Failed to delete question.");
         }
     };
+
+    if (loading) return <p>Loading Tests...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="quiz-questions-container">

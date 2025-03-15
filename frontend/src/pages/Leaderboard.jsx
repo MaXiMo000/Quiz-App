@@ -7,6 +7,8 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const Leaderboard = () => {
     const [topScorers, setTopScorers] = useState([]);
     const [period, setPeriod] = useState("week"); // Default: Weekly leaderboard
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         fetchTopScorers();
@@ -18,8 +20,14 @@ const Leaderboard = () => {
             setTopScorers(response.data);
         } catch (error) {
             console.error("Error fetching top scorers:", error.response ? error.response.data : error.message);
+            setError("Error fetching Data. Try again later.");
+        } finally{
+            setLoading(false);
         }
     };
+
+    if (loading) return <p>Loading ...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="leaderboard-container">

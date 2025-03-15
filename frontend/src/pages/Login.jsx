@@ -17,7 +17,7 @@ const Login = () => {
             const res = await axios.post(`${BACKEND_URL}/api/users/login`, { email, password },
                 { headers: { "Content-Type": "application/json" } });
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            alert(res.data.message);
+            // alert(res.data.message);
             if (res.data.user.role === "admin") {
                 navigate("/admin"); 
             } else {

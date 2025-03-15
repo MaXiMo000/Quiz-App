@@ -14,6 +14,8 @@ const AdminWrittenTests = () => {
     const [newQuestion, setNewQuestion] = useState(""); // ✅ Store new question
     const [newMarks, setNewMarks] = useState(10); // ✅ Store new marks
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     // ✅ Fetch written tests from backend
     const fetchTests = async () => {
@@ -22,6 +24,10 @@ const AdminWrittenTests = () => {
             setTests(response.data);
         } catch (error) {
             console.error("Error fetching written tests:", error);
+            setError("Error fetching Tests. Try again later.");
+        }
+        finally{
+            setLoading(false);
         }
     };
 
@@ -35,7 +41,7 @@ const AdminWrittenTests = () => {
 
         try {
             await axios.post(`${BACKEND_URL}/api/written-tests/create`, { title, category, questions: [] });
-            alert("Written test created successfully!");
+            // alert("Written test created successfully!");
             fetchTests();
             document.getElementById("create_test_modal").close();
         } catch (error) {
@@ -60,7 +66,7 @@ const AdminWrittenTests = () => {
                 question: newQuestion,
                 marks: newMarks
             });
-            alert("Question added successfully!");
+            // alert("Question added successfully!");
             fetchTests();
             document.getElementById("add_question_modal").close();
         } catch (error) {
@@ -87,6 +93,9 @@ const AdminWrittenTests = () => {
             alert("Failed to delete quiz. Check the API response.");
         }
     };
+
+    if (loading) return <p>Loading ...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="admin-quiz-container main-content">

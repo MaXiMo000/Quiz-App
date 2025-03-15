@@ -7,13 +7,20 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const UserQuiz = () => {
     const [quizzes, setQuizzes] = useState([]);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         fetch(`${BACKEND_URL}/api/quizzes`)
             .then((res) => res.json())
             .then((data) => setQuizzes(data))
-            .catch((err) => console.error("Error fetching quizzes:", err));
-    }, []);
+            .catch((err) => {console.error("Error fetching quizzes:", err);
+                setError("Error fetching Quiz. Try again later.");
+            }).finally(() => setLoading(false));
+    }, [quizzes]);
+
+    if (loading) return <p>Loading Quiz...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="container">

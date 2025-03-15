@@ -6,13 +6,17 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const AdminWrittenTestReports = () => {
     const [reports, setReports] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     // ✅ Fetch all reports
     const getReports = () => {
         fetch(`${BACKEND_URL}/api/written-test-reports`)
             .then(res => res.json())
             .then(data => setReports(data))
-            .catch(error => console.error("Error fetching reports:", error));
+            .catch((err) => {console.error("Error fetching Reports:", err);
+                setError("Error fetching Report. Try again later.");
+            }).finally(() => setLoading(false));
     };
 
     useEffect(() => {
@@ -38,6 +42,9 @@ const AdminWrittenTestReports = () => {
             alert("Failed to delete report.");
         }
     };
+
+    if (loading) return <p>Loading report...</p>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="container">
