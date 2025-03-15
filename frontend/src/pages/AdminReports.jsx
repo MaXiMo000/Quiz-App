@@ -20,18 +20,18 @@ const AdminReports = () => {
     }, []);
 
     // Delete report function (Same as UserReports.jsx)
-    const deleteReport = async (quizName) => {
-        if (!quizName) {
-            alert("Report is missing!");
+    const deleteReport = async (id) => {
+        if (!id) {
+            alert("Report ID is missing!");
             return;
         }
-
+    
         try {
-            const response = await axios.delete(`${BACKEND_URL}/api/reports/delete?quizName=${encodeURIComponent(quizName)}`);
-
+            const response = await axios.delete(`${BACKEND_URL}/api/reports/${id}`);
+    
             if (response.status === 200) {
                 alert("Report deleted successfully!");
-                getReports(); // Refresh report list after deletion
+                getReports(); // Refresh reports list after deletion
             }
         } catch (error) {
             console.error("Error deleting report:", error);
@@ -66,7 +66,7 @@ const AdminReports = () => {
                             <td>{report.total}</td>
                             <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
                             <td>
-                                <button className="delete-btn" onClick={() => deleteReport(report.quizName)}>Delete</button>
+                                <button className="delete-btn" onClick={() => deleteReport(report._id)}>Delete</button>
                             </td>
                         </tr>
                     ))}

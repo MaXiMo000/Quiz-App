@@ -27,5 +27,6 @@ Fifth commit // 10-03-2025 // backend deployed
 better UI/UX = done
 added time limit to test = done
 adding Quizquestion which shows particular quiz's questions in detail and edit or delete a question =  done
-adding written test which uses ai to check and gives score accordingly
-better authorization maybe using cookie 
+adding written test which uses ai to check and gives score accordingly = done 
+change the reports get and check from name to id = done
+better authorization maybe using cookie

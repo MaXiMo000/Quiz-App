@@ -20,14 +20,14 @@ const AdminWrittenTestReports = () => {
     }, []);
 
     // ✅ Delete report function
-    const deleteReport = async (testName) => {
-        if (!testName) {
-            alert("Report name is missing!");
+    const deleteReport = async (id) => {
+        if (!id) {
+            alert("Report ID is missing!");
             return;
         }
 
         try {
-            const response = await axios.delete(`${BACKEND_URL}/api/written-test-reports/delete?testName=${encodeURIComponent(testName)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/written-test-reports/${id}`);
 
             if (response.status === 200) {
                 alert("Report deleted successfully!");
@@ -66,7 +66,7 @@ const AdminWrittenTestReports = () => {
                                     <td>{report.total}</td>
                                     <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
                                     <td>
-                                        <button className="delete-btn" onClick={() => deleteReport(report.testName)}>Delete</button>
+                                        <button className="delete-btn" onClick={() => deleteReport(report._id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))}

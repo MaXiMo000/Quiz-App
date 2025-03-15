@@ -39,25 +39,41 @@ export const getWrittenTestReportsUser = async (req, res) => {
     }
 };
 
-// ✅ Delete a report by test name
-export const deleteWrittenTestReport = async (req, res) => {
+export const getWrittenReportsUserID = async (req, res) => {
     try {
-        const { testName } = req.query;
+        const { id } = req.params; // Get ID from URL params
+        const report = await WrittenTestReport.findById(id);
 
-        if (!testName) {
-            return res.status(400).json({ message: "Test name is required" });
-        }
-
-        const reportItem = await WrittenTestReport.findOne({ testName });
-
-        if (!reportItem) {
+        if (!report) {
             return res.status(404).json({ message: "Report not found" });
         }
 
-        await WrittenTestReport.deleteOne({ testName });
-        res.status(200).json({ message: "Written test report deleted successfully!" });
-
+        res.json(report);
     } catch (error) {
-        res.status(500).json({ message: "Error deleting report", error });
+        res.status(500).json({ message: "Error retrieving report", error });
     }
+};
+
+// ✅ Delete a report by test name
+export const deleteWrittenTestReport = async (req, res) => {
+    try {
+            const { id } = req.params; // ✅ Get report ID from request parameters
+    
+            if (!id) {
+                return res.status(400).json({ message: "Report ID is required" });
+            }
+    
+            const reportItem = await WrittenTestReport.findById(id);
+    
+            if (!reportItem) {
+                return res.status(404).json({ message: "Report not found" });
+            }
+    
+            await WrittenTestReport.findByIdAndDelete(id);
+            return res.status(200).json({ message: "Report deleted successfully!" });
+    
+        } catch (error) {
+            console.error("Error deleting Report:", error);
+            res.status(500).json({ message: "Error deleting Report", error: error.message });
+        }
 };

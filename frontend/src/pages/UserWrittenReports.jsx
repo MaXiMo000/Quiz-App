@@ -12,28 +12,30 @@ const UserWrittenReports = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    useEffect(() => {
+    const getReport = async () =>{
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
             setError("User not found. Please log in.");
             setLoading(false);
             return;
         }
-
-        axios.get(`${BACKEND_URL}/api/written-test-reports/user?username=${user.name}`)
+        await axios.get(`${BACKEND_URL}/api/written-test-reports/user?username=${user.name}`)
             .then(res => setReports(res.data))
             .catch(() => setError("Error fetching reports. Try again later."))
             .finally(() => setLoading(false));
+    }
+
+    useEffect(() => {
+        getReport();
     }, []);
 
-    const deleteReport = async (testName) => {
-        if (!window.confirm(`Are you sure you want to delete the report for "${testName}"?`)) return;
+    const deleteReport = async (id) => {
 
         try {
-            const response = await axios.delete(`${BACKEND_URL}/api/written-test-reports/delete?testName=${encodeURIComponent(testName)}`);
+            const response = await axios.delete(`${BACKEND_URL}/api/written-test-reports/${id}`);
             if (response.status === 200) {
                 alert("Report deleted successfully!");
-                setReports(reports.filter(report => report.testName !== testName));
+                getReport();
             }
         } catch (error) {
             console.error("Error deleting report:", error);
@@ -69,8 +71,8 @@ const UserWrittenReports = () => {
                                     <td>{report.total}</td>
                                     <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
                                     <td>
-                                        <button className="view-btn" onClick={() => navigate(`/user/written-test-report/${report.testName}`)}>View</button>
-                                        <button className="delete-btn" onClick={() => deleteReport(report.testName)}>Delete</button>
+                                        <button className="view-btn" onClick={() => navigate(`/user/written-test-report/${report._id}`)}>View</button>
+                                        <button className="delete-btn" onClick={() => deleteReport(report._id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))}

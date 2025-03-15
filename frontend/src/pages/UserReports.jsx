@@ -20,17 +20,17 @@ const UserReports = () => {
         getReport();
     }, [user]);
 
-    const deleteReport = async (quizName) => {
-        if (!quizName) {
-            alert("Report is missing!");
+    const deleteReport = async (id) => {
+        if (!id) {
+            alert("Report ID is missing!");
             return;
         }
-
+    
         try {
-            const response = await axios.delete(`${BACKEND_URL}/api/reports/delete?quizName=${encodeURIComponent(quizName)}`);
-
+            const response = await axios.delete(`${BACKEND_URL}/api/reports/${id}`);
+    
             if (response.status === 200) {
-                alert("Quiz deleted successfully!");
+                alert("Report deleted successfully!");
                 getReport(); // Refresh reports list after deletion
             }
         } catch (error) {
@@ -65,12 +65,12 @@ const UserReports = () => {
                                     <td>{report.total}</td>
                                     <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
                                     <td>
-                                        <Link to={`/report/${report.quizName}`}>
-                                            <button className="view-btn">View Report</button>
-                                        </Link>
+                                    <Link to={`/report/${report._id}`}>
+                                        <button className="view-btn">View Report</button>
+                                    </Link> 
                                     </td>
                                     <td>
-                                        <button className="delete-btn" onClick={() => deleteReport(report.quizName)}>Delete</button>
+                                        <button className="delete-btn" onClick={() => deleteReport(report._id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))}
