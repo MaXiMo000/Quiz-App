@@ -19,6 +19,7 @@ import TestQuestions from "./pages/TestQuestions";
 import AdminWrittenTestReports from "./pages/AdminWrittenTestReports";
 import UserWrittenReports from "./pages/UserWrittenReports";
 import UserWrittenReportCheck from "./pages/UserWrittenReportsCheck";
+import Leaderboard from "./pages/Leaderboard";
 import "./App.css"; // Import global styles
 
 const App = () => {
@@ -55,6 +56,8 @@ const App = () => {
 
                     <Route path="/user/written-reports" element={<UserWrittenReports />} />
                     <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
+
+                    <Route path="/leaderboard" element={<Leaderboard />} />
                 </Routes>
             </div>
         </Router>

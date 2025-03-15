@@ -1,4 +1,5 @@
 import Report from "../models/Report.js";
+import moment from "moment";
 
 export async function getReports(req, res) {
     const reports = await Report.find();
@@ -7,13 +8,13 @@ export async function getReports(req, res) {
 
 export async function createReport(req, res) {
     try {
-        const { username, quizName, score, total, questions } = req.body;
+        const { username, quizName, score, total, questions} = req.body;
 
         if (!username || !quizName || !questions || questions.length === 0) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        const report = new Report({ username, quizName, score, total, questions }); // ✅ Save questions
+        const report = new Report({ username, quizName, score, total, questions}); // ✅ Save questions
         await report.save();
 
         res.status(201).json({ message: "Report saved successfully", report });
@@ -70,3 +71,33 @@ export const deleteReport = async (req, res) => {
         res.status(500).json({ message: "Error deleting Report", error: error.message });
     }
 };
+
+// ✅ Get Top Scorers of the Week
+export async function getTopScorers(req, res) {
+    try {
+        const { period } = req.query;
+        let startDate;
+
+        if (period === "week") {
+            startDate = moment().subtract(7, "days").startOf("day").toDate();
+        } else if (period === "month") {
+            startDate = moment().subtract(30, "days").startOf("day").toDate();
+        } else {
+            return res.status(400).json({ message: "Invalid period. Use 'week' or 'month'." });
+        }
+
+        console.log(`Fetching top scorers from: ${startDate}`); // ✅ Debugging Log
+
+        // ✅ Fetch top scores within the date range
+        const topScorers = await Report.find({
+            createdAt: { $gte: startDate },
+        })
+            .sort({ score: -1 }) // Highest score first
+            .limit(10);
+
+        res.json(topScorers);
+    } catch (error) {
+        console.error("Error fetching top scorers:", error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+}
