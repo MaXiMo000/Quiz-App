@@ -129,4 +129,7 @@ nav {
         margin-top: -20px;
         gap: 5px;
     }
+    .logout-btn{
+        margin-top: 20px;
+    }
 }
