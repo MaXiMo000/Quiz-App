@@ -1,6 +1,5 @@
 import WrittenTestReport from "../models/WrittenTestReport.js";
 
-// ✅ Get all reports
 export async function getWrittenTestReports(req, res) {
     try {
         const reports = await WrittenTestReport.find();
@@ -10,7 +9,6 @@ export async function getWrittenTestReports(req, res) {
     }
 }
 
-// ✅ Create a new report
 export async function createWrittenTestReport(req, res) {
     try {
         const { username, testName, score, total, questions } = req.body;
@@ -28,7 +26,6 @@ export async function createWrittenTestReport(req, res) {
     }
 }
 
-// ✅ Get reports for a specific user
 export const getWrittenTestReportsUser = async (req, res) => {
     try {
         const username = req.query.username;
@@ -54,10 +51,9 @@ export const getWrittenReportsUserID = async (req, res) => {
     }
 };
 
-// ✅ Delete a report by test name
 export const deleteWrittenTestReport = async (req, res) => {
     try {
-            const { id } = req.params; // ✅ Get report ID from request parameters
+            const { id } = req.params;
     
             if (!id) {
                 return res.status(400).json({ message: "Report ID is required" });

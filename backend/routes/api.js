@@ -16,7 +16,7 @@ router.delete("/quizzes/delete/quiz", deleteQuiz);
 router.delete("/quizzes/:id/questions/:questionIndex", deleteQuestion);
 
 
-router.post("/quizzes/:id/generate-questions", generateQuizQuestions); // ✅ AI route
+router.post("/quizzes/:id/generate-questions", generateQuizQuestions);
 
 // Report Routes
 router.get("/reports", getReports);
