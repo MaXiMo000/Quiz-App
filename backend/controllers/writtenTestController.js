@@ -4,12 +4,10 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-// ✅ Initialize Together.AI with API Key
 const together = new Together({
     apiKey: process.env.TOGETHER_AI_API_KEY,
 });
 
-// ✅ Create a new Written Test
 export async function createWrittenTest(req, res) {
     try {
         const { title, category, questions } = req.body;
@@ -26,7 +24,6 @@ export async function createWrittenTest(req, res) {
     }
 }
 
-// ✅ Fetch all Written Tests
 export async function getWrittenTests(req, res) {
     try {
         const tests = await WrittenTest.find();
@@ -36,7 +33,6 @@ export async function getWrittenTests(req, res) {
     }
 }
 
-// ✅ Add a question to an existing test
 export async function addQuestionToTest(req, res) {
     try {
         const { testId } = req.params;
@@ -56,7 +52,6 @@ export async function addQuestionToTest(req, res) {
     }
 }
 
-// ✅ AI Scoring using Together.AI
 export async function scoreWrittenAnswer(req, res) {
     try {
         const { answer, question } = req.body;
@@ -90,7 +85,6 @@ export async function scoreWrittenAnswer(req, res) {
     }
 }
 
-// ✅ Delete a Written Test
 export const deleteTest = async (req, res) => {
     try {
         const { title } = req.query;
@@ -113,7 +107,6 @@ export const deleteTest = async (req, res) => {
     }
 };
 
-// ✅ Get Test by ID
 export async function getTestById(req, res) {
     try {
         const { id } = req.params;
@@ -132,7 +125,6 @@ export async function getTestById(req, res) {
     }
 }
 
-// ✅ Delete a Question from a Test
 export async function deleteQuestion(req, res) {
     try {
         const test = await WrittenTest.findById(req.params.id);

@@ -14,7 +14,7 @@ export async function createReport(req, res) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        const report = new Report({ username, quizName, score, total, questions}); // ✅ Save questions
+        const report = new Report({ username, quizName, score, total, questions});
         await report.save();
 
         res.status(201).json({ message: "Report saved successfully", report });
@@ -27,7 +27,7 @@ export async function createReport(req, res) {
 export const getReportsUser = async (req, res) => {
     try {
         const username = req.query.username;
-        const reports = await Report.find(username ? { username } : {}).lean(); // Use .lean() for faster queries
+        const reports = await Report.find(username ? { username } : {}).lean();
         res.json(reports);
     } catch (error) {
         res.status(500).json({ message: "Error retrieving reports", error });
@@ -36,7 +36,7 @@ export const getReportsUser = async (req, res) => {
 
 export const getReportsUserID = async (req, res) => {
     try {
-        const { id } = req.params; // Get ID from URL params
+        const { id } = req.params;
         const report = await Report.findById(id);
 
         if (!report) {
@@ -51,7 +51,7 @@ export const getReportsUserID = async (req, res) => {
 
 export const deleteReport = async (req, res) => {
     try {
-        const { id } = req.params; // ✅ Get report ID from request parameters
+        const { id } = req.params;
 
         if (!id) {
             return res.status(400).json({ message: "Report ID is required" });

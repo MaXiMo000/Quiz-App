@@ -8,7 +8,7 @@ const questionSchema = new mongoose.Schema({
 
 const quizSchema = new mongoose.Schema({
     title: String,
-    category: String,   // ✅ Add category
+    category: String,
     totalMarks: { type: Number, default: 0 },
     passingMarks: { type: Number, default: 0 },
     duration: { type: Number, default: 0 },

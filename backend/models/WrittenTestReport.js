@@ -5,7 +5,7 @@ const WrittenTestReportSchema = new Schema({
     testName: { type: String, required: true },
     score: { type: Number, required: true },
     total: { type: Number, required: true },
-    questions: [{ // ✅ Array of questions
+    questions: [{
         questionText: { type: String, required: true },
         userAnswer: { type: String, required: true },
         correctAnswer: { type: String, required: true },
