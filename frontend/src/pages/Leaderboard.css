@@ -70,6 +70,6 @@ h2{
 
 @media (max-width: 720px) {
     .leaderboard-container{
-        
+        max-height: 70vh;
     }
 }
