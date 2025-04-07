@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./Leaderboard.css"; // ✅ Create a new CSS file for styling
+import "./Leaderboard.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Leaderboard = () => {
     const [topScorers, setTopScorers] = useState([]);
-    const [period, setPeriod] = useState("week"); // Default: Weekly leaderboard
+    const [filteredQuiz, setFilteredQuiz] = useState("All");
+    const [period, setPeriod] = useState("week");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -15,16 +16,25 @@ const Leaderboard = () => {
     }, [period]);
 
     const fetchTopScorers = async () => {
+        setLoading(true);
+        setError("");
         try {
             const response = await axios.get(`${BACKEND_URL}/api/reports/top-scorers?period=${period}`);
-            setTopScorers(response.data);
+            const data = Array.isArray(response.data) ? response.data : [];
+            setTopScorers(data);
+            setFilteredQuiz("All"); // Reset filter on period change
         } catch (error) {
             console.error("Error fetching top scorers:", error.response ? error.response.data : error.message);
-            setError("Error fetching Data. Try again later.");
-        } finally{
+            setError("Error fetching data. Please try again later.");
+        } finally {
             setLoading(false);
         }
     };
+
+    const quizzes = topScorers.map(item => item.quizName);
+    const displayedScorers = filteredQuiz === "All"
+        ? topScorers
+        : topScorers.filter(item => item.quizName === filteredQuiz);
 
     if (loading) return <p>Loading ...</p>;
     if (error) return <p className="error-message">{error}</p>;
@@ -32,38 +42,48 @@ const Leaderboard = () => {
     return (
         <div className="leaderboard-container">
             <h2>🏆 Top Scorers of the {period === "week" ? "Week" : "Month"}</h2>
-            
-            <div className="leaderboard-buttons">
-                <button onClick={() => setPeriod("week")} className={period === "week" ? "active" : ""}>Weekly</button>
-                <button onClick={() => setPeriod("month")} className={period === "month" ? "active" : ""}>Monthly</button>
+
+            <div className="leaderboard-controls">
+                <div className="leaderboard-buttons">
+                    <button onClick={() => setPeriod("week")} className={period === "week" ? "active" : ""}>Weekly</button>
+                    <button onClick={() => setPeriod("month")} className={period === "month" ? "active" : ""}>Monthly</button>
+                </div>
+
+                <select onChange={e => setFilteredQuiz(e.target.value)} value={filteredQuiz}>
+                    <option value="All">All Quizzes</option>
+                    {quizzes.map((quiz, idx) => (
+                        <option key={idx} value={quiz}>{quiz}</option>
+                    ))}
+                </select>
             </div>
 
-            <table className="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Username</th>
-                        <th>Quiz Name</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {topScorers.length > 0 ? (
-                        topScorers.map((user, index) => (
-                            <tr key={index}>
-                                <td>#{index + 1}</td>
-                                <td>{user.username}</td>
-                                <td>{user.quizName}</td>
-                                <td>{user.score.toFixed(1)}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="4">No top scorers yet.</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+            {displayedScorers.length > 0 ? (
+                displayedScorers.map((category, catIndex) => (
+                    <div key={catIndex} className="quiz-section">
+                        <h3>📘 {category.quizName}</h3>
+                        <table className="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Username</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {category.topUsers.map((user, index) => (
+                                    <tr key={index}>
+                                        <td>#{index + 1}</td>
+                                        <td>{user.username}</td>
+                                        <td>{user.score.toFixed(1)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ))
+            ) : (
+                <p>No top scorers available.</p>
+            )}
         </div>
     );
 };
