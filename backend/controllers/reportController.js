@@ -86,14 +86,29 @@ export async function getTopScorers(req, res) {
             return res.status(400).json({ message: "Invalid period. Use 'week' or 'month'." });
         }
 
-        console.log(`Fetching top scorers from: ${startDate}`); // ✅ Debugging Log
-
-        // ✅ Fetch top scores within the date range
-        const topScorers = await Report.find({
-            createdAt: { $gte: startDate },
-        })
-            .sort({ score: -1 }) // Highest score first
-            .limit(10);
+        const topScorers = await Report.aggregate([
+            {
+                $match: { createdAt: { $gte: startDate } }
+            },
+            {
+                $sort: { score: -1 }
+            },
+            {
+                $group: {
+                    _id: "$quizName",
+                    topUsers: {
+                        $push: { username: "$username", score: "$score" }
+                    }
+                }
+            },
+            {
+                $project: {
+                    quizName: "$_id",
+                    topUsers: { $slice: ["$topUsers", 5] },
+                    _id: 0
+                }
+            }
+        ]);
 
         res.json(topScorers);
     } catch (error) {

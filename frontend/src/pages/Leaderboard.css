@@ -4,11 +4,28 @@
     margin: auto;
     text-align: center;
     padding: 20px;
+    overflow-y: scroll;
+    max-height: 80vh;
     background: linear-gradient(to right, #4b0082, #6a11cb);
     color: white;
     border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
+
+.leaderboard-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.leaderboard-controls select {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+
 
 h2{
     color: white;
