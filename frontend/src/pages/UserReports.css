@@ -36,7 +36,7 @@ table {
     border-collapse: collapse;
     background: white;
     color: black;
-    /* min-width: 600px; Ensure table has a minimum width */
+    min-width: 600px;
 }
 
 th, td {
@@ -82,7 +82,7 @@ tr:nth-child(odd) {
 
 @media (max-width: 768px) {
     .reports-container {
-        width: 70%; /* Adjust width for smaller screens */
+        width: 60%; /* Adjust width for smaller screens */
         padding: 10px;
     }
 
