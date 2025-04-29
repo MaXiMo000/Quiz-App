@@ -4,6 +4,8 @@ import AuthWrapper from "./components/AuthWrapper";
 import Layout from "./components/Layout"; // ✅ Your layout with Sidebar
 import "./App.css";
 import Spinner from "./components/Spinner";
+import GoogleAuth from "./components/GoogleAuth";
+
 
 // ✅ Lazy load all pages
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -34,6 +36,7 @@ const App = () => {
                     {/* Public Routes */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/google-auth" element={<GoogleAuth />} />
 
                     {/* Protected Routes */}
                     <Route element={<AuthWrapper><Layout /></AuthWrapper>}>

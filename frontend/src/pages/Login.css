@@ -73,6 +73,15 @@ h2 {
     transition: background 0.3s ease;
 }
 
+.google-btn {
+    margin-top: 15px;
+    background: #db4437;
+    color: white;
+}
+.google-btn:hover {
+    background: #c23321;
+}
+
 .login-btn:hover {
     background: #4e0da7;
 }
