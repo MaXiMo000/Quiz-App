@@ -14,6 +14,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/ping", (req, res) => {
+    res.status(200).send("Server is awake");
+});
+
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api", apiRoutes);
