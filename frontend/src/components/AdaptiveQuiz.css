@@ -1,0 +1,136 @@
+.adaptive-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background: #f5f7fa;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.adaptive-card {
+    background: #ffffff;
+    padding: 20px 25px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+.adaptive-card h2 {
+    text-align: center;
+    color: #3a3a3a;
+    margin-bottom: 20px;
+}
+
+.adaptive-info label {
+    display: block;
+    margin: 10px 0;
+}
+
+.adaptive-input,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.generate-btn {
+    width: 100%;
+    background-color: #4f46e5;
+    color: #fff;
+    padding: 10px;
+    margin-top: 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.generate-btn:hover {
+    background-color: #3730a3;
+}
+
+.generated-questions {
+    margin-top: 25px;
+}
+
+.generated-questions h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.question-list {
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #fafafa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.question-list ul {
+    padding: 0;
+    list-style-type: none;
+    color: black;
+}
+
+.question-list li {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #0e0a0a;
+}
+
+.difficulty-tag {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    color: white;
+}
+
+.difficulty-tag.easy {
+    background-color: #4ade80;
+}
+.difficulty-tag.medium {
+    background-color: #facc15;
+}
+.difficulty-tag.hard {
+    background-color: #f87171;
+}
+
+.delete-btn {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .adaptive-card {
+        padding: 15px;
+    }
+    .adaptive-input,
+    select {
+        font-size: 14px;
+    }
+    .generate-btn {
+        font-size: 14px;
+        padding: 8px;
+    }
+}

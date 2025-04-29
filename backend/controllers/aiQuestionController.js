@@ -27,33 +27,29 @@ export const generateQuizQuestions = async (req, res) => {
             return res.status(400).json({ error: "Invalid Quiz ID format" });
         }
 
-        // ✅ AI Prompt
+        // ✅ Enhanced AI Prompt to include difficulty tagging
         const prompt = `Generate ${numQuestions} multiple-choice questions about "${topic}" in JSON format.
-        The format should be:
+        Each question must include a "difficulty" key with value "easy", "medium", or "hard".
+        Return this format only:
         {
             "questions": [
                 {
                     "question": "What is 2 + 2?",
                     "options": ["3", "4", "5", "6"],
-                    "correctAnswer": "B"
+                    "correctAnswer": "B",
+                    "difficulty": "easy"
                 }
             ]
         }
-        Only return JSON. No explanations or additional text.`;
+        Only return valid JSON. No explanations or extra text.`;
 
-        console.log("AI Prompt:", prompt);
-
-        // ✅ Call Together AI API Using Their Official SDK
         const response = await together.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
             model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-            max_tokens: 300,
+            max_tokens: 400,
             temperature: 0.7
         });
 
-        console.log("AI Response:", response);
-
-        // ✅ Extract JSON from AI response
         let aiGeneratedData;
         try {
             aiGeneratedData = JSON.parse(response.choices[0].message.content);
@@ -61,29 +57,79 @@ export const generateQuizQuestions = async (req, res) => {
             return res.status(500).json({ error: "Invalid JSON format from AI response", details: parseError.message });
         }
 
-        // ✅ Validate AI response
+        // ✅ Validate questions format and difficulty values
         if (!aiGeneratedData.questions || !Array.isArray(aiGeneratedData.questions)) {
             return res.status(500).json({ error: "Invalid questions format from AI response" });
         }
 
-        // ✅ Add questions to quiz in database
+        const validDifficulties = ["easy", "medium", "hard"];
+        aiGeneratedData.questions.forEach(q => {
+            if (!validDifficulties.includes(q.difficulty)) {
+                q.difficulty = "medium"; // fallback if AI misses it
+            }
+        });
+
         const quiz = await Quiz.findById(id);
         if (!quiz) return res.status(404).json({ error: "Quiz not found" });
 
-        console.log("Quiz before adding questions:", quiz);
         quiz.questions.push(...aiGeneratedData.questions);
-
-        // ✅ Automatically update marks & duration
+        console.log(...aiGeneratedData.questions);
         quiz.totalMarks = quiz.questions.length;
         quiz.passingMarks = Math.ceil(quiz.totalMarks / 2);
         quiz.duration = quiz.questions.length * 2;
 
         await quiz.save();
-        console.log("Quiz after adding questions:", quiz);
-
         res.json({ message: "Questions added successfully", questions: aiGeneratedData.questions });
     } catch (error) {
         console.error("🔥 Error Generating AI Questions:", error);
         res.status(500).json({ error: "Failed to generate AI questions", details: error.message });
     }
+};
+
+
+export const generateAdaptiveQuestions = async (req, res) => {
+    const { performance, quizId, numQuestions = 5 } = req.body;
+
+    const quizs = await Quiz.findById(quizId);
+    if (!quizs) return res.status(404).json({ error: "Quiz not found" });
+
+    const topic = quizs.category;
+
+    const difficulty = performance === "low" ? "easy" : performance === "high" ? "hard" : "medium";
+
+    const prompt = `Generate exactly ${numQuestions} multiple-choice questions on topic '${topic}' with "${difficulty}" difficulty.
+        Return JSON only in this format:
+        {
+            "questions": [
+                {
+                    "question": "Sample question?",
+                    "options": ["A", "B", "C", "D"],
+                    "correctAnswer": "B",
+                    "difficulty": "${difficulty}"
+                }
+            ]
+        }`;
+
+    const response = await together.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        max_tokens: 400
+    });
+
+    let data;
+    try {
+        data = JSON.parse(response.choices[0].message.content);
+    } catch {
+        return res.status(500).json({ error: "AI JSON parse failed" });
+    }
+
+    // Append to existing quiz
+    const quiz = await Quiz.findById(quizId);
+    quiz.questions.push(...data.questions);
+    quiz.totalMarks = quiz.questions.length;
+    quiz.duration = quiz.questions.length * 2;
+    quiz.passingMarks = Math.ceil(quiz.totalMarks / 2);
+    await quiz.save();
+
+    res.json({ message: "Adaptive questions added", questions: data.questions });
 };

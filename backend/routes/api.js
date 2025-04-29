@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQuestion } from "../controllers/quizController.js";
 import { getReports, createReport, getReportsUser, deleteReport, getReportsUserID, getTopScorers } from "../controllers/reportController.js";
-import { generateQuizQuestions } from "../controllers/aiQuestionController.js";
+import { generateQuizQuestions, generateAdaptiveQuestions } from "../controllers/aiQuestionController.js";
 import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport, getWrittenReportsUserID } from "../controllers/writtenTestReportController.js";
 import { verifyToken } from "../middleware/auth.js";
 
@@ -16,6 +16,7 @@ router.delete("/quizzes/:id/questions/:questionIndex", deleteQuestion, verifyTok
 
 
 router.post("/quizzes/:id/generate-questions", generateQuizQuestions);
+router.post("/adaptive", generateAdaptiveQuestions, verifyToken);
 
 // Report Routes
 router.get("/reports", getReports, verifyToken);

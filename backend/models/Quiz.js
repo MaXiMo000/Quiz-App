@@ -4,7 +4,13 @@ const questionSchema = new mongoose.Schema({
     question: String,
     options: [String],
     correctAnswer: String,
+    difficulty: {
+        type: String,
+        enum: ["easy", "medium", "hard"],
+        default: "medium"
+    }
 });
+
 
 const quizSchema = new mongoose.Schema({
     title: String,

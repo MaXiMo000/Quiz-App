@@ -8,6 +8,7 @@ import GoogleAuth from "./components/GoogleAuth";
 
 
 // ✅ Lazy load all pages
+const AdaptiveQuiz = lazy(() => import("./components/AdaptiveQuiz")); // 🆕
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminQuizzes = lazy(() => import("./pages/AdminQuizzes"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
@@ -43,6 +44,7 @@ const App = () => {
                         <Route path="/" element={<Home />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/admin/create" element={<AdminQuizzes />} />
+                        <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />
                         <Route path="/admin/report" element={<AdminReports />} />
                         <Route path="/admin/quiz/:id" element={<QuizQuestions />} />
                         <Route path="/admin/written-tests" element={<AdminWrittenTests />} />
