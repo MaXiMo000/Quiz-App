@@ -56,7 +56,12 @@ export async function addQuestion(req, res) {
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) return res.status(404).json({ message: "Quiz not found" });
 
-        quiz.questions.push(req.body);
+        const questionData = {
+            ...req.body,
+            difficulty: req.body.difficulty || "medium", // Set difficulty if provided
+        };
+
+        quiz.questions.push(questionData);
         quiz.totalMarks += 1;
         quiz.passingMarks = Math.floor(quiz.totalMarks / 2);
         quiz.duration = quiz.questions.length * 2;

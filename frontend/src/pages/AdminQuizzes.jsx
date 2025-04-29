@@ -116,6 +116,7 @@ const AdminQuizzes = () => {
                 formData.get("optionD"),
             ],
             correctAnswer: formData.get("correctAnswer").toUpperCase(),
+            difficulty: formData.get("difficulty"),
         };
 
         try {
@@ -224,19 +225,33 @@ const AdminQuizzes = () => {
             {/* Add Question Modal */}
             <dialog id="add_question_modal" className="modal">
                 <div className="modal-box">
-                    <form onSubmit={addQuestion}>
+                    <form onSubmit={addQuestion} className="question-form">
                         <Link to="#" className="close-btn"
                             onClick={() => document.getElementById("add_question_modal").close()}>
                             ✕
                         </Link>
 
-                        <h3 className="modal-title">Add Question</h3>
-                        <input type="text" name="question" placeholder="Enter Question" required />
-                        <input type="text" name="optionA" placeholder="Option A" required />
-                        <input type="text" name="optionB" placeholder="Option B" required />
-                        <input type="text" name="optionC" placeholder="Option C" required />
-                        <input type="text" name="optionD" placeholder="Option D" required />
-                        <input type="text" name="correctAnswer" placeholder="Correct Answer (A/B/C/D)" required />
+                        <h3 className="modal-title">➕ Add New Question</h3>
+
+                        <input type="text" name="question" placeholder="📝 Enter your question" className="form-input" required />
+
+                        <div className="option-pair">
+                            <input type="text" name="optionA" placeholder="Option A" className="form-input" required />
+                            <input type="text" name="optionB" placeholder="Option B" className="form-input" required />
+                        </div>
+                        <div className="option-pair">
+                            <input type="text" name="optionC" placeholder="Option C" className="form-input" required />
+                            <input type="text" name="optionD" placeholder="Option D" className="form-input" required />
+                        </div>
+
+                        <select name="difficulty" defaultValue="medium" className="form-select" required>
+                            <option value="easy">🌱 Easy</option>
+                            <option value="medium">🌿 Medium</option>
+                            <option value="hard">🔥 Hard</option>
+                        </select>
+
+                        <input type="text" name="correctAnswer" placeholder="✅ Correct Answer (A/B/C/D)" className="form-input" required />
+
                         <button className="submit-btn">Add Question</button>
                     </form>
                 </div>

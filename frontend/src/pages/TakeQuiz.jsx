@@ -17,6 +17,9 @@ const TakeQuiz = () => {
     const [timeLeft, setTimeLeft] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [showResultModal, setShowResultModal] = useState(false);
+    const [finalScore, setFinalScore] = useState(null);
+    const [performanceLevel, setPerformanceLevel] = useState("medium");
 
     useEffect(() => {
         const fetchQuiz = async () => {
@@ -137,10 +140,11 @@ const TakeQuiz = () => {
             if(timeLeft <= 0){
                 alert(`Time's up! Your quiz has been auto-submitted. ${scoreAchieved} out of ${totalMarks}`);
             }
-            else{
-                alert(`You scored ${scoreAchieved} out of ${totalMarks}`);
-            }
-            navigate("/user/report");
+            setScore(scoreAchieved);
+            setFinalScore(totalMarks);
+            const level = scoreAchieved >= totalMarks * 0.7 ? "high" : scoreAchieved >= totalMarks * 0.4 ? "medium" : "low";
+            setPerformanceLevel(level);
+            setShowResultModal(true);
         } catch (error) {
             console.error("Error saving report:", error);
             alert("Failed to save your score. Please try again.");
@@ -185,6 +189,18 @@ const TakeQuiz = () => {
                     </div>
                 </>
             ) : <p>Loading quiz...</p>}
+            {showResultModal && (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <p>You scored <strong>{score}</strong> out of <strong>{finalScore}</strong>.</p>
+                <p>Would you like to generate more questions based on your performance?</p>
+                <div className="modal-actions">
+                <button onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}>Generate More</button>
+                <button onClick={() => navigate("/user/report")}>Go to Reports</button>
+                </div>
+            </div>
+        </div>
+        )}
         </div>
     );
 };
