@@ -1,7 +1,6 @@
 /* ✅ MAIN CONTAINER */
 .quiz-questions-container {
-    max-width: 1200px; /* Increased width */
-    margin-left: 300px;
+    max-width: 900px;
     padding: 20px;
     background: linear-gradient(to right, #4b0082, #6a11cb);
     color: white;
@@ -63,7 +62,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     width: 45%; /* Ensures two boxes fit in a row */
-    min-width: 300px; /* Prevents the boxes from being too small */
+    min-width: 250px; /* Prevents the boxes from being too small */
 }
 
 @media (max-width: 768px) {
@@ -110,6 +109,7 @@
 @media (max-width: 768px) {
     .quiz-questions-container{
         margin-left: 0px;
+        max-width: 250px;
     }
     .back-btn{
         margin-top: 50px;
