@@ -11,6 +11,7 @@ body {
     align-items: center;
 }
 
+/* ===== Reports Container ===== */
 .reports-container {
     width: 100%;
     max-width: 900px;
@@ -19,10 +20,11 @@ body {
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    margin: 0 auto; /* Center the container */
+    overflow-y: auto; /* ✅ Enables vertical scrolling */
+    margin: 0 auto;
 }
 
+/* ===== Scrollable Table Container ===== */
 .reports-table-container {
     max-height: 350px;
     width: 100%;
@@ -31,6 +33,7 @@ body {
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
+/* ===== Table Styling ===== */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -42,7 +45,7 @@ table {
 th, td {
     padding: 12px;
     text-align: left;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap;
 }
 
 th {
@@ -58,7 +61,9 @@ tr:nth-child(odd) {
     background: #e3f2fd;
 }
 
-.view-btn, .delete-btn {
+/* ===== Buttons ===== */
+.view-btn,
+.delete-btn {
     background: #007bff;
     color: white;
     border: none;
@@ -68,7 +73,8 @@ tr:nth-child(odd) {
     transition: background 0.2s ease-in-out;
 }
 
-.view-btn:hover, .delete-btn:hover {
+.view-btn:hover,
+.delete-btn:hover {
     background: #0056b3;
 }
 
@@ -80,10 +86,13 @@ tr:nth-child(odd) {
     background: #d62839;
 }
 
+/* ===== Responsive Design ===== */
 @media (max-width: 768px) {
     .reports-container {
-        width: 60%; /* Adjust width for smaller screens */
-        padding: 10px;
+        width: 90%;
+        max-width: 600px;
+        padding: 15px;
+        max-height: 85vh; /* ✅ Maintains scroll and fits better */
     }
 
     table {
@@ -102,16 +111,19 @@ tr:nth-child(odd) {
 
 @media (max-width: 480px) {
     .reports-container {
-        width: 80%; /* Adjust width for very small screens */
-        padding: 5px;
+        width: 95%;
+        max-width: 350px;
+        padding: 10px;
+        max-height: 80vh; /* ✅ Slightly reduced height for mobile */
     }
 
-    .reports-container h1{
-        font-size: 24px;
+    .reports-container h1 {
+        font-size: 22px;
     }
+
     table {
         font-size: 12px;
-        min-width: 100%; /* Ensure table fits within the container */
+        min-width: 100%;
     }
 
     th, td {

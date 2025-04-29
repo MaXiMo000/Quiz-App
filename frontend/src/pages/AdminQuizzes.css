@@ -33,7 +33,7 @@
     margin-bottom: 20px;
 }
 
-.quiz-header h2{
+.quiz-header h2 {
     color: white;
 }
 
@@ -87,7 +87,8 @@
 /* ✅ BUTTONS */
 .create-btn,
 .add-question-btn,
-.submit-btn, .view-questions-btn {
+.submit-btn, 
+.view-questions-btn {
     background: linear-gradient(to right, #ff4d79, #ff6a95);
     color: white;
     border: none;
@@ -103,7 +104,8 @@
 
 .create-btn:hover,
 .add-question-btn:hover,
-.submit-btn:hover, .view-questions-btn:hover {
+.submit-btn:hover, 
+.view-questions-btn:hover {
     background: linear-gradient(to right, #e63e68, #ff4d79);
     transform: translateY(-2px);
 }
@@ -143,28 +145,28 @@
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
     text-align: center;
     animation: fadeIn 0.3s ease-in-out;
-    /* max-width: 95%; Ensure it doesn't overflow on small screens */
+    max-width: 95%;
 }
 
-#add_question_modal{
+#add_question_modal {
     top: 80%;
 }
 
 /* ✅ MODAL BOX */
 .modal-box {
-    position: relative; /* Ensure the close button is positioned relative to this */
+    position: relative;
     padding: 25px;
     border-radius: 12px;
     background: white;
     text-align: center;
-    max-width: 95%; /* Adjust for smaller screens */
+    max-width: 95%;
 }
 
 /* ✅ RESPONSIVE MODAL */
 @media (max-width: 480px) {
     .modal {
-        width: 80%; /* Use 95% width for extra small screens */
-        padding: 15px; /* Reduce padding for small screens */
+        width: 80%;
+        padding: 15px;
     }
 
     .modal-box {
@@ -194,7 +196,7 @@
     right: 15px;
     top: 10px;
     cursor: pointer;
-    color: #333; /* Ensure it contrasts with the background */
+    color: #333;
     transition: color 0.3s ease-in-out;
 }
 
@@ -214,13 +216,13 @@ input {
 
 textarea {
     width: 100%;
-    min-height: 120px; /* Bigger textarea */
+    min-height: 120px;
     padding: 12px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
-    resize: vertical; /* Allows users to resize vertically */
+    resize: vertical;
     background: #f9f9f9;
     color: #333;
     font-family: "Arial", sans-serif;
@@ -237,7 +239,7 @@ textarea:focus {
 /* ✅ Responsive Design */
 @media (max-width: 768px) {
     textarea {
-        min-height: 100px; /* Adjust for smaller screens */
+        min-height: 100px;
         font-size: 14px;
     }
 }
@@ -249,14 +251,25 @@ textarea:focus {
     }
 }
 
-/* ✅ RESPONSIVE DESIGN */
+/* ✅ IMPROVED RESPONSIVE CONTAINER DESIGN */
 @media (max-width: 768px) {
     .admin-quiz-container {
         width: 95%;
+        max-width: 600px;
         padding: 15px;
+        max-height: 85vh;
     }
 
     .quiz-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-quiz-container {
+        width: 95%;
+        max-width: 350px;
+        padding: 12px;
+        max-height: 80vh;
     }
 }
