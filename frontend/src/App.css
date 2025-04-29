@@ -13,10 +13,10 @@ body {
 
 .main-content {
   padding: 20px;
-  width: 100vw;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin-left: 250px; /* Push content to right to make space for sidebar */
   transition: margin-left 0.3s ease-in-out;
+  width: calc(100% - 250px); /* Account for sidebar width */
+  box-sizing: border-box;
 }
 
 /* ===== Container Styling ===== */
@@ -132,7 +132,8 @@ button:hover {
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
   .main-content {
-    width: 100vw;
+    margin-left: 0;
+    width: 100%;
   }
 
   .container {
@@ -142,8 +143,12 @@ button:hover {
     max-height: 85vh; /* ✅ Maintain scroll with better height */
   }
 
+  .container h1{
+    font-size: 20px;
+  }
+
   .table-container {
-    width: 90%;
+    width: 80%;
   }
 
   table {
@@ -158,22 +163,31 @@ button:hover {
     padding: 6px 10px;
     font-size: 12px;
   }
+  .delete-btn{
+    padding: 4px 8px;
+    font-size: 10px;
+  }
 }
 
 @media (max-width: 480px) {
   .main-content {
-    width: 100vw;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .container h1{
+    font-size: 20px;
   }
 
   .container {
-    width: 95%;
-    max-width: 350px;
+    width: 100%;
+    max-width: 300px;
     padding: 10px;
     max-height: 80vh; /* ✅ Slightly reduced height on small screens */
   }
 
   .table-container {
-    width: 90%;
+    width: 100%;
     max-height: 250px;
   }
 
@@ -189,5 +203,18 @@ button:hover {
   .start-quiz-btn {
     padding: 4px 8px;
     font-size: 10px;
+  }
+  .delete-btn{
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .table-container::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .table-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
   }
 }

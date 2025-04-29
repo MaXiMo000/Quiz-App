@@ -254,7 +254,7 @@ textarea:focus {
 /* ✅ IMPROVED RESPONSIVE CONTAINER DESIGN */
 @media (max-width: 768px) {
     .admin-quiz-container {
-        width: 95%;
+        width: 100%;
         max-width: 600px;
         padding: 15px;
         max-height: 85vh;
@@ -267,8 +267,8 @@ textarea:focus {
 
 @media (max-width: 480px) {
     .admin-quiz-container {
-        width: 95%;
-        max-width: 350px;
+        width: 100%;
+        max-width: 300px;
         padding: 12px;
         max-height: 80vh;
     }
