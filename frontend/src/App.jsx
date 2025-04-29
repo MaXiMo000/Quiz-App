@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthWrapper from "./components/AuthWrapper";
 import Layout from "./components/Layout"; // ✅ Your layout with Sidebar
 import "./App.css";
+import Spinner from "./components/Spinner";
 
 // ✅ Lazy load all pages
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -28,7 +29,7 @@ const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 const App = () => {
     return (
         <Router>
-            <Suspense fallback={<div className="loading">Loading...</div>}>
+            <Suspense fallback={<Spinner />}>
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/login" element={<Login />} />
