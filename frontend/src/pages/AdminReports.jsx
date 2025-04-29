@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
-import axios from "axios";
+import axios from "../utils/axios";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 

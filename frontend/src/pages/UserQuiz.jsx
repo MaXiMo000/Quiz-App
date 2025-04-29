@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import axios from "../utils/axios"
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -11,13 +12,21 @@ const UserQuiz = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch(`${BACKEND_URL}/api/quizzes`)
-            .then((res) => res.json())
-            .then((data) => setQuizzes(data))
-            .catch((err) => {console.error("Error fetching quizzes:", err);
+        const fetchQuizzes = async () => {
+            try {
+                const response = await axios.get("/api/quizzes"); // auto-token
+                setQuizzes(response.data);
+            } catch (error) {
+                console.error("Error fetching quizzes:", error);
                 setError("Error fetching Quiz. Try again later.");
-            }).finally(() => setLoading(false));
-    }, [quizzes]);
+            }
+            finally{
+                setLoading(false);
+            }
+        };
+
+        fetchQuizzes();
+    }, []);
 
     if (loading) return <p>Loading Quiz...</p>;
     if (error) return <p className="error-message">{error}</p>;

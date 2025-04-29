@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../utils/axios";
 import "./UserReports.css"; // Import the specific CSS file for UserReports
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;

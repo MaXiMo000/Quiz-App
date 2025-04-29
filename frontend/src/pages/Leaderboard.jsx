@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import "./Leaderboard.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
