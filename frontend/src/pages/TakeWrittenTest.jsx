@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./TakeWrittenTest.css"; // ✅ Importing the new CSS file
+import axios from "../utils/axios";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -14,15 +15,25 @@ const TakeWrittenTest = () => {
     const [score, setScore] = useState(null);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [timeLeft, setTimeLeft] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch(`${BACKEND_URL}/api/written-tests/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                setTest(data);
-                setTimeLeft(data.duration * 60);
-            })
-            .catch(error => console.error("Error fetching written test:", error));
+
+        const fetchTests = async () => {
+            try {
+                const res = await axios.get(`${BACKEND_URL}/api/written-tests/${id}`);
+                setTest(res.data);
+                setTimeLeft(res.data.duration * 60);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                setError("Error fetching users. Try again later.");
+            }
+            finally{
+                setLoading(false);
+            }
+        };
+        fetchTests();
 
         enterFullScreen();
     }, [id]);
@@ -163,6 +174,9 @@ const TakeWrittenTest = () => {
     
 
     if (!test) return <h2>Loading...</h2>;
+    if (loading) return <p>Loading Tests...</p>;
+    if (error) return <p className="error-message">{error}</p>;
+
 
     return (
         <div className="written-test-container">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./TakeQuiz.css";
+import axios from "../utils/axios";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -18,14 +19,20 @@ const TakeQuiz = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch(`${BACKEND_URL}/api/quizzes/${id}`)
-            .then(res => res.json())
-            .then(data => {setQuiz(data);
-                setTimeLeft(data.duration * 60);
-            })
-            .catch((err) => {console.error("Error fetching quiz:", err);
-                setError("Error fetching Quiz. Try again later.");
-            }).finally(() => setLoading(false));
+        const fetchQuiz = async () => {
+            try {
+                const res = await axios.get(`${BACKEND_URL}/api/quizzes/${id}`);
+                setQuiz(res.data);
+                setTimeLeft(res.data.duration * 60);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                setError("Error fetching users. Try again later.");
+            }
+            finally{
+                setLoading(false);
+            }
+        };
+        fetchQuiz();
 
         enterFullScreen();
     }, [id]);

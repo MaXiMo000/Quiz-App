@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import axios from "../utils/axios";
 import "./UserWrittenTests.css"; // ✅ Import the new CSS file
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -12,13 +13,22 @@ const UserWrittenTests = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch(`${BACKEND_URL}/api/written-tests`)
-            .then((res) => res.json())
-            .then((data) => setTests(data))
-            .catch((err) => {console.error("Error fetching Tests:", err);
-                setError("Error fetching Tests. Try again later.");
-            }).finally(() => setLoading(false));
+        const fetchTests = async () => {
+            try {
+                const res = await axios.get(`${BACKEND_URL}/api/written-tests`);
+                setTests(res.data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                setError("Error fetching users. Try again later.");
+            }
+            finally{
+                setLoading(false);
+            }
+        };
+        fetchTests();
     }, []);
+
+    
 
     if (loading) return <p>Loading Tests...</p>;
     if (error) return <p className="error-message">{error}</p>;

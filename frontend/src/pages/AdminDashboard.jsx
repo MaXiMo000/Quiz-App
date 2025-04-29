@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import "./AdminDashboard.css";
 import "../App.css";
 
@@ -31,6 +31,10 @@ const AdminDashboard = () => {
                 setQuizs(res.data);
             } catch (error) {
                 console.error("Error fetching quizzes:", error);
+                setError("Error fetching users. Try again later.");
+            }
+            finally{
+                setLoading(false);
             }
         };
 
