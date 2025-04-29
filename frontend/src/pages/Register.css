@@ -1,10 +1,9 @@
 .register-container {
     display: flex;
-    margin-left: 8px;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: linear-gradient(to right, #ff512f, #dd2476);
+    /* background: linear-gradient(to right, #ff512f, #dd2476); */
     padding: 20px; /* Add padding for smaller screens */
 }
 
@@ -15,7 +14,7 @@
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
     width: 100%;
-    max-width: 350px; /* Ensure the box doesn't get too wide on larger screens */
+    width: 350px; /* Ensure the box doesn't get too wide on larger screens */
 }
 
 h2 {
@@ -50,6 +49,7 @@ h2 {
     border: none;
     border-radius: 6px;
     font-size: 16px;
+    margin-left: 0px;
     cursor: pointer;
     transition: background 0.3s ease;
 }
@@ -76,9 +76,9 @@ h2 {
 /* Responsive Design for Mobile */
 @media (max-width: 480px) {
     .register-container {
-        /* margin-left: -5px; */
-        width: 100%;
-        padding: 10px; /* Reduce padding for very small screens */
+        padding: 10px;
+        width: 100vw;      /* Ensures full viewport width */
+        box-sizing: border-box;
     }
 
     .register-box {

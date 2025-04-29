@@ -61,24 +61,26 @@ const Leaderboard = () => {
                 displayedScorers.map((category, catIndex) => (
                     <div key={catIndex} className="quiz-section">
                         <h3>📘 {category.quizName}</h3>
-                        <table className="leaderboard-table">
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Username</th>
-                                    <th>Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {category.topUsers.map((user, index) => (
-                                    <tr key={index}>
-                                        <td>#{index + 1}</td>
-                                        <td>{user.username}</td>
-                                        <td>{user.score.toFixed(1)}</td>
+                        <div className="leaderboard-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Username</th>
+                                        <th>Score</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {category.topUsers.map((user, index) => (
+                                        <tr key={index}>
+                                            <td>#{index + 1}</td>
+                                            <td>{user.username}</td>
+                                            <td>{user.score.toFixed(1)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 ))
             ) : (

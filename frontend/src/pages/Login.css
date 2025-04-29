@@ -1,3 +1,4 @@
+/* ✅ General Body Setup */
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(to right, #6a11cb, #2575fc);
@@ -6,17 +7,20 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    padding: 20px; /* Add padding for smaller screens */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
+/* ✅ Login Container - Flex Centering */
 .login-container {
     display: flex;
-    margin-left: 17px;
     justify-content: center;
     align-items: center;
     width: 100%;
+    width: 400px;
 }
 
+/* ✅ Login Box - Same as Register Box */
 .login-box {
     background: white;
     padding: 20px;
@@ -24,14 +28,17 @@ body {
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
     width: 100%;
-    max-width: 350px; /* Ensure the box doesn't get too wide on larger screens */
+    max-width: 350px;
+    box-sizing: border-box;
 }
 
+/* ✅ Title */
 h2 {
-    margin-bottom: 20px;
     color: #333;
+    margin-bottom: 20px;
 }
 
+/* ✅ Input Group */
 .input-group {
     text-align: left;
     margin-bottom: 15px;
@@ -39,19 +46,20 @@ h2 {
 
 .input-group label {
     font-size: 14px;
-    color: #555;
     display: block;
     margin-bottom: 5px;
+    color: #555;
 }
 
 .input-group input {
-    width: 100%;
+    width: 95%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 14px;
 }
 
+/* ✅ Login Button */
 .login-btn {
     width: 100%;
     padding: 10px;
@@ -61,6 +69,7 @@ h2 {
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
+    margin-left: 0px;
     transition: background 0.3s ease;
 }
 
@@ -68,6 +77,7 @@ h2 {
     background: #4e0da7;
 }
 
+/* ✅ Register Link */
 .register-link {
     margin-top: 15px;
     font-size: 14px;
@@ -83,34 +93,37 @@ h2 {
     text-decoration: underline;
 }
 
-/* Responsive Design for Mobile */
+/* ✅ Responsive Design for Mobile */
 @media (max-width: 480px) {
     body {
-        padding: 10px; /* Reduce padding for very small screens */
+        padding: 10px;
+        width: 100vw;
+        box-sizing: border-box;
     }
 
-    .login-container{
-        width: 95%;
+    .login-container {
+        width: 100%;
     }
 
     .login-box {
-        padding: 15px; /* Reduce padding inside the box */
+        padding: 15px;
     }
 
     h2 {
-        font-size: 24px; /* Adjust heading size for smaller screens */
+        font-size: 24px;
     }
 
     .input-group input {
-        padding: 8px; /* Adjust input padding for smaller screens */
+        width: 90%;
+        padding: 8px;
     }
 
     .login-btn {
-        padding: 8px; /* Adjust button padding for smaller screens */
-        font-size: 14px; /* Adjust button font size for smaller screens */
+        padding: 8px;
+        font-size: 14px;
     }
 
     .register-link {
-        font-size: 12px; /* Adjust link font size for smaller screens */
+        font-size: 12px;
     }
 }

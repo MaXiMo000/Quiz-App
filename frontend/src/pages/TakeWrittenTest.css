@@ -6,8 +6,10 @@
     text-align: center;
     width: 100%;
     padding: 20px;
-    min-height: 90vh;
-    background: linear-gradient(135deg, #FF6A00, #EE0979); /* Unique gradient */
+    max-height: 90vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #FF6A00, #EE0979); /* Gradient Background */
+    box-sizing: border-box;
 }
 
 /* ✅ Timer */
@@ -16,25 +18,29 @@
     font-weight: bold;
     color: white;
     background: black;
-    padding: 8px 15px;
+    padding: 8px 16px;
     border-radius: 8px;
-    display: inline-block;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 /* ✅ Question Box */
 .question-box {
     background: white;
     padding: 20px;
-    border-radius: 10px;
-    width: 90%;
+    border-radius: 12px;
+    width: 100%;
     max-width: 600px;
     color: black;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
+    box-sizing: border-box;
 }
 
-/* ✅ Textarea Styling */
+.question-box h3 {
+    margin-top: 0;
+}
+
+/* ✅ Textarea */
 textarea {
     width: 100%;
     padding: 12px;
@@ -43,13 +49,23 @@ textarea {
     font-size: 16px;
     resize: none;
     outline: none;
+    margin-top: 10px;
+    box-sizing: border-box;
 }
 
 /* ✅ Navigation Buttons */
 .navigation-buttons {
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
     margin-top: 10px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.fullscreen-toggle button{
+    margin-left: 0px;
 }
 
 .navigation-buttons button {
@@ -61,7 +77,10 @@ textarea {
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
+    margin-left: 0px;
     transition: background 0.3s ease-in-out;
+    flex: 1 1 30%;
+    min-width: 120px;
 }
 
 .navigation-buttons button:hover {
@@ -73,43 +92,86 @@ textarea {
     cursor: not-allowed;
 }
 
-/* ✅ Fullscreen Toggle Button */
+/* ✅ Fullscreen Toggle */
 .fullscreen-toggle {
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .fullscreen-toggle button {
     background: #ff4747;
     color: white;
     border: none;
-    padding: 10px 16px;
+    padding: 10px 18px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: bold;
 }
 
 .fullscreen-toggle button:hover {
     background: #d32f2f;
 }
 
+/* ✅ Score Display */
+.written-test-container h2 {
+    color: white;
+    margin-top: 20px;
+}
+
 /* ✅ Responsive Design */
 @media (max-width: 768px) {
-    .written-test-container{
-        max-height: 90vh;
+    .written-test-container {
+        padding: 15px;
+        min-height: auto;
         overflow-y: auto;
     }
+
     .question-box {
-        width: 95%;
+        width: 100%;
+        padding: 15px;
+    }
+
+    textarea {
+        font-size: 15px;
     }
 
     .navigation-buttons {
-        margin-left: -20px;
-        width: 90%;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
+        max-width: 100%;
     }
 
     .navigation-buttons button {
         width: 100%;
+        min-width: unset;
+    }
+
+    .fullscreen-toggle {
+        width: 100%;
+    }
+
+    .fullscreen-toggle button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .written-test-container h1{
+        font-size: 20px ;
+    }
+    .timer {
+        font-size: 16px;
+        padding: 6px 12px;
+    }
+
+    textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .navigation-buttons button,
+    .fullscreen-toggle button {
+        font-size: 13px;
+        padding: 10px;
     }
 }

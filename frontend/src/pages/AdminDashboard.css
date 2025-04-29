@@ -16,7 +16,6 @@
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    max-width: 1000px;
     background: white;
     padding: 20px;
     border-radius: 12px;
@@ -50,7 +49,7 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 300px;
+    max-width: 200px;
     transition: 0.3s ease-in-out;
 }
 
@@ -79,7 +78,7 @@
 
 /* ✅ Table Container */
 .table-container {
-    width: 90%;
+    width: 100%;
     overflow-x: auto;
     margin-top: 10px;
     background: white;
@@ -148,6 +147,7 @@ tbody tr:hover {
 
     .table-container {
         padding: 10px;
+        max-width: 200px;
     }
 
     th, td {

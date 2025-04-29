@@ -1,49 +1,60 @@
+/* ✅ Main Leaderboard Container */
 .leaderboard-container {
     width: 100%;
     max-width: 800px;
     margin: auto;
     text-align: center;
     padding: 20px;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 80vh;
     background: linear-gradient(to right, #4b0082, #6a11cb);
     color: white;
     border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
+/* ✅ Controls Section */
 .leaderboard-controls {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .leaderboard-controls select {
     padding: 8px 12px;
     font-size: 1rem;
     border-radius: 5px;
+    border: none;
 }
 
-
-h2{
+/* ✅ Heading */
+h2 {
     color: white;
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
+/* ✅ Buttons */
 .leaderboard-buttons {
-    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .leaderboard-buttons button {
     padding: 10px 15px;
-    margin: 5px;
     border: none;
     cursor: pointer;
     border-radius: 6px;
     font-weight: bold;
     color: black;
-    transition: 0.3s;
+    background: white;
+    transition: background 0.3s;
+    margin-left: 0px;
 }
 
 .leaderboard-buttons .active {
@@ -51,16 +62,33 @@ h2{
     color: white;
 }
 
+/* ✅ Individual Quiz Section */
+.quiz-section {
+    margin-top: 20px;
+}
+
+/* ✅ Table Styling */
 .leaderboard-table {
     width: 100%;
     border-collapse: collapse;
     background: white;
     color: black;
+    margin-top: 10px;
+    overflow-x: auto;
+    display: block;
 }
 
-.leaderboard-table th, .leaderboard-table td {
+.leaderboard-table table {
+    /* min-width: 500px; */
+    width: 100%;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
     padding: 10px;
     border: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
 }
 
 .leaderboard-table th {
@@ -68,8 +96,63 @@ h2{
     color: white;
 }
 
-@media (max-width: 720px) {
-    .leaderboard-container{
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
+    .leaderboard-container {
+        padding: 15px;
+        max-height: 75vh;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .leaderboard-buttons button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .leaderboard-controls select {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        font-size: 13px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .leaderboard-container {
+        padding: 10px;
         max-height: 70vh;
+    }
+
+    .leaderboard-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .leaderboard-buttons button {
+        width: 100%;
+    }
+
+    .leaderboard-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .leaderboard-controls select {
+        width: 100%;
+    }
+
+    .leaderboard-table {
+        padding-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 18px;
     }
 }
