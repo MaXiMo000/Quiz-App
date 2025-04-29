@@ -16,7 +16,7 @@ app.use(cors());
 
 app.get("/ping", (req, res) => {
     res.status(200).send("Server is awake");
-});
+}); 
 
 // Routes
 app.use("/api/users", userRoutes);
