@@ -190,16 +190,16 @@ const TakeQuiz = () => {
                 </>
             ) : <p>Loading quiz...</p>}
             {showResultModal && (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <p>You scored <strong>{score}</strong> out of <strong>{finalScore}</strong>.</p>
-                <p>Would you like to generate more questions based on your performance?</p>
-                <div className="modal-actions">
-                <button onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}>Generate More</button>
-                <button onClick={() => navigate("/user/report")}>Go to Reports</button>
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <p>You scored <strong>{score}</strong> out of <strong>{finalScore}</strong>.</p>
+                    <p>Would you like to generate more questions based on your performance?</p>
+                    <div className="modal-actions">
+                    <button onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}>Generate More</button>
+                    <button onClick={() => navigate("/user/report")}>Go to Reports</button>
+                    </div>
                 </div>
             </div>
-        </div>
         )}
         </div>
     );
