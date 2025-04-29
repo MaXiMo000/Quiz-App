@@ -4,6 +4,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh; /* Full height for splash loader */
+    min-width: 100vw;
     background: linear-gradient(135deg, #6a11cb, #2575fc); /* match your theme */
 }
 
