@@ -1,20 +1,19 @@
 /* ✅ Main container */
 .admin-dashboard {
-    margin-top: 60px;
-    margin-left: -10px;
+    /* margin-top: 60px; */
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column; 
+    flex-direction: column;
     background: #f5f6fa;
     min-height: 90vh;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 /* ✅ Dashboard Content */
 .dashboard-content {
     width: 90%;
-    /* margin-left: 250px; */
     max-height: 90vh;
     overflow-y: auto;
     max-width: 1000px;
@@ -23,6 +22,7 @@
     border-radius: 12px;
     box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
+    box-sizing: border-box;
 }
 
 /* ✅ Title */
@@ -74,7 +74,7 @@
     font-size: 22px;
     font-weight: bold;
     color: #2c3e50;
-    text-align: left;
+    text-align: center;
 }
 
 /* ✅ Table Container */
@@ -86,6 +86,7 @@
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 /* ✅ Table Styling */
@@ -112,10 +113,13 @@ tbody tr:hover {
 
 /* ✅ Responsive Design */
 @media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 10px;
+    }
+
     .dashboard-content {
-        margin-top: 200px;
+        margin-top: 60px;
         width: 100%;
-        margin-left: 0px;
         padding: 15px;
     }
 
@@ -134,16 +138,14 @@ tbody tr:hover {
 }
 
 @media (max-width: 480px) {
-    .dashboard-content{
-        margin-left: 0px;
-    }
     .dashboard-content h1 {
         font-size: 22px;
     }
-    .stat-card{
-        width: 80%;
-        height: 80%;
+
+    .stat-card {
+        width: 100%;
     }
+
     .table-container {
         padding: 10px;
     }

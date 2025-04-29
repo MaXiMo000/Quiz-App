@@ -13,32 +13,32 @@ body {
 
 .main-content {
   padding: 20px;
-  width: 100vw; /* ✅ Fix potential extra spacing */
-  max-width: 1200px; /* Ensure it does not stretch too far */
-  margin: 0 auto; /* ✅ Centers it properly */
+  width: 100vw;
+  max-width: 1200px;
+  margin: 0 auto;
   transition: margin-left 0.3s ease-in-out;
 }
 
-/* ===== Container Styling (Keeps reports & quizzes in center) ===== */
+/* ===== Container Styling ===== */
 .container {
   max-width: 900px;
+  width: 100%;
   padding: 30px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  margin: 0 auto; /* Center the container */
-
+  overflow-y: auto; /* ✅ Keep vertical scroll */
+  margin: 0 auto;
 }
 
-/* ✅ Scrollable Table Container (Newly Added for Reports & Quizzes) */
+/* ✅ Scrollable Table Container */
 .table-container {
-  overflow: auto; /* ✅ Enables vertical scrolling */
+  overflow: auto;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
   max-height: 350px;
-  margin: 0 auto; /* Center the container */
+  margin: 0 auto;
 }
 
 /* ===== Table Styling ===== */
@@ -48,10 +48,8 @@ table {
   background: white;
   color: black;
   border-radius: 10px;
-  overflow-y: auto; /* ✅ Enables vertical scrolling */
+  overflow-y: auto;
 }
-
-/* ===== Table Styling ===== */
 
 th, td {
   padding: 12px;
@@ -73,7 +71,7 @@ tr:nth-child(odd) {
   background: #e3f2fd;
 }
 
-/* ✅ Scrollbar Styling for Table */
+/* ✅ Scrollbar Styling */
 .table-container::-webkit-scrollbar {
   width: 6px;
 }
@@ -134,17 +132,20 @@ button:hover {
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
   .main-content {
-    width: 100vw; /* Ensure it spans full screen */
-  }
-  
-  .container {
-    width: 85%;
-    padding: 5px;
+    width: 100vw;
   }
 
-  .table-container{
-    width: 85%;
+  .container {
+    width: 90%;
+    max-width: 600px;
+    padding: 15px;
+    max-height: 85vh; /* ✅ Maintain scroll with better height */
   }
+
+  .table-container {
+    width: 90%;
+  }
+
   table {
     font-size: 14px;
   }
@@ -161,20 +162,19 @@ button:hover {
 
 @media (max-width: 480px) {
   .main-content {
-    width: 100vw; /* Ensure it spans full screen */
+    width: 100vw;
   }
 
   .container {
-    width: 80%;
-    padding: 5px;
+    width: 95%;
+    max-width: 350px;
+    padding: 10px;
+    max-height: 80vh; /* ✅ Slightly reduced height on small screens */
   }
 
   .table-container {
+    width: 90%;
     max-height: 250px;
-  }
-
-  .table-container{
-    width: 70%;
   }
 
   table {

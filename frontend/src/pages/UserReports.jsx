@@ -47,12 +47,12 @@ const UserReports = () => {
     if (error) return <p className="error-message">{error}</p>;
 
     return (
-        <div className="reports-container">
+        <div className="container">
             <h1>📄 My Quiz Reports</h1>
             {reports.length === 0 ? (
                 <p>No reports found.</p>
             ) : (
-                <div className="reports-table-container">
+                <div className="table-container">
                     <table>
                         <thead>
                             <tr>
