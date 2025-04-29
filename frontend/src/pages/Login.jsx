@@ -33,6 +33,9 @@ const Login = () => {
             alert("Login Failed");
         }
     };
+    const handleGoogleLogin = () => {
+        window.open(`${BACKEND_URL}/api/users/google`, "_self");
+    };
 
     return (
         <div className="login-container">
@@ -49,6 +52,9 @@ const Login = () => {
                     </div>
                     <button type="submit" className="login-btn">Login</button>
                 </form>
+                <button className="login-btn google-btn" onClick={handleGoogleLogin}>
+                    Sign in with Google
+                </button>
                 <p className="register-link">
                     Don't have an account? <Link to="/register">Register here</Link>
                 </p>
