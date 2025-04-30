@@ -29,6 +29,7 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   overflow-y: auto;
   margin: 0 auto;
+  min-height: 60vh;
 }
 
 .table-container {
@@ -37,6 +38,7 @@ body {
   border-radius: 10px;
   max-height: 350px;
   margin: 0 auto;
+  min-height: 60vh;
 }
 
 /* ===== Table Styling ===== */
@@ -178,12 +180,10 @@ button:hover {
     width: 100%;
     max-width: 300px;
     padding: 10px;
-    max-height: 80vh; /* ✅ Slightly reduced height on small screens */
   }
 
   .table-container {
     width: 100%;
-    max-height: 250px;
   }
 
   table {

@@ -4,18 +4,18 @@
     max-width: 900px;
     padding: 20px;
     background: rgba(30, 30, 30, 0.9);
-    max-height: 80vh;
+    min-height: 60vh;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    overflow: auto;
+    overflow-y: auto;
     margin: 20px auto;
     color: #e0e0e0;
 }
 
 /* ✅ SCROLLABLE TABLE CONTAINER */
 .reports-table-container {
-    max-height: 500px;
+    min-height: 60vh;
     width: 100%;
     overflow: auto;
     scrollbar-width: thin;
