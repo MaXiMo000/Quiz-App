@@ -14,8 +14,6 @@
 
 .dashboard-content {
     width: 95%;
-    max-height: 90vh;
-    overflow-y: auto;
     background: #2c2f48; /* Dark card background */
     padding: 2rem;
     border-radius: 1rem;
@@ -154,7 +152,7 @@ tbody tr:hover {
 
 @media (max-width: 480px) {
     .dashboard-content{
-        max-width: 200px;
+        max-width: 250px;
     }
     .dashboard-content h1 {
         font-size: 1.5rem;
