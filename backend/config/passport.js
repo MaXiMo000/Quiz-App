@@ -37,7 +37,6 @@ passport.use(
                 );
 
                 return done({
-                    message: "Login successful",
                     token,
                     user: {
                         _id: user._id,
