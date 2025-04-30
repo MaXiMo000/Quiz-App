@@ -1,30 +1,69 @@
 import Quiz from "../models/Quiz.js";
+import UserQuiz from "../models/User.js";
 
-export async function getQuizzes(req, res) {
-    const quizzes = await Quiz.find();
-    res.json(quizzes);
-}
-
-export async function createQuiz(req, res) {
+export const getQuizzes = async (req, res) => {
     try {
+        const { role, id: userId } = req.user;
+
+        let quizzes;
+        if (role === "admin") {
+        // Admin sees all quizzes
+        quizzes = await Quiz.find();
+        } else if (role === "premium") {
+        // Premium sees their own quizzes and admin's quizzes
+        quizzes = await Quiz.find({
+            $or: [
+            { "createdBy._id": userId },
+            { "createdBy._id": null }
+            ]
+        });
+        } else {
+        // Regular users see only admin's quizzes
+        quizzes = await Quiz.find({ "createdBy._id": null });
+        }
+
+        res.json(quizzes);
+    } catch (error) {
+        console.error("Error getting quizzes:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
+// CREATE a quiz
+export const createQuiz = async (req, res) => {
+    try {
+        const { role, id: userId } = req.user;
         const { title, category } = req.body;
 
+        if (role !== "admin" && role !== "premium") {
+        return res.status(403).json({ message: "Only admins or premium users can create quizzes" });
+        }
+
+        let createdBy = { _id: null, name: "Admin" };
+
+        if (role === "premium") {
+        const user = await UserQuiz.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        createdBy = { _id: user._id, name: user.name };
+        }
+
         const newQuiz = new Quiz({
-            title,
-            category,
-            duration: 0,       // Default to 0
-            totalMarks: 0,      // Default to 0
-            passingMarks: 0,    // Default to 0
-            questions: [],
+        title,
+        category,
+        duration: 0,
+        totalMarks: 0,
+        passingMarks: 0,
+        questions: [],
+        createdBy
         });
 
-        await newQuiz.save();
-        res.status(201).json(newQuiz);
+        const savedQuiz = await newQuiz.save();
+        res.status(201).json(savedQuiz);
     } catch (error) {
         console.error("Error creating quiz:", error);
-        res.status(500).json({ message: "Server error", error });
+        res.status(500).json({ error: "Server error" });
     }
-}
+};
 
 export const deleteQuiz = async (req, res) => {
     try {

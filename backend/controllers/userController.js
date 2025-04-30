@@ -51,6 +51,7 @@ export const loginUser = async (req, res) => {
             message: "Login successful",
             token, // ✅ must be this
             user: {
+                _id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
@@ -70,5 +71,35 @@ export const getAllUsers = async (req, res) => {
     } catch (error) {
         console.error("Error fetching users:", error);
         res.status(500).json({ error: "Server Error" });
+    }
+};
+
+export const updateUserRole = async (req, res) => {
+    try {
+        const { userId, role } = req.body;
+        const user = await UserQuiz.findById(userId);
+        
+        user.role = role;
+        await user.save();
+        // Issue new token with updated role
+        const token = jwt.sign(
+            { id: user._id, email: user.email, role: user.role },
+            JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        res.json({
+            message: `Role updated to ${role}`,
+            token, // ✅ must be this
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };

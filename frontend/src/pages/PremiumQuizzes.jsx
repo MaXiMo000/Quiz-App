@@ -8,79 +8,72 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const AdminQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
-    const [selectedQuizId, setSelectedQuizId] = useState(null); // Track quiz for adding questions
+    const [selectedQuizId, setSelectedQuizId] = useState(null);
     const [aiTopic, setAiTopic] = useState("");
     const [aiNumQuestions, setAiNumQuestions] = useState("");
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    // Fetch existing quizzes
     const getQuiz = async () => {
         try {
-            const response = await axios.get(`${BACKEND_URL}/api/quizzes`); // auto-token
+            const response = await axios.get(`${BACKEND_URL}/api/quizzes`);
             setQuizzes(response.data);
         } catch (error) {
             console.error("Error fetching quizzes:", error);
             setError("Error fetching Quiz. Try again later.");
-        }
-        finally{
+        } finally {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         getQuiz();
     }, []);
 
-    // Function to open Add Question modal
     const openAddQuestionModal = (quizId) => {
-        if (!quizId) {
-            alert("Please select a quiz first!");
-            return;
-        }
+        if (!quizId) return alert("Please select a quiz first!");
         setSelectedQuizId(quizId);
         document.getElementById("add_question_modal").showModal();
     };
 
-    // ✅ Open AI Question Modal
     const openAiQuestionModal = (quizId, category) => {
         setSelectedQuizId(quizId);
-        setAiTopic(category); // ✅ Auto-fill the topic with the quiz category
-        setAiNumQuestions(5); // ✅ Reset to 5 when opening the modal
+        setAiTopic(category);
+        setAiNumQuestions(5);
         document.getElementById("ai_question_modal").showModal();
     };
 
-    // ✅ Handle AI-Powered Question Generation
     const handleAiSubmit = async (event) => {
         event.preventDefault();
-
         if (!aiTopic || aiNumQuestions <= 0) {
             alert("Please enter a valid topic and number of questions.");
             return;
         }
 
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/quizzes/${selectedQuizId}/generate-questions`, {
-                topic: aiTopic,
-                numQuestions: Number(aiNumQuestions)
-            },
-            { headers: { "Content-Type": "application/json" } }
-        );
+            const response = await axios.post(
+                `${BACKEND_URL}/api/quizzes/${selectedQuizId}/generate-questions`,
+                {
+                    topic: aiTopic,
+                    numQuestions: Number(aiNumQuestions)
+                },
+                { headers: { "Content-Type": "application/json" } } 
+            );
 
-        if (response.status !== 200) {
-            throw new Error(`Error Generating questions: ${response.status}`);
-        }
+            if (response.status !== 200) {
+                throw new Error(`Error Generating questions: ${response.status}`);
+            }
 
-        alert("AI-generated questions added successfully!");
-        document.getElementById("ai_question_modal").close();
-        getQuiz(); // ✅ Refresh the quiz list
+            alert("AI-generated questions added successfully!");
+            document.getElementById("ai_question_modal").close();
+            getQuiz();
         } catch (error) {
             console.error("Error generating AI questions:", error);
             alert("Failed to generate AI questions.");
         }
     };
 
-    // Handle Quiz Creation (No totalMarks, passingMarks, or duration input)
     const createQuiz = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -90,18 +83,15 @@ const AdminQuizzes = () => {
         };
 
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/quizzes`, quizData);
-
+            await axios.post(`${BACKEND_URL}/api/quizzes`, quizData);
             document.getElementById("create_quiz_modal").close();
             getQuiz();
-            // alert("Quiz created successfully!");
         } catch (error) {
             console.error("Error creating quiz:", error);
             alert("Failed to create quiz. Check API response.");
         }
     };
 
-    // Handle Adding Question
     const addQuestion = async (event) => {
         event.preventDefault();
         if (!selectedQuizId) return alert("No quiz selected!");
@@ -120,11 +110,9 @@ const AdminQuizzes = () => {
         };
 
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/quizzes/${selectedQuizId}/questions`, questionData);
-
+            await axios.post(`${BACKEND_URL}/api/quizzes/${selectedQuizId}/questions`, questionData);
             document.getElementById("add_question_modal").close();
             getQuiz();
-            // alert("Question added successfully!");
         } catch (error) {
             console.error("Error adding question:", error);
             alert("Failed to add question. Check API response.");
@@ -132,17 +120,13 @@ const AdminQuizzes = () => {
     };
 
     const deleteQuiz = async (title) => {
-        if (!title) {
-            alert("Quiz title is missing!");
-            return;
-        }
-    
+        if (!title) return alert("Quiz title is missing!");
+
         try {
             const response = await axios.delete(`${BACKEND_URL}/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
-    
             if (response.status === 200) {
                 alert("Quiz deleted successfully!");
-                getQuiz(); // ✅ Refresh the quiz list
+                getQuiz();
             }
         } catch (error) {
             console.error("Error deleting quiz:", error);
@@ -162,7 +146,6 @@ const AdminQuizzes = () => {
                 </button>
             </div>
 
-            {/* Quiz List */}
             <div className="quiz-list">
                 {quizzes.map((quiz) => (
                     <div key={quiz._id} className="quiz-box">
@@ -171,13 +154,13 @@ const AdminQuizzes = () => {
                         <p>Duration: {quiz.duration} minutes</p>
                         <p>Total Marks: {quiz.totalMarks}</p>
                         <p>Passing Marks: {quiz.passingMarks}</p>
-                        <button className="add-question-btn" onClick={() => deleteQuiz(quiz.title)}>Delete Quiz</button>
+                        <button className="add-question-btn" onClick={() => deleteQuiz(quiz.title)}>🗑️ Delete Quiz</button>
                         <button className="add-question-btn" onClick={() => openAiQuestionModal(quiz._id, quiz.category)}>🤖 Add Question (AI)</button>
                         <button className="add-question-btn" onClick={() => openAddQuestionModal(quiz._id)}>➕ Add Question</button>
                         <button className="view-questions-btn" onClick={() => navigate(`/admin/quiz/${quiz._id}`)}>📜 View Questions</button>
                         <ul className="display-ans">
                             {quiz.questions.map((q, i) => (
-                                <li key={i}>Question: {q.question} <br /> Correct Answer: {q.correctAnswer}</li>
+                                <li key={i}>Question: {q.question}<br />Correct Answer: {q.correctAnswer}</li>
                             ))}
                         </ul>
                     </div>
@@ -188,11 +171,7 @@ const AdminQuizzes = () => {
             <dialog id="ai_question_modal" className="modal">
                 <div className="modal-box">
                     <form onSubmit={handleAiSubmit}>
-                        <Link to="#" className="close-btn"
-                            onClick={() => document.getElementById("ai_question_modal").close()}>
-                            ✕
-                        </Link>
-
+                        <Link to="#" className="close-btn" onClick={() => document.getElementById("ai_question_modal").close()}>✕</Link>
                         <h3 className="modal-title">AI Question Generation</h3>
                         <input type="text" name="aiTopic" placeholder="Enter Topic" value={aiTopic} onChange={(e) => setAiTopic(e.target.value)} required />
                         <input type="number" name="aiNumQuestions" placeholder="Enter Number of Questions" value={aiNumQuestions} onChange={(e) => setAiNumQuestions(e.target.value)} required />
@@ -218,15 +197,9 @@ const AdminQuizzes = () => {
             <dialog id="add_question_modal" className="modal">
                 <div className="modal-box">
                     <form onSubmit={addQuestion} className="question-form">
-                        <Link to="#" className="close-btn"
-                            onClick={() => document.getElementById("add_question_modal").close()}>
-                            ✕
-                        </Link>
-
+                        <Link to="#" className="close-btn" onClick={() => document.getElementById("add_question_modal").close()}>✕</Link>
                         <h3 className="modal-title">➕ Add New Question</h3>
-
                         <input type="text" name="question" placeholder="📝 Enter your question" className="form-input" required />
-
                         <div className="option-pair">
                             <input type="text" name="optionA" placeholder="Option A" className="form-input" required />
                             <input type="text" name="optionB" placeholder="Option B" className="form-input" required />
@@ -235,15 +208,12 @@ const AdminQuizzes = () => {
                             <input type="text" name="optionC" placeholder="Option C" className="form-input" required />
                             <input type="text" name="optionD" placeholder="Option D" className="form-input" required />
                         </div>
-
                         <select name="difficulty" defaultValue="medium" className="form-select" required>
                             <option value="easy">🌱 Easy</option>
                             <option value="medium">🌿 Medium</option>
                             <option value="hard">🔥 Hard</option>
                         </select>
-
                         <input type="text" name="correctAnswer" placeholder="✅ Correct Answer (A/B/C/D)" className="form-input" required />
-
                         <button className="submit-btn">Add Question</button>
                     </form>
                 </div>

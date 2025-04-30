@@ -7,29 +7,29 @@ import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUs
 import { verifyToken } from "../middleware/auth.js";
 
 // Quiz Routes
-router.get("/quizzes", getQuizzes, verifyToken);
-router.get("/quizzes/:id", getQuizById, verifyToken);
-router.post("/quizzes", createQuiz, verifyToken);
-router.post("/quizzes/:id/questions", addQuestion, verifyToken);
-router.delete("/quizzes/delete/quiz", deleteQuiz, verifyToken);
-router.delete("/quizzes/:id/questions/:questionIndex", deleteQuestion, verifyToken);
+router.get("/quizzes", verifyToken, getQuizzes);
+router.get("/quizzes/:id", verifyToken, getQuizById);
+router.post("/quizzes", verifyToken, createQuiz);
+router.post("/quizzes/:id/questions", verifyToken, addQuestion);
+router.delete("/quizzes/delete/quiz", verifyToken, deleteQuiz);
+router.delete("/quizzes/:id/questions/:questionIndex", verifyToken, deleteQuestion);
 
 
 router.post("/quizzes/:id/generate-questions", generateQuizQuestions);
-router.post("/adaptive", generateAdaptiveQuestions, verifyToken);
+router.post("/adaptive", verifyToken, generateAdaptiveQuestions);
 
 // Report Routes
-router.get("/reports", getReports, verifyToken);
-router.post("/reports", createReport, verifyToken);
-router.get("/reports/user", getReportsUser, verifyToken);
-router.get("/reports/top-scorers", getTopScorers, verifyToken); 
-router.get("/reports/:id", getReportsUserID, verifyToken)
-router.delete("/reports/:id", deleteReport, verifyToken);
+router.get("/reports", verifyToken, getReports);
+router.post("/reports", verifyToken, createReport);
+router.get("/reports/user", verifyToken, getReportsUser);
+router.get("/reports/top-scorers", verifyToken, getTopScorers); 
+router.get("/reports/:id", verifyToken, getReportsUserID)
+router.delete("/reports/:id", verifyToken, deleteReport);
 
-router.get("/written-test-reports", getWrittenTestReports, verifyToken);
-router.post("/written-test-reports", createWrittenTestReport, verifyToken);
-router.get("/written-test-reports/user", getWrittenTestReportsUser, verifyToken);
-router.delete("/written-test-reports/:id", deleteWrittenTestReport, verifyToken);
-router.get("/written-test-reports/:id", getWrittenReportsUserID, verifyToken);
+router.get("/written-test-reports", verifyToken, getWrittenTestReports);
+router.post("/written-test-reports", verifyToken, createWrittenTestReport);
+router.get("/written-test-reports/user", verifyToken, getWrittenTestReportsUser);
+router.delete("/written-test-reports/:id", verifyToken, deleteWrittenTestReport);
+router.get("/written-test-reports/:id", verifyToken, getWrittenReportsUserID);
 
 export default router;

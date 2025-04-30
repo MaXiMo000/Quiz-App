@@ -122,20 +122,16 @@ const TakeQuiz = () => {
         const user = JSON.parse(localStorage.getItem("user"));
     
         try {
-            const response = await fetch(`${BACKEND_URL}/api/reports`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: user?.name,
-                    quizName: quiz.title,
-                    score: scoreAchieved,
-                    total: totalMarks,
-                    questions: detailedQuestions, // ✅ Send questions array
-                }),
+            const response = await axios.post(`${BACKEND_URL}/api/reports`, {
+                username: user?.name,
+                quizName: quiz.title,
+                score: scoreAchieved,
+                total: totalMarks,
+                questions: detailedQuestions, // ✅ Send questions array
             });
     
-            if (!response.ok) {
-                throw new Error("Failed to save report");
+            if (response.status !== 200) {
+                throw new Error(`Error scoring answer: ${response.status}`);
             }
             if(timeLeft <= 0){
                 alert(`Time's up! Your quiz has been auto-submitted. ${scoreAchieved} out of ${totalMarks}`);
