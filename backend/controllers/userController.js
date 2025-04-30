@@ -78,6 +78,10 @@ export const updateUserRole = async (req, res) => {
     try {
         const { userId, role } = req.body;
         const user = await UserQuiz.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
         console.log(user);
         user.role = role;
         await user.save();
@@ -99,8 +103,8 @@ export const updateUserRole = async (req, res) => {
                 role: user.role,
             },
         });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+    }catch (error) {
+    console.error("Error updating role:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+}
 };
