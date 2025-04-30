@@ -27,7 +27,15 @@
     margin: 10px 0;
 }
 
-.adaptive-input,
+.adaptive-input{
+    width: 97%;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 select {
     width: 100%;
     padding: 10px;
@@ -70,6 +78,7 @@ select {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ddd;
+    margin-top: 10px; /* Adds space between question list and the button */
 }
 
 .question-list ul {
@@ -125,6 +134,9 @@ select {
     .adaptive-card {
         padding: 15px;
     }
+    .adaptive-input{
+        width: 90%;
+    }
     .adaptive-input,
     select {
         font-size: 14px;
@@ -132,5 +144,23 @@ select {
     .generate-btn {
         font-size: 14px;
         padding: 8px;
+    }
+
+    .question-list {
+        max-height: 200px; /* Adjusted for smaller screens */
+        margin-top: 15px;
+        padding: 8px; /* Reduced padding for smaller screens */
+    }
+
+    .question-list li {
+        font-size: 14px; /* Smaller font for mobile view */
+    }
+
+    .difficulty-tag {
+        font-size: 10px; /* Smaller tag text on mobile */
+    }
+
+    .delete-btn {
+        font-size: 12px; /* Smaller button text */
     }
 }
