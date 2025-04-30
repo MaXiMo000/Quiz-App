@@ -82,10 +82,8 @@ export const updateUserRole = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        console.log(user);
         user.role = role;
         await user.save();
-        console.log(user);
         // Issue new token with updated role
         const token = jwt.sign(
             { id: user._id, email: user.email, role: user.role },

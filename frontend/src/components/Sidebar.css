@@ -109,7 +109,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    /* margin-left: 10px; */
+    margin-left: 20px;
 }
 
 .logout-btn:hover {
