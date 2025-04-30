@@ -78,9 +78,10 @@ export const updateUserRole = async (req, res) => {
     try {
         const { userId, role } = req.body;
         const user = await UserQuiz.findById(userId);
-        
+        console.log(user);
         user.role = role;
         await user.save();
+        console.log(user);
         // Issue new token with updated role
         const token = jwt.sign(
             { id: user._id, email: user.email, role: user.role },
