@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getAllUsers } from "../controllers/userController.js";
+import { registerUser, loginUser, getAllUsers, updateUserRole } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/auth.js";
 
 import passport from "passport";
@@ -10,6 +10,7 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/", verifyToken, getAllUsers); // Protected route
+router.patch("/update-role", verifyToken, updateUserRole);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 

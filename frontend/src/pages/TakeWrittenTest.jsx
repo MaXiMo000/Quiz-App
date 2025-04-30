@@ -114,13 +114,14 @@ const TakeWrittenTest = () => {
             const userAnswer = answers[index] || "";
 
             try {
-                const response = await fetch(`${BACKEND_URL}/api/written-tests/score-answer`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ question: questionText, answer: userAnswer }),
+                const response = await axios.post(`${BACKEND_URL}/api/written-tests/score-answer`, {
+                    question: questionText,
+                    answer: userAnswer
+                }, {
+                    headers: { "Content-Type": "application/json" }
                 });
-
-                if (!response.ok) {
+                
+                if (response.status !== 200) {
                     throw new Error(`Error scoring answer: ${response.status}`);
                 }
 

@@ -26,7 +26,6 @@ passport.use(
                     user = new UserQuiz({
                         name: profile.displayName,
                         email: email,
-                        password: "", // Optional: leave blank for Google-auth users
                     });
                     await user.save();
                 }
@@ -37,7 +36,16 @@ passport.use(
                     { expiresIn: "1h" }
                 );
 
-                return done(null, { token, user });
+                return done({
+                    message: "Login successful",
+                    token,
+                    user: {
+                        _id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                    },
+                });
             } catch (err) {
                 return done(err, null);
             }

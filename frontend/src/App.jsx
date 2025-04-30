@@ -14,7 +14,7 @@ import ContactUs from './pages/ContactUs';
 
 
 // ✅ Lazy load all pages
-const AdaptiveQuiz = lazy(() => import("./components/AdaptiveQuiz")); // 🆕
+const AdaptiveQuiz = lazy(() => import("./components/AdaptiveQuiz"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminQuizzes = lazy(() => import("./pages/AdminQuizzes"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
@@ -34,7 +34,7 @@ const AdminWrittenTestReports = lazy(() => import("./pages/AdminWrittenTestRepor
 const UserWrittenReports = lazy(() => import("./pages/UserWrittenReports"));
 const UserWrittenReportCheck = lazy(() => import("./pages/UserWrittenReportsCheck"));
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
-
+import PremiumQuizzes from "./pages/PremiumQuizzes";
 
 
 const App = () => {
@@ -81,6 +81,9 @@ const App = () => {
                         <Route path="/refund-policy" element={<RefundPolicy />} />
                         <Route path="/shipping-policy" element={<ShippingPolicy />} />
                         <Route path="/contact" element={<ContactUs />} />
+
+                        
+                        <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                     </Route>
                 </Routes>
             </Suspense>

@@ -10,13 +10,17 @@ const AdminReports = () => {
     const [error, setError] = useState("");
 
     // Fetch all reports
-    const getReports = () => {
-        fetch(`${BACKEND_URL}/api/reports`)
-            .then(res => res.json())
-            .then(data => setReports(data))
-            .catch((err) => {console.error("Error fetching Reports:", err);
-                setError("Error fetching Report. Try again later.");
-            }).finally(() => setLoading(false));
+    const getReports = async () => {
+        try {
+            const response = await axios.get(`${BACKEND_URL}/api/reports`); // auto-token
+            setReports(response.data);
+        } catch (error) {
+            console.error("Error fetching quizzes:", error);
+            setError("Error fetching Quiz. Try again later.");
+        }
+        finally{
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
