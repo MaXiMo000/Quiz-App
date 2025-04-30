@@ -4,7 +4,6 @@ const JWT_SECRET = process.env.JWT_SECRET || "yourSuperSecretKey";
 
 export const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    console.log("🔐 Auth Header:", authHeader); // Debug line
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ message: "Access denied. No token provided." });

@@ -22,6 +22,12 @@ const Sidebar = () => {
         navigate("/login");
     };
 
+    const handleLinkClick = () => {
+        if (window.innerWidth <= 768) {
+            setIsSidebarOpen(false);
+        }
+    };
+
     // Update role function
     const updateRole = async (newRole) => {
         if (!user) return;
@@ -59,34 +65,34 @@ const Sidebar = () => {
                 <nav>
                     {user?.role === "admin" && (
                         <>
-                            <Link to="/admin">📊 Dashboard</Link>
-                            <Link to="/admin/create">📚 Create Quiz</Link>
-                            <Link to="/admin/report">📄 Reports</Link>
-                            <Link to="/admin/written-tests">📝 Written Tests</Link>
-                            <Link to="/admin/written-test/report">📄 Tests Reports</Link>
+                            <Link to="/admin" onClick={handleLinkClick}>📊 Dashboard</Link>
+                            <Link to="/admin/create" onClick={handleLinkClick}>📚 Create Quiz</Link>
+                            <Link to="/admin/report" onClick={handleLinkClick}>📄 Reports</Link>
+                            <Link to="/admin/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link>
+                            <Link to="/admin/written-test/report" onClick={handleLinkClick}>📄 Tests Reports</Link>
                         </>
                     )}
 
                     {user?.role === "premium" && (
                         <>
-                            <Link to="/">📊 Dashboard</Link>
-                            <Link to="/premium/quizzes">🧠 My Quizzes</Link>
-                            <Link to="/user/test">📚 Quizzes</Link>
-                            <Link to="/user/report">📄 Reports</Link>
+                            <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
+                            <Link to="/premium/quizzes" onClick={handleLinkClick}>🧠 My Quizzes</Link>
+                            <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
+                            <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
                             {/* <Link to="/written-tests">📝 Written Tests</Link>
                             <Link to="/user/written-reports">📄 Tests Reports</Link> */}
-                            <Link to="/leaderboard">🏆 LeaderBoard</Link>
+                            <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
                             <button onClick={() => updateRole("user")}>👤 Go Simple User</button>
                         </>
                     )}
 
                     {user?.role === "user" && (
                         <>
-                            <Link to="/">📊 Dashboard</Link>
-                            <Link to="/user/test">📚 Quizzes</Link>
-                            <Link to="/user/report">📄 Reports</Link>
-                            <Link to="/written-tests">📝 Written Tests</Link>
-                            <Link to="/user/written-reports">📄 Tests Reports</Link>
+                            <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
+                            <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
+                            <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
+                            <Link to="/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link>
+                            <Link to="/user/written-reports" onClick={handleLinkClick}>📄 Tests Reports</Link>
                             <button onClick={() => updateRole("premium")}>🚀 Go Premium</button>
                         </>
                     )}
