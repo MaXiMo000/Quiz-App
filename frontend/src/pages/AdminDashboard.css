@@ -1,156 +1,170 @@
-/* ✅ Main container */
+/* AdminDashboard.css */
 .admin-dashboard {
-    /* margin-top: 60px; */
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background: #f5f6fa;
-    min-height: 90vh;
-    padding: 20px;
+    align-items: flex-start;
+    background: #1e1e2f; /* Darker background */
+    max-height: 90vh;
+    padding: 2rem 1rem;
+    overflow-y: auto;
+    max-height: 90vh;
     box-sizing: border-box;
+    /* margin-left: 250px; */
 }
 
-/* ✅ Dashboard Content */
 .dashboard-content {
-    width: 90%;
+    width: 95%;
     max-height: 90vh;
     overflow-y: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    box-sizing: border-box;
+    background: #2c2f48; /* Dark card background */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    scrollbar-width: thin;
+    scrollbar-color: #6a11cb #1e1e2f;
 }
 
-/* ✅ Title */
+.dashboard-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb {
+    background-color: #6a11cb;
+    border-radius: 3px;
+}
+
 .dashboard-content h1 {
-    font-size: 26px;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-/* ✅ Stats Section */
-.stats {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ffffff; /* White for contrast */
+    margin-bottom: 1.5rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 20px;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-/* ✅ Statistic Cards */
+.dashboard-content p {
+    color: #adb5bd;
+    margin-bottom: 2rem;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
 .stat-card {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 200px;
-    transition: 0.3s ease-in-out;
+    background: #3a3f5c; /* Darker card */
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+    border-left: 4px solid #6a11cb;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .stat-card h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #ced4da;
+    margin-bottom: 0.5rem;
 }
 
 .stat-card p {
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
 }
 
-/* ✅ Users Table */
-.table-title {
-    margin-top: 30px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #2c3e50;
-    text-align: center;
-}
-
-/* ✅ Table Container */
 .table-container {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 10px;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
+    border: 1px solid #444;
+    border-radius: 0.75rem;
+    overflow-y: auto;
+    max-height: 20vh;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* ✅ Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
     min-width: 600px;
+    background: #2c2f48;
+    color: #ffffff;
 }
 
 thead {
-    background: #2575fc;
-    color: white;
+    background: #343a50;
 }
 
 th, td {
-    padding: 12px;
+    padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #444;
+}
+
+th {
+    font-weight: 600;
+    color: #dee2e6;
+    background: #343a50;
+}
+
+tbody tr {
+    transition: background 0.2s ease;
 }
 
 tbody tr:hover {
-    background: #f8f9fa;
+    background: #3a3f5c;
 }
 
-/* ✅ Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .admin-dashboard {
-        padding: 10px;
+        margin-left: 0;
+        padding-top: 4rem;
     }
+}
 
+@media (max-width: 768px) {
     .dashboard-content {
-        margin-top: 60px;
         width: 100%;
-        padding: 15px;
+        padding: 1.5rem;
+        border-radius: 0;
     }
 
     .stats {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr;
     }
 
     .stat-card {
-        width: 100%;
+        padding: 1.25rem;
     }
 
     table {
-        font-size: 14px;
+        min-width: 100%;
+    }
+
+    th, td {
+        padding: 0.75rem;
     }
 }
 
 @media (max-width: 480px) {
-    .dashboard-content h1 {
-        font-size: 22px;
-    }
-
-    .stat-card {
-        width: 100%;
-    }
-
-    .table-container {
-        padding: 10px;
+    .dashboard-content{
         max-width: 200px;
     }
+    .dashboard-content h1 {
+        font-size: 1.5rem;
+    }
 
-    th, td {
-        padding: 8px;
+    .stat-card p {
+        font-size: 1.75rem;
+    }
+
+    .dashboard-content p {
+        font-size: 0.9rem;
     }
 }
