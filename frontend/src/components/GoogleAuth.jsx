@@ -7,12 +7,13 @@ const GoogleAuth = () => {
 
     useEffect(() => {
         const token = searchParams.get("token");
+        const _id = searchParams.get("_id");
         const name = searchParams.get("name");
         const email = searchParams.get("email");
         const role = searchParams.get("role");
 
-        if (token && email && role) {
-            const user = { name, email, role };
+        if (token && email && role && _id) {
+            const user = {_id, name, email, role };
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
             navigate(role === "admin" ? "/admin" : "/");
