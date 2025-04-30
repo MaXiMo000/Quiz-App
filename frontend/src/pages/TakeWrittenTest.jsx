@@ -121,9 +121,6 @@ const TakeWrittenTest = () => {
                     headers: { "Content-Type": "application/json" }
                 });
                 
-                if (response.status !== 200) {
-                    throw new Error(`Error scoring answer: ${response.status}`);
-                }
 
                 const data = await response.json();
                 if (data.score !== undefined && !isNaN(data.score)) {

@@ -130,9 +130,9 @@ const TakeQuiz = () => {
                 questions: detailedQuestions, // ✅ Send questions array
             });
     
-            if (response.status !== 200) {
-                throw new Error(`Error scoring answer: ${response.status}`);
-            }
+            // if (response.status !== 200) {
+            //     throw new Error(`Error scoring answer: ${response.status}`);
+            // }
             if(timeLeft <= 0){
                 alert(`Time's up! Your quiz has been auto-submitted. ${scoreAchieved} out of ${totalMarks}`);
             }
