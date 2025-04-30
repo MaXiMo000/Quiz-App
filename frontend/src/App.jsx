@@ -1,10 +1,16 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthWrapper from "./components/AuthWrapper";
 import Layout from "./components/Layout"; // ✅ Your layout with Sidebar
 import "./App.css";
 import Spinner from "./components/Spinner";
 import GoogleAuth from "./components/GoogleAuth";
+
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions';
+import RefundPolicy from './pages/RefundPolicy';
+import ShippingPolicy from './pages/ShippingPolicy';
+import ContactUs from './pages/ContactUs';
 
 
 // ✅ Lazy load all pages
@@ -29,7 +35,17 @@ const UserWrittenReports = lazy(() => import("./pages/UserWrittenReports"));
 const UserWrittenReportCheck = lazy(() => import("./pages/UserWrittenReportsCheck"));
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 
+
+
 const App = () => {
+    const [user, setUser] = useState(null);
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+        setUser(storedUser);
+        }
+    }, []);
+
     return (
         <Router>
             <Suspense fallback={<Spinner />}>
@@ -59,6 +75,12 @@ const App = () => {
                         <Route path="/user/written-reports" element={<UserWrittenReports />} />
                         <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
                         <Route path="/leaderboard" element={<Leaderboard />} />
+                        
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                        <Route path="/refund-policy" element={<RefundPolicy />} />
+                        <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                        <Route path="/contact" element={<ContactUs />} />
                     </Route>
                 </Routes>
             </Suspense>
