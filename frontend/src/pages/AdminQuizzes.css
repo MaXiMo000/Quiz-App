@@ -212,6 +212,7 @@
 .modal-box {
     position: relative;
     padding: 25px;
+    color: black;
     border-radius: 12px;
     background: white;
     text-align: center;
