@@ -26,6 +26,7 @@ passport.use(
                     user = new UserQuiz({
                         name: profile.displayName,
                         email: email,
+                        role: "user",
                     });
                     await user.save();
                 }
