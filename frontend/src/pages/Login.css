@@ -1,7 +1,6 @@
-/* ✅ General Body Setup */
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: linear-gradient(to right, #121212, #1e1e1e);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,34 +10,31 @@ body {
     box-sizing: border-box;
 }
 
-/* ✅ Login Container - Flex Centering */
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    width: 400px;
+    max-width: 400px;
 }
 
-/* ✅ Login Box - Same as Register Box */
 .login-box {
-    background: white;
+    background: #1e1e1e;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
     text-align: center;
     width: 100%;
     max-width: 350px;
     box-sizing: border-box;
+    color: #e0e0e0;
 }
 
-/* ✅ Title */
 h2 {
-    color: #333;
+    color: #e0e0e0;
     margin-bottom: 20px;
 }
 
-/* ✅ Input Group */
 .input-group {
     text-align: left;
     margin-bottom: 15px;
@@ -48,22 +44,23 @@ h2 {
     font-size: 14px;
     display: block;
     margin-bottom: 5px;
-    color: #555;
+    color: #b0b0b0;
 }
 
 .input-group input {
     width: 95%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #444;
     border-radius: 6px;
     font-size: 14px;
+    background-color: #2d2d2d;
+    color: #e0e0e0;
 }
 
-/* ✅ Login Button */
 .login-btn {
     width: 100%;
     padding: 10px;
-    background: #6a11cb;
+    background: #4a6fa5;
     color: white;
     border: none;
     border-radius: 6px;
@@ -75,64 +72,29 @@ h2 {
 
 .google-btn {
     margin-top: 15px;
-    background: #db4437;
+    background: #d32f2f;
     color: white;
 }
 .google-btn:hover {
-    background: #c23321;
+    background: #b71c1c;
 }
 
 .login-btn:hover {
-    background: #4e0da7;
+    background: #3a5a8a;
 }
 
-/* ✅ Register Link */
 .register-link {
     margin-top: 15px;
     font-size: 14px;
+    color: #b0b0b0;
 }
 
 .register-link a {
-    color: #6a11cb;
+    color: #4a6fa5;
     text-decoration: none;
     font-weight: bold;
 }
 
 .register-link a:hover {
     text-decoration: underline;
-}
-
-/* ✅ Responsive Design for Mobile */
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-        width: 100vw;
-        box-sizing: border-box;
-    }
-
-    .login-container {
-        width: 100%;
-    }
-
-    .login-box {
-        padding: 15px;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-
-    .input-group input {
-        width: 90%;
-        padding: 8px;
-    }
-
-    .login-btn {
-        padding: 8px;
-        font-size: 14px;
-    }
-
-    .register-link {
-        font-size: 12px;
-    }
 }

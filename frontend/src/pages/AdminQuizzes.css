@@ -3,25 +3,52 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    width: 90%;
-    max-width: 1000px;
+    padding: 30px;
+    width: 95%;
+    max-width: 1200px;
     max-height: 90vh;
     overflow-y: auto;
-    margin: 0 auto;
-    background: linear-gradient(to right, #4b0082, #6a11cb);
+    margin: 20px auto;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
     color: white;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    scrollbar-width: thin;
+    scrollbar-color: #6a11cb #1e1e1e;
+}
+
+.admin-quiz-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-quiz-container::-webkit-scrollbar-thumb {
+    background-color: #6a11cb;
+    border-radius: 10px;
+}
+
+.admin-quiz-container::-webkit-scrollbar-track {
+    background: #1e1e1e;
 }
 
 /* ✅ HEADING */
 .admin-quiz-container h2 {
     text-align: center;
     font-size: 32px;
-    margin-top: 50px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    font-weight: 600;
+    margin: 20px 0 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.admin-quiz-container h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, #ff4d79, #ff8a00);
 }
 
 /* ✅ GRID LAYOUT */
@@ -30,58 +57,74 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 20px;
-}
-
-.quiz-header h2 {
-    color: white;
-}
-
-/* ✅ QUIZ LIST (Ensures quizzes appear below the title & button) */
-.quiz-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
-    justify-content: center;
+    margin-bottom: 30px;
     width: 100%;
+}
+
+/* ✅ QUIZ LIST */
+.quiz-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    width: 100%;
+    padding: 10px;
 }
 
 /* ✅ QUIZ BOX */
 .quiz-box {
-    background: #ffffff;
+    background: white;
     color: #333;
     border-radius: 12px;
-    padding: 20px;
+    padding: 25px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 320px;
-    min-height: 350px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    overflow-x: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: hidden;
+    position: relative;
+}
+
+.quiz-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
 }
 
 /* ✅ HOVER EFFECT */
 .quiz-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* ✅ QUIZ TITLE */
 .quiz-box h3 {
     font-size: 22px;
-    font-weight: bold;
+    font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 /* ✅ QUIZ DETAILS */
 .quiz-box p {
     font-size: 16px;
     color: #555;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+/* ✅ BUTTON CONTAINER */
+.quiz-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: auto;
 }
 
 /* ✅ BUTTONS */
@@ -92,14 +135,17 @@
     background: linear-gradient(to right, #ff4d79, #ff6a95);
     color: white;
     border: none;
-    padding: 12px 18px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    transition: background 0.3s ease-in-out, transform 0.2s;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .create-btn:hover,
@@ -108,6 +154,7 @@
 .view-questions-btn:hover {
     background: linear-gradient(to right, #e63e68, #ff4d79);
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 77, 121, 0.3);
 }
 
 /* ✅ AI BUTTON */
@@ -116,40 +163,49 @@
 }
 
 .ai-btn:hover {
-    background: linear-gradient(to right, #ff6a00, #e63d00);
+    background: linear-gradient(to right, #e67300, #e63d00);
 }
 
 /* ✅ SCROLLABLE QUESTION LIST */
 .display-ans {
     list-style: none;
-    padding: 10px;
-    background: #f4f4f4;
+    padding: 15px;
+    background: #f8f9fa;
     border-radius: 10px;
-    max-height: 140px;
+    max-height: 150px;
     overflow-y: auto;
     font-size: 14px;
     color: #444;
     width: 100%;
     text-align: left;
+    margin: 15px 0;
+    border: 1px solid #eee;
+}
+
+.display-ans li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.display-ans li:last-child {
+    border-bottom: none;
 }
 
 /* ✅ MODAL STYLING */
 .modal {
     position: fixed;
-    left: 48%;
+    left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     text-align: center;
     animation: fadeIn 0.3s ease-in-out;
-    max-width: 95%;
-}
-
-#add_question_modal {
-    top: 80%;
+    max-width: 90%;
+    width: 500px;
+    z-index: 2000;
 }
 
 /* ✅ MODAL BOX */
@@ -159,19 +215,46 @@
     border-radius: 12px;
     background: white;
     text-align: center;
-    max-width: 95%;
+    max-width: 100%;
 }
 
-/* ✅ RESPONSIVE MODAL */
-@media (max-width: 480px) {
-    .modal {
-        width: 80%;
-        padding: 15px;
-    }
+/* ✅ CLOSE BUTTON */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    cursor: pointer;
+    color: #777;
+    transition: color 0.3s ease;
+}
 
-    .modal-box {
-        padding: 15px;
-    }
+.close-btn:hover {
+    color: #ff4d79;
+}
+
+/* ✅ INPUT FIELDS */
+input, textarea, select {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 12px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+    outline: none;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
 }
 
 /* ✅ FADE-IN ANIMATION */
@@ -186,90 +269,54 @@
     }
 }
 
-/* ✅ CLOSE BUTTON */
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 22px;
-    position: absolute;
-    z-index: 9999;
-    right: 15px;
-    top: 10px;
-    cursor: pointer;
-    color: #333;
-    transition: color 0.3s ease-in-out;
-}
-
-.close-btn:hover {
-    color: #ff4d79;
-}
-
-/* ✅ INPUT FIELDS */
-input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-}
-
-textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    resize: vertical;
-    background: #f9f9f9;
-    color: #333;
-    font-family: "Arial", sans-serif;
-    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-/* ✅ Focus Effect */
-textarea:focus {
-    border-color: #6a11cb;
-    box-shadow: 0 0 8px rgba(106, 17, 203, 0.3);
-    outline: none;
-}
-
-/* ✅ Responsive Design */
-@media (max-width: 768px) {
-    textarea {
-        min-height: 100px;
-        font-size: 14px;
+/* ✅ RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+    .quiz-list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
 }
 
-@media (min-width: 768px) {
-    .close-btn {
-        display: block !important;
-        visibility: visible !important;
-    }
-}
-
-/* ✅ IMPROVED RESPONSIVE CONTAINER DESIGN */
 @media (max-width: 768px) {
     .admin-quiz-container {
         width: 100%;
-        max-width: 600px;
-        padding: 15px;
+        padding: 25px 15px;
         max-height: 85vh;
+        margin: 15px auto;
     }
-
+    
     .quiz-list {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .modal {
+        width: 90%;
+        padding: 20px;
     }
 }
 
 @media (max-width: 480px) {
     .admin-quiz-container {
-        width: 100%;
-        max-width: 300px;
-        padding: 12px;
+        padding: 20px 10px;
         max-height: 80vh;
+        border-radius: 0;
+    }
+    
+    .admin-quiz-container h2 {
+        font-size: 26px;
+        margin: 10px 0 20px;
+    }
+    
+    .quiz-box {
+        padding: 20px 15px;
+    }
+    
+    .modal {
+        padding: 15px;
+    }
+    
+    input, textarea, select {
+        padding: 10px 12px;
+        font-size: 15px;
     }
 }

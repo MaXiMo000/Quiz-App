@@ -1,152 +1,125 @@
-/* ===== General Styles (Inspired by UserQuiz.css) ===== */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to right, #ff9966, #ff5e62); /* ✅ Unique gradient for written tests */
-    color: white;
+    background: linear-gradient(to right, #1a1a2e, #16213e);
+    color: #e0e0e0;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-/* ===== Container Styling ===== */
+
 .container {
-    width: 900px;
+    width: 100%;
+    max-width: 1000px;
     padding: 30px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(30, 30, 30, 0.8);
     border-radius: 10px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     overflow: hidden;
-    margin: 0 auto;
 }
 
-/* ✅ Scrollable Table Container */
 .table-container {
     overflow: auto;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    max-height: 350px;
-    margin: 0 auto;
+    max-height: 500px;
+    scrollbar-width: thin;
+    scrollbar-color: #4a6fa5 #1e1e1e;
+    border-radius: 8px;
+    margin: 20px 0;
+    border: 1px solid #444;
 }
 
-/* ===== Table Styling ===== */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: #4a6fa5;
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    color: black;
-    border-radius: 10px;
+    background: #2d2d2d;
+    color: #e0e0e0;
 }
 
 th, td {
-    padding: 12px;
+    padding: 15px;
     text-align: left;
+    border-bottom: 1px solid #444;
 }
 
 th {
-    background: #ff5e62;
+    background: #4a6fa5;
     color: white;
     position: sticky;
     top: 0;
 }
 
-tr:nth-child(even) {
-    background: #f9f9f9;
+tr:hover {
+    background: #3a3a3a;
 }
 
-tr:nth-child(odd) {
-    background: #fde0dc;
-}
-
-/* ✅ Scrollbar Styling */
-.table-container::-webkit-scrollbar {
-    width: 6px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
-}
-
-/* ===== Buttons ===== */
-button {
-    background: white;
-    color: #ff5e62;
-    padding: 10px 20px;
+.start-test-btn {
+    background: #4a6fa5;
+    color: white;
+    padding: 12px 24px;
     border: none;
     border-radius: 6px;
     font-size: 18px;
     cursor: pointer;
-    transition: 0.3s;
-    margin: 10px;
-}
-
-button:hover {
-    background: #ff5e62;
-    color: white;
-}
-
-/* ✅ Start Test Button */
-.start-test-btn {
-    background: #ff5722;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.2s ease-in-out;
+    transition: all 0.3s;
+    font-weight: bold;
 }
 
 .start-test-btn:hover {
-    background: #d84315;
+    background: #3a5a8a;
 }
 
-/* ===== Responsive Design ===== */
 @media (max-width: 768px) {
     .container {
-    width: 85%;
-    padding: 10px;
+        width: 95%;
+        padding: 20px;
     }
-
-    table {
-    font-size: 14px;
+    
+    .table-container {
+        max-height: 400px;
     }
-
+    
     th, td {
-    padding: 8px;
+        padding: 12px;
     }
-
+    
     .start-test-btn {
-    padding: 6px 10px;
-    font-size: 12px;
+        padding: 10px 20px;
+        font-size: 16px;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        width: 100%;
-        max-width: 300px;
-        padding: 10px;
-        max-height: 80vh; /* ✅ Slightly reduced height on small screens */
+        padding: 15px;
     }
     
-    .table-container {
-        width: 100%;
-        max-height: 250px;
-    }
-
     table {
-    font-size: 12px;
+        font-size: 14px;
     }
-
+    
     th, td {
-    padding: 6px;
+        padding: 10px;
     }
-
+    
     .start-test-btn {
-    padding: 4px 8px;
-    font-size: 10px;
+        padding: 8px 16px;
+        font-size: 14px;
     }
 }

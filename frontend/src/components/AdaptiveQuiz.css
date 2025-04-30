@@ -1,102 +1,117 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #1a1a2e, #16213e);
+    color: #e0e0e0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 .adaptive-wrapper {
     display: flex;
     justify-content: center;
-    padding: 20px;
-    background: #f5f7fa;
+    padding: 30px 20px;
+    width: 100%;
     max-height: 90vh;
     overflow-y: auto;
 }
 
 .adaptive-card {
-    background: #ffffff;
-    padding: 20px 25px;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    background: rgba(30, 30, 30, 0.9);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
     width: 100%;
+    color: #e0e0e0;
 }
 
 .adaptive-card h2 {
     text-align: center;
-    color: #3a3a3a;
-    margin-bottom: 20px;
+    color: #ffffff;
+    margin-bottom: 25px;
 }
 
 .adaptive-info label {
     display: block;
-    margin: 10px 0;
+    margin: 12px 0 6px;
+    font-weight: bold;
 }
 
-.adaptive-input{
-    width: 97%;
-    padding: 10px;
-    margin-top: 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
+.adaptive-input,
 select {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 5px;
     font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+}
+
+select option {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
 }
 
 .generate-btn {
     width: 100%;
-    background-color: #4f46e5;
+    background-color: #4a6fa5;
     color: #fff;
-    padding: 10px;
-    margin-top: 15px;
-    font-size: 16px;
+    padding: 12px;
+    margin-top: 20px;
+    font-size: 18px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s ease;
 }
 
 .generate-btn:hover {
-    background-color: #3730a3;
+    background-color: #3a5a8a;
 }
 
 .generated-questions {
-    margin-top: 25px;
+    margin-top: 30px;
 }
 
 .generated-questions h4 {
-    margin-bottom: 10px;
-    color: #333;
+    margin-bottom: 12px;
+    color: #ffffff;
 }
 
 .question-list {
-    max-height: 300px;
+    max-height: 15vh;
     overflow-y: auto;
-    background-color: #fafafa;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    margin-top: 10px; /* Adds space between question list and the button */
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    margin-top: 15px;
 }
 
 .question-list ul {
     padding: 0;
     list-style-type: none;
-    color: black;
+    color: #e0e0e0;
 }
 
 .question-list li {
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px dashed #0e0a0a;
+    border-bottom: 1px dashed #999;
 }
 
 .difficulty-tag {
     display: inline-block;
-    margin-top: 4px;
-    padding: 3px 8px;
+    margin-top: 6px;
+    padding: 4px 10px;
     font-size: 12px;
     font-weight: bold;
     border-radius: 4px;
@@ -115,52 +130,59 @@ select {
 
 .delete-btn {
     margin-top: 6px;
-    padding: 6px 10px;
-    background-color: #ef4444;
+    padding: 6px 12px;
+    background-color: #d32f2f;
     color: white;
     border: none;
     border-radius: 5px;
-    font-size: 13px;
+    font-size: 14px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease-in-out;
 }
 
 .delete-btn:hover {
-    background-color: #dc2626;
+    background: #b71c1c;
+}
+
+/* Scrollbar styling */
+.question-list::-webkit-scrollbar {
+    width: 6px;
+}
+.question-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 600px) {
     .adaptive-card {
-        padding: 15px;
+        padding: 20px;
     }
-    .adaptive-input{
-        width: 90%;
-    }
+
     .adaptive-input,
     select {
         font-size: 14px;
     }
+
     .generate-btn {
-        font-size: 14px;
-        padding: 8px;
+        font-size: 16px;
+        padding: 10px;
     }
 
     .question-list {
-        max-height: 200px; /* Adjusted for smaller screens */
-        margin-top: 15px;
-        padding: 8px; /* Reduced padding for smaller screens */
+        max-height: 200px;
+        padding: 10px;
     }
 
     .question-list li {
-        font-size: 14px; /* Smaller font for mobile view */
+        font-size: 14px;
     }
 
     .difficulty-tag {
-        font-size: 10px; /* Smaller tag text on mobile */
+        font-size: 10px;
     }
 
     .delete-btn {
-        font-size: 12px; /* Smaller button text */
+        font-size: 12px;
     }
 }

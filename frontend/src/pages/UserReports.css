@@ -1,137 +1,134 @@
-/* ===== General Styles ===== */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to right, #36d1dc, #5b86e5);
-    color: white;
+    background: linear-gradient(to right, #1a1a2e, #16213e);
+    color: #e0e0e0;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* ===== Reports Container ===== */
 .reports-container {
     width: 100%;
-    max-width: 900px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.2);
+    max-width: 1000px;
+    padding: 30px;
+    background: rgba(30, 30, 30, 0.8);
     border-radius: 10px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    overflow-y: auto; /* ✅ Enables vertical scrolling */
-    margin: 0 auto;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
 }
 
-/* ===== Scrollable Table Container ===== */
 .reports-table-container {
-    max-height: 350px;
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    max-height: 500px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #4a6fa5 #1e1e1e;
+    border-radius: 8px;
+    margin: 20px 0;
 }
 
-/* ===== Table Styling ===== */
+.reports-table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.reports-table-container::-webkit-scrollbar-thumb {
+    background-color: #4a6fa5;
+    border-radius: 10px;
+}
+
+.reports-table-container::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    color: black;
+    background: #2d2d2d;
+    color: #e0e0e0;
     min-width: 600px;
 }
 
 th, td {
-    padding: 12px;
+    padding: 15px;
     text-align: left;
-    white-space: nowrap;
+    border-bottom: 1px solid #444;
 }
 
 th {
-    background: #3498db;
+    background: #4a6fa5;
     color: white;
+    position: sticky;
+    top: 0;
 }
 
-tr:nth-child(even) {
-    background: #f9f9f9;
+tr:hover {
+    background: #3a3a3a;
 }
 
-tr:nth-child(odd) {
-    background: #e3f2fd;
-}
-
-/* ===== Buttons ===== */
 .view-btn,
 .delete-btn {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s ease-in-out;
+    transition: all 0.3s;
+    border: none;
 }
 
-.view-btn:hover,
-.delete-btn:hover {
-    background: #0056b3;
+.view-btn {
+    background: #4a6fa5;
+    color: white;
+}
+
+.view-btn:hover {
+    background: #3a5a8a;
 }
 
 .delete-btn {
-    background: #e63946;
+    background: #d32f2f;
+    color: white;
 }
 
 .delete-btn:hover {
-    background: #d62839;
+    background: #b71c1c;
 }
 
-/* ===== Responsive Design ===== */
 @media (max-width: 768px) {
     .reports-container {
-        width: 90%;
-        max-width: 600px;
-        padding: 15px;
-        max-height: 85vh; /* ✅ Maintains scroll and fits better */
+        width: 95%;
+        padding: 20px;
     }
-
-    table {
-        font-size: 14px;
+    
+    .reports-table-container {
+        max-height: 400px;
     }
-
+    
     th, td {
-        padding: 8px;
-    }
-
-    .view-btn, .delete-btn {
-        padding: 6px 10px;
-        font-size: 12px;
+        padding: 12px;
     }
 }
 
 @media (max-width: 480px) {
     .reports-container {
-        width: 95%;
-        max-width: 350px;
-        padding: 10px;
-        max-height: 80vh; /* ✅ Slightly reduced height for mobile */
+        padding: 15px;
     }
-
-    .reports-container h1 {
-        font-size: 22px;
-    }
-
+    
     table {
-        font-size: 12px;
-        min-width: 100%;
+        font-size: 14px;
     }
-
+    
     th, td {
-        padding: 6px;
+        padding: 10px;
     }
-
-    .view-btn, .delete-btn {
-        padding: 4px 8px;
-        font-size: 10px;
+    
+    .view-btn,
+    .delete-btn {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
