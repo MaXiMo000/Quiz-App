@@ -29,7 +29,8 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   overflow-y: auto;
   margin: 0 auto;
-  min-height: 60vh;
+  max-height: 450px;
+  min-height: 40vh;
 }
 
 .table-container {
@@ -38,7 +39,7 @@ body {
   border-radius: 10px;
   max-height: 350px;
   margin: 0 auto;
-  min-height: 60vh;
+  min-height: 30vh;
 }
 
 /* ===== Table Styling ===== */

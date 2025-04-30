@@ -4,7 +4,8 @@
     max-width: 900px;
     padding: 20px;
     background: rgba(30, 30, 30, 0.9);
-    min-height: 60vh;
+    min-height: 40vh;
+    max-height: 450px;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
@@ -15,7 +16,8 @@
 
 /* ✅ SCROLLABLE TABLE CONTAINER */
 .reports-table-container {
-    min-height: 60vh;
+    min-height: 30vh;
+    max-height: 350px;
     width: 100%;
     overflow: auto;
     scrollbar-width: thin;
@@ -134,7 +136,6 @@ tr:hover {
     }
     
     .reports-table-container {
-        max-height: 70vh;
         border: none;
     }
     

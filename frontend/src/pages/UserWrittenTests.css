@@ -15,15 +15,18 @@ body {
     max-width: 1000px;
     padding: 30px;
     background: rgba(30, 30, 30, 0.8);
+    min-height: 40vh;
+    max-height: 450px;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .table-container {
     overflow: auto;
-    max-height: 500px;
+    min-height: 30vh;
+    max-height: 350px;
     scrollbar-width: thin;
     scrollbar-color: #4a6fa5 #1e1e1e;
     border-radius: 8px;
