@@ -4,142 +4,163 @@
     align-items: center;
     text-align: center;
     width: 100%;
-    padding: 20px;
+    padding: 24px;
     max-height: 90vh;
     overflow-y: auto;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #f5f5f5;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     scrollbar-width: thin;
-    scrollbar-color: #4a6fa5 #1e1e1e;
+    scrollbar-color: #5fa8d3 #1e1e1e;
 }
 
 .written-test-container::-webkit-scrollbar {
     width: 8px;
 }
-
 .written-test-container::-webkit-scrollbar-thumb {
-    background-color: #4a6fa5;
-    border-radius: 10px;
+    background-color: #5fa8d3;
+    border-radius: 8px;
 }
-
 .written-test-container::-webkit-scrollbar-track {
     background: #1e1e1e;
 }
 
 .timer {
-    font-size: 20px;
-    font-weight: bold;
-    color: #e0e0e0;
-    background: #2d2d2d;
-    padding: 8px 16px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    background-color: #273c75;
+    padding: 10px 18px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .question-box {
-    background: #2d2d2d;
-    padding: 20px;
-    border-radius: 12px;
+    background-color: #2f3640;
+    padding: 24px;
+    border-radius: 14px;
     width: 100%;
-    max-width: 700px;
-    color: #e0e0e0;
-    margin-left: 0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    margin-bottom: 20px;
+    max-width: 720px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 24px;
 }
 
 .question-box h3 {
     margin-top: 0;
-    color: #e0e0e0;
+    margin-bottom: 12px;
+    font-size: 20px;
+    color: #f1f1f1;
+}
+
+.question-box p {
+    font-size: 17px;
+    color: #dcdde1;
+    margin-bottom: 12px;
 }
 
 textarea {
     width: 100%;
-    padding: 15px;
-    border: 2px solid #4a6fa5;
-    border-radius: 8px;
-    margin-left: -16px;
+    padding: 16px;
+    border: 2px solid #5fa8d3;
+    border-radius: 10px;
     font-size: 16px;
     resize: none;
     outline: none;
-    margin-top: 10px;
-    background: #3a3a3a;
-    color: #e0e0e0;
-    min-height: 150px;
+    background: #3d3d3d;
+    color: #f5f5f5;
+    /* margin-left: -16px; */
+    transition: border 0.3s;
+    min-height: 160px;
+}
+
+textarea:focus {
+    border-color: #00a8ff;
 }
 
 .navigation-buttons {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 16px;
     flex-wrap: wrap;
-    margin-top: 20px;
     width: 100%;
-    max-width: 700px;
+    max-width: 720px;
+    margin-bottom: 20px;
 }
 
 .navigation-buttons button {
-    background: #4a6fa5;
+    background: #5fa8d3;
     color: white;
     border: none;
+    padding: 14px 22px;
     margin-left: 0;
-    padding: 12px 20px;
-    border-radius: 6px;
-    cursor: pointer;
+    border-radius: 8px;
     font-size: 16px;
-    font-weight: bold;
-    transition: all 0.3s;
-    flex: 1;
-    min-width: 150px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .navigation-buttons button:hover {
-    background: #3a5a8a;
+    background: #3c87b6;
+    transform: translateY(-2px);
 }
 
 .navigation-buttons button:disabled {
-    background: #555;
+    background: #7f8fa6;
     cursor: not-allowed;
 }
 
 .fullscreen-toggle button {
-    background: #d32f2f;
+    background: #e84118;
     color: white;
-    padding: 10px 18px;
+    padding: 12px 20px;
     border-radius: 8px;
-    cursor: pointer;
     font-size: 16px;
     font-weight: bold;
+    cursor: pointer;
     transition: all 0.3s;
+    margin-left: 0;
+    border: none;
 }
 
 .fullscreen-toggle button:hover {
-    background: #b71c1c;
+    background: #c23616;
+    transform: scale(1.05);
+}
+
+.written-test-container h1 {
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: #f5f6fa;
 }
 
 .written-test-container h2 {
-    color: #e0e0e0;
+    margin-top: 20px;
+    font-size: 22px;
+    color: #f5f6fa;
 }
 
+/* Responsive tweaks */
 @media (max-width: 768px) {
     .written-test-container {
-        padding: 15px;
+        padding: 16px;
     }
-    
+
     .question-box {
-        padding: 15px;
+        padding: 16px;
     }
-    
+
     textarea {
-        margin-left: -12px;
-        padding: 12px;
         font-size: 15px;
+        padding: 14px;
     }
-    
+
     .navigation-buttons {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .navigation-buttons button {
         width: 100%;
     }
@@ -149,20 +170,20 @@ textarea {
     .written-test-container {
         padding: 10px;
     }
-    
+
     .timer {
-        font-size: 16px;
+        font-size: 18px;
     }
-    
+
     textarea {
-        margin-left: -10px;
-        padding: 10px;
         font-size: 14px;
+        width: 80%;
+        padding: 12px;
     }
-    
+
     .navigation-buttons button,
     .fullscreen-toggle button {
-        padding: 10px;
         font-size: 14px;
+        padding: 10px 14px;
     }
 }

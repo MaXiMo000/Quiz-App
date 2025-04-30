@@ -1,12 +1,25 @@
 import WrittenTest from "../models/WrittenTest.js";
-import Together from "together-ai";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 dotenv.config();
 
-const together = new Together({
-    apiKey: process.env.TOGETHER_AI_API_KEY,
-});
+if (!process.env.GEMINI_API_KEY) {
+    throw new Error("🚫 GEMINI_API_KEY is missing from .env file!");
+}
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+const generateFromGemini = async (prompt) => {
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro-001" });
+
+    const result = await model.generateContent({
+        contents: [{ parts: [{ text: prompt }] }]
+    });
+
+    return result.response.text();
+};
 
 export async function createWrittenTest(req, res) {
     try {
@@ -60,25 +73,23 @@ export async function scoreWrittenAnswer(req, res) {
             return res.status(400).json({ message: "Answer and question are required" });
         }
 
-        // ✅ Request AI to evaluate the answer
-        const response = await together.chat.completions.create({
-            messages: [
-                { role: "system", content: "You are an AI evaluator. Score the answer out of 10 and provide feedback." },
-                { role: "user", content: `Question: ${question}\nAnswer: ${answer}\nScore this answer with explanation.` },
-            ],
-            model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-        });
+        const prompt = `
+You are an AI evaluator. Score the following answer out of 10 and provide a brief explanation.
 
-        // ✅ Extract the AI-generated score
-        if (!response.choices || response.choices.length === 0) {
-            return res.status(500).json({ message: "Invalid AI response" });
-        }
+Question: ${question}
+Answer: ${answer}
 
-        const scoreText = response.choices[0].message.content.trim();
-        const scoreMatch = scoreText.match(/(\d+)/);
-        const score = scoreMatch ? parseInt(scoreMatch[0], 10) : 0; // Default to 0 if invalid
+Return output like:
+Score: 8
+Feedback: Well-structured answer with key points covered.
+`;
 
-        res.json({ score, feedback: scoreText });
+        const geminiResponse = await generateFromGemini(prompt);
+
+        const scoreMatch = geminiResponse.match(/Score\s*[:\-]?\s*(\d+)/i);
+        const score = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
+
+        res.json({ score, feedback: geminiResponse.trim() });
     } catch (error) {
         console.error("Error in AI scoring:", error);
         res.status(500).json({ message: "Error in AI scoring", error });
