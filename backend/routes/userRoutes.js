@@ -23,7 +23,7 @@ router.get(
 
         // Redirect with JWT and user info as query
         const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
-        res.redirect(`${frontendURL}/google-auth?token=${token}&name=${user.name}&email=${user.email}&role=${user.role}`);
+        res.redirect(`${frontendURL}/google-auth?token=${token}&_id=${user._id}&name=${user.name}&email=${user.email}&role=${user.role}`);
     }
 );
 
