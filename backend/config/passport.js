@@ -9,11 +9,6 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// ✅ Debug Logs
-console.log("🔍 GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID); // Should not be undefined
-console.log("🔍 GOOGLE_CLIENT_SECRET:", GOOGLE_CLIENT_SECRET); // Should not be undefined
-console.log("🔍 GOOGLE_CALLBACK_URL:", GOOGLE_CALLBACK_URL); // Should not be undefined
-
 // ✅ Google Strategy
 passport.use(
     new GoogleStrategy(

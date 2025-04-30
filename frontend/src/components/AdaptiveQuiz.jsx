@@ -37,7 +37,7 @@ const AdaptiveQuiz = () => {
                 performance,
                 numQuestions
             });
-    
+
             // ✅ After adding, get the updated quiz to reflect all questions and indexes correctly
             const updatedQuiz = await axios.get(`${BACKEND_URL}/api/quizzes/${id}`);
             setResponse({ questions: updatedQuiz.data.questions }); // store all questions
@@ -48,7 +48,7 @@ const AdaptiveQuiz = () => {
             setLoading(false);
         }
     };
-    
+
 
     const handleDeleteQuestion = async (index) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this question?");
