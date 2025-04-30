@@ -36,7 +36,7 @@ passport.use(
                     { expiresIn: "1h" }
                 );
 
-                return done({
+                return done(null, {
                     token,
                     user: {
                         _id: user._id,
