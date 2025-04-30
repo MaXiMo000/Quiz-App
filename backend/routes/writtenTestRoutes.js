@@ -12,18 +12,18 @@ import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/", getWrittenTests, verifyToken);
+router.get("/", verifyToken, getWrittenTests);
 
-router.get("/:id", getTestById, verifyToken);
+router.get("/:id", verifyToken, getTestById);
 
-router.delete("/delete/Test", deleteTest, verifyToken);
+router.delete("/delete/Test", verifyToken, deleteTest);
 
-router.post("/create", createWrittenTest, verifyToken);
+router.post("/create", verifyToken, createWrittenTest);
 
-router.post("/:testId/add-question", addQuestionToTest, verifyToken);
+router.post("/:testId/add-question", verifyToken, addQuestionToTest);
 
-router.post("/score-answer", scoreWrittenAnswer, verifyToken);
+router.post("/score-answer", verifyToken, scoreWrittenAnswer);
 
-router.delete("/:id/questions/:questionIndex", deleteQuestion, verifyToken);
+router.delete("/:id/questions/:questionIndex", verifyToken, deleteQuestion);
 
 export default router;

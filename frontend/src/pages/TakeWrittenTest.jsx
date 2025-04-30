@@ -122,7 +122,7 @@ const TakeWrittenTest = () => {
                 });
                 
 
-                const data = await response.json();
+                const data = response.data;
                 if (data.score !== undefined && !isNaN(data.score)) {
                     totalScore += parseFloat(data.score);
                     validResponses++;
@@ -150,16 +150,12 @@ const TakeWrittenTest = () => {
 
         // ✅ Store report in the database
         try {
-            await fetch(`${BACKEND_URL}/api/written-test-reports`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: user.name,
-                    testName: test.title,
-                    score: totalScore,
-                    total: totalMarks,
-                    questions: scoredQuestions,
-                }),
+            await axios.post("/api/written-test-reports", {
+                username: user.name,
+                testName: test.title,
+                score: totalScore,
+                total: totalMarks,
+                questions: scoredQuestions,
             });
 
             // alert("Report saved successfully!");
@@ -171,9 +167,9 @@ const TakeWrittenTest = () => {
     };
     
 
-    if (!test) return <h2>Loading...</h2>;
     if (loading) return <p>Loading Tests...</p>;
     if (error) return <p className="error-message">{error}</p>;
+    if (!test) return <h2>Test not found.</h2>;
 
 
     return (
