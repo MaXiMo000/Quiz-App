@@ -97,7 +97,11 @@ export async function getTopScorers(req, res) {
                 $group: {
                     _id: "$quizName",
                     topUsers: {
-                        $push: { username: "$username", score: "$score" }
+                        $push: {
+                            username: "$username",
+                            score: "$score",
+                            total: "$total"  // Include the total score
+                        }
                     }
                 }
             },
