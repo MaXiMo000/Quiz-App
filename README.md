@@ -1,4 +1,6 @@
 <!-- steps to run project -->
+### 🌐 Live Site
+[https://quiz-app-cp2h.onrender.com/] (https://quiz-app-cp2h.onrender.com/)
 
 <!-- for backend -->
 cd backend
