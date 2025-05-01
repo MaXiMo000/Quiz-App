@@ -1,52 +1,141 @@
-<!-- steps to run project -->
-### 🌐 Live Site
-[https://quiz-app-cp2h.onrender.com/] (https://quiz-app-cp2h.onrender.com/)
+# 🧠 Quiz App
 
-<!-- for backend -->
+An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** that enables users to take quizzes, generate AI-based questions, and upgrade to premium for enhanced features like insights, achievements, and live battles.
+
+---
+
+## 🌐 Live Demo
+
+👉 [Click here to visit the live site](https://quiz-app-cp2h.onrender.com/)
+
+---
+
+## 🚀 Features
+
+- 🔐 **Authentication**
+  - Google OAuth, JWT-based authentication
+  - Role-based access (User, Premium, Admin)
+
+- 🧠 **AI-Powered Quiz Generation**
+  - Automatic question generation with duration and marks
+  - AI evaluates written test answers using NLP
+
+- 📊 **Reports & Performance Tracking**
+  - Get score reports, quiz history, and question reviews
+
+- 🏆 **Leaderboards & Achievements**
+  - View top scorers weekly/monthly
+  - Earn badges like “Quiz Master,” “Speed Genius,” etc.
+
+- 🤝 **Live Quiz Battles** *(in progress)*
+  - Challenge friends in real-time and compete live
+
+- 💳 **Subscription Plans**
+  - Free: Limited quizzes
+  - Premium: Unlimited access + AI insights
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React, Tailwind CSS, Vite
+- **Backend**: Node.js, Express.js, MongoDB
+- **AI Integration**: Together AI, Google Gemini API
+- **Authentication**: JWT, Google OAuth
+- **Deployment**: Render
+
+---
+
+
+## 📦 Installation & Setup
+
+### 🔗 Backend
+
+
+```bash
 cd backend
-npm i
-add .env file
-add MONGO_URI, PORT , TOGETHER_AI_API_KEY, JWT_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL, FRONTEND_URL, GOOGLE_SECRET, GEMINI_API_KEY
+npm install
+Create a .env file in the backend folder with the following:
+
+env
+MONGO_URI=your_mongodb_uri
+PORT=5000
+TOGETHER_AI_API_KEY=your_ai_key
+JWT_SECRET=your_jwt_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:4000/auth/google/callback
+FRONTEND_URL=http://localhost:5173
+GOOGLE_SECRET=your_google_secret
+GEMINI_API_KEY=your_gemini_api_key
+Start the backend server:
+
+bash
 npm start
 
-<!-- for frontend -->
-cd frontend npm i
-.env => VITE_BACKEND_URL
-in pages = const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-i deployed my backend and added the link and u can do the same or add localhost backend link to env file
+
+💻 Frontend
+
+bash
+cd frontend
+npm install
+Create a .env file in the frontend folder:
+
+env
+VITE_BACKEND_URL=https://your-backend-url.onrender.com
+Or use this for local testing:
+
+env
+VITE_BACKEND_URL=http://localhost:4000
+
+In your pages jsx, access the backend URL like:
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+Start the frontend server:
+
+bash
 npm run dev
 
-<!-- done -->
 
-<!-- project progress report -->
-First commit // 07-03-2025 // made simple project
-Second Commit // 08-03-2025 // developed ai question generation
-Third commit // 09-03-2025 // made better UI and better User experience while taking test
-Fourth commit // 10-03-2025 // made auto duration and marks on using AI question generation 
-Fifth commit // 10-03-2025 // backend deployed
-sixth commit // 10-03-2025 // added Written Test 
-seventh commit // 10-03-2025 // used authwrapper and mobile responsive
-eight commit // 10-03-2025 // added jwt token authentication and better UI 
+📈 Project Progress Timeline:
+    Date	Commit Description
+        07-03-2025	Initial commit: basic project structure
+        08-03-2025	AI-based question generation added
+        09-03-2025	Improved UI and quiz-taking UX
+        10-03-2025	Auto duration/marks for AI questions, backend deployed
+        10-03-2025	Added written test with AI evaluation
+        10-03-2025	Added AuthWrapper and mobile responsiveness
+        10-03-2025	Integrated JWT authentication and enhanced UI
 
-<!-- for future -->
-better UI/UX = done
-added time limit to test = done
-adding Quizquestion which shows particular quiz's questions in detail and edit or delete a question =  done
-adding written test which uses ai to check and gives score accordingly = done 
-change the reports get and check from name to id = done
 
-✅ AI-Based Difficulty Leveling
-AI analyzes past performance and adjusts question difficulty dynamically = done
-Beginner users get easier questions; advanced users get challenging ones = done
+✅ Completed Features:
+    ✅ Better UI/UX
+    ✅ AI-powered question generation
+    ✅ Time limits for tests
+    ✅ Role-based access with JWT
+    ✅ Quiz review/edit system
+    ✅ Written test with AI evaluation
+    ✅ AI-based difficulty level adjustment
+    ✅ Beginner users get easier questions
+    ✅ Advanced users face harder ones
+    ✅ Leaderboard for top scorers
+    ✅ Free vs Premium subscriptions
+    ✅Free users: Limited quizzes
+    ✅Premium users: Unlimited access, AI insights
 
-Leaderboards & Achievements
-Top scorers of the week/month displayed. = done
-Earn badges like “Quiz Master,” “Speed Genius,” “Perfect Score,” etc. = in progress
 
- Live Quiz Battles
-Users can challenge friends to a live quiz. = in progress
-Compete in real-time, see opponent’s progress.
+🔄 In Progress:
+    🏅 Achievement Badges:
+        Earn badges like:
+            Quiz Master
+            Speed Genius
+            Perfect Score
 
-✅ Subscription Plans
-Free users get limited quizzes. = done
-Premium users get AI-powered insights, unlimited access, etc. = done
+    ⚔️ Live Quiz Battles
+
+    Real-time quiz competition
+    View opponent’s progress during battle
+
+
+💬 Feedback & Contributions:
+    Have suggestions or want to contribute?
+    Open an issue or a pull request — all contributions are welcome! 🙌
