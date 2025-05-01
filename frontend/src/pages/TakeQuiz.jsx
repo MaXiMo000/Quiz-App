@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./TakeQuiz.css";
@@ -21,6 +21,11 @@ const TakeQuiz = () => {
     const [finalScore, setFinalScore] = useState(null);
     const [performanceLevel, setPerformanceLevel] = useState("medium");
 
+    const optionLetters = useMemo(() => ["A", "B", "C", "D"], []);
+    const currentQ = useMemo(() => {
+        return quiz?.questions?.[currentQuestion];
+    }, [quiz, currentQuestion]);
+
     useEffect(() => {
         const fetchQuiz = async () => {
             try {
@@ -30,13 +35,11 @@ const TakeQuiz = () => {
             } catch (error) {
                 console.error("Error fetching users:", error);
                 setError("Error fetching users. Try again later.");
-            }
-            finally{
+            } finally {
                 setLoading(false);
             }
         };
         fetchQuiz();
-
         enterFullScreen();
     }, [id]);
 
@@ -49,7 +52,7 @@ const TakeQuiz = () => {
     useEffect(() => {
         if (timeLeft === null) return;
         if (timeLeft <= 0) {
-            handleSubmit(); // ✅ Auto-submit when time runs out
+            handleSubmit();
             return;
         }
 
@@ -57,7 +60,7 @@ const TakeQuiz = () => {
             setTimeLeft(prevTime => prevTime - 1);
         }, 1000);
 
-        return () => clearInterval(timer); // Cleanup on unmount
+        return () => clearInterval(timer);
     }, [timeLeft]);
 
     const enterFullScreen = () => {
@@ -78,8 +81,11 @@ const TakeQuiz = () => {
     };
 
     const handleAnswer = (optionIndex) => {
-        const optionLetter = ["A", "B", "C", "D"][optionIndex];
-        setAnswers({ ...answers, [currentQuestion]: optionLetter });
+        const optionLetter = optionLetters[optionIndex];
+        setAnswers(prev => ({
+            ...prev,
+            [currentQuestion]: optionLetter
+        }));
     };
 
     const handleClearAnswer = () => {
@@ -102,50 +108,48 @@ const TakeQuiz = () => {
 
     const handleSubmit = async () => {
         let correctCount = 0;
-    
-        // ✅ Create detailed questions array
+
         const detailedQuestions = quiz.questions.map((q, index) => {
-            const userAnswer = answers[index] || "Not Answered"; // Handle unanswered questions
+            const userAnswer = answers[index] || "Not Answered";
             const correctAnswer = q.correctAnswer;
-    
+
             if (userAnswer === correctAnswer) {
                 correctCount++;
             }
-    
+
             return { questionText: q.question, userAnswer, correctAnswer };
         });
-    
+
         const totalMarks = quiz.totalMarks;
         const scoreAchieved = (correctCount / quiz.questions.length) * totalMarks;
         setScore(scoreAchieved);
-    
+
         const user = JSON.parse(localStorage.getItem("user"));
-    
+
         try {
             const response = await axios.post(`${BACKEND_URL}/api/reports`, {
                 username: user?.name,
                 quizName: quiz.title,
                 score: scoreAchieved,
                 total: totalMarks,
-                questions: detailedQuestions, // ✅ Send questions array
+                questions: detailedQuestions,
             });
-    
-            // if (response.status !== 200) {
-            //     throw new Error(`Error scoring answer: ${response.status}`);
-            // }
-            if(timeLeft <= 0){
+
+            if (timeLeft <= 0) {
                 alert(`Time's up! Your quiz has been auto-submitted. ${scoreAchieved} out of ${totalMarks}`);
             }
+
             setScore(scoreAchieved);
             setFinalScore(totalMarks);
             const level = scoreAchieved >= totalMarks * 0.7 ? "high" : scoreAchieved >= totalMarks * 0.4 ? "medium" : "low";
             setPerformanceLevel(level);
             setShowResultModal(true);
+            exitFullScreen();
         } catch (error) {
             console.error("Error saving report:", error);
             alert("Failed to save your score. Please try again.");
         }
-    };    
+    };
 
     if (loading) return <p>Loading Quiz...</p>;
     if (error) return <p className="error-message">{error}</p>;
@@ -157,12 +161,12 @@ const TakeQuiz = () => {
                     <h1>{quiz.title}</h1>
                     <div className="timer">Time Left: {formatTime(timeLeft)}</div>
                     <div className="question-box">
-                        <p className="question">{quiz.questions[currentQuestion].question}</p>
+                        <p className="question">{currentQ?.question}</p>
                         <div className="options">
-                            {quiz.questions[currentQuestion].options.map((option, i) => (
+                            {currentQ?.options.map((option, i) => (
                                 <button
                                     key={i}
-                                    className={answers[currentQuestion] === ["A", "B", "C", "D"][i] ? "selected" : ""}
+                                    className={answers[currentQuestion] === optionLetters[i] ? "selected" : ""}
                                     onClick={() => handleAnswer(i)}
                                 >
                                     {option}
@@ -174,8 +178,8 @@ const TakeQuiz = () => {
                     <div className="navigation-buttons">
                         <button onClick={handlePrev} disabled={currentQuestion === 0}>Previous</button>
                         <button onClick={handleClearAnswer}>Clear Answer</button>
-                        <button 
-                            onClick={handleNext} 
+                        <button
+                            onClick={handleNext}
                             disabled={currentQuestion === quiz.questions.length - 1}
                             className={currentQuestion === quiz.questions.length - 1 ? "disabled-btn" : ""}
                         >
@@ -186,17 +190,17 @@ const TakeQuiz = () => {
                 </>
             ) : <p>Loading quiz...</p>}
             {showResultModal && (
-            <div className="modal-overlay">
-                <div className="modal-content">
-                    <p>You scored <strong>{score}</strong> out of <strong>{finalScore}</strong>.</p>
-                    <p>Would you like to generate more questions based on your performance?</p>
-                    <div className="modal-actions">
-                    <button onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}>Generate More</button>
-                    <button onClick={() => navigate("/user/report")}>Go to Reports</button>
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <p>You scored <strong>{score}</strong> out of <strong>{finalScore}</strong>.</p>
+                        <p>Would you like to generate more questions based on your performance?</p>
+                        <div className="modal-actions">
+                            <button onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}>Generate More</button>
+                            <button onClick={() => navigate("/user/report")}>Go to Reports</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        )}
+            )}
         </div>
     );
 };

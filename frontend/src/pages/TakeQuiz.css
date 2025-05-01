@@ -71,7 +71,7 @@
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: all 0.3s;
+    transition: all 0.1s;
     margin-left: 0;
     color: #e0e0e0;
     text-align: left;
@@ -82,7 +82,7 @@
 }
 
 .options .selected {
-    background-color: #4a6fa5;
+    background-color: #4a6fa5 !important;
     color: white;
 }
 
