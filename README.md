@@ -34,17 +34,17 @@ adding written test which uses ai to check and gives score accordingly = done
 change the reports get and check from name to id = done
 
 ✅ AI-Based Difficulty Leveling
-AI analyzes past performance and adjusts question difficulty dynamically = in progress
-Beginner users get easier questions; advanced users get challenging ones = in progress
+AI analyzes past performance and adjusts question difficulty dynamically = done
+Beginner users get easier questions; advanced users get challenging ones = done
 
 Leaderboards & Achievements
 Top scorers of the week/month displayed. = done
-Earn badges like “Quiz Master,” “Speed Genius,” “Perfect Score,” etc.
+Earn badges like “Quiz Master,” “Speed Genius,” “Perfect Score,” etc. = in progress
 
  Live Quiz Battles
-Users can challenge friends to a live quiz.
+Users can challenge friends to a live quiz. = in progress
 Compete in real-time, see opponent’s progress.
 
 ✅ Subscription Plans
-Free users get limited quizzes.
-Premium users get AI-powered insights, unlimited access, etc.
+Free users get limited quizzes. = done
+Premium users get AI-powered insights, unlimited access, etc. = done
