@@ -16,4 +16,20 @@ instance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// Handle 403 (Forbidden) globally
+instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const status = error.response?.status;
+
+        if (status === 403) {
+            alert("⚠️ Please login first.");
+            localStorage.clear();
+            window.location.href = "/login";
+        }
+
+        return Promise.reject(error);
+    }
+);
+
 export default instance;
