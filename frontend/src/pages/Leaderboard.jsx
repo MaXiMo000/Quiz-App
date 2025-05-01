@@ -68,6 +68,7 @@ const Leaderboard = () => {
                                         <th>Rank</th>
                                         <th>Username</th>
                                         <th>Score</th>
+                                        <th>Total</th> {/* Added column for Total */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,6 +77,7 @@ const Leaderboard = () => {
                                             <td>#{index + 1}</td>
                                             <td>{user.username}</td>
                                             <td>{user.score.toFixed(1)}</td>
+                                            <td>{user.total}</td> {/* Display total score */}
                                         </tr>
                                     ))}
                                 </tbody>
