@@ -82,6 +82,7 @@ const Sidebar = () => {
                             {/* <Link to="/written-tests">📝 Written Tests</Link>
                             <Link to="/user/written-reports">📄 Tests Reports</Link> */}
                             <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
+                            <Link to="/contact" onClick={handleLinkClick}>📄 Contact Me</Link>
                             <button onClick={() => updateRole("user")}>👤 Go Simple User</button>
                         </>
                     )}

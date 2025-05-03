@@ -38,7 +38,7 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React, Tailwind CSS, Vite
+- **Frontend**: React,CSS, Vite
 - **Backend**: Node.js, Express.js, MongoDB
 - **AI Integration**: Together AI, Google Gemini API
 - **Authentication**: JWT, Google OAuth
@@ -83,6 +83,9 @@ Create a .env file in the frontend folder:
 
 env
 VITE_BACKEND_URL=https://your-backend-url.onrender.com
+VITE_CONTACT_KEY = from emailjs 
+VITE_CONTACT_SERVICE = from emailjs 
+VITE_CONTACT_TEMPLATE = from emailjs 
 Or use this for local testing:
 
 env
