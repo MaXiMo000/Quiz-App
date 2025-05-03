@@ -100,14 +100,14 @@ npm run dev
 
 
 📈 Project Progress Timeline:
-    Date	Commit Description
-        07-03-2025	Initial commit: basic project structure
-        08-03-2025	AI-based question generation added
-        09-03-2025	Improved UI and quiz-taking UX
-        10-03-2025	Auto duration/marks for AI questions, backend deployed
-        10-03-2025	Added written test with AI evaluation
-        10-03-2025	Added AuthWrapper and mobile responsiveness
-        10-03-2025	Integrated JWT authentication and enhanced UI
+  Date	      Commit Description
+  07-03-2025	Initial commit: basic project structure
+  08-03-2025	AI-based question generation added
+  09-03-2025	Improved UI and quiz-taking UX
+  10-03-2025	Auto duration/marks for AI questions, backend deployed
+  10-03-2025	Added written test with AI evaluation
+  10-03-2025	Added AuthWrapper and mobile responsiveness
+  10-03-2025	Integrated JWT authentication and enhanced UI
 
 
 ✅ Completed Features:
