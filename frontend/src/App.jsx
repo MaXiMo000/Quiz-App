@@ -35,7 +35,7 @@ const UserWrittenReports = lazy(() => import("./pages/UserWrittenReports"));
 const UserWrittenReportCheck = lazy(() => import("./pages/UserWrittenReportsCheck"));
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 import PremiumQuizzes from "./pages/PremiumQuizzes";
-
+import Contact from "./pages/Contact";
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -80,8 +80,8 @@ const App = () => {
                         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                         <Route path="/refund-policy" element={<RefundPolicy />} />
                         <Route path="/shipping-policy" element={<ShippingPolicy />} />
-                        <Route path="/contact" element={<ContactUs />} />
-
+                        <Route path="/contactUs" element={<ContactUs />} />
+                        <Route path="/contact" element={<Contact />} />
                         
                         <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                     </Route>
