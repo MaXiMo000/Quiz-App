@@ -20,6 +20,8 @@ const TakeQuiz = () => {
     const [showResultModal, setShowResultModal] = useState(false);
     const [finalScore, setFinalScore] = useState(null);
     const [performanceLevel, setPerformanceLevel] = useState("medium");
+    const [questionStartTime, setQuestionStartTime] = useState(Date.now());
+    const [answerTimes, setAnswerTimes] = useState({});
 
     const optionLetters = useMemo(() => ["A", "B", "C", "D"], []);
     const currentQ = useMemo(() => quiz?.questions?.[currentQuestion], [quiz, currentQuestion]);
@@ -94,19 +96,31 @@ const TakeQuiz = () => {
         });
     };
 
+    const recordAnswerTime = () => {
+        const timeSpent = (Date.now() - questionStartTime) / 1000;
+        setAnswerTimes(prev => ({
+        ...prev,
+        [currentQuestion]: (prev[currentQuestion] || 0) + timeSpent
+        }));
+        setQuestionStartTime(Date.now());
+    };
+    
     const handleNext = () => {
+        recordAnswerTime();
         if (currentQuestion < quiz.questions.length - 1) {
-            setCurrentQuestion(prev => prev + 1);
+        setCurrentQuestion(prev => prev + 1);
         }
     };
-
+    
     const handlePrev = () => {
+        recordAnswerTime();
         if (currentQuestion > 0) {
             setCurrentQuestion(prev => prev - 1);
         }
     };
 
     const handleSubmit = async () => {
+        recordAnswerTime();
         let correctCount = 0;
 
         const detailedQuestions = quiz.questions.map((q, idx) => {
@@ -125,7 +139,8 @@ const TakeQuiz = () => {
                 userAnswer,
                 userAnswerText,
                 correctAnswer: q.correctAnswer,
-                correctAnswerText
+                correctAnswerText,
+                answerTime: answerTimes[idx] || 0
             };
         });
 
@@ -180,9 +195,21 @@ const TakeQuiz = () => {
             </div>
 
             <div className="navigation-buttons">  
-                <button onClick={handlePrev} disabled={currentQuestion === 0}>Previous</button>
+                <button
+                    onClick={handlePrev}
+                    disabled={currentQuestion === 0}
+                    className={`navigation-button ${currentQuestion === 0 ? "disabled-btn" : ""}`}
+                >
+                    Previous
+                </button>
                 <button onClick={handleClearAnswer}>Clear Answer</button>
-                <button onClick={handleNext} disabled={currentQuestion === quiz.questions.length - 1}>Next</button>
+                <button
+                    onClick={handleNext}
+                    disabled={currentQuestion === quiz.questions.length - 1}
+                    className={`navigation-button ${currentQuestion === quiz.questions.length - 1 ? "disabled-btn" : ""}`}
+                >
+                    Next
+                </button>
                 <button onClick={handleSubmit}>Submit Quiz</button>
             </div>
 

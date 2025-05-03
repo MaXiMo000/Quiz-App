@@ -12,7 +12,8 @@ const ReportSchema = new Schema({
         userAnswer:        { type: String,   required: true }, // letter
         userAnswerText:    { type: String,   required: true }, // ← add this
         correctAnswer:     { type: String,   required: true }, // letter
-        correctAnswerText: { type: String,   required: true }  // ← add this
+        correctAnswerText: { type: String,   required: true },  // ← add this
+        answerTime:        { type: Number,   required: true }
     }]
 }, { timestamps: true });
 

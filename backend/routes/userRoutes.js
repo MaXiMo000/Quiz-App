@@ -4,12 +4,22 @@ import { verifyToken } from "../middleware/auth.js";
 
 import passport from "passport";
 import "../config/passport.js";
+import UserQuiz from "../models/User.js"; // Assuming you have a User model
 
 const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/", verifyToken, getAllUsers); // Protected route
+router.get("/:id", verifyToken, async (req, res) => {
+        try {
+        const user = await UserQuiz.findById(req.params.id);
+        res.json(user);
+        } catch (err) {
+        res.status(500).json({ error: "User not found" });
+        }
+});
+
 router.patch("/update-role", verifyToken, updateUserRole);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
