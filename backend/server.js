@@ -15,6 +15,7 @@ import "./config/passport.js";
 import userRoutes from "./routes/userRoutes.js";
 import apiRoutes from "./routes/api.js";
 import writtenTestRoutes from "./routes/writtenTestRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.get("/ping", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api", apiRoutes);
 app.use("/api/written-tests", writtenTestRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // MongoDB Connection
 const PORT = process.env.PORT || 4000;

@@ -36,6 +36,7 @@ const UserWrittenReportCheck = lazy(() => import("./pages/UserWrittenReportsChec
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 import PremiumQuizzes from "./pages/PremiumQuizzes";
 import Contact from "./pages/Contact";
+import UserAnalyticsDashboard from "./pages/UserAnalyticsDashboard";
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -82,6 +83,7 @@ const App = () => {
                         <Route path="/shipping-policy" element={<ShippingPolicy />} />
                         <Route path="/contactUs" element={<ContactUs />} />
                         <Route path="/contact" element={<Contact />} />
+                        <Route path="/analytics" element={<UserAnalyticsDashboard />} />
                         
                         <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                     </Route>
