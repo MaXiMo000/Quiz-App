@@ -112,6 +112,7 @@
     justify-content: center;
     gap: 8px;
     margin-left: 20px;
+    margin-bottom: 30px;
 }
 
 .logout-btn:hover {
@@ -197,6 +198,7 @@
     .logout-btn {
         padding: 10px;
         font-size: 15px;
+        margin-bottom: 50px;
     }
 }
 
@@ -219,5 +221,8 @@
         left: 10px;
         padding: 8px 10px;
         font-size: 22px;
+    }
+    .logout-btn {
+        margin-bottom: 50px;
     }
 }
