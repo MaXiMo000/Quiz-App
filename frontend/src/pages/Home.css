@@ -57,3 +57,50 @@ p {
         padding: 10px 20px;
     }
 }
+
+.badge-list {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.badge-list h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ffd700;
+}
+
+.badge-list ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+}
+
+.badge-item {
+    background: linear-gradient(135deg, #4a6fa5, #6a89cc);
+    color: white;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.badge-item:hover {
+    transform: scale(1.05);
+    cursor: default;
+}
+
+@media (max-width: 600px) {
+    .badge-item {
+    font-size: 14px;
+    padding: 8px 16px;
+    }
+
+    .badge-list h3 {
+    font-size: 20px;
+    }
+}

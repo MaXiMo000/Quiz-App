@@ -1,5 +1,6 @@
 import Report from "../models/Report.js";
 import moment from "moment";
+import UserQuiz from "../models/User.js";
 
 export async function getReports(req, res) {
     const reports = await Report.find();
@@ -17,7 +18,25 @@ export async function createReport(req, res) {
         const report = new Report({ username, quizName, score, total, questions});
         await report.save();
 
-        res.status(201).json({ message: "Report saved successfully", report });
+        const user = await UserQuiz.findOne({ name: username });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        if (user) {
+        if (score === total && !user.badges.includes("Perfect Score")) {
+            user.badges.push("Perfect Score");
+        }
+
+        const validQuestions = questions.filter(q => typeof q.answerTime === "number");
+        if (validQuestions.length > 0) {
+            const avgTime = validQuestions.reduce((sum, q) => sum + q.answerTime, 0) / validQuestions.length;
+            if (avgTime < 10 && !user.badges.includes("Speed Genius")) {
+            user.badges.push("Speed Genius");
+            }
+        }
+        await user.save();
+        }
+        res.status(201).json({ message: "Report saved and badges awarded!", report });
     } catch (error) {
         console.error("Error saving report:", error);
         res.status(500).json({ message: "Error saving report", error: error.message });
