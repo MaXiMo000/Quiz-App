@@ -171,8 +171,8 @@ const AdminQuizzes = () => {
                         <p>Duration: {quiz.duration} minutes</p>
                         <p>Total Marks: {quiz.totalMarks}</p>
                         <p>Passing Marks: {quiz.passingMarks}</p>
-                        <button className="add-question-btn" onClick={() => deleteQuiz(quiz.title)}>Delete Quiz</button>
-                        <button className="add-question-btn" onClick={() => openAiQuestionModal(quiz._id, quiz.category)}>🤖 Add Question (AI)</button>
+                        <button className="delete-btn" onClick={() => deleteQuiz(quiz.title)}>Delete Quiz</button>
+                        <button className="add-ai-btn" onClick={() => openAiQuestionModal(quiz._id, quiz.category)}>🤖 Add Question (AI)</button>
                         <button className="add-question-btn" onClick={() => openAddQuestionModal(quiz._id)}>➕ Add Question</button>
                         <button className="view-questions-btn" onClick={() => navigate(`/admin/quiz/${quiz._id}`)}>📜 View Questions</button>
                         <ul className="display-ans">

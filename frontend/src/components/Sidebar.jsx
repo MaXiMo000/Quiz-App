@@ -68,8 +68,9 @@ const Sidebar = () => {
                             <Link to="/admin" onClick={handleLinkClick}>📊 Dashboard</Link>
                             <Link to="/admin/create" onClick={handleLinkClick}>📚 Create Quiz</Link>
                             <Link to="/admin/report" onClick={handleLinkClick}>📄 Reports</Link>
-                            <Link to="/admin/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link>
-                            <Link to="/admin/written-test/report" onClick={handleLinkClick}>📄 Tests Reports</Link>
+                            <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
+                            {/* <Link to="/admin/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link>
+                            <Link to="/admin/written-test/report" onClick={handleLinkClick}>📄 Tests Reports</Link> */}
                         </>
                     )}
 

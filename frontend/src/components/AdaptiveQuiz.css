@@ -1,188 +1,182 @@
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to right, #1a1a2e, #16213e);
-    color: #e0e0e0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
+/* AdaptiveQuiz.css */
 
 .adaptive-wrapper {
     display: flex;
     justify-content: center;
-    padding: 30px 20px;
+    padding: var(--space-lg);
     width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
 .adaptive-card {
-    background: rgba(30, 30, 30, 0.9);
-    padding: 30px;
+    background: var(--card-bg);
+    padding: var(--space-lg);
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
+    box-shadow: 0 6px 24px var(--shadow);
     width: 100%;
-    color: #e0e0e0;
+    max-width: 600px;
+    color: var(--text-color);
+    transition: transform 0.3s ease;
+}
+
+.adaptive-card:hover {
+    transform: translateY(-2px);
 }
 
 .adaptive-card h2 {
     text-align: center;
-    color: #ffffff;
-    margin-bottom: 25px;
+    margin-bottom: var(--space-md);
+    color: var(--accent);
 }
 
 .adaptive-info label {
     display: block;
-    margin: 12px 0 6px;
-    font-weight: bold;
+    margin-top: var(--space-sm);
+    font-weight: 500;
+    color: var(--text-color);
 }
 
-.adaptive-input,
-select {
+.adaptive-info input,
+.adaptive-info select {
     width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    font-size: 16px;
+    padding: var(--space-sm);
+    margin-top: var(--space-xs);
+    font-size: 1rem;
     border-radius: 6px;
-    border: 1px solid #444;
-    background-color: #2d2d2d;
-    color: #e0e0e0;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    transition: border-color 0.3s;
 }
 
-select option {
-    background-color: #2d2d2d;
-    color: #e0e0e0;
+.adaptive-info input:focus,
+.adaptive-info select:focus {
+    border-color: var(--accent);
 }
 
 .generate-btn {
     width: 100%;
-    background-color: #4a6fa5;
+    background-color: var(--accent);
     color: #fff;
-    padding: 12px;
-    margin-top: 20px;
-    font-size: 18px;
+    padding: var(--space-sm);
+    margin-top: var(--space-md);
+    font-size: 1.1rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background 0.3s, transform 0.2s;
 }
 
 .generate-btn:hover {
-    background-color: #3a5a8a;
+    background-color: var(--accent2);
+    transform: translateY(-2px);
 }
 
 .generated-questions {
-    margin-top: 30px;
+    margin-top: var(--space-lg);
 }
 
 .generated-questions h4 {
-    margin-bottom: 12px;
-    color: #ffffff;
+    margin-bottom: var(--space-xs);
+    color: var(--text-light);
 }
 
 .question-list {
-    max-height: 15vh;
+    max-height: 200px;
     overflow-y: auto;
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 12px;
+    background: rgba(30, 30, 30, 0.1);
+    padding: var(--space-sm);
     border-radius: 10px;
-    border: 1px solid #444;
-    margin-top: 15px;
-}
-
-.question-list ul {
-    padding: 0;
-    list-style-type: none;
-    color: #e0e0e0;
-}
-
-.question-list li {
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px dashed #999;
-}
-
-.difficulty-tag {
-    display: inline-block;
-    margin-top: 6px;
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 4px;
-    color: white;
-}
-
-.difficulty-tag.easy {
-    background-color: #4ade80;
-}
-.difficulty-tag.medium {
-    background-color: #facc15;
-}
-.difficulty-tag.hard {
-    background-color: #f87171;
-}
-
-.delete-btn {
-    margin-top: 6px;
-    padding: 6px 12px;
-    background-color: #d32f2f;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s ease-in-out;
-}
-
-.delete-btn:hover {
-    background: #b71c1c;
+    border: 1px solid var(--border-color);
+    margin-top: var(--space-sm);
 }
 
 /* Scrollbar styling */
 .question-list::-webkit-scrollbar {
     width: 6px;
 }
+
 .question-list::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-    .adaptive-card {
-        padding: 20px;
+.question-list::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.question-list ul {
+    list-style: none;
+    padding: 0;
+    color: var(--text-color);
+}
+
+.question-list li {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.difficulty-tag {
+    display: inline-block;
+    margin-top: var(--space-xs);
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 4px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.difficulty-tag.easy {
+    background-color: #4caf50;
+}
+
+.difficulty-tag.medium {
+    background-color: #fdd835;
+    color: #000;
+}
+
+.difficulty-tag.hard {
+    background-color: #e57373;
+}
+
+.delete-btn {
+    margin-top: var(--space-xs);
+    padding: 6px 12px;
+    background-color: var(--danger);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    margin-left: 10px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #b71c1c;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .adaptive-wrapper {
+    padding: var(--space-md);
     }
 
-    .adaptive-input,
-    select {
-        font-size: 14px;
+    .adaptive-card {
+    padding: var(--space-md);
     }
 
     .generate-btn {
-        font-size: 16px;
-        padding: 10px;
+    font-size: 1rem;
+    padding: var(--space-sm);
     }
 
     .question-list {
-        max-height: 200px;
-        padding: 10px;
+    max-height: 180px;
     }
 
-    .question-list li {
-        font-size: 14px;
-    }
-
-    .difficulty-tag {
-        font-size: 10px;
-    }
-
-    .delete-btn {
-        font-size: 12px;
+    .delete-btn{
+        margin-left: 0px;
     }
 }

@@ -1,242 +1,75 @@
-/* ✅ Main Leaderboard Container */
+/* Leaderboard.css */
 .leaderboard-container {
     width: 100%;
     max-width: 900px;
-    margin: 20px auto;
-    text-align: center;
-    padding: 25px;
-    overflow-y: auto;
-    max-height: 80vh;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    color: #e0e0e0;
+    margin: var(--space-lg) auto;
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    color: var(--text-color);
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    scrollbar-width: thin;
-    scrollbar-color: #4a6fa5 #1e1e1e;
+    box-shadow: 0 6px 20px var(--shadow);
+    text-align: center;
 }
 
-.leaderboard-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.leaderboard-container::-webkit-scrollbar-thumb {
-    background-color: #4a6fa5;
-    border-radius: 10px;
-}
-
-.leaderboard-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-}
-
-/* ✅ Controls Section */
-.leaderboard-controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.leaderboard-controls select {
-    padding: 10px 15px;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: none;
-    background: #2d2d2d;
-    color: #e0e0e0;
-    min-width: 200px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.leaderboard-controls select:hover {
-    background: #3a3a3a;
-}
-
-/* ✅ Heading */
 .leaderboard-container h2 {
-    color: #e0e0e0;
-    font-size: 28px;
-    margin-bottom: 15px;
-    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: var(--space-md);
 }
 
-/* ✅ Buttons */
-.leaderboard-buttons {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.leaderboard-buttons button {
-    padding: 12px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    margin-left: 0;
-    font-weight: bold;
-    color: #333;
-    background: #e0e0e0;
-    transition: all 0.3s;
-    font-size: 16px;
-}
-
-.leaderboard-buttons button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.leaderboard-buttons .active {
-    background-color: #ff9800;
-    color: white;
-}
-
-/* ✅ Individual Quiz Section */
-.quiz-section {
-    margin-top: 25px;
-}
-
-/* ✅ Table Styling */
 .leaderboard-table {
+    overflow-x: auto;
+}
+
+.leaderboard-table table {
     width: 100%;
     border-collapse: collapse;
-    background: #2d2d2d;
-    color: #e0e0e0;
-    margin-top: 15px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.leaderboard-table th,
-.leaderboard-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #444;
 }
 
 .leaderboard-table th {
-    background: #4a6fa5;
-    color: white;
-    position: sticky;
-    top: 0;
-    font-weight: 600;
+    background: var(--bg-dark);
+    font-weight: 500;
 }
 
-.leaderboard-table tr:hover {
-    background: #3a3a3a;
+.leaderboard-table td, .leaderboard-table th {
+    padding: var(--space-xs) var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
 }
 
-/* Highlight top 3 positions */
-.leaderboard-table tr:nth-child(1) {
-    background: rgba(255, 215, 0, 0.1); /* Gold */
+
+.leaderboard-buttons button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: var(--space-xs) var(--space-md);
+    cursor: pointer;
+    margin: 0 var(--space-xs);
+    margin-top: 10px;
+    transition: background 0.3s;
 }
 
-.leaderboard-table tr:nth-child(2) {
-    background: rgba(192, 192, 192, 0.1); /* Silver */
+.leaderboard-buttons button:hover {
+    background: var(--accent2);
 }
 
-.leaderboard-table tr:nth-child(3) {
-    background: rgba(205, 127, 50, 0.1); /* Bronze */
+.leaderboard-controls {
+    margin-top: var(--space-md);
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
 }
 
-/* ✅ Responsive Design */
-@media (max-width: 768px) {
-    .leaderboard-container {
-        padding: 20px;
-        max-width: 600px;
-        max-height: 75vh;
-    }
-
-    .leaderboard-container h2 {
-        font-size: 24px;
-    }
-
-    .leaderboard-buttons button {
-        font-size: 15px;
-        padding: 10px 15px;
-    }
-
-    .leaderboard-controls select {
-        font-size: 15px;
-        padding: 8px 12px;
-        min-width: 180px;
-    }
-
-    .leaderboard-table th,
-    .leaderboard-table td {
-        font-size: 14px;
-        padding: 12px;
-    }
-}
-
-@media (max-width: 600px) {
-    .leaderboard-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
+.leaderboard-controls select {
+    padding: var(--space-xs);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }
 
 @media (max-width: 480px) {
-    .leaderboard-container {
-        padding: 15px;
-        max-height: 85vh;
-        margin: 10px auto;
-        border-radius: 0;
-        max-width: 300px;
-        width: 100%;
-    }
-
-    .leaderboard-buttons {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-    }
-
-    .leaderboard-buttons button {
-        width: 100%;
-    }
-
     .leaderboard-controls {
         flex-direction: column;
-        gap: 10px;
-    }
-
-    .leaderboard-controls select {
-        width: 100%;
-        min-width: auto;
-    }
-
-    .leaderboard-container h2 {
-        font-size: 22px;
-        margin-bottom: 10px;
-    }
-
-    .leaderboard-table th,
-    .leaderboard-table td {
-        padding: 10px 8px;
-        font-size: 13px;
-    }
-}
-
-/* Extra small devices */
-@media (max-width: 360px) {
-    .leaderboard-container{
-        max-width: 250px;
-    }
-    .leaderboard-container h2 {
-        font-size: 20px;
-    }
-
-    .leaderboard-buttons button {
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .leaderboard-controls select {
-        font-size: 14px;
+        align-items: center;
     }
 }

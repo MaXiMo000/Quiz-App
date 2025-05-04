@@ -1,216 +1,66 @@
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(to right, #1a1a2e, #16213e);
-  color: #e0e0e0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/* App.css */
 
+/* Main content area */
 .main-content {
-  padding: 20px;
-  margin-left: 250px;
+  margin-left: var(--sidebar-width);
   transition: margin-left 0.3s ease-in-out;
-  width: calc(100% - 250px);
-  box-sizing: border-box;
+  padding: var(--space-md);
 }
 
-/* ===== Container Styling ===== */
+/* Content container card */
 .container {
-  max-width: 900px;
-  width: 100%;
-  padding: 30px;
-  background: rgba(30, 30, 30, 0.8);
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-  overflow-y: auto;
-  margin: 0 auto;
-  max-height: 450px;
+  background: var(--card-bg);
+  padding: var(--space-lg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--shadow);
+  margin: var(--space-md) 0;
+  margin-top: 100px;
   min-height: 40vh;
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-3px);
 }
 
 .table-container {
-  overflow: auto;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  max-height: 350px;
-  margin: 0 auto;
-  min-height: 30vh;
+  min-height: 40vh;
 }
 
-/* ===== Table Styling ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #1e1e1e;
-  color: #e0e0e0;
-  border-radius: 10px;
-  overflow-y: auto;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-}
-
-th {
-  background: #4a6fa5;
-  color: white;
-  position: sticky;
-  top: 0;
-}
-
-tr:nth-child(even) {
-  background: #2d2d2d;
-}
-
-tr:nth-child(odd) {
-  background: #252525;
-}
-
-.table-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-
-/* ===== Buttons ===== */
-button {
-  background: #4a6fa5;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.3s;
-  margin: 10px;
-}
-
-button:hover {
-  background: #3a5a8a;
-  color: white;
-}
-
-.delete-btn {
-  background: #d32f2f;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.2s ease-in-out;
-}
-
-.delete-btn:hover {
-  background: #b71c1c;
-}
-
+/* Start quiz button */
 .start-quiz-btn {
-  background: #4a6fa5;
-  color: white;
+  background: var(--accent);
+  color: #fff;
   border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .start-quiz-btn:hover {
-  background: #3a5a8a;
+  background: var(--accent2);
+  transform: translateY(-2px);
 }
 
-/* ===== Responsive Design ===== */
+/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;
-    width: 100%;
+    padding: var(--space-sm);
   }
 
   .container {
-    width: 90%;
-    max-width: 600px;
-    padding: 15px;
-    max-height: 85vh; /* ✅ Maintain scroll with better height */
-  }
-
-  .container h1{
-    font-size: 20px;
-  }
-
-  .table-container {
-    width: 80%;
-  }
-
-  table {
-    font-size: 14px;
-  }
-
-  th, td {
-    padding: 8px;
+    padding: var(--space-md);
+    margin: var(--space-sm) 0;
+    margin-top: 100px;
   }
 
   .start-quiz-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-  .delete-btn{
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-content {
-    margin-left: 0;
     width: 100%;
-  }
-
-  .container h1{
-    font-size: 20px;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 300px;
-    padding: 10px;
-  }
-
-  .table-container {
-    width: 100%;
-  }
-
-  table {
-    font-size: 12px;
-    width: 100%;
-  }
-
-  th, td {
-    padding: 6px;
-  }
-
-  .start-quiz-btn {
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-  .delete-btn{
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-
-  .table-container::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  .table-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
+    padding: var(--space-sm);
+    font-size: 1rem;
   }
 }

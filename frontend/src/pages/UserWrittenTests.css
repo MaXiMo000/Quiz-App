@@ -1,129 +1,44 @@
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to right, #1a1a2e, #16213e);
-    color: #e0e0e0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
+/* UserWrittenTests.css */
 .container {
     width: 100%;
     max-width: 1000px;
-    padding: 30px;
-    background: rgba(30, 30, 30, 0.8);
-    min-height: 40vh;
-    max-height: 450px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    overflow-y: auto;
+    margin: var(--space-lg) auto;
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px var(--shadow);
 }
 
-.table-container {
-    overflow: auto;
-    min-height: 30vh;
-    max-height: 350px;
-    scrollbar-width: thin;
-    scrollbar-color: #4a6fa5 #1e1e1e;
-    border-radius: 8px;
-    margin: 20px 0;
-    border: 1px solid #444;
+.container h2 {
+    margin-top: 0;
 }
 
-.table-container::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-    background-color: #4a6fa5;
-    border-radius: 10px;
-}
-
-.table-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-}
-
-table {
+.container table {
     width: 100%;
     border-collapse: collapse;
-    background: #2d2d2d;
-    color: #e0e0e0;
 }
 
-th, td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #444;
+.container th {
+    background: var(--bg-secondary);
+    font-weight: 500;
 }
 
-th {
-    background: #4a6fa5;
-    color: white;
-    position: sticky;
-    top: 0;
-}
-
-tr:hover {
-    background: #3a3a3a;
+.container td, .container th {
+    padding: var(--space-xs) var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .start-test-btn {
-    background: #4a6fa5;
-    color: white;
-    padding: 12px 24px;
+    background: var(--accent);
+    color: #fff;
     border: none;
     border-radius: 6px;
-    font-size: 18px;
+    padding: var(--space-xs) var(--space-md);
     cursor: pointer;
-    transition: all 0.3s;
-    font-weight: bold;
+    transition: background 0.3s;
 }
 
 .start-test-btn:hover {
-    background: #3a5a8a;
-}
-
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 20px;
-    }
-    
-    .table-container {
-        max-height: 400px;
-    }
-    
-    th, td {
-        padding: 12px;
-    }
-    
-    .start-test-btn {
-        padding: 10px 20px;
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 15px;
-        max-width: 250px;
-    }
-    
-    table {
-        font-size: 14px;
-    }
-    
-    th, td {
-        padding: 10px;
-    }
-    
-    .start-test-btn {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
+    background: var(--accent2);
 }

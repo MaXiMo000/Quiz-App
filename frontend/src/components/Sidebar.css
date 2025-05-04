@@ -96,7 +96,7 @@
 
 /* ✅ Logout Button */
 .logout-btn {
-    /* margin-top: auto; */
+    margin-top: 25px;
     padding: 12px;
     background: #d32f2f;
     color: white;
