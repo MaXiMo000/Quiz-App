@@ -10,17 +10,6 @@ const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/", verifyToken, getAllUsers); // Protected route
-router.get("/:id", verifyToken, async (req, res) => {
-        try {
-        const user = await UserQuiz.findById(req.params.id);
-        res.json(user);
-        } catch (err) {
-        res.status(500).json({ error: "User not found" });
-        }
-});
-
-router.patch("/update-role", verifyToken, updateUserRole);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
@@ -36,5 +25,18 @@ router.get(
         res.redirect(`${frontendURL}/google-auth?token=${token}&_id=${user._id}&name=${user.name}&email=${user.email}&role=${user.role}`);
     }
 );
+
+router.get("/", verifyToken, getAllUsers); // Protected route
+router.get("/:id", verifyToken, async (req, res) => {
+        try {
+        const user = await UserQuiz.findById(req.params.id);
+        res.json(user);
+        } catch (err) {
+        res.status(500).json({ error: "User not found" });
+        }
+});
+
+router.patch("/update-role", verifyToken, updateUserRole);
+
 
 export default router;
