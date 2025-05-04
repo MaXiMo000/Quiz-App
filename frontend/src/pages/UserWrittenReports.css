@@ -1,171 +1,69 @@
-/* ✅ MAIN REPORTS CONTAINER */
+/* UserWrittenReports.css */
 .reports-container {
     width: 100%;
     max-width: 900px;
-    padding: 20px;
-    background: rgba(30, 30, 30, 0.9);
+    margin: var(--space-lg) auto;
+    padding: var(--space-md);
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 10px;
+    box-shadow: 0 6px 20px var(--shadow);
     min-height: 40vh;
     max-height: 450px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     overflow-y: auto;
-    margin: 20px auto;
-    color: #e0e0e0;
 }
 
-/* ✅ SCROLLABLE TABLE CONTAINER */
-.reports-table-container {
-    min-height: 30vh;
-    max-height: 350px;
-    width: 100%;
-    overflow: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #4a6fa5 #1e1e1e;
-    border-radius: 8px;
-    margin: 20px 0;
-    border: 1px solid #444;
-}
-
-.reports-table-container::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-
-.reports-table-container::-webkit-scrollbar-thumb {
-    background-color: #4a6fa5;
-    border-radius: 10px;
-}
-
-.reports-table-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-}
-
-/* ✅ TABLE STYLING */
-table {
+.reports-container table {
     width: 100%;
     border-collapse: collapse;
-    background: #2d2d2d;
-    color: #e0e0e0;
-    min-width: 600px;
+    margin-bottom: var(--space-lg);
 }
 
-/* ✅ TABLE HEADERS & CELLS */
-th, td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #444;
+.reports-container th {
+    background: var(--bg-secondary);
+    font-weight: 500;
 }
 
-th {
-    background: #4a6fa5;
-    color: white;
-    position: sticky;
-    top: 0;
-}
-
-tr:hover {
-    background: #3a3a3a;
-}
-
-/* ✅ BUTTON STYLING */
-.view-btn, .delete-btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-    margin: 2px;
+.reports-container td, .reports-container th {
+    padding: var(--space-xs) var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .view-btn {
-    background: #4a6fa5;
-    color: white;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: var(--space-xs) var(--space-sm);
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .view-btn:hover {
-    background: #3a5a8a;
-    transform: translateY(-2px);
+    background: var(--accent2);
 }
 
 .delete-btn {
-    background: #d32f2f;
-    color: white;
+    background: var(--danger);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: var(--space-xs) var(--space-sm);
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .delete-btn:hover {
     background: #b71c1c;
-    transform: translateY(-2px);
 }
 
-/* ✅ RESPONSIVENESS */
-@media (max-width: 768px) {
-    .reports-container {
-        width: 95%;
-        padding: 15px;
-    }
-    
-    .reports-table-container {
-        max-height: 400px;
-    }
-    
-    th, td {
-        padding: 12px;
-    }
-    
-    .view-btn, .delete-btn {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-}
-
-@media (max-width: 480px) {
-    .reports-container {
-        width: 100%;
-        padding: 10px;
-        max-width: 300px;
-        margin: 10px auto;
-        border-radius: 0;
-    }
-    
-    .reports-container h1 {
-        font-size: 20px;
-        margin: 10px 0;
-    }
-    
-    .reports-table-container {
-        border: none;
-    }
-    
-    table {
-        font-size: 14px;
-    }
-    
-    th, td {
-        padding: 10px 8px;
-        white-space: normal;
-    }
-    
-    .view-btn, .delete-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-        display: block;
-        width: 100%;
-        margin: 5px 0;
-    }
-}
-
-/* Extra small devices */
 @media (max-width: 360px) {
     th, td {
-        padding: 8px 6px;
-        font-size: 13px;
+        padding: 0.5rem 0.375rem;
+        font-size: 0.8rem;
     }
-    
     .view-btn, .delete-btn {
-        padding: 5px 8px;
-        font-size: 11px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
     }
 }

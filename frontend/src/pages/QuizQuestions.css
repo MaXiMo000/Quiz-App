@@ -1,127 +1,58 @@
-/* ✅ MAIN CONTAINER */
+/* QuizQuestions.css */
+
 .quiz-questions-container {
     max-width: 1200px;
-    padding: 30px;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    color: white;
+    margin: var(--space-lg) auto;
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    color: var(--text-color);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 30px var(--shadow);
     overflow-y: auto;
-    max-height: 90vh;
-    margin: 20px auto;
-    scrollbar-width: thin;
-    scrollbar-color: #6a11cb #1e1e1e;
+    box-sizing: border-box;
 }
 
-.quiz-questions-container::-webkit-scrollbar {
-    width: 8px;
+/* Responsive layout tweaks */
+@media (max-width: 768px) {
+    .quiz-questions-container {
+        padding: var(--space-md);
+        margin: var(--space-md);
+    }
 }
 
-.quiz-questions-container::-webkit-scrollbar-thumb {
-    background-color: #6a11cb;
-    border-radius: 10px;
+@media (max-width: 480px) {
+    .quiz-questions-container {
+        padding: var(--space-sm);
+        margin: var(--space-sm);
+        border-radius: 10px;
+    }
 }
 
-.quiz-questions-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-}
-
-/* ✅ BACK BUTTON */
-.back-btn {
-    background: linear-gradient(to right, #ff4d79, #ff6a95);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 25px;
-}
-
-.back-btn:hover {
-    background: linear-gradient(to right, #e63e68, #ff4d79);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 77, 121, 0.3);
-}
-
-/* ✅ QUIZ DETAILS */
-.quiz-details {
+.quiz-questions-container h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
     text-align: center;
-    margin-bottom: 30px;
 }
 
-.quiz-details h2 {
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-.quiz-details h2::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-}
-
-.quiz-details p {
-    font-size: 16px;
-    margin-bottom: 8px;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* ✅ QUESTION LIST */
-.question-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
-}
-
-/* ✅ QUESTION BOX */
+/* Question Box */
 .question-box {
-    background: white;
-    color: #333;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.question-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-    background: linear-gradient(to bottom, #6a11cb, #2575fc);
+    background: var(--card-bg);
+    padding: var(--space-md);
+    border-radius: 10px;
+    margin-bottom: var(--space-md);
+    box-shadow: 0 4px 12px var(--shadow);
+    text-align: left;
+    transition: transform 0.3s ease;
 }
 
 .question-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    transform: scale(1.01);
 }
 
 .question-box h3 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #2c3e50;
-    padding-left: 10px;
-    border-left: 3px solid #6a11cb;
+    margin-top: 0;
+    margin-bottom: var(--space-xs);
+    font-size: 1.2rem;
 }
 
 .question-box ul {
@@ -131,104 +62,52 @@
 }
 
 .question-box ul li {
-    background: #f8f9fa;
-    margin: 8px 0;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 15px;
-    transition: background 0.2s ease;
+    padding: var(--space-xs) 0;
+    font-size: 0.95rem;
+    word-break: break-word;
 }
 
-.question-box ul li:hover {
-    background: #f1f3f5;
-}
-
-/* ✅ CORRECT ANSWER INDICATOR */
-.correct-answer {
-    background: #e8f5e9 !important;
-    border-left: 3px solid #4caf50;
-    font-weight: 500;
-}
-
-/* ✅ DELETE BUTTON */
-.delete-btn {
-    background: #e74c3c;
-    color: white;
+/* Buttons */
+.delete-btn,
+.back-btn {
+    display: inline-block;
     border: none;
-    padding: 10px 16px;
     border-radius: 6px;
+    padding: var(--space-xs) var(--space-sm);
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    margin-top: 15px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    max-width: 300px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.delete-btn {
+    background: var(--danger);
+    color: #fff;
+    margin-top: var(--space-sm);
 }
 
 .delete-btn:hover {
-    background: #c0392b;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    background: #b71c1c;
+    transform: scale(1.03);
 }
 
-/* ✅ RESPONSIVE DESIGN */
-@media (max-width: 1024px) {
-    .question-list {
-        grid-template-columns: 1fr 1fr;
-    }
+.back-btn {
+    background: var(--accent);
+    color: #fff;
+    margin-bottom: var(--space-md);
 }
 
-@media (max-width: 768px) {
-    .quiz-questions-container {
-        padding: 25px 20px;
-        max-height: 85vh;
-        margin: 15px auto;
-    }
-    
-    .question-list {
-        grid-template-columns: 1fr;
-    }
-    
-    .quiz-details h2 {
-        font-size: 24px;
-    }
+.back-btn:hover {
+    background: var(--accent2);
+    transform: scale(1.03);
 }
 
-@media (max-width: 480px) {
-    .quiz-questions-container {
-        padding: 20px 15px;
-        max-height: 80vh;
-        border-radius: 0;
-        margin: 10px auto;
-    }
-    
+/* Add spacing between stacked elements on smaller devices */
+@media (max-width: 600px) {
+    .delete-btn,
     .back-btn {
-        margin-top: 10px;
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-    
-    .quiz-details h2 {
-        font-size: 22px;
-    }
-    
-    .question-box {
-        padding: 20px;
-    }
-    
-    .question-box h3 {
-        font-size: 18px;
-    }
-    
-    .question-box ul li {
-        padding: 10px;
-        font-size: 14px;
-    }
-    
-    .delete-btn {
-        padding: 8px 12px;
-        font-size: 13px;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
     }
 }

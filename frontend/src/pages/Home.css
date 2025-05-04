@@ -1,106 +1,81 @@
+/* Home.css */
 .home-container {
-    margin-left: -10px;
-    text-align: center;
-    padding: 50px;
-    min-width: 100vw;
-    background: linear-gradient(to right, #1a1a2e, #16213e);
-    height: 100vh;
-    color: #e0e0e0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: var(--space-lg) auto;
+    padding: var(--space-lg);
+    color: var(--text-color);
 }
 
-h1 {
-    font-size: 40px;
-    margin-bottom: 20px;
-}
-
-p {
-    font-size: 20px;
-    margin-bottom: 30px;
+.home-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-md);
 }
 
 .start-quiz-btn {
-    background: #4a6fa5;
-    color: white;
-    padding: 12px 25px;
+    background: var(--accent);
+    color: #fff;
     border: none;
-    border-radius: 8px;
-    font-size: 20px;
+    border-radius: 6px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: 1.25rem;
     cursor: pointer;
-    transition: 0.3s;
+    transition: background 0.3s;
 }
 
 .start-quiz-btn:hover {
-    background: #3a5a8a;
-}
-
-@media (max-width: 768px) {
-    .home-container {
-        min-width: 100vw;
-        margin-left: 2px;
-        padding: 20px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    p {
-        font-size: 16px;
-    }
-
-    .start-quiz-btn {
-        font-size: 16px;
-        padding: 10px 20px;
-    }
+    background: var(--accent2);
 }
 
 .badge-list {
-    margin-top: 30px;
-    text-align: center;
+    margin-top: var(--space-lg);
+    width: 100%;
 }
 
 .badge-list h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #ffd700;
+    font-size: 1.25rem;
+    color: var(--accent);
+    margin-bottom: var(--space-sm);
 }
 
 .badge-list ul {
+    list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: var(--space-xs);
     justify-content: center;
     padding: 0;
-    list-style: none;
 }
 
 .badge-item {
-    background: linear-gradient(135deg, #4a6fa5, #6a89cc);
-    color: white;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease;
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 20px;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 1rem;
+    transition: background 0.2s;
 }
 
 .badge-item:hover {
-    transform: scale(1.05);
-    cursor: default;
+    background: var(--bg-secondary);
 }
 
 @media (max-width: 600px) {
-    .badge-item {
-    font-size: 14px;
-    padding: 8px 16px;
+    .home-container {
+        padding: var(--space-md);
     }
-
+    .start-quiz-btn {
+        width: 100%;
+    }
     .badge-list h3 {
-    font-size: 20px;
+        font-size: 1.1rem;
+    }
+    .badge-item {
+        font-size: 0.9rem;
+        padding: var(--space-xs) var(--space-sm);
     }
 }

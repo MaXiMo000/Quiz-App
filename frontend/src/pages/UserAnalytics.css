@@ -1,99 +1,47 @@
+/* UserAnalytics.css */
 .analytics-dashboard {
-    padding: 2rem;
-    background: #1e1e2f;
-    color: #e0e0e0;
-    max-height: 100vh;
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    min-height: 100vh;
     overflow-y: auto;
-    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Make the inner sections scale to viewport width */
-.analytics-dashboard .chart-section,
-.analytics-dashboard .table-section {
+.chart-section,
+.table-section {
     width: 100%;
-    max-width: 900px;
-    background: #2c2f48;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    margin: var(--space-md) 0;
+    padding: var(--space-md);
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px var(--shadow);
 }
 
-/* Chart wrapper gives a fixed height & scroll if overflow */
 .chart-wrapper {
-    position: relative;
-    height: 300px;      /* adjust as needed */
     width: 100%;
+    height: 300px;
 }
 
-/* Table section: vertically scrollable if too tall */
-.table-section .table-container {
+.table-container {
     max-height: 300px;
     overflow-y: auto;
 }
 
-/* Table styling stays the same */
-.table-container {
-    overflow-x: auto;
-}
-
-table {
+.table-container table {
     width: 100%;
     border-collapse: collapse;
 }
 
-th, td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #444;
+.table-container th {
+    background: var(--bg-secondary);
+    font-weight: 500;
 }
 
-thead {
-    background: #343a50;
-}
-
-th {
-    color: #dee2e6;
-    font-weight: 600;
-}
-
-tbody tr:hover {
-    background: #3a3f5c;
-}
-
-/* Responsive tweaks */
-@media (max-width: 768px) {
-    .analytics-dashboard {
-    padding: 1rem;
-    }
-    .analytics-dashboard .chart-section,
-    .analytics-dashboard .table-section{
-        max-width: 550px;
-    }
-    .chart-wrapper {
-    height: 200px;
-    }
-}
-
-@media (max-width: 480px) {
-    .analytics-dashboard h1 {
-        margin-top: 50px;
-    font-size: 1.5rem;
-    }
-    .analytics-dashboard .chart-section,
-    .analytics-dashboard .table-section{
-        max-width: 250px;
-    }
-    .chart-wrapper {
-    height: 180px;
-    }
-    .table-section .table-container {
-        max-height: 200px;
-    }
-    /* .table-section .table-container table{
-        min-width: 200px;
-    } */
+.table-container td, .table-container th {
+    padding: var(--space-xs) var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
 }

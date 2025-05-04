@@ -1,162 +1,51 @@
-/* ✅ MAIN REPORT CONTAINER */
+/* UserWrittenReportCheck.css */
 .report-container {
-    margin: 0 auto;
+    margin: var(--space-lg) auto;
     width: 100%;
     max-width: 900px;
-    padding: 20px;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    color: #e0e0e0;
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    color: var(--text-color);
     border-radius: 10px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 20px var(--shadow);
     overflow-y: auto;
-    max-height: 90vh;
     text-align: center;
-    scrollbar-width: thin;
-    scrollbar-color: #4a6fa5 #1e1e1e;
 }
 
-.report-container::-webkit-scrollbar {
-    width: 6px;
-}
-
-.report-container::-webkit-scrollbar-thumb {
-    background-color: #4a6fa5;
-    border-radius: 10px;
-}
-
-.report-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-}
-
-/* ✅ TITLE */
 .report-container h2 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: #e0e0e0;
+    font-size: 1.5rem;
+    margin-bottom: var(--space-md);
 }
 
-/* ✅ SCORE DISPLAY */
 .score {
-    font-size: 20px;
-    font-weight: bold;
-    background: rgba(74, 111, 165, 0.3);
-    padding: 10px 20px;
-    border-radius: 8px;
     display: inline-block;
-    margin-bottom: 20px;
+    background: var(--accent);
+    color: #fff;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: var(--space-md);
 }
 
-/* ✅ QUESTION LIST */
-.question-list {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-    padding: 0 10px;
-}
-
-/* ✅ QUESTION BOX */
 .question-box {
-    background: #2d2d2d;
-    color: #e0e0e0;
+    background: var(--card-bg);
+    padding: var(--space-md);
     border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s;
-    width: 100%;
-    max-width: 100%;
+    margin-bottom: var(--space-md);
+    box-shadow: 0 4px 12px var(--shadow);
     text-align: left;
 }
 
-.question-box:hover {
-    transform: translateY(-3px);
+.question-box h3 {
+    margin-top: 0;
 }
 
-/* ✅ ANSWER STATUS STYLES */
-.correct {
-    border-left: 5px solid #28a745;
-    background: rgba(40, 167, 69, 0.1);
+.question-box ul {
+    list-style: none;
+    padding: 0;
 }
 
-.wrong {
-    border-left: 5px solid #dc3545;
-    background: rgba(220, 53, 69, 0.1);
-}
-
-.user-answer {
-    font-weight: bold;
-    color: #ff6b6b;
-}
-
-.correct-answer {
-    font-weight: bold;
-    color: #4caf50;
-}
-
-/* ✅ MOBILE RESPONSIVENESS */
-@media (max-width: 768px) {
-    .report-container {
-        padding: 15px;
-    }
-    
-    .report-container h2 {
-        font-size: 22px;
-    }
-    
-    .score {
-        font-size: 18px;
-        padding: 8px 16px;
-    }
-    
-    .question-box {
-        padding: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .report-container {
-        width: 100%;
-        padding: 10px;
-        border-radius: 0;
-        max-height: 100vh;
-    }
-    
-    .report-container h2 {
-        font-size: 20px;
-        margin: 10px 0;
-    }
-    
-    .score {
-        font-size: 16px;
-        padding: 6px 12px;
-    }
-    
-    .question-list {
-        gap: 10px;
-    }
-    
-    .question-box {
-        padding: 12px 10px;
-    }
-    
-    .user-answer,
-    .correct-answer {
-        font-size: 15px;
-    }
-}
-
-/* Extra small devices */
-@media (max-width: 360px) {
-    .report-container h2 {
-        font-size: 18px;
-    }
-    
-    .score {
-        font-size: 15px;
-    }
-    
-    .question-box {
-        padding: 10px 8px;
-    }
+.question-box ul li {
+    padding: var(--space-xs) 0;
+    font-size: 0.9rem;
 }
