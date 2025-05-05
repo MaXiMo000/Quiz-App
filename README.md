@@ -55,7 +55,13 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
 - **Deployment**: Render
 
 ---
+## 👤 Author
 
+Developed by [MaXiMo000](https://github.com/MaXiMo000)  
+All rights reserved © 2025
+
+Please contact for licensing or collaboration inquiries.
+---
 
 ### 📦 Installation & Setup
 
