@@ -61,6 +61,7 @@ Developed by [MaXiMo000](https://github.com/MaXiMo000)
 All rights reserved © 2025
 
 Please contact for licensing or collaboration inquiries.
+**Do not remove this credit in forks or copies. Attribution is required.**
 ---
 
 ### 📦 Installation & Setup
