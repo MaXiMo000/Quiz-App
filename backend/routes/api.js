@@ -4,6 +4,7 @@ import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQue
 import { getReports, createReport, getReportsUser, deleteReport, getReportsUserID, getTopScorers } from "../controllers/reportController.js";
 import { generateQuizQuestions, generateAdaptiveQuestions } from "../controllers/aiQuestionController.js";
 import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport, getWrittenReportsUserID } from "../controllers/writtenTestReportController.js";
+import { getWeeklyXP, getMonthlyXP } from "../controllers/leaderboardController.js";
 import { verifyToken } from "../middleware/auth.js";
 
 // Quiz Routes
@@ -31,5 +32,8 @@ router.post("/written-test-reports", verifyToken, createWrittenTestReport);
 router.get("/written-test-reports/user", verifyToken, getWrittenTestReportsUser);
 router.delete("/written-test-reports/:id", verifyToken, deleteWrittenTestReport);
 router.get("/written-test-reports/:id", verifyToken, getWrittenReportsUserID);
+
+router.get("/leaderboard/weekly", verifyToken, getWeeklyXP);
+router.get("/leaderboard/monthly", verifyToken, getMonthlyXP);
 
 export default router;

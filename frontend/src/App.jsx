@@ -37,6 +37,7 @@ const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 import PremiumQuizzes from "./pages/PremiumQuizzes";
 import Contact from "./pages/Contact";
 import UserAnalyticsDashboard from "./pages/UserAnalyticsDashboard";
+import XPLeaderboard from "./pages/XPLeaderboard";
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -76,6 +77,7 @@ const App = () => {
                         <Route path="/user/written-reports" element={<UserWrittenReports />} />
                         <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
                         <Route path="/leaderboard" element={<Leaderboard />} />
+                        <Route path="/xp-leaderboard" element={<XPLeaderboard />} />
                         
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />

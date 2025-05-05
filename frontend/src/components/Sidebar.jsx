@@ -94,6 +94,7 @@ const Sidebar = () => {
                             <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
                             <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
                             <Link to="/analytics" onClick={handleLinkClick}>📝 User Analytics</Link>
+                            <Link to="/xp-leaderboard" onClick={handleLinkClick}>🏆 XP LeaderBoard</Link>
                             {/* <Link to="/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link> */}
                             {/* <Link to="/user/written-reports" onClick={handleLinkClick}>📄 Tests Reports</Link> */}
                             <button onClick={() => updateRole("premium")}>🚀 Go Premium</button>

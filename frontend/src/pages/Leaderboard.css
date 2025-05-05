@@ -17,6 +17,7 @@
 }
 
 .leaderboard-table {
+    margin-top: 20px;
     overflow-x: auto;
 }
 
