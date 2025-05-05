@@ -3,6 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": "MaXiMo000",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaXiMo000/Quiz-App"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
