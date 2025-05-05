@@ -1,9 +1,15 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "QuizNest backend - REST API for quiz generation, user auth, and admin control",
   "main": "index.js",
   "type": "module",
+  "author": "MaXiMo000",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaXiMo000/Quiz-App"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --require dotenv/config server.js"
