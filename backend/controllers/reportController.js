@@ -1,6 +1,7 @@
 import Report from "../models/Report.js";
 import moment from "moment";
 import UserQuiz from "../models/User.js";
+import XPLog from "../models/XPLog.js";
 
 export async function getReports(req, res) {
     const reports = await Report.find();
@@ -9,20 +10,21 @@ export async function getReports(req, res) {
 
 export async function createReport(req, res) {
     try {
-        const { username, quizName, score, total, questions} = req.body;
+        const { username, quizName, score, total, questions } = req.body;
 
         if (!username || !quizName || !questions || questions.length === 0) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        const report = new Report({ username, quizName, score, total, questions});
+        const report = new Report({ username, quizName, score, total, questions });
         await report.save();
 
         const user = await UserQuiz.findOne({ name: username });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        if (user) {
+
+        // 🏅 Award badges
         if (score === total && !user.badges.includes("Perfect Score")) {
             user.badges.push("Perfect Score");
         }
@@ -31,17 +33,61 @@ export async function createReport(req, res) {
         if (validQuestions.length > 0) {
             const avgTime = validQuestions.reduce((sum, q) => sum + q.answerTime, 0) / validQuestions.length;
             if (avgTime < 10 && !user.badges.includes("Speed Genius")) {
-            user.badges.push("Speed Genius");
+                user.badges.push("Speed Genius");
             }
         }
-        await user.save();
+
+        // 🎯 XP for score
+        const xpGained = score * 10;
+        let totalXPGained = xpGained;
+
+        await new XPLog({ user: user._id, xp: xpGained }).save();
+
+        // 🔥 Daily quiz streak bonus
+        const today = new Date().setHours(0, 0, 0, 0);
+        const lastQuiz = user.lastQuizDate ? new Date(user.lastQuizDate).setHours(0, 0, 0, 0) : null;
+
+        if (lastQuiz !== today) {
+            if (lastQuiz === today - 86400000) {
+                user.quizStreak += 1;
+            } else {
+                user.quizStreak = 1;
+            }
+
+            user.lastQuizDate = new Date();
+
+            const quizBonusXP = 20;
+            totalXPGained += quizBonusXP;
+
+            await new XPLog({ user: user._id, xp: quizBonusXP }).save();
         }
-        res.status(201).json({ message: "Report saved and badges awarded!", report });
+
+        console.log("XP before:", user.xp, "Level:", user.level, "Needed:", user.level * 100);
+
+        // 🎓 Update XP and level using totalXP method
+        user.xp += totalXPGained;
+        user.totalXP = (user.totalXP || 0) + totalXPGained;
+
+        // Recalculate level from XP
+        let xpForNext = user.level * 100;
+        while (user.xp >= xpForNext) {
+            user.xp -= xpForNext;
+            user.level += 1;
+            xpForNext = user.level * 100;
+        }
+
+        console.log("XP after:", user.xp, "Level:", user.level, "Needed:", user.level * 100);
+
+        await user.save();
+
+        res.status(201).json({ message: "Report saved and bonuses applied!", report });
     } catch (error) {
         console.error("Error saving report:", error);
         res.status(500).json({ message: "Error saving report", error: error.message });
     }
 }
+
+
 
 export const getReportsUser = async (req, res) => {
     try {
