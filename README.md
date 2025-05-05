@@ -34,6 +34,16 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
   - Free: Limited quizzes
   - Premium: Unlimited access + AI insights
 
+- 🛡️ Admin Panel
+  QuizNest includes a powerful admin dashboard enabling full control over platform operations:
+  
+  - 🔍 Monitor: View reports on quiz usage and user performance.
+  - 🧩 Manage: Add/edit/delete quizzes and questions.
+  - 👥 Control Users: Promote, suspend, or analyze users by roles (User, Premium, Admin).
+  - 📈 View Insights: Access real-time statistics and analytics of quiz activity.
+  
+  Accessible to Admins only. Requires login with appropriate credentials.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -47,12 +57,12 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
 ---
 
 
-## 📦 Installation & Setup
+### 📦 Installation & Setup
 
-### 🔗 Backend
+```🔗 Backend
 
 
-```bash
+bash
 cd backend
 npm install
 Create a .env file in the backend folder with the following:
@@ -93,8 +103,8 @@ VITE_BACKEND_URL=http://localhost:4000
 
 In your pages jsx, access the backend URL like:
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-Start the frontend server:
 
+Start the frontend server:
 bash
 npm run dev
 
@@ -127,16 +137,15 @@ npm run dev
 
 
 🔄 In Progress:
-    🏅 Achievement Badges:
+    🏅 Achievement Badges: => done
         Earn badges like:
             Quiz Master
             Speed Genius
             Perfect Score
 
-    ⚔️ Live Quiz Battles
-
-    Real-time quiz competition
-    View opponent’s progress during battle
+    ⚔️ Live Quiz Battles => in progress
+      Real-time quiz competition
+      View opponent’s progress during battle
 
 
 💬 Feedback & Contributions:
