@@ -74,6 +74,38 @@ export const loginUser = async (req, res) => {
             }
         }
 
+        // ≫≫ THEME UNLOCKING ≪≪
+        const unlockThemeAtLevels = {
+            2:  "Light",
+            3:  "Dark",
+            5:  "Galaxy",
+            7:  "Forest",
+            10: "Sunset",
+            15: "Neon",
+        
+            4:  "material-light",
+            6:  "material-dark",
+            8:  "dracula",
+            10: "nord",             // note: 10 now unlocks both "Sunset" and "nord"
+            12: "solarized-light",
+            14: "solarized-dark",
+            16: "monokai",
+            18: "one-dark",
+            20: "gruvbox-dark",
+            22: "gruvbox-light",
+            24: "oceanic",
+            26: "synthwave",
+            28: "night-owl",
+            30: "tokyo-night",
+            32: "ayu-light"
+        };
+        
+        for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
+            if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
+            user.unlockedThemes.push(themeName);
+            }
+        }
+
         await user.save();
 
         // ✅ Generate token
@@ -147,4 +179,28 @@ export const updateUserRole = async (req, res) => {
     console.error("Error updating role:", error);
     res.status(500).json({ message: "Internal Server Error" });
 }
+};
+
+// ✅ Update selected theme
+export const updateUserTheme = async (req, res) => {
+    try {
+    const { id } = req.params;
+    const { theme } = req.body;
+
+    const user = await UserQuiz.findById(id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Optionally validate if theme is unlocked
+    if (!user.unlockedThemes.includes(theme)) {
+        return res.status(400).json({ error: "Theme not unlocked yet" });
+    }
+
+    user.selectedTheme = theme;
+    await user.save();
+
+    res.json({ message: "Theme updated", selectedTheme: user.selectedTheme });
+    } catch (err) {
+    console.error("Error updating theme:", err);
+    res.status(500).json({ error: "Error updating theme" });
+    }
 };
