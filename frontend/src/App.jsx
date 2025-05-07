@@ -62,6 +62,7 @@ const App = () => {
                         {/* Protected Routes */}
                         <Route element={<AuthWrapper><Layout /></AuthWrapper>}>
                             <Route path="/" element={<Home />} />
+                            <Route path="/themes" element={<ThemePage />} />
                             <Route path="/admin" element={<AdminDashboard />} />
                             <Route path="/admin/create" element={<AdminQuizzes />} />
                             <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />
@@ -88,8 +89,7 @@ const App = () => {
                             <Route path="/contactUs" element={<ContactUs />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/analytics" element={<UserAnalyticsDashboard />} />
-                            <Route path="/themes" element={<ThemePage />} />
-                            
+
                             <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                         </Route>
                     </Routes>

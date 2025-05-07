@@ -17,28 +17,29 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    useEffect(() => {
+    const fetchUserData = async () => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser) {
-        navigate("/register");
+        navigate("/login");
         } else {
         setUser(storedUser);
-        const fetchUserData = async () => {
-            try {
-            const res = await axios.get(`${BACKEND_URL}/api/users/${storedUser._id}`);
-            const data = res.data;
-            setBadges(data.badges || []);
-            setXp(data.xp || 0);
-            setLevel(data.level || 1);
-            } catch (error) {
-            console.error("Error fetching user data:", error);
-            setError("Error fetching user data. Try again later.");
-            } finally {
-            setLoading(false);
-            }
-        };
-        fetchUserData();
         }
+        try {
+        const res = await axios.get(`${BACKEND_URL}/api/users/${storedUser._id}`);
+        const data = res.data;
+        setBadges(data.badges || []);
+        setXp(data.xp || 0);
+        setLevel(data.level || 1);
+        } catch (error) {
+        console.error("Error fetching user data:", error);
+        setError("Error fetching user data. Try again later.");
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
     }, [navigate]);
 
     const XPBar = ({ xp, level }) => {
@@ -78,6 +79,7 @@ const Home = () => {
             ))}
             </ul>
         </div>
+        <button onClick={fetchUserData} className="start-quiz-btn" >Refresh Stats</button>
         </div>
     );
 };

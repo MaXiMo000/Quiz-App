@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
 import "../App.css";
+import { ThemeContext } from "../context/ThemeContext";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -10,6 +11,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const { changeTheme } = useContext(ThemeContext);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -24,8 +26,10 @@ const Login = () => {
 
             // ✅ Navigate based on role
             if (res.data.user.role === "admin") {
+                changeTheme(res.data.user.selectedTheme || "Default");
                 navigate("/admin");
             } else {
+                changeTheme(res.data.user.selectedTheme || "Default");
                 navigate("/");
             }
         } catch (error) {

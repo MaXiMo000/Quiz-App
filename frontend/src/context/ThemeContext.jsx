@@ -3,31 +3,30 @@ import React, { createContext, useState, useEffect } from "react";
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-const [theme, setTheme] = useState("Default");
+    const [theme, setTheme] = useState("Default");
 
-useEffect(() => {
-    const saved = localStorage.getItem("theme") || "Default";
-    setTheme(saved);
-    applyTheme(saved);
-}, []);
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const storedTheme = storedUser?.selectedTheme || "Default";
 
-const applyTheme = (themeName) => {
-    if (themeName === "Default") {
-    document.body.removeAttribute("data-theme");
-    } else {
-    document.body.setAttribute("data-theme", themeName);
-    }
-};
+        setTheme(storedTheme);
+        document.documentElement.setAttribute("data-theme", storedTheme);
+    }, []);
 
-const changeTheme = (newTheme) => {
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    applyTheme(newTheme);
-};
+    const changeTheme = (newTheme) => {
+        setTheme(newTheme);
+        document.documentElement.setAttribute("data-theme", newTheme);
 
-return (
-    <ThemeContext.Provider value={{ theme, changeTheme }}>
-    {children}
-    </ThemeContext.Provider>
-);
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+            user.selectedTheme = newTheme;
+            localStorage.setItem("user", JSON.stringify(user));
+        }
+    };
+
+    return (
+        <ThemeContext.Provider value={{ theme, changeTheme }}>
+            {children}
+        </ThemeContext.Provider>
+    );
 };

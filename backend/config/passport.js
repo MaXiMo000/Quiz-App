@@ -44,6 +44,12 @@ passport.use(
                         name: user.name,
                         email: user.email,
                         role: user.role,
+                        xp: user.xp,
+                        level: user.level,
+                        loginStreak: user.loginStreak,
+                        badges: user.badges || [],
+                        unlockedThemes: user.unlockedThemes || [],
+                        selectedTheme: user.selectedTheme || "Default",
                     },
                 });
             } catch (err) {

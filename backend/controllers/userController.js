@@ -5,6 +5,38 @@ import XPLog from "../models/XPLog.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "yourSuperSecretKey";
 
+export const unlockThemesForLevel = (user) => {
+    const unlockThemeAtLevels = {
+        2: "Light",
+        3: "Dark",
+        5: "Galaxy",
+        7: "Forest",
+        10: "Sunset",
+        15: "Neon",
+        4: "material-light",    
+        6: "material-dark",
+        8: "dracula",
+        10: "nord",
+        12: "solarized-light",
+        14: "solarized-dark",
+        16: "monokai",
+        18: "one-dark",
+        20: "gruvbox-dark",
+        22: "gruvbox-light",
+        24: "oceanic",
+        26: "synthwave",
+        28: "night-owl",
+        30: "tokyo-night",
+        32: "ayu-light"
+    };
+
+    for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
+        if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
+            user.unlockedThemes.push(themeName);
+        }
+    }
+};
+
 // Register user
 export const registerUser = async (req, res) => {
     try {
@@ -71,6 +103,8 @@ export const loginUser = async (req, res) => {
                 user.xp -= xpForNext;
                 user.level += 1;
                 xpForNext = user.level * 100;
+
+                unlockThemesForLevel(user);
             }
         }
 
@@ -128,6 +162,8 @@ export const loginUser = async (req, res) => {
                 level: user.level,
                 loginStreak: user.loginStreak,
                 badges: user.badges || [],
+                unlockedThemes: user.unlockedThemes || [],
+                selectedTheme: user.selectedTheme || "Default",
             },
         });
     } catch (error) {
