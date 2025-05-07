@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import "../App.css";
 import axios from "../utils/axios";
+import ThemeSelector from "../components/ThemeSelector";
+import { ThemeContext } from "../context/ThemeContext";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -60,6 +62,10 @@ const Home = () => {
         <p>Level: {level}</p>
         <p>Login Streak: {user.loginStreak} days</p>
         <p>Quiz Streak: {user.quizStreak} days</p>
+
+        {/* Theme selection button */}
+        <ThemeSelector />
+
         <p>Ready to take a quiz?</p>
         <button className="start-quiz-btn" onClick={() => navigate("/user/test")}>
             Start Quiz

@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     lastLogin:     { type: Date,   default: null },  // last login date
     quizStreak:    { type: Number, default: 0 },     // consecutive quiz days
     lastQuizDate:  { type: Date,   default: null },  // last quiz date
-    unlockedThemes:{ type: [String], default: [] }   // unlocked UI themes
+    unlockedThemes:{ type: [String], default: [] },   // unlocked UI themes
+    selectedTheme: { type: String, default: "Default" }, // selected UI theme
 }, { timestamps: true });
 
 export default mongoose.model("UserQuiz", userSchema);

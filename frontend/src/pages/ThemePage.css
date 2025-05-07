@@ -1,0 +1,121 @@
+/* ThemePage.css */
+
+/* Container for the whole page */
+.themes-container {
+    max-width: 1200px;
+    margin: var(--space-lg) auto;
+    padding: var(--space-sm);
+    /* remove any sidebar‐induced padding */
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* Page title */
+.themes-container h2 {
+    font-size: 2rem;
+    color: var(--text-light);
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+/* Flex layout instead of grid */
+.themes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    justify-content: center;
+}
+
+/* Each card flex sizing */
+.theme-card {
+    flex: 1 1 240px; /* grow, shrink, base width */
+    max-width: 300px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-md);
+    box-shadow: 0 4px 12px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--shadow);
+}
+
+.theme-card h3 {
+    color: var(--text-light);
+    font-size: 1.25rem;
+    margin-bottom: var(--space-sm);
+    text-transform: capitalize;
+}
+
+.theme-card p {
+    flex-grow: 1;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-md);
+    line-height: 1.4;
+}
+
+/* Apply button */
+.theme-card button {
+    align-self: center;
+    background: var(--accent);
+    color: var(--text-light);
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.theme-card button:hover {
+    background: var(--accent2);
+    transform: translateY(-2px);
+}
+
+/* Empty state */
+.themes-container .no-themes {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-top: var(--space-md);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .themes-grid {
+    gap: var(--space-md);
+    }
+    .theme-card {
+    flex: 1 1 200px;
+    padding: var(--space-sm);
+    }
+    .theme-card h3 {
+    font-size: 1.1rem;
+    }
+    .theme-card p {
+    font-size: 0.9rem;
+    }
+    .theme-card button {
+    width: 100%;
+    padding: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .themes-grid {
+    flex-direction: column;
+    gap: var(--space-sm);
+    }
+    .theme-card {
+    max-width: none;
+    flex: 1 1 100%;
+    }
+}

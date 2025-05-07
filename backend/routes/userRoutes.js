@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getAllUsers, updateUserRole } from "../controllers/userController.js";
+import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/auth.js";
 
 import passport from "passport";
@@ -37,6 +37,6 @@ router.get("/:id", verifyToken, async (req, res) => {
 });
 
 router.patch("/update-role", verifyToken, updateUserRole);
-
+router.post("/:id/theme", verifyToken, updateUserTheme);
 
 export default router;

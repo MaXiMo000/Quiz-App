@@ -3,29 +3,29 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px;
+    padding: var(--space-lg);
     width: 95%;
     max-width: 1200px;
     max-height: 90vh;
     overflow-y: auto;
     margin: 20px auto;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    color: white;
+    background: linear-gradient(135deg, var(--color-sidebar-gradient-start), var(--color-sidebar-gradient-end));
+    color: var(--color-text-primary);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px var(--shadow);
     scrollbar-width: thin;
-    scrollbar-color: #6a11cb #1e1e1e;
+    scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
 }
 
 .admin-quiz-container::-webkit-scrollbar {
     width: 8px;
 }
 .admin-quiz-container::-webkit-scrollbar-thumb {
-    background-color: #6a11cb;
+    background-color: var(--color-scrollbar-thumb);
     border-radius: 10px;
 }
 .admin-quiz-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
+    background: var(--color-scrollbar-track);
 }
 
 /* ✅ HEADER */
@@ -36,6 +36,7 @@
     margin: 20px 0 30px;
     position: relative;
     padding-bottom: 15px;
+    color: var(--color-title);
 }
 .admin-quiz-container h2::after {
     content: '';
@@ -45,7 +46,7 @@
     transform: translateX(-50%);
     width: 100px;
     height: 3px;
-    background: linear-gradient(to right, #ff4d79, #ff8a00);
+    background: linear-gradient(to right, var(--accent2), var(--accent));
 }
 
 /* ✅ HEADER BUTTON */
@@ -69,15 +70,15 @@
 
 /* ✅ INDIVIDUAL QUIZ CARD */
 .quiz-box {
-    background: #2c2c2c;
-    color: #e0e0e0;
+    background: var(--card-bg);
+    color: var(--text-color);
     border-radius: 14px;
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 25px var(--shadow);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -89,23 +90,23 @@
     left: 0;
     width: 100%;
     height: 5px;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: linear-gradient(to right, var(--accent2), var(--accent));
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
 }
 .quiz-box:hover {
     transform: translateY(-6px);
-    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 16px 30px var(--shadow);
 }
 .quiz-box h3 {
     font-size: 24px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-light);
     margin-bottom: 12px;
 }
 .quiz-box p {
     font-size: 15px;
-    color: #ccc;
+    color: var(--text-muted);
     margin-bottom: 10px;
     line-height: 1.6;
 }
@@ -131,16 +132,16 @@
     justify-content: center;
     gap: 10px;
     letter-spacing: 0.3px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 6px var(--shadow);
     margin: 5px 0;
 }
 
-/* ✅ BUTTON COLORS */
+/* ✅ BUTTON COLORS (consider using utility classes or additional CSS variables per button type in index.css) */
 .create-btn {
-    background: linear-gradient(to right, #087f5b, #164e43);
+    background: linear-gradient(to right, var(--success), #164e43);
 }
 .add-question-btn {
-    background: linear-gradient(to right, #0b7285, #1c3f54);
+    background: linear-gradient(to right, var(--accent2), #1c3f54);
 }
 .submit-btn {
     background: linear-gradient(to right, #2b4162, #12100e);
@@ -149,10 +150,10 @@
     background: linear-gradient(to right, #8d6e63, #3e2723);
 }
 .delete-btn {
-    background: linear-gradient(to right, #7b1e1e, #3d0000);
+    background: linear-gradient(to right, var(--danger), #3d0000);
 }
 .add-ai-btn {
-    background: linear-gradient(to right, #3c1053, #1e1e2f);
+    background: linear-gradient(to right, #3c1053, var(--bg-secondary));
 }
 .create-btn:hover,
 .add-question-btn:hover,
@@ -162,27 +163,27 @@
 .add-ai-btn:hover {
     transform: translateY(-2px);
     filter: brightness(1.1);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 14px var(--shadow);
 }
 
 /* ✅ QUESTION DISPLAY BOX */
 .display-ans {
     list-style: none;
     padding: 15px;
-    background: #1f1f1f;
+    background: var(--card-bg);
     border-radius: 10px;
     max-height: 150px;
     overflow-y: auto;
     font-size: 14px;
-    color: #ddd;
+    color: var(--text-color);
     width: 100%;
     text-align: left;
     margin: 15px 0;
-    border: 1px solid #333;
+    border: 1px solid var(--border-color);
 }
 .display-ans li {
     padding: 8px 0;
-    border-bottom: 1px dashed #444;
+    border-bottom: 1px dashed var(--border-color);
 }
 .display-ans li:last-child {
     border-bottom: none;
@@ -200,14 +201,14 @@
     background: rgba(0, 0, 0, 0.85);
     border-radius: 16px;
     padding: 30px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-    color: white;
+    box-shadow: 0 15px 40px var(--shadow);
+    color: var(--text-color);
     text-align: center;
     animation: fadeIn 0.3s ease-in-out;
     z-index: 2000;
 }
 .modal-box {
-    background: #1e1e1e;
+    background: var(--bg-secondary);
     padding: 25px;
     border-radius: 12px;
     text-align: center;
@@ -222,11 +223,11 @@
     right: 20px;
     top: 15px;
     cursor: pointer;
-    color: #fff;
+    color: var(--color-close-btn);
     transition: color 0.3s ease;
 }
 .close-btn:hover {
-    color: #ff4d79;
+    color: var(--color-close-btn-hover);
 }
 
 /* ✅ FORM INPUTS */
@@ -236,17 +237,17 @@ select {
     width: 100%;
     padding: 12px 15px;
     margin: 12px 0;
-    border: 1px solid #444;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 16px;
-    background-color: #222;
-    color: white;
+    background-color: var(--card-bg);
+    color: var(--text-color);
     transition: all 0.3s ease;
 }
 input:focus,
 textarea:focus,
 select:focus {
-    border-color: #6a11cb;
+    border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
     outline: none;
 }

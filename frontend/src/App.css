@@ -1,11 +1,11 @@
 /* App.css */
 
 /* Main content area */
-.main-content {
+/* .main-content {
   margin-left: var(--sidebar-width);
   transition: margin-left 0.3s ease-in-out;
   padding: var(--space-md);
-}
+} */
 
 /* Content container card */
 .container {

@@ -6,6 +6,21 @@
     width: 100%;
     max-width: 400px;
     margin: var(--space-lg) auto;
+    margin-left: 280px;
+}
+
+@media (max-width: 780px){
+    .login-container {
+        margin-left: 200px;
+        /* padding: var(--space-sm); */
+    }
+}
+
+@media (max-width: 480px){
+    .login-container {
+        margin-left: 0;
+        /* padding: var(--space-sm); */
+    }
 }
 
 .login-box {

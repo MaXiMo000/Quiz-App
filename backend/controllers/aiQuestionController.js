@@ -11,18 +11,34 @@ if (!process.env.GEMINI_API_KEY) {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// ✅ Gemini request wrapper
 const generateFromGemini = async (prompt) => {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro-001" });
+    try {
+        const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
 
-    const result = await model.generateContent({
-        contents: [{ parts: [{ text: prompt }] }]
-    });
+        const result = await model.generateContent({
+            contents: [{ parts: [{ text: prompt }] }]
+        });
 
-    return result.response.text();
+        const raw = result.response.text();
+        console.log("✅ Gemini API success");
+        return raw;
+    } catch (error) {
+        console.error("❌ Gemini API error:", error);
+        throw error;
+    }
 };
 
-// ✅ General MCQ Generator (with duplicate checking)
+const parseAIResponse = (aiText) => {
+    try {
+        const cleanText = aiText.replace(/```(?:json)?\s*([\s\S]*?)\s*```/, '$1').trim();
+        return JSON.parse(cleanText);
+    } catch (e) {
+        console.error("❌ JSON Parsing Error:", e, "\nOriginal AI Text:", aiText);
+        throw new Error("AI returned invalid JSON: " + e.message);
+    }
+};
+
+// ✅ General MCQ Generator
 export const generateQuizQuestions = async (req, res) => {
     try {
         const { topic, numQuestions } = req.body;
@@ -47,15 +63,15 @@ export const generateQuizQuestions = async (req, res) => {
 
         while (finalQuestions.length < numQuestions && attempts < maxAttempts) {
             const prompt = `
-            Generate ${numQuestions} multiple-choice questions about "${topic}".
-            Each must include:
-            - "question"
-            - "options" (array of 4)
-            - "correctAnswer" (as "A", "B", "C", "D")
-            - "difficulty" ("easy" | "medium" | "hard")
+                Generate ${numQuestions} multiple-choice questions about "${topic}".
+                Each must include:
+                - "question"
+                - "options" (array of 4)
+                - "correctAnswer" (as "A", "B", "C", or "D")
+                - "difficulty" ("easy" | "medium" | "hard")
 
-            Return ONLY JSON like this:
-            {
+                Return ONLY JSON like this:
+                {
                 "questions": [
                     {
                     "question": "What is 2 + 2?",
@@ -64,14 +80,15 @@ export const generateQuizQuestions = async (req, res) => {
                     "difficulty": "easy"
                     }
                 ]
-            }
-            No explanation or extra output.`;
+                }
+                No explanation or extra output.
+                `;
 
             const aiText = await generateFromGemini(prompt);
-
             let parsed;
+
             try {
-                parsed = JSON.parse(aiText);
+                parsed = parseAIResponse(aiText);
             } catch (e) {
                 return res.status(500).json({ error: "AI returned invalid JSON", details: e.message });
             }
@@ -113,7 +130,7 @@ export const generateQuizQuestions = async (req, res) => {
     }
 };
 
-// ✅ Adaptive MCQ Generator (with duplicate checking)
+// ✅ Adaptive MCQ Generator
 export const generateAdaptiveQuestions = async (req, res) => {
     try {
         const { performance, quizId, numQuestions = 5 } = req.body;
@@ -122,8 +139,7 @@ export const generateAdaptiveQuestions = async (req, res) => {
         if (!quiz) return res.status(404).json({ error: "Quiz not found" });
 
         const topic = quiz.category;
-        const difficulty = performance === "low" ? "easy" :
-            performance === "high" ? "hard" : "medium";
+        const difficulty = performance === "low" ? "easy" : performance === "high" ? "hard" : "medium";
 
         const existingQuestions = new Set(quiz.questions.map(q => q.question.trim().toLowerCase()));
         const finalQuestions = [];
@@ -133,26 +149,27 @@ export const generateAdaptiveQuestions = async (req, res) => {
 
         while (finalQuestions.length < numQuestions && attempts < maxAttempts) {
             const prompt = `
-            Generate ${numQuestions} multiple-choice questions on "${topic}".
-            All should have difficulty: "${difficulty}".
-            Output format:
-            {
+                Generate ${numQuestions} multiple-choice questions on "${topic}".
+                All should have difficulty: "${difficulty}".
+                Output format:
+                {
                 "questions": [
                     {
-                    "question": "...",
-                    "options": ["A", "B", "C", "D"],
-                    "correctAnswer": "A",
-                    "difficulty": "${difficulty}"
+                    "question": "What is 2 + 2?",
+                    "options": ["3", "4", "5", "6"],
+                    "correctAnswer": "B",
+                    "difficulty": "easy"
                     }
                 ]
-            }
-            No explanation or text outside JSON.`;
+                }
+                No explanation or text outside JSON.
+                `;
 
             const aiText = await generateFromGemini(prompt);
-
             let parsed;
+
             try {
-                parsed = JSON.parse(aiText);
+                parsed = parseAIResponse(aiText);
             } catch (e) {
                 return res.status(500).json({ error: "AI returned invalid JSON", details: e.message });
             }

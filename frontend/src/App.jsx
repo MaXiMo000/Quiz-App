@@ -11,7 +11,7 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import RefundPolicy from './pages/RefundPolicy';
 import ShippingPolicy from './pages/ShippingPolicy';
 import ContactUs from './pages/ContactUs';
-
+import { ThemeProvider } from "./context/ThemeContext";
 
 // ✅ Lazy load all pages
 const AdaptiveQuiz = lazy(() => import("./components/AdaptiveQuiz"));
@@ -38,6 +38,7 @@ import PremiumQuizzes from "./pages/PremiumQuizzes";
 import Contact from "./pages/Contact";
 import UserAnalyticsDashboard from "./pages/UserAnalyticsDashboard";
 import XPLeaderboard from "./pages/XPLeaderboard";
+import ThemePage from "./pages/ThemePage";
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -49,49 +50,52 @@ const App = () => {
     }, []);
 
     return (
-        <Router>
-            <Suspense fallback={<Spinner />}>
-                <Routes>
-                    {/* Public Routes */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/google-auth" element={<GoogleAuth />} />
+        <ThemeProvider>
+            <Router>
+                <Suspense fallback={<Spinner />}>
+                    <Routes>
+                        {/* Public Routes */}
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/google-auth" element={<GoogleAuth />} />
 
-                    {/* Protected Routes */}
-                    <Route element={<AuthWrapper><Layout /></AuthWrapper>}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/admin/create" element={<AdminQuizzes />} />
-                        <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />
-                        <Route path="/admin/report" element={<AdminReports />} />
-                        <Route path="/admin/quiz/:id" element={<QuizQuestions />} />
-                        <Route path="/admin/written-tests" element={<AdminWrittenTests />} />
-                        <Route path="/admin/written-test/question/:id" element={<TestQuestions />} />
-                        <Route path="/admin/written-test/report" element={<AdminWrittenTestReports />} />
-                        <Route path="/user/test" element={<UserQuizzes />} />
-                        <Route path="/user/test/:id" element={<TakeQuiz />} />
-                        <Route path="/user/report" element={<UserReports />} />
-                        <Route path="/report/:id" element={<UserReportsCheck />} />
-                        <Route path="/written-tests" element={<UserWrittenTests />} />
-                        <Route path="/take-written-test/:id" element={<TakeWrittenTest />} />
-                        <Route path="/user/written-reports" element={<UserWrittenReports />} />
-                        <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
-                        <Route path="/leaderboard" element={<Leaderboard />} />
-                        <Route path="/xp-leaderboard" element={<XPLeaderboard />} />
-                        
-                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-                        <Route path="/refund-policy" element={<RefundPolicy />} />
-                        <Route path="/shipping-policy" element={<ShippingPolicy />} />
-                        <Route path="/contactUs" element={<ContactUs />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/analytics" element={<UserAnalyticsDashboard />} />
-                        
-                        <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
-                    </Route>
-                </Routes>
-            </Suspense>
-        </Router>
+                        {/* Protected Routes */}
+                        <Route element={<AuthWrapper><Layout /></AuthWrapper>}>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/admin" element={<AdminDashboard />} />
+                            <Route path="/admin/create" element={<AdminQuizzes />} />
+                            <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />
+                            <Route path="/admin/report" element={<AdminReports />} />
+                            <Route path="/admin/quiz/:id" element={<QuizQuestions />} />
+                            <Route path="/admin/written-tests" element={<AdminWrittenTests />} />
+                            <Route path="/admin/written-test/question/:id" element={<TestQuestions />} />
+                            <Route path="/admin/written-test/report" element={<AdminWrittenTestReports />} />
+                            <Route path="/user/test" element={<UserQuizzes />} />
+                            <Route path="/user/test/:id" element={<TakeQuiz />} />
+                            <Route path="/user/report" element={<UserReports />} />
+                            <Route path="/report/:id" element={<UserReportsCheck />} />
+                            <Route path="/written-tests" element={<UserWrittenTests />} />
+                            <Route path="/take-written-test/:id" element={<TakeWrittenTest />} />
+                            <Route path="/user/written-reports" element={<UserWrittenReports />} />
+                            <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
+                            <Route path="/leaderboard" element={<Leaderboard />} />
+                            <Route path="/xp-leaderboard" element={<XPLeaderboard />} />
+                            
+                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                            <Route path="/refund-policy" element={<RefundPolicy />} />
+                            <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                            <Route path="/contactUs" element={<ContactUs />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/analytics" element={<UserAnalyticsDashboard />} />
+                            <Route path="/themes" element={<ThemePage />} />
+                            
+                            <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
+                        </Route>
+                    </Routes>
+                </Suspense>
+            </Router>
+        </ThemeProvider>
     );
 };
 
