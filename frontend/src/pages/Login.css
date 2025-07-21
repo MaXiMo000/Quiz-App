@@ -1,17 +1,16 @@
-/* Modern Login Page Styles */
+/* ✨ ULTRA COMPACT & BEAUTIFUL LOGIN PAGE ✨ */
 
 .login-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.1) 0%, 
-        rgba(101, 67, 33, 0.1) 25%,
-        rgba(62, 39, 35, 0.1) 50%,
-        rgba(139, 69, 19, 0.1) 75%,
-        rgba(160, 82, 45, 0.1) 100%);
-    padding: 2rem;
+    background: 
+        radial-gradient(circle at 20% 80%, var(--color-primary-100) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--color-secondary-100) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, var(--color-accent-100) 0%, transparent 50%),
+        var(--bg-gradient);
+    padding: 0.5rem;
     position: fixed;
     top: 0;
     left: 0;
@@ -20,64 +19,73 @@
     overflow: hidden;
     perspective: 1000px;
     z-index: 1000;
+    margin: 0;
+    box-sizing: border-box;
 }
 
-/* Floating Background Elements */
-.login-container::before {
-    content: '';
+/* 🌟 Floating Background Orbs - Smaller for Mobile */
+.floating-orb {
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, 
-        rgba(139, 69, 19, 0.03) 0%, 
-        transparent 70%);
-    animation: rotate 30s linear infinite;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.login-container::after {
-    content: '';
-    position: absolute;
-    top: 10%;
-    right: 10%;
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(45deg, 
-        rgba(139, 69, 19, 0.1), 
-        rgba(210, 180, 140, 0.1));
     border-radius: 50%;
-    backdrop-filter: blur(10px);
-    animation: float 6s ease-in-out infinite;
     pointer-events: none;
-    z-index: 0;
+    filter: blur(1px);
+    opacity: 0.4;
+    animation: float 8s ease-in-out infinite;
 }
 
-@keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.login-orb-1 {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, var(--color-primary-500), var(--color-primary-200));
+    top: 20%;
+    left: 10%;
+    box-shadow: 0 0 20px var(--color-primary-300);
+}
+
+.login-orb-2 {
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, var(--color-secondary-500), var(--color-secondary-200));
+    top: 70%;
+    right: 15%;
+    box-shadow: 0 0 15px var(--color-secondary-300);
+    animation-delay: -2s;
+}
+
+.login-orb-3 {
+    width: 35px;
+    height: 35px;
+    background: radial-gradient(circle, var(--color-accent-500), var(--color-accent-200));
+    top: 40%;
+    right: 20%;
+    box-shadow: 0 0 18px var(--color-accent-300);
+    animation-delay: -4s;
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0px) rotateZ(0deg); }
-    50% { transform: translateY(-20px) rotateZ(5deg); }
+    50% { transform: translateY(-15px) rotateZ(3deg); }
 }
 
+/* 🎯 ULTRA COMPACT Main Login Box */
 .login-box {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 25px;
-    padding: 2rem;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--card-border);
+    padding: 1rem;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
     width: 100%;
-    max-width: 350px;
-    text-align: center;
+    max-width: 300px;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     position: relative;
-    z-index: 1;
-    box-shadow: 0 25px 50px rgba(139, 69, 19, 0.1);
     overflow: hidden;
+    transition: all var(--transition-normal);
+    transform-style: preserve-3d;
 }
 
 .login-box::before {
@@ -86,111 +94,127 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, 
-        #8B4513, 
-        #D2B48C,
-        #8B4513);
-    background-size: 200% 100%;
-    animation: gradientSlide 3s ease-in-out infinite;
+    height: 2px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    opacity: 0.8;
 }
 
-@keyframes gradientSlide {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+.login-box::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: var(--gradient-primary);
+    border-radius: calc(var(--radius-2xl) + 1px);
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0.3;
 }
 
+/* 🎨 COMPACT Typography */
 .login-box h2 {
-    font-size: 2.2rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 1.8rem;
-    background: linear-gradient(135deg, 
-        #8B4513, 
-        #D2B48C);
+    text-align: center;
+    margin-bottom: 0.2rem;
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 4px 20px rgba(139, 69, 19, 0.2);
     position: relative;
+    z-index: 1;
+    letter-spacing: -0.02em;
+    font-family: var(--font-display);
 }
 
-.login-box h2::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, 
-        #8B4513, 
-        #D2B48C);
-    border-radius: 2px;
+.login-subtitle {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-bottom: 0.3rem;
+    opacity: 0.8;
+    font-weight: 500;
 }
 
+/* 🚀 COMPACT Input Groups */
 .input-group {
-    margin-bottom: 1.5rem;
-    text-align: left;
-    position: relative;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #333;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    z-index: 2;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 1rem 1.5rem;
-    border: 1px solid rgba(139, 69, 19, 0.2);
-    border-radius: 12px;
-    font-size: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    color: #333;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     position: relative;
     z-index: 1;
 }
 
+.input-group label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    opacity: 0.9;
+}
+
+.input-group input {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-lg);
+    background: var(--input-bg);
+    backdrop-filter: blur(10px);
+    color: var(--text-color);
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+}
+
 .input-group input:focus {
+    border-color: var(--color-primary-500);
+    background: var(--card-bg-glass);
+    box-shadow: 
+        0 4px 20px var(--color-primary-200),
+        0 0 0 2px var(--color-primary-100);
+    transform: translateY(-1px);
     outline: none;
-    border-color: #8B4513;
-    box-shadow: 0 0 20px rgba(139, 69, 19, 0.2);
-    transform: scale(1.02);
-    background: rgba(255, 255, 255, 0.15);
+}
+
+.input-group input:hover {
+    border-color: var(--color-primary-400);
+    transform: translateY(-0.5px);
+    box-shadow: var(--shadow-md);
 }
 
 .input-group input::placeholder {
-    color: rgba(139, 69, 19, 0.5);
+    color: var(--text-muted);
+    opacity: 0.6;
+    font-weight: 400;
 }
 
+/* 🎯 COMPACT Login Button */
 .login-btn {
     width: 100%;
-    padding: 1.2rem 2rem;
+    padding: 0.6rem 1rem;
+    background: var(--gradient-primary);
+    background-size: 200% 200%;
+    color: white;
     border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
+    border-radius: var(--radius-xl);
+    font-size: 0.7rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    box-shadow: var(--shadow-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     position: relative;
     overflow: hidden;
-    margin-bottom: 1rem;
-    color: white;
-    background: linear-gradient(135deg, 
-        #8B4513, 
-        #D2B48C);
-    border: 1px solid rgba(139, 69, 19, 0.3);
-    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
+    transition: all var(--transition-normal);
+    font-family: var(--font-display);
+    animation: gradientShift 3s ease infinite;
 }
 
 .login-btn::before {
@@ -200,10 +224,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
-        transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     transition: left 0.5s ease;
 }
 
@@ -212,76 +233,178 @@
 }
 
 .login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+    transform: translateY(-2px) scale(1.02) rotateX(2deg);
+    box-shadow: 
+        0 20px 40px var(--color-primary-300),
+        var(--shadow-2xl);
+    background-position: 100% 0;
 }
 
 .login-btn:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98) rotateX(-1deg);
+    transition: all 0.1s ease;
 }
 
+.login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 🌐 Google Button */
 .google-btn {
-    background: linear-gradient(135deg, #4285f4, #34a853);
-    border: 1px solid rgba(66, 133, 244, 0.3);
+    background: linear-gradient(135deg, #db4437 0%, #4285f4 50%, #0f9d58 100%) !important;
+    margin-top: 0.2rem;
+    padding: 0.6rem 0.9rem !important;
+    font-size: 0.7rem !important;
 }
 
 .google-btn:hover {
-    box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
+    box-shadow: 
+        0 15px 30px rgba(219, 68, 55, 0.3),
+        0 6px 15px rgba(0, 0, 0, 0.12) !important;
 }
 
+/* ✨ Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 0.4rem 0;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-primary-300), transparent);
+}
+
+.divider span {
+    padding: 0 0.6rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    background: var(--card-bg-glass);
+    border-radius: var(--radius-full);
+    font-weight: 500;
+}
+
+/* 🎭 Geometric Patterns */
+.geometric-pattern {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.1;
+    border: 2px solid var(--color-primary-400);
+    border-radius: 50%;
+}
+
+.pattern-1 {
+    width: 70px;
+    height: 70px;
+    top: 15%;
+    left: 25%;
+    border-style: dashed;
+}
+
+.pattern-2 {
+    width: 50px;
+    height: 50px;
+    bottom: 20%;
+    right: 30%;
+    border-style: dotted;
+    border-color: var(--color-secondary-400);
+}
+
+/* ✨ Floating Particles Inside Box */
+.login-particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: radial-gradient(circle, var(--color-primary-500), transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.particle-1 {
+    top: 25%;
+    right: 18%;
+    box-shadow: 0 0 8px var(--color-primary-400);
+}
+
+.particle-2 {
+    top: 70%;
+    left: 15%;
+    box-shadow: 0 0 6px var(--color-secondary-400);
+}
+
+.particle-3 {
+    bottom: 30%;
+    right: 25%;
+    box-shadow: 0 0 10px var(--color-accent-400);
+}
+
+/* 🌟 Magic Input Glow Effect */
+.input-magic-glow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    transform-origin: left;
+}
+
+/* 💫 Button Magic Shimmer */
+.button-magic-shimmer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+    pointer-events: none;
+}
+
+/* 🔗 COMPACT Register Link */
 .register-link {
-    margin-top: 1.5rem;
-    color: #666;
-    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
 .register-link a {
-    color: #8B4513;
+    color: var(--color-primary-600);
+    font-weight: 700;
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
+    position: relative;
+    padding: 0.1rem 0;
+}
+
+.register-link a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -1px;
+    left: 0;
+    background: var(--gradient-primary);
+    transition: width 0.3s ease;
+}
+
+.register-link a:hover::after {
+    width: 100%;
 }
 
 .register-link a:hover {
-    color: #D2B48C;
-    text-shadow: 0 2px 10px rgba(139, 69, 19, 0.3);
+    color: var(--color-primary-500);
+    transform: translateY(-1px) scale(1.1);
+    text-shadow: 0 2px 10px var(--color-primary-200);
 }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .login-container {
-        padding: 1rem;
-    }
-    
-    .login-box {
-        padding: 2rem;
-        max-width: 100%;
-        margin: 1rem;
-    }
-    
-    .login-box h2 {
-        font-size: 2rem;
-    }
-    
-    .input-group input {
-        padding: 0.9rem 1.2rem;
-        font-size: 0.95rem;
-    }
-    
-    .login-btn {
-        padding: 1rem 1.5rem;
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .login-box {
-        padding: 1.5rem;
-    }
-    
-    .login-box h2 {
-        font-size: 1.8rem;
-    }
-}
-
-
