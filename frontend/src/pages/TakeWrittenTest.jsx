@@ -4,8 +4,6 @@ import "../App.css";
 import "./TakeWrittenTest.css"; // ✅ Importing the new CSS file
 import axios from "../utils/axios";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
 const TakeWrittenTest = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -22,7 +20,7 @@ const TakeWrittenTest = () => {
 
         const fetchTests = async () => {
             try {
-                const res = await axios.get(`${BACKEND_URL}/api/written-tests/${id}`);
+                const res = await axios.get(`/api/written-tests/${id}`);
                 setTest(res.data);
                 setTimeLeft(res.data.duration * 60);
             } catch (error) {
@@ -114,7 +112,7 @@ const TakeWrittenTest = () => {
             const userAnswer = answers[index] || "";
 
             try {
-                const response = await axios.post(`${BACKEND_URL}/api/written-tests/score-answer`, {
+                const response = await axios.post('/api/written-tests/score-answer', {
                     question: questionText,
                     answer: userAnswer
                 }, {
@@ -167,7 +165,7 @@ const TakeWrittenTest = () => {
     };
     
 
-    if (loading) return <p>Loading Tests...</p>;
+    if (loading) return <Spinner message="Loading test..." />;
     if (error) return <p className="error-message">{error}</p>;
     if (!test) return <h2>Test not found.</h2>;
 

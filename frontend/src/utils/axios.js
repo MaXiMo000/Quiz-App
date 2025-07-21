@@ -1,7 +1,14 @@
 import axios from "axios";
+import config from "../config/config.js";
 
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: config.BACKEND_URL,
+    timeout: config.API_TIMEOUT,
+    // Security headers
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+    }
 });
 
 // Automatically attach token

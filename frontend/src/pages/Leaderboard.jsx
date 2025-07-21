@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../utils/axios";
+import Spinner from "../components/Spinner";
 import "./Leaderboard.css";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Leaderboard = () => {
     const [topScorers, setTopScorers] = useState([]);
@@ -19,7 +18,7 @@ const Leaderboard = () => {
         setLoading(true);
         setError("");
         try {
-            const response = await axios.get(`${BACKEND_URL}/api/reports/top-scorers?period=${period}`);
+            const response = await axios.get(`/api/reports/top-scorers?period=${period}`);
             const data = Array.isArray(response.data) ? response.data : [];
             setTopScorers(data);
             setFilteredQuiz("All"); // Reset filter on period change
@@ -36,7 +35,7 @@ const Leaderboard = () => {
         ? topScorers
         : topScorers.filter(item => item.quizName === filteredQuiz);
 
-    if (loading) return <p>Loading ...</p>;
+    if (loading) return <Spinner message="Loading leaderboard..." />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (

@@ -226,8 +226,8 @@ export const updateUserTheme = async (req, res) => {
     const user = await UserQuiz.findById(id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    // Optionally validate if theme is unlocked
-    if (!user.unlockedThemes.includes(theme)) {
+    // Allow "Default" theme without validation, validate others
+    if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
         return res.status(400).json({ error: "Theme not unlocked yet" });
     }
 

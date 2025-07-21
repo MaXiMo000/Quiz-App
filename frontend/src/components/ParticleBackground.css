@@ -1,0 +1,328 @@
+/* ParticleBackground.css - Simplified Theme-Responsive Dynamic Particles */
+.particle-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  transition: all var(--transition-slow);
+}
+
+/* Base particle styles - colors now handled by inline styles */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  transition: all var(--transition-slow);
+  filter: blur(1px);
+}
+
+/* Theme-specific opacity controls */
+:root[data-theme="Light"] .particle-background {
+  opacity: 0.4;
+}
+
+:root[data-theme="Dark"] .particle-background,
+:root .particle-background {
+  opacity: 0.6;
+}
+
+:root[data-theme="Ocean"] .particle-background {
+  opacity: 0.8;
+}
+
+:root[data-theme="Forest"] .particle-background {
+  opacity: 0.7;
+}
+
+:root[data-theme="Sunset"] .particle-background {
+  opacity: 0.6;
+}
+
+:root[data-theme="Lavender"] .particle-background {
+  opacity: 0.5;
+}
+
+:root[data-theme="synthwave"] .particle-background {
+  opacity: 1;
+}
+
+:root[data-theme="tokyo-night"] .particle-background {
+  opacity: 0.7;
+}
+
+:root[data-theme="gruvbox-dark"] .particle-background {
+  opacity: 0.6;
+}
+
+:root[data-theme="material-dark"] .particle-background {
+  opacity: 0.6;
+}
+
+:root[data-theme="nord"] .particle-background {
+  opacity: 0.5;
+}
+
+/* Special synthwave glow effect */
+:root[data-theme="synthwave"] .particle {
+  filter: blur(0.5px);
+}
+
+@keyframes synthwave-glow {
+  0% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Ocean Theme - Aquatic Blues and Golds */
+:root[data-theme="Ocean"] .particle-background {
+  opacity: 0.6;
+}
+
+:root[data-theme="Ocean"] .particle {
+  background: #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  opacity: 0.8;
+}
+
+:root[data-theme="Ocean"] .particle:nth-child(2n) {
+  background: #40e0d0;
+  box-shadow: 0 0 10px rgba(64, 224, 208, 0.7);
+  opacity: 0.7;
+}
+
+:root[data-theme="Ocean"] .particle:nth-child(3n) {
+  background: #87ceeb;
+  box-shadow: 0 0 6px rgba(135, 206, 235, 0.5);
+  opacity: 0.6;
+}
+
+:root[data-theme="Ocean"] .particle:nth-child(5n) {
+  background: #ff8c42;
+  box-shadow: 0 0 12px rgba(255, 140, 66, 0.8);
+  opacity: 0.9;
+}
+
+/* Forest Theme - Natural Greens */
+:root[data-theme="Forest"] .particle-background {
+  opacity: 0.5;
+}
+
+:root[data-theme="Forest"] .particle {
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+  opacity: 0.7;
+}
+
+:root[data-theme="Forest"] .particle:nth-child(2n) {
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+  opacity: 0.6;
+}
+
+:root[data-theme="Forest"] .particle:nth-child(3n) {
+  background: #10b981;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.4);
+  opacity: 0.5;
+}
+
+:root[data-theme="Forest"] .particle:nth-child(5n) {
+  background: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+  opacity: 0.8;
+}
+
+/* Sunset Theme - Warm Oranges and Yellows */
+:root[data-theme="Sunset"] .particle-background {
+  opacity: 0.4;
+}
+
+:root[data-theme="Sunset"] .particle {
+  background: #f97316;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+  opacity: 0.6;
+}
+
+:root[data-theme="Sunset"] .particle:nth-child(2n) {
+  background: #ea580c;
+  box-shadow: 0 0 6px rgba(234, 88, 12, 0.5);
+  opacity: 0.5;
+}
+
+:root[data-theme="Sunset"] .particle:nth-child(3n) {
+  background: #d97706;
+  box-shadow: 0 0 5px rgba(217, 119, 6, 0.4);
+  opacity: 0.4;
+}
+
+/* Lavender Theme - Elegant Purples */
+:root[data-theme="Lavender"] .particle-background {
+  opacity: 0.35;
+}
+
+:root[data-theme="Lavender"] .particle {
+  background: #8b5cf6;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+  opacity: 0.5;
+}
+
+:root[data-theme="Lavender"] .particle:nth-child(2n) {
+  background: #a855f7;
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+  opacity: 0.4;
+}
+
+:root[data-theme="Lavender"] .particle:nth-child(3n) {
+  background: #7c3aed;
+  box-shadow: 0 0 5px rgba(124, 58, 237, 0.3);
+  opacity: 0.3;
+}
+
+/* Synthwave Theme - Neon Cyberpunk */
+:root[data-theme="synthwave"] .particle-background {
+  opacity: 0.8;
+}
+
+:root[data-theme="synthwave"] .particle {
+  background: #00d9ff;
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.9);
+  opacity: 1;
+  filter: blur(0.5px);
+  animation: synthwave-glow 3s ease-in-out infinite alternate;
+}
+
+:root[data-theme="synthwave"] .particle:nth-child(2n) {
+  background: #ff0095;
+  box-shadow: 0 0 20px rgba(255, 0, 149, 1);
+  opacity: 0.9;
+  animation: synthwave-glow 2.5s ease-in-out infinite alternate-reverse;
+}
+
+:root[data-theme="synthwave"] .particle:nth-child(3n) {
+  background: #ff5fd7;
+  box-shadow: 0 0 12px rgba(255, 95, 215, 0.8);
+  opacity: 0.8;
+}
+
+:root[data-theme="synthwave"] .particle:nth-child(5n) {
+  background: #39ff14;
+  box-shadow: 0 0 18px rgba(57, 255, 20, 0.95);
+  opacity: 0.85;
+  animation: synthwave-glow 4s ease-in-out infinite alternate;
+}
+
+@keyframes synthwave-glow {
+  0% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Tokyo Night Theme - Authentic Colors */
+:root[data-theme="tokyo-night"] .particle-background {
+  opacity: 0.5;
+}
+
+:root[data-theme="tokyo-night"] .particle {
+  background: #7aa2f7;
+  box-shadow: 0 0 8px rgba(122, 162, 247, 0.6);
+  opacity: 0.7;
+}
+
+:root[data-theme="tokyo-night"] .particle:nth-child(2n) {
+  background: #bb9af7;
+  box-shadow: 0 0 6px rgba(187, 154, 247, 0.5);
+  opacity: 0.6;
+}
+
+:root[data-theme="tokyo-night"] .particle:nth-child(3n) {
+  background: #9ece6a;
+  box-shadow: 0 0 5px rgba(158, 206, 106, 0.4);
+  opacity: 0.5;
+}
+
+:root[data-theme="tokyo-night"] .particle:nth-child(5n) {
+  background: #e0af68;
+  box-shadow: 0 0 10px rgba(224, 175, 104, 0.7);
+  opacity: 0.8;
+}
+
+/* Gruvbox Dark Theme - Warm Retro Colors */
+:root[data-theme="gruvbox-dark"] .particle-background {
+  opacity: 0.45;
+}
+
+:root[data-theme="gruvbox-dark"] .particle {
+  background: #b8bb26;
+  box-shadow: 0 0 8px rgba(184, 187, 38, 0.6);
+  opacity: 0.7;
+}
+
+:root[data-theme="gruvbox-dark"] .particle:nth-child(2n) {
+  background: #fabd2f;
+  box-shadow: 0 0 6px rgba(250, 189, 47, 0.5);
+  opacity: 0.6;
+}
+
+:root[data-theme="gruvbox-dark"] .particle:nth-child(3n) {
+  background: #458588;
+  box-shadow: 0 0 5px rgba(69, 133, 136, 0.4);
+  opacity: 0.5;
+}
+
+/* Material Dark Theme - Modern Purples */
+:root[data-theme="material-dark"] .particle-background {
+  opacity: 0.4;
+}
+
+:root[data-theme="material-dark"] .particle {
+  background: #bb86fc;
+  box-shadow: 0 0 8px rgba(187, 134, 252, 0.6);
+  opacity: 0.6;
+}
+
+:root[data-theme="material-dark"] .particle:nth-child(2n) {
+  background: #03dac6;
+  box-shadow: 0 0 6px rgba(3, 218, 198, 0.5);
+  opacity: 0.5;
+}
+
+/* Nord Theme - Cool Arctic Colors */
+:root[data-theme="nord"] .particle-background {
+  opacity: 0.4;
+}
+
+:root[data-theme="nord"] .particle {
+  background: #81a1c1;
+  box-shadow: 0 0 8px rgba(129, 161, 193, 0.6);
+  opacity: 0.6;
+}
+
+:root[data-theme="nord"] .particle:nth-child(2n) {
+  background: #88c0d0;
+  box-shadow: 0 0 6px rgba(136, 192, 208, 0.5);
+  opacity: 0.5;
+}
+
+:root[data-theme="nord"] .particle:nth-child(3n) {
+  background: #a3be8c;
+  box-shadow: 0 0 5px rgba(163, 190, 140, 0.4);
+  opacity: 0.4;
+}
+
+:root[data-theme="nord"] .particle:nth-child(5n) {
+  background: #ebcb8b;
+  box-shadow: 0 0 10px rgba(235, 203, 139, 0.7);
+  opacity: 0.7;
+}

@@ -1,69 +1,447 @@
-/* UserWrittenReports.css */
+/* UserWrittenReports.css - Enhanced for Best Website Experience */
 .reports-container {
     width: 100%;
-    max-width: 900px;
-    margin: var(--space-lg) auto;
-    padding: var(--space-md);
-    background: var(--card-bg);
+    max-width: 1000px;
+    margin: var(--space-xl) auto;
+    padding: var(--space-2xl);
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(35px);
+    -webkit-backdrop-filter: blur(35px);
     color: var(--text-color);
-    border-radius: 10px;
-    box-shadow: 0 6px 20px var(--shadow);
-    min-height: 40vh;
-    max-height: 450px;
-    overflow-y: auto;
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--card-border);
+    box-shadow: 
+        var(--shadow-2xl),
+        0 0 50px rgba(99, 102, 241, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    min-height: 60vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.reports-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+}
+
+.reports-container h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-xl);
+    text-align: center;
+    position: relative;
+}
+
+.reports-container h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: var(--radius-full);
+}
+
+.reports-table-container {
+    margin-top: var(--space-xl);
+    overflow-x: auto;
+    background: var(--glass-bg);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
 }
 
 .reports-container table {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: var(--space-lg);
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .reports-container th {
-    background: var(--bg-secondary);
-    font-weight: 500;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    padding: var(--space-md) var(--space-lg);
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.reports-container th:first-child {
+    border-top-left-radius: var(--radius-xl);
+}
+
+.reports-container th:last-child {
+    border-top-right-radius: var(--radius-xl);
 }
 
 .reports-container td, .reports-container th {
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
     border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.reports-container td {
+    background: var(--card-bg-glass);
+    transition: all var(--transition-fast);
+    font-weight: 500;
+}
+
+.score-cell {
+    font-weight: 700;
+    color: #6366f1;
+    font-size: 1.1em;
+}
+
+.passed {
+    color: #22c55e;
+    font-size: 1.2em;
+}
+
+.failed {
+    color: #ef4444;
+    font-size: 1.2em;
+}
+
+.action-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    align-items: center;
+}
+
+.view-btn, .delete-btn, .take-test-btn, .retry-btn {
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm) var(--space-lg);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
+    min-height: 40px;
+    font-size: 0.85rem;
 }
 
 .view-btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: var(--space-xs) var(--space-sm);
-    cursor: pointer;
-    transition: background 0.3s;
+    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+    color: white;
 }
 
 .view-btn:hover {
-    background: var(--accent2);
+    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
 }
 
 .delete-btn {
-    background: var(--danger);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: var(--space-xs) var(--space-sm);
-    cursor: pointer;
-    transition: background 0.3s;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
 }
 
 .delete-btn:hover {
-    background: #b71c1c;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
 }
 
-@media (max-width: 360px) {
-    th, td {
-        padding: 0.5rem 0.375rem;
+.delete-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.take-test-btn, .retry-btn {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: white;
+    padding: var(--space-md) var(--space-xl);
+    font-size: 1rem;
+    min-height: 50px;
+}
+
+.take-test-btn:hover, .retry-btn:hover {
+    background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.no-reports {
+    text-align: center;
+    padding: var(--space-2xl);
+    background: var(--glass-bg);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
+    margin-top: var(--space-xl);
+}
+
+.no-reports p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+.loading-container,
+.error-container {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg-glass);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(20px);
+    margin: var(--space-xl) auto;
+    max-width: 500px;
+    padding: var(--space-2xl);
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(99, 102, 241, 0.2);
+    border-top: 4px solid #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--space-md);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text,
+.error-text {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.error-text {
+    color: #ef4444;
+    margin-bottom: var(--space-lg);
+}
+
+/* ✅ Enhanced Mobile Responsiveness for Best Website Experience */
+@media (max-width: 1200px) {
+    .reports-container {
+        max-width: 95%;
+        margin: var(--space-lg) auto;
+        padding: var(--space-xl) var(--space-lg);
+    }
+
+    .reports-container h1 {
+        font-size: 2rem;
+    }
+
+    .reports-container th,
+    .reports-container td {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.95rem;
+    }
+
+    .view-btn, .delete-btn {
+        padding: var(--space-xs) var(--space-sm);
         font-size: 0.8rem;
     }
+}
+
+@media (max-width: 768px) {
+    .reports-container {
+        margin: var(--space-sm) auto; /* Reduced margin */
+        padding: var(--space-md) var(--space-sm); /* Smaller padding */
+        border-radius: var(--radius-lg);
+        width: 98%;
+        max-width: none;
+    }
+
+    .reports-container h1 {
+        font-size: 1.5rem; /* Smaller title */
+        margin-bottom: var(--space-md); /* Reduced margin */
+    }
+
+    .reports-container h1::after {
+        width: 50px; /* Smaller underline */
+        height: 2px;
+    }
+
+    .reports-table-container {
+        margin-top: var(--space-md); /* Reduced margin */
+        border-radius: var(--radius-md);
+        overflow-x: auto; /* Keep horizontal scroll as backup */
+        overflow-y: auto;
+        max-height: 70vh;
+        /* Enhanced mobile scrolling */
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    /* Custom scrollbar for mobile */
+    .reports-table-container::-webkit-scrollbar {
+        width: 4px; /* Thinner scrollbar */
+        height: 4px;
+    }
+
+    .reports-table-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .reports-table-container::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.5));
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .reports-container table {
+        min-width: 350px; /* Compact minimum width */
+        font-size: 0.7rem; /* Smaller font */
+        width: 100%;
+    }
+
+    .reports-container th,
+    .reports-container td {
+        padding: 0.4rem 0.3rem; /* Much smaller padding */
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+
+    .reports-container th {
+        font-size: 0.65rem; /* Smaller header font */
+        padding: 0.4rem 0.3rem;
+        position: sticky;
+        top: 0;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(59, 130, 246, 0.2));
+        backdrop-filter: blur(15px);
+        z-index: 10;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.2rem; /* Smaller gap */
+    }
+
     .view-btn, .delete-btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
+        width: 100%;
+        padding: 0.3rem 0.5rem; /* Smaller button padding */
+        font-size: 0.65rem; /* Smaller button font */
+        min-height: 28px; /* Smaller button height */
+    }
+
+    .take-test-btn, .retry-btn {
+        width: 90%;
+        max-width: 250px; /* Smaller max width */
+        padding: var(--space-sm); /* Reduced padding */
+        font-size: 0.85rem; /* Smaller font */
+        min-height: 40px; /* Smaller height */
+    }
+}
+
+@media (max-width: 480px) {
+    .reports-container {
+        margin: var(--space-xs) auto; /* Minimal margin */
+        padding: var(--space-sm) var(--space-xs); /* Minimal padding */
+        border-radius: var(--radius-md);
+        width: 100%;
+    }
+
+    .reports-container h1 {
+        font-size: 1.3rem; /* Smaller title */
+        margin-bottom: var(--space-sm); /* Reduced margin */
+    }
+
+    .reports-container h1::after {
+        width: 30px; /* Smaller underline */
+    }
+
+    .reports-table-container {
+        margin-top: var(--space-sm); /* Reduced margin */
+        border-radius: var(--radius-sm);
+        max-height: 75vh;
+        overflow-x: auto; /* Keep horizontal scroll */
+    }
+
+    .reports-container table {
+        min-width: 300px; /* Very compact minimum */
+        font-size: 0.65rem; /* Tiny font */
+    }
+
+    .reports-container th,
+    .reports-container td {
+        padding: 0.25rem 0.2rem; /* Minimal padding */
+        font-size: 0.65rem;
+    }
+
+    .reports-container th {
+        font-size: 0.6rem; /* Ultra-small header */
+        padding: 0.25rem 0.2rem;
+    }
+
+    .view-btn, .delete-btn {
+        padding: 0.2rem 0.3rem; /* Tiny button padding */
+        font-size: 0.6rem; /* Small button font */
+        min-height: 24px; /* Small button height */
+    }
+
+    .take-test-btn, .retry-btn {
+        width: 95%;
+        padding: var(--space-xs) var(--space-sm); /* Reduced padding */
+        font-size: 0.8rem; /* Smaller font */
+        min-height: 36px; /* Smaller height */
+    }
+}
+
+@media (max-width: 320px) {
+    .reports-container {
+        margin: var(--space-xs) auto;
+        padding: var(--space-sm) var(--space-xs);
+    }
+
+    .reports-container h1 {
+        font-size: 1.3rem;
+        margin-bottom: var(--space-sm);
+    }
+
+    .reports-container th,
+    .reports-container td {
+        padding: var(--space-xs);
+        font-size: 0.8rem;
+    }
+
+    .reports-container th {
+        font-size: 0.7rem;
+    }
+
+    .view-btn, .delete-btn {
+        font-size: 0.65rem;
+        min-height: 30px;
+    }
+
+    .take-test-btn, .retry-btn {
+        width: 100%;
+        font-size: 0.85rem;
+        min-height: 44px;
     }
 }

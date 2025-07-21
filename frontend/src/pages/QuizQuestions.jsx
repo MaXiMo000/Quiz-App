@@ -4,8 +4,6 @@ import axios from "../utils/axios";
 import "../App.css";
 import "./QuizQuestions.css";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
 const QuizQuestions = () => {
     const { id } = useParams();  // Get quiz ID from URL
     const navigate = useNavigate();
@@ -14,7 +12,7 @@ const QuizQuestions = () => {
     // Fetch the quiz data with questions
     const getQuizDetails = async () => {
         try {
-            const response = await axios.get(`${BACKEND_URL}/api/quizzes/${id}`);
+            const response = await axios.get(`/api/quizzes/${id}`);
             setQuiz(response.data);
         } catch (error) {
             console.error("Error fetching quiz details:", error);
@@ -31,7 +29,7 @@ const QuizQuestions = () => {
         if (!window.confirm("Are you sure you want to delete this question?")) return;
 
         try {
-            await axios.delete(`${BACKEND_URL}/api/quizzes/${id}/questions/${questionIndex}`);
+            await axios.delete(`/api/quizzes/${id}/questions/${questionIndex}`);
             alert("Question deleted successfully!");
             getQuizDetails();
         } catch (error) {

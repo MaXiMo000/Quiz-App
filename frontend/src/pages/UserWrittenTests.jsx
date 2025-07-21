@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 import axios from "../utils/axios";
+import Spinner from "../components/Spinner";
 import "./UserWrittenTests.css"; // ✅ Import the new CSS file
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserWrittenTests = () => {
     const [tests, setTests] = useState([]);
@@ -15,7 +14,7 @@ const UserWrittenTests = () => {
     useEffect(() => {
         const fetchTests = async () => {
             try {
-                const res = await axios.get(`${BACKEND_URL}/api/written-tests`);
+                const res = await axios.get('/api/written-tests');
                 setTests(res.data);
             } catch (error) {
                 console.error("Error fetching users:", error);
@@ -30,7 +29,7 @@ const UserWrittenTests = () => {
 
     
 
-    if (loading) return <p>Loading Tests...</p>;
+    if (loading) return <Spinner message="Loading tests..." />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (
