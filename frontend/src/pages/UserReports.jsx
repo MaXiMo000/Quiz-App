@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "../utils/axios";
+import Spinner from "../components/Spinner";
 import "./UserReports.css"; // Import the specific CSS file for UserReports
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserReports = () => {
     const [reports, setReports] = useState([]);
@@ -13,7 +12,7 @@ const UserReports = () => {
 
     const getReport = async () => {
         try {
-            const response = await axios.get(`${BACKEND_URL}/api/reports/user?username=${user?.name}`); // auto-token
+            const response = await axios.get(`/api/reports/user?username=${user?.name}`); // auto-token
             setReports(response.data);
         } catch (error) {
             console.error("Error fetching quizzes:", error);
@@ -35,7 +34,7 @@ const UserReports = () => {
         }
     
         try {
-            const response = await axios.delete(`${BACKEND_URL}/api/reports/${id}`);
+            const response = await axios.delete(`/api/reports/${id}`);
     
             if (response.status === 200) {
                 alert("Report deleted successfully!");
@@ -47,7 +46,7 @@ const UserReports = () => {
         }
     };
 
-    if (loading) return <p>Loading report...</p>;
+    if (loading) return <Spinner message="Loading reports..." />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (

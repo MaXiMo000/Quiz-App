@@ -3,8 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./TakeQuiz.css";
 import axios from "../utils/axios";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+import Spinner from "../components/Spinner";
 
 const TakeQuiz = () => {
     const { id } = useParams();
@@ -29,7 +28,7 @@ const TakeQuiz = () => {
     useEffect(() => {
         const fetchQuiz = async () => {
             try {
-                const res = await axios.get(`${BACKEND_URL}/api/quizzes/${id}`);
+                const res = await axios.get(`/api/quizzes/${id}`);
                 setQuiz(res.data);
                 setTimeLeft(res.data.duration * 60);
             } catch (error) {
@@ -69,6 +68,7 @@ const TakeQuiz = () => {
         else if (element.mozRequestFullScreen) element.mozRequestFullScreen();
         else if (element.webkitRequestFullscreen) element.webkitRequestFullscreen();
         else if (element.msRequestFullscreen) element.msRequestFullscreen();
+        console.log("Entered full screen mode", isFullScreen);
         setIsFullScreen(true);
     };
 
@@ -145,7 +145,7 @@ const TakeQuiz = () => {
         });
 
         const totalMarks = quiz.totalMarks;
-        const scoreAchieved = (correctCount / quiz.questions.length) * totalMarks;
+        const scoreAchieved = Math.round((correctCount / quiz.questions.length) * totalMarks * 100) / 100; // Round to 2 decimal places
         setScore(scoreAchieved);
         setFinalScore(totalMarks);
         setPerformanceLevel(
@@ -156,7 +156,7 @@ const TakeQuiz = () => {
 
         try {
             const user = JSON.parse(localStorage.getItem("user"));
-            await axios.post(`${BACKEND_URL}/api/reports`, {
+            await axios.post(`/api/reports`, {
                 username: user?.name,
                 quizName: quiz.title,
                 score: scoreAchieved,
@@ -171,7 +171,7 @@ const TakeQuiz = () => {
         }
     };
 
-    if (loading) return <p>Loading Quiz...</p>;
+    if (loading) return <Spinner message="Loading quiz..." />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (
@@ -215,12 +215,48 @@ const TakeQuiz = () => {
 
             {showResultModal && (
                 <div className="modal-overlay">
-                    <div className="modal-content">
-                        <p>You scored <strong>{score}</strong> out of <strong>{finalScore}</strong>.</p>
-                        <p>Would you like to generate more questions based on your performance?</p>
+                    <div className="modal-content result-modal">
+                        <div className="result-header">
+                            <div className="result-icon">🎉</div>
+                            <h2>Quiz Completed!</h2>
+                        </div>
+                        
+                        <div className="score-display">
+                            <div className="score-circle">
+                                <span className="score-number">{score}</span>
+                                <span className="score-divider">/</span>
+                                <span className="total-score">{finalScore}</span>
+                            </div>
+                            <div className="percentage-score">
+                                {Math.round((score / finalScore) * 100)}%
+                            </div>
+                        </div>
+
+                        <div className="performance-badge">
+                            <span className={`badge ${performanceLevel}`}>
+                                {performanceLevel === 'high' ? '🏆 Excellent!' : 
+                                 performanceLevel === 'medium' ? '👍 Good Job!' : 
+                                 '📚 Keep Learning!'}
+                            </span>
+                        </div>
+
+                        <p className="result-message">
+                            Would you like to generate more questions based on your performance?
+                        </p>
+                        
                         <div className="modal-actions">
-                            <button onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}>Generate More</button>
-                            <button onClick={() => navigate("/user/report")}>Go to Reports</button>
+                            <button 
+                                className="generate-btn"
+                                onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}
+                            >
+                                🚀 Generate More
+                            </button>
+                            <button 
+                                className="reports-btn"
+                                onClick={() => navigate("/user/report")}
+                            >
+                                📊 Go to Reports
+                            </button>
                         </div>
                     </div>
                 </div>

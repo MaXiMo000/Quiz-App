@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import "./Home.css";
 import "../App.css";
 import axios from "../utils/axios";
 import ThemeSelector from "../components/ThemeSelector";
 import { ThemeContext } from "../context/ThemeContext";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Home = () => {
     const navigate = useNavigate();
@@ -17,7 +16,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const fetchUserData = async () => {
+    const fetchUserData = useCallback(async () => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser) {
         navigate("/login");
@@ -25,62 +24,195 @@ const Home = () => {
         setUser(storedUser);
         }
         try {
-        const res = await axios.get(`${BACKEND_URL}/api/users/${storedUser._id}`);
+        const res = await axios.get(`/api/users/${storedUser._id}`);
         const data = res.data;
         setBadges(data.badges || []);
         setXp(data.xp || 0);
         setLevel(data.level || 1);
+        // Update user state with fresh data from API
+        setUser(data);
         } catch (error) {
         console.error("Error fetching user data:", error);
         setError("Error fetching user data. Try again later.");
         } finally {
         setLoading(false);
         }
-    };
+    }, [navigate]);
 
     useEffect(() => {
         fetchUserData();
-    }, [navigate]);
+    }, [navigate, fetchUserData]);
 
     const XPBar = ({ xp, level }) => {
         const xpForNext = level * 100;
         const percent = Math.min(100, Math.round((xp / xpForNext) * 100));
         return (
-        <div className="xp-bar-container">
-            <div className="xp-bar-fill" style={{ width: `${percent}%` }} />
+        <motion.div 
+            className="xp-bar-container"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+        >
+            <motion.div 
+                className="xp-bar-fill" 
+                style={{ width: `${percent}%` }} 
+                initial={{ width: 0 }}
+                animate={{ width: `${percent}%` }}
+                transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
+            />
             <span className="xp-label">Level {level}: {xp}/{xpForNext} XP</span>
-        </div>
+        </motion.div>
         );
     };
 
-    if (loading) return <p>Loading Quiz...</p>;
-    if (error) return <p className="error-message">{error}</p>;
+    if (loading) return (
+        <motion.div 
+            className="home-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
+            <div className="loading-container">
+                <motion.div 
+                    className="loading-spinner"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                >
+                    <div className="spinner-ring"></div>
+                </motion.div>
+                <motion.p 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="loading-text"
+                >
+                    Loading Your Dashboard...
+                </motion.p>
+            </div>
+        </motion.div>
+    );
+    
+    if (error) return (
+        <motion.div 
+            className="home-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
+            <motion.div 
+                className="error-container"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+            >
+                <p className="error-message">{error}</p>
+            </motion.div>
+        </motion.div>
+    );
 
     return (
-        <div className="home-container">
-        <h1>Welcome, {user?.name}!</h1>
+        <motion.div 
+            className="home-container"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+        <motion.h1
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
+        >
+            Welcome, {user?.name}!
+        </motion.h1>
+        
         <XPBar xp={xp} level={level} />
-        <p>Level: {level}</p>
-        <p>Login Streak: {user.loginStreak} days</p>
-        <p>Quiz Streak: {user.quizStreak} days</p>
+        
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+        >
+            <p className="home-description">Level: {level}</p>
+            <p className="home-description">Login Streak: {user.loginStreak} days</p>
+            <p className="home-description">Quiz Streak: {user.quizStreak} days</p>
+        </motion.div>
 
         {/* Theme selection button */}
-        <ThemeSelector />
+        <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+        >
+            <ThemeSelector />
+        </motion.div>
 
-        <p>Ready to take a quiz?</p>
-        <button className="start-quiz-btn" onClick={() => navigate("/user/test")}>
+        <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.6 }}
+            className="home-description"
+        >
+            Ready to take a quiz?
+        </motion.p>
+        
+        <motion.button 
+            className="start-quiz-btn" 
+            onClick={() => navigate("/user/test")}
+            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.8, duration: 0.6, type: "spring", stiffness: 120 }}
+            whileHover={{ 
+                scale: 1.05, 
+                y: -5,
+                transition: { duration: 0.3 }
+            }}
+            whileTap={{ scale: 0.95 }}
+        >
             Start Quiz
-        </button>
-        <div className="badge-list">
+        </motion.button>
+        
+        <motion.div 
+            className="badge-list"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.8 }}
+        >
             <h3>Your Badges:</h3>
             <ul>
             {badges.map((badge, i) => (
-                <li key={i} className="badge-item">🏅 {badge}</li>
+                <motion.li 
+                    key={i} 
+                    className="badge-item"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1.2 + (i * 0.1), duration: 0.5 }}
+                    whileHover={{ 
+                        scale: 1.05, 
+                        rotateY: 10,
+                        transition: { duration: 0.3 }
+                    }}
+                >
+                    🏅 {badge}
+                </motion.li>
             ))}
             </ul>
-        </div>
-        <button onClick={fetchUserData} className="start-quiz-btn" >Refresh Stats</button>
-        </div>
+        </motion.div>
+        
+        <motion.button 
+            onClick={fetchUserData} 
+            className="start-quiz-btn"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 0.5 }}
+            whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.3 }
+            }}
+            whileTap={{ scale: 0.95 }}
+        >
+            Refresh Stats
+        </motion.button>
+        </motion.div>
     );
 };
 

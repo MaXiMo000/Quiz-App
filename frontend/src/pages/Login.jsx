@@ -1,11 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import { motion } from "framer-motion";
+import axios from "../utils/axios";
 import "./Login.css";
 import "../App.css";
 import { ThemeContext } from "../context/ThemeContext";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -16,7 +15,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${BACKEND_URL}/api/users/login`, { email, password }, {
+            const res = await axios.post(`/api/users/login`, { email, password }, {
                 headers: { "Content-Type": "application/json" }
             });
             console.log(JSON.stringify(res.data))
@@ -24,12 +23,15 @@ const Login = () => {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
 
+            // ✅ Apply theme immediately after login
+            const userTheme = res.data.user.selectedTheme || "Default";
+            console.log('Login: Applying theme:', userTheme);
+            changeTheme(userTheme);
+
             // ✅ Navigate based on role
             if (res.data.user.role === "admin") {
-                changeTheme(res.data.user.selectedTheme || "Default");
                 navigate("/admin");
             } else {
-                changeTheme(res.data.user.selectedTheme || "Default");
                 navigate("/");
             }
         } catch (error) {
@@ -38,32 +40,92 @@ const Login = () => {
         }
     };
     const handleGoogleLogin = () => {
-        window.open(`${BACKEND_URL}/api/users/google`, "_self");
+        // 🔒 SECURE: Use relative URL for Google OAuth
+        window.location.href = "/api/users/google";
     };
 
     return (
-        <div className="login-container">
-            <div className="login-box">
-                <h2>Login</h2>
+        <motion.div 
+            className="login-container"
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -50, scale: 0.9 }}
+            transition={{ 
+                duration: 0.6,
+                type: "spring",
+                stiffness: 100 
+            }}
+        >
+            <motion.div 
+                className="login-box"
+                initial={{ rotateX: -15 }}
+                animate={{ rotateX: 0 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                whileHover={{ 
+                    scale: 1.02,
+                    rotateY: 2,
+                    transition: { duration: 0.3 }
+                }}
+            >
+                <motion.h2
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                    Login
+                </motion.h2>
                 <form onSubmit={handleLogin}>
-                    <div className="input-group">
+                    <motion.div 
+                        className="input-group"
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4, duration: 0.5 }}
+                    >
                         <label>Email</label>
                         <input type="email" onChange={(e) => setEmail(e.target.value)} required />
-                    </div>
-                    <div className="input-group">
+                    </motion.div>
+                    <motion.div 
+                        className="input-group"
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5, duration: 0.5 }}
+                    >
                         <label>Password</label>
                         <input type="password" onChange={(e) => setPassword(e.target.value)} required />
-                    </div>
-                    <button type="submit" className="login-btn">Login</button>
+                    </motion.div>
+                    <motion.button 
+                        type="submit" 
+                        className="login-btn"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.5 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Login
+                    </motion.button>
                 </form>
-                <button className="login-btn google-btn" onClick={handleGoogleLogin}>
+                <motion.button 
+                    className="login-btn google-btn" 
+                    onClick={handleGoogleLogin}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
                     Sign in with Google
-                </button>
-                <p className="register-link">
+                </motion.button>
+                <motion.p 
+                    className="register-link"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                >
                     Don't have an account? <Link to="/register">Register here</Link>
-                </p>
-            </div>
-        </div>
+                </motion.p>
+            </motion.div>
+        </motion.div>
     );
 };
 

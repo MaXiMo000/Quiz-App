@@ -21,14 +21,13 @@ useEffect(() => {
 
 const handleApply = async (themeName) => {
     try {
-    // Only call backend if not "Default"
-    if (themeName !== "Default") {
-        await axios.post(`/api/users/${userId}/theme`, { theme: themeName });
-    }
+    // Always save theme to backend (including "Default")
+    await axios.post(`/api/users/${userId}/theme`, { theme: themeName });
     changeTheme(themeName);
     alert(`Theme "${themeName}" applied!`);
     } catch (err) {
     console.error("Error applying theme:", err);
+    alert(`Failed to apply theme "${themeName}". Please try again.`);
     }
 };
 

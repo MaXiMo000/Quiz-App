@@ -3,8 +3,6 @@ import { useParams, useLocation } from "react-router-dom";
 import axios from "../utils/axios";
 import "./AdaptiveQuiz.css"; // ✅ Custom styling
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
 const AdaptiveQuiz = () => {
     const { id } = useParams();
     const location = useLocation();
@@ -20,7 +18,7 @@ const AdaptiveQuiz = () => {
     useEffect(() => {
         const fetchTopic = async () => {
             try {
-                const res = await axios.get(`${BACKEND_URL}/api/quizzes/${id}`);
+                const res = await axios.get(`/api/quizzes/${id}`);
                 setTopic(res.data.category);
             } catch (err) {
                 console.error("Error fetching quiz topic", err);
@@ -32,14 +30,15 @@ const AdaptiveQuiz = () => {
     const handleGenerate = async () => {
         setLoading(true);
         try {
-            const res = await axios.post(`${BACKEND_URL}/api/adaptive`, {
+            const res = await axios.post('/api/adaptive', {
                 quizId: id,
                 performance,
                 numQuestions
             });
 
+            console.log("Generated questions:", res.data);
             // ✅ After adding, get the updated quiz to reflect all questions and indexes correctly
-            const updatedQuiz = await axios.get(`${BACKEND_URL}/api/quizzes/${id}`);
+            const updatedQuiz = await axios.get(`/api/quizzes/${id}`);
             setResponse({ questions: updatedQuiz.data.questions }); // store all questions
             alert("✅ Adaptive questions added!");
         } catch {
@@ -55,7 +54,7 @@ const AdaptiveQuiz = () => {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`${BACKEND_URL}/api/quizzes/${id}/questions/${index}`);
+            await axios.delete(`/api/quizzes/${id}/questions/${index}`);
             const updatedQuestions = response.questions.filter((_, i) => i !== index);
             setResponse({ ...response, questions: updatedQuestions });
             alert("❌ Question deleted.");
