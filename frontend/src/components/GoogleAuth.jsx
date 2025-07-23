@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import NotificationModal from "./NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import axios from "../utils/axios";
 
 const GoogleAuth = () => {
     const [searchParams] = useSearchParams();
@@ -11,17 +12,26 @@ const GoogleAuth = () => {
     const { notification, showError, hideNotification } = useNotification();
 
     useEffect(() => {
-        const token = searchParams.get("token");
-        const _id = searchParams.get("_id");
-        const name = searchParams.get("name");
-        const email = searchParams.get("email");
-        const role = searchParams.get("role");
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get('/api/users/me');
+                const user = response.data;
+                
+                localStorage.setItem("user", JSON.stringify(user));
+                navigate(user.role === "admin" ? "/admin" : "/");
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                showError("Failed to fetch user data");
+                navigate("/login");
+            }
+        };
 
-        if (token && email && role && _id) {
-            const user = {_id, name, email, role };
+        const token = searchParams.get("token");
+
+        if (token) {
+            // 🔒 SECURITY: Store token and fetch user data securely via API
             localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
-            navigate(role === "admin" ? "/admin" : "/");
+            fetchUserData();
         } else {
             showError("Google Authentication Failed");
             navigate("/login");

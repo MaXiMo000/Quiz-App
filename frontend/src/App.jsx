@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState, useEffect } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthWrapper from "./components/AuthWrapper";
 import Layout from "./components/Layout"; // ✅ Your layout with Sidebar
@@ -41,12 +41,11 @@ import XPLeaderboard from "./pages/XPLeaderboard";
 import ThemePage from "./pages/ThemePage";
 
 const App = () => {
-    const [user, setUser] = useState(null);
+    // 🔒 SECURITY: Removed unnecessary user state and logging
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
-        console.log("Stored User:", user);
         if (storedUser) {
-        setUser(storedUser);
+            // User data is available in localStorage when needed
         }
     }, []);
 

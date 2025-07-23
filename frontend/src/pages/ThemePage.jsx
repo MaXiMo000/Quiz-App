@@ -7,13 +7,19 @@ import { useNotification } from "../hooks/useNotification";
 const ThemePage = () => {
 const { changeTheme } = useContext(ThemeContext);
 const [unlocked, setUnlocked] = useState([]);
-const userId = JSON.parse(localStorage.getItem("user"))?._id;
+const userFromStorage = JSON.parse(localStorage.getItem("user"));
+const userId = userFromStorage?._id;
 
 // Notification system
 const { notification, showSuccess, showError, hideNotification } = useNotification();
 
 useEffect(() => {
     const fetchUser = async () => {
+    if (!userId) {
+        showError('Please log in to access themes');
+        return;
+    }
+    
     try {
         const res = await axios.get(`/api/users/${userId}`);
         setUnlocked(res.data.unlockedThemes || []);
@@ -22,9 +28,14 @@ useEffect(() => {
     }
     };
     fetchUser();
-}, [userId]);
+}, [userId, showError]);
 
 const handleApply = async (themeName) => {
+    if (!userId) {
+        showError('Please log in to change themes');
+        return;
+    }
+
     try {
     // Always save theme to backend (including "Default")
     await axios.post(`/api/users/${userId}/theme`, { theme: themeName });
@@ -63,7 +74,7 @@ const themeDescriptions = {
 
 
 // Combine basic themes with unlocked themes (avoid duplication)
-const basicThemes = ["Default", "Dark", "Light"];
+const basicThemes = ["Default"];
 const themesToShow = [...basicThemes, ...unlocked.filter((t) => !basicThemes.includes(t))];
 
 return (

@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "yourSuperSecretKey";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+    throw new Error("🚫 JWT_SECRET is missing from environment variables! This is required for security.");
+}
 
 export const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;

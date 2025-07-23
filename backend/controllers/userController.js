@@ -3,7 +3,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import XPLog from "../models/XPLog.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "yourSuperSecretKey";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+    throw new Error("🚫 JWT_SECRET is missing from environment variables! This is required for security.");
+}
 
 export const unlockThemesForLevel = (user) => {
     const unlockThemeAtLevels = {
@@ -16,18 +20,18 @@ export const unlockThemesForLevel = (user) => {
         4: "material-light",    
         6: "material-dark",
         8: "dracula",
-        10: "nord",
-        12: "solarized-light",
-        14: "solarized-dark",
-        16: "monokai",
-        18: "one-dark",
-        20: "gruvbox-dark",
-        22: "gruvbox-light",
-        24: "oceanic",
-        26: "synthwave",
-        28: "night-owl",
-        30: "tokyo-night",
-        32: "ayu-light"
+        12: "nord",
+        14: "solarized-light",
+        16: "solarized-dark",
+        18: "monokai",
+        20: "one-dark",
+        22: "gruvbox-dark",
+        24: "gruvbox-light",
+        26: "oceanic",
+        28: "synthwave",
+        30: "night-owl",
+        32: "tokyo-night",
+        34: "ayu-light"
     };
 
     for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
@@ -42,19 +46,49 @@ export const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
+        // 🔒 SECURITY: Enhanced input validation
         if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: "All fields are required" });
         }
 
-        const existingUser = await UserQuiz.findOne({ email });
+        // Validate name (letters, spaces, some special chars only)
+        const nameRegex = /^[a-zA-Z\s'-]{2,50}$/;
+        if (!nameRegex.test(name)) {
+            return res.status(400).json({ success: false, message: "Name must be 2-50 characters and contain only letters, spaces, hyphens, and apostrophes" });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email) || email.length > 100) {
+            return res.status(400).json({ success: false, message: "Please provide a valid email address" });
+        }
+
+        // Validate password strength
+        if (password.length < 8) {
+            return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character" 
+            });
+        }
+
+        const existingUser = await UserQuiz.findOne({ email: email.toLowerCase() });
         if (existingUser) {
             return res.status(400).json({ success: false, message: "User already exists" });
         }
 
-        const salt = await bcrypt.genSalt(8);
+        const salt = await bcrypt.genSalt(12); // Increased salt rounds for better security
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = new UserQuiz({ name, email, password: hashedPassword });
+        const newUser = new UserQuiz({ 
+            name: name.trim(), 
+            email: email.toLowerCase().trim(), 
+            password: hashedPassword 
+        });
         await newUser.save();
 
         res.status(201).json({ success: true, message: "User registered successfully!" });
@@ -116,27 +150,26 @@ export const loginUser = async (req, res) => {
             7:  "Forest",
             10: "Sunset",
             15: "Neon",
-        
             4:  "material-light",
             6:  "material-dark",
             8:  "dracula",
-            10: "nord",             // note: 10 now unlocks both "Sunset" and "nord"
-            12: "solarized-light",
-            14: "solarized-dark",
-            16: "monokai",
-            18: "one-dark",
-            20: "gruvbox-dark",
-            22: "gruvbox-light",
-            24: "oceanic",
-            26: "synthwave",
-            28: "night-owl",
-            30: "tokyo-night",
-            32: "ayu-light"
+            12: "nord",
+            14: "solarized-light",
+            16: "solarized-dark",
+            18: "monokai",
+            20: "one-dark",
+            22: "gruvbox-dark",
+            24: "gruvbox-light",
+            26: "oceanic",
+            28: "synthwave",
+            30: "night-owl",
+            32: "tokyo-night",
+            34: "ayu-light"
         };
         
         for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
             if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
-            user.unlockedThemes.push(themeName);
+                user.unlockedThemes.push(themeName);
             }
         }
 
@@ -224,7 +257,9 @@ export const updateUserTheme = async (req, res) => {
     const { theme } = req.body;
 
     const user = await UserQuiz.findById(id);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
 
     // Allow "Default" theme without validation, validate others
     if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
