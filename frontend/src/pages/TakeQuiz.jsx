@@ -189,7 +189,7 @@ const TakeQuiz = () => {
                 <div className="options">
                     {currentQ.options.map((option, i) => (
                         <button
-                            key={i}
+                            key={`q${currentQuestion}-opt${i}`}
                             className={answers[currentQuestion] === i ? "selected" : ""}
                             onClick={() => handleAnswer(i)}
                         >
