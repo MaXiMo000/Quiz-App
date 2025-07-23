@@ -69,7 +69,7 @@
 /* Enhanced grid layout */
 .themes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: var(--space-2xl);
     justify-content: center;
     align-items: stretch;
@@ -95,9 +95,8 @@
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
-    min-height: 280px;
-    max-width: 400px;
-    margin: 0 auto;
+    height: 280px; /* Fixed height for consistency */
+    width: 100%; /* Full width within grid cell */
 }
 
 .theme-card::before {
@@ -234,33 +233,6 @@
     }
 }
 
-.theme-card p {
-    flex-grow: 1;
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: var(--space-md);
-    line-height: 1.4;
-}
-
-/* Apply button */
-.theme-card button {
-    align-self: center;
-    background: var(--accent);
-    color: var(--text-light);
-    border: none;
-    border-radius: 6px;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.theme-card button:hover {
-    background: var(--accent2);
-    transform: translateY(-2px);
-}
-
 /* Empty state */
 .themes-container .no-themes {
     text-align: center;
@@ -277,8 +249,12 @@
     }
     
     .themes-grid {
-        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: var(--space-xl);
+    }
+    
+    .theme-card {
+        height: 270px; /* Slightly smaller for medium screens */
     }
 }
 
@@ -300,8 +276,8 @@
     }
     
     .theme-card {
-        max-width: 100%;
-        min-height: 250px;
+        width: 100%;
+        height: 250px; /* Fixed height for mobile */
         padding: var(--space-lg);
     }
     
@@ -312,6 +288,11 @@
     .theme-card p {
         font-size: 0.95rem;
         margin-bottom: var(--space-lg);
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Limit to 3 lines */
+        line-clamp: 3; /* Standard property */
+        -webkit-box-orient: vertical;
     }
     
     .theme-card button {
@@ -337,8 +318,9 @@
     
     .theme-card {
         padding: var(--space-md);
-        min-height: 220px;
+        height: 220px; /* Fixed height for small screens */
         border-radius: var(--radius-xl);
+        width: 100%;
     }
     
     .theme-card h3 {
@@ -349,6 +331,11 @@
     .theme-card p {
         font-size: 0.9rem;
         margin-bottom: var(--space-md);
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limit to 2 lines on small screens */
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
     
     .theme-card button {
@@ -369,7 +356,8 @@
     
     .theme-card {
         padding: var(--space-sm);
-        min-height: 200px;
+        height: 200px; /* Fixed height for very small screens */
+        width: 100%;
     }
     
     .theme-card h3 {
@@ -378,6 +366,11 @@
     
     .theme-card p {
         font-size: 0.85rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limit to 2 lines */
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
     
     .theme-card button {

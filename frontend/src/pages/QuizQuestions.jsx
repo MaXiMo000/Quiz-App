@@ -3,11 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import "../App.css";
 import "./QuizQuestions.css";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const QuizQuestions = () => {
     const { id } = useParams();  // Get quiz ID from URL
     const navigate = useNavigate();
     const [quiz, setQuiz] = useState(null);
+
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     // Fetch the quiz data with questions
     const getQuizDetails = async () => {
@@ -16,7 +21,7 @@ const QuizQuestions = () => {
             setQuiz(response.data);
         } catch (error) {
             console.error("Error fetching quiz details:", error);
-            alert("Failed to fetch quiz details.");
+            showError("Failed to fetch quiz details.");
         }
     };
 
@@ -30,11 +35,11 @@ const QuizQuestions = () => {
 
         try {
             await axios.delete(`/api/quizzes/${id}/questions/${questionIndex}`);
-            alert("Question deleted successfully!");
+            showSuccess("Question deleted successfully!");
             getQuizDetails();
         } catch (error) {
             console.error("Error deleting question:", error);
-            alert("Failed to delete question.");
+            showError("Failed to delete question.");
         }
     };
 
@@ -72,6 +77,15 @@ const QuizQuestions = () => {
             ) : (
                 <p>Loading quiz details...</p>
             )}
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

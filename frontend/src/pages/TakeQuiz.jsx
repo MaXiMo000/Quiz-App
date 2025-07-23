@@ -4,6 +4,8 @@ import "../App.css";
 import "./TakeQuiz.css";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const TakeQuiz = () => {
     const { id } = useParams();
@@ -21,6 +23,9 @@ const TakeQuiz = () => {
     const [performanceLevel, setPerformanceLevel] = useState("medium");
     const [questionStartTime, setQuestionStartTime] = useState(Date.now());
     const [answerTimes, setAnswerTimes] = useState({});
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
 
     const optionLetters = useMemo(() => ["A", "B", "C", "D"], []);
     const currentQ = useMemo(() => quiz?.questions?.[currentQuestion], [quiz, currentQuestion]);
@@ -167,7 +172,7 @@ const TakeQuiz = () => {
             exitFullScreen();
         } catch (error) {
             console.error("Error saving report:", error);
-            alert("Failed to save your score. Please try again.");
+            showError("Failed to save your score. Please try again.");
         }
     };
 
@@ -261,6 +266,15 @@ const TakeQuiz = () => {
                     </div>
                 </div>
             )}
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

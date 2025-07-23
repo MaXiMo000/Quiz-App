@@ -5,12 +5,17 @@ import axios from "../utils/axios";
 import "./Login.css";
 import "../App.css";
 import { ThemeContext } from "../context/ThemeContext";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const { changeTheme } = useContext(ThemeContext);
+    
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -36,7 +41,7 @@ const Login = () => {
             }
         } catch (error) {
             console.log(error);
-            alert("Login Failed");
+            showError("Login Failed");
         }
     };
     const handleGoogleLogin = () => {
@@ -344,6 +349,15 @@ const Login = () => {
                     </motion.span>
                 </motion.p>
             </motion.div>
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>         
     );
 };

@@ -1,9 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import NotificationModal from "./NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const GoogleAuth = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
 
     useEffect(() => {
         const token = searchParams.get("token");
@@ -18,12 +23,20 @@ const GoogleAuth = () => {
             localStorage.setItem("user", JSON.stringify(user));
             navigate(role === "admin" ? "/admin" : "/");
         } else {
-            alert("Google Authentication Failed");
+            showError("Google Authentication Failed");
             navigate("/login");
         }
-    }, [searchParams, navigate]);
+    }, [searchParams, navigate, showError]);
 
-    return <div>Logging you in...</div>;
+    return (
+        <div>
+            Logging you in...
+            <NotificationModal 
+                notification={notification} 
+                onClose={hideNotification} 
+            />
+        </div>
+    );
 };
 
 export default GoogleAuth;

@@ -3,11 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios"; // Make sure this uses the backend base URL
 import "./Sidebar.css";
+import NotificationModal from "./NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const Sidebar = () => {
     const [user, setUser] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
+    
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -42,11 +47,11 @@ const Sidebar = () => {
                 localStorage.setItem("token", newToken); // ✅ Replace old token
                 localStorage.setItem("user", JSON.stringify(updatedUser));
                 setUser(updatedUser);
-                alert("Role updated successfully");
+                showSuccess("Role updated successfully");
             }
         } catch (error) {
             console.error("Failed to update role:", error);
-            alert("❌ Failed to update role.");
+            showError("❌ Failed to update role.");
         }
     };
 
@@ -237,6 +242,15 @@ const Sidebar = () => {
                     </motion.button>
                 </aside>
             </AnimatePresence>
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </>
     );
 };

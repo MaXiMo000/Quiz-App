@@ -4,12 +4,17 @@ import "../App.css";
 import "./UserReports.css"; // ✅ Use enhanced UserReports CSS for consistency
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const AdminReports = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [deletingId, setDeletingId] = useState(null);
+
+    // Notification system
+    const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
     // Fetch all reports
     const getReports = useCallback(async () => {
@@ -33,7 +38,7 @@ const AdminReports = () => {
     // Delete report function (Enhanced with loading state)
     const deleteReport = async (id) => {
         if (!id) {
-            alert("Report ID is missing!");
+            showWarning("Report ID is missing!");
             return;
         }
     
@@ -42,12 +47,12 @@ const AdminReports = () => {
             const response = await axios.delete(`/api/reports/${id}`);
     
             if (response.status === 200) {
-                alert("Report deleted successfully!");
+                showSuccess("Report deleted successfully!");
                 getReports(); // Refresh reports list after deletion
             }
         } catch (error) {
             console.error("Error deleting report:", error);
-            alert("Failed to delete report. Check the API response.");
+            showError("Failed to delete report. Check the API response.");
         } finally {
             setDeletingId(null);
         }
@@ -223,6 +228,15 @@ const AdminReports = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

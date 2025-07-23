@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import "../App.css";
 import "./QuizQuestions.css"; // ✅ Use the same styles as QuizQuestions
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const TestQuestions = () => {
     const { id } = useParams(); // ✅ Get test ID from URL
@@ -10,6 +12,9 @@ const TestQuestions = () => {
     const [test, setTest] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
     
 
     // ✅ Fetch test details
@@ -36,11 +41,11 @@ const TestQuestions = () => {
 
         try {
             await axios.delete(`/api/written-tests/${id}/questions/${questionIndex}`);
-            alert("Question deleted successfully!");
+            showSuccess("Question deleted successfully!");
             getTestDetails();
         } catch (error) {
             console.error("Error deleting question:", error);
-            alert("Failed to delete question.");
+            showError("Failed to delete question.");
         }
     };
 
@@ -75,6 +80,15 @@ const TestQuestions = () => {
             ) : (
                 <p>Loading test details...</p>
             )}
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

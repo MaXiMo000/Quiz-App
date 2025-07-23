@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./TakeWrittenTest.css"; // ✅ Importing the new CSS file
 import axios from "../utils/axios";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const TakeWrittenTest = () => {
     const { id } = useParams();
@@ -15,6 +17,9 @@ const TakeWrittenTest = () => {
     const [timeLeft, setTimeLeft] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
     useEffect(() => {
 
@@ -101,7 +106,7 @@ const TakeWrittenTest = () => {
         const user = JSON.parse(localStorage.getItem("user"));
 
         if (!user) {
-            alert("User not found. Please log in.");
+            showWarning("User not found. Please log in.");
             return;
         }
 
@@ -139,12 +144,12 @@ const TakeWrittenTest = () => {
         // ✅ Prevent division by zero & ensure score is valid
         if (validResponses === 0) {
             setScore(0);
-            alert("Failed to score the test. Please try again.");
+            showError("Failed to score the test. Please try again.");
             return;
         }
 
         setScore(totalScore);
-        alert(`You scored ${totalScore} out of ${totalMarks}`);
+        showSuccess(`You scored ${totalScore} out of ${totalMarks}`);
 
         // ✅ Store report in the database
         try {
@@ -155,8 +160,6 @@ const TakeWrittenTest = () => {
                 total: totalMarks,
                 questions: scoredQuestions,
             });
-
-            // alert("Report saved successfully!");
         } catch (error) {
             console.error("Error saving written test report:", error);
         }
@@ -204,6 +207,15 @@ const TakeWrittenTest = () => {
             </div>
 
             {score !== null && <h2>Your Score: {score}/{test.totalMarks}</h2>}
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

@@ -2,10 +2,15 @@ import React, { useEffect, useState, useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import axios from "../utils/axios";
 import "./ThemePage.css";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 const ThemePage = () => {
 const { changeTheme } = useContext(ThemeContext);
 const [unlocked, setUnlocked] = useState([]);
 const userId = JSON.parse(localStorage.getItem("user"))?._id;
+
+// Notification system
+const { notification, showSuccess, showError, hideNotification } = useNotification();
 
 useEffect(() => {
     const fetchUser = async () => {
@@ -24,15 +29,16 @@ const handleApply = async (themeName) => {
     // Always save theme to backend (including "Default")
     await axios.post(`/api/users/${userId}/theme`, { theme: themeName });
     changeTheme(themeName);
-    alert(`Theme "${themeName}" applied!`);
+    showSuccess(`Theme "${themeName}" applied!`);
     } catch (err) {
     console.error("Error applying theme:", err);
-    alert(`Failed to apply theme "${themeName}". Please try again.`);
+    showError(`Failed to apply theme "${themeName}". Please try again.`);
     }
 };
 
 const themeDescriptions = {
     Default:           "Clean, neutral base theme.",
+    Dark:              "Sleek dark interface with modern aesthetics.",
     Light:            "Simple and bright with light backgrounds.",
     Galaxy:            "Deep purple & blue starry-night vibe.",
     Forest:            "Rich greens and earthy browns of the woods.",
@@ -56,8 +62,9 @@ const themeDescriptions = {
 };
 
 
-// Combine "Default" with unlocked themes (avoid duplication)
-const themesToShow = ["Default", ...unlocked.filter((t) => t !== "Default")];
+// Combine basic themes with unlocked themes (avoid duplication)
+const basicThemes = ["Default", "Dark", "Light"];
+const themesToShow = [...basicThemes, ...unlocked.filter((t) => !basicThemes.includes(t))];
 
 return (
     <div className="themes-container">
@@ -71,6 +78,15 @@ return (
         </div>
         ))}
     </div>
+    
+    {/* Notification Modal */}
+    <NotificationModal
+        isOpen={notification.isOpen}
+        message={notification.message}
+        type={notification.type}
+        onClose={hideNotification}
+        autoClose={notification.autoClose}
+    />
     </div>
 );
 };
