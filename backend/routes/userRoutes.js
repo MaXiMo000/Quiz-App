@@ -43,23 +43,36 @@ router.post("/:id/theme", verifyToken, updateUserTheme);
 // 🔒 SECURITY: New endpoint to get current user data securely
 router.get("/me", verifyToken, async (req, res) => {
     try {
+        console.log("📝 /me endpoint called with user ID:", req.user?.id);
+        
+        if (!req.user?.id) {
+            console.log("❌ No user ID in token");
+            return res.status(401).json({ error: "Invalid token - no user ID" });
+        }
+
         const user = await UserQuiz.findById(req.user.id).select('-password');
+        
         if (!user) {
+            console.log("❌ User not found in database:", req.user.id);
             return res.status(404).json({ error: "User not found" });
         }
+
+        console.log("✅ User found:", user.email);
+        
         res.json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
-            xp: user.xp,
-            level: user.level,
-            loginStreak: user.loginStreak,
+            xp: user.xp || 0,
+            level: user.level || 1,
+            loginStreak: user.loginStreak || 0,
             badges: user.badges || [],
             unlockedThemes: user.unlockedThemes || [],
             selectedTheme: user.selectedTheme || "Default",
         });
     } catch (err) {
+        console.error("❌ /me endpoint error:", err);
         res.status(500).json({ error: "Server error" });
     }
 });

@@ -41,8 +41,18 @@ passport.use(
                         name: profile.displayName,
                         email: email,
                         role: "user",
+                        // Explicitly set default values to ensure they exist
+                        xp: 0,
+                        level: 1,
+                        loginStreak: 0,
+                        badges: [],
+                        unlockedThemes: [],
+                        selectedTheme: "Default"
                     });
                     await user.save();
+                    
+                    // Refetch the user to ensure all fields are properly set
+                    user = await UserQuiz.findById(user._id);
                 }
 
                 const token = jwt.sign(
@@ -58,15 +68,16 @@ passport.use(
                         name: user.name,
                         email: user.email,
                         role: user.role,
-                        xp: user.xp,
-                        level: user.level,
-                        loginStreak: user.loginStreak,
+                        xp: user.xp || 0,
+                        level: user.level || 1,
+                        loginStreak: user.loginStreak || 0,
                         badges: user.badges || [],
                         unlockedThemes: user.unlockedThemes || [],
                         selectedTheme: user.selectedTheme || "Default",
                     },
                 });
             } catch (err) {
+                console.error("Google OAuth error:", err);
                 return done(err, null);
             }
         }
