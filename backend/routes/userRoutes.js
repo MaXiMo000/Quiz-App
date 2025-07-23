@@ -1,6 +1,7 @@
 import express from "express";
 import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/auth.js";
+import mongoose from "mongoose";
 
 import passport from "passport";
 import "../config/passport.js";
@@ -28,36 +29,38 @@ router.get(
 );
 
 router.get("/", verifyToken, getAllUsers); // Protected route
-router.get("/:id", verifyToken, async (req, res) => {
-        try {
-        const user = await UserQuiz.findById(req.params.id);
-        res.json(user);
-        } catch (err) {
-        res.status(500).json({ error: "User not found" });
-        }
-});
-
-router.patch("/update-role", verifyToken, updateUserRole);
-router.post("/:id/theme", verifyToken, updateUserTheme);
 
 // 🔒 SECURITY: New endpoint to get current user data securely
+// IMPORTANT: This must come BEFORE /:id route to avoid "me" being treated as an ID
 router.get("/me", verifyToken, async (req, res) => {
     try {
-        console.log("📝 /me endpoint called with user ID:", req.user?.id);
+        console.log("📝 /me endpoint called");
+        console.log("🔍 Token payload:", req.user);
+        console.log("🆔 User ID from token:", req.user?.id);
+        console.log("🔢 User ID type:", typeof req.user?.id);
         
         if (!req.user?.id) {
             console.log("❌ No user ID in token");
             return res.status(401).json({ error: "Invalid token - no user ID" });
         }
 
-        const user = await UserQuiz.findById(req.user.id).select('-password');
+        // Check if user ID is valid MongoDB ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(req.user.id)) {
+            console.log("❌ Invalid ObjectId format:", req.user.id);
+            return res.status(400).json({ error: "Invalid user ID format" });
+        }
         
-        if (!user) {
+        // First try to find user WITH password to see if user exists at all
+        const userWithPassword = await UserQuiz.findById(req.user.id);
+        
+        if (!userWithPassword) {
             console.log("❌ User not found in database:", req.user.id);
             return res.status(404).json({ error: "User not found" });
         }
 
-        console.log("✅ User found:", user.email);
+        // Now get user without password
+        const user = await UserQuiz.findById(req.user.id).select('-password');
+        console.log("✅ User found (without password):", user?.email);
         
         res.json({
             _id: user._id,
@@ -73,8 +76,21 @@ router.get("/me", verifyToken, async (req, res) => {
         });
     } catch (err) {
         console.error("❌ /me endpoint error:", err);
-        res.status(500).json({ error: "Server error" });
+        console.error("❌ Error stack:", err.stack);
+        res.status(500).json({ error: "Server error", details: err.message });
     }
 });
+
+router.get("/:id", verifyToken, async (req, res) => {
+    try {
+        const user = await UserQuiz.findById(req.params.id);
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: "User not found" });
+    }
+});
+
+router.patch("/update-role", verifyToken, updateUserRole);
+router.post("/:id/theme", verifyToken, updateUserTheme);
 
 export default router;
