@@ -385,7 +385,6 @@
         padding: var(--space-sm);
     }
 }
-}
 
 @media (max-width: 480px) {
     .themes-grid {

@@ -195,8 +195,7 @@ const XPLeaderboard = () => {
                                                 className="xp-cell"
                                                 whileHover={{ scale: 1.1, color: "#d946ef" }}
                                             >
-                                                <span className="xp-value">{Math.round(user.xp)}</span>
-                                                <span className="xp-label">XP</span>
+                                                <span className="xp-value">{Math.round(user.xp)} XP</span>
                                             </motion.td>
                                         </motion.tr>
                                     ))}

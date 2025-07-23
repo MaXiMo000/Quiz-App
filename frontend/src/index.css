@@ -1078,6 +1078,89 @@ body {
   }
 }
 
+/* ✨ BEAUTIFUL GLOBAL ENHANCEMENTS ✨ */
+
+/* Enhanced Global Selection */
+::selection {
+  background: var(--accent);
+  color: white;
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: var(--accent);
+  color: white;
+  text-shadow: none;
+}
+
+/* Enhanced Focus Styles */
+*:focus {
+  outline: none;
+  box-shadow: 
+    0 0 0 3px var(--accent-light),
+    0 0 20px rgba(99, 102, 241, 0.3);
+  border-color: var(--accent);
+}
+
+/* Beautiful Button Enhancements */
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Enhanced Input Styles */
+input, textarea, select {
+  font-family: var(--font-sans);
+  transition: all var(--transition-normal);
+  border-radius: var(--radius-lg);
+}
+
+input:focus, textarea:focus, select:focus {
+  transform: translateY(-2px);
+  box-shadow: 
+    var(--shadow-lg),
+    0 0 0 3px var(--accent-light),
+    0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+/* Beautiful Link Enhancements */
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+a:hover {
+  color: var(--accent2);
+  text-shadow: 0 0 8px var(--accent);
+}
+
+a::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+  transition: width var(--transition-normal);
+}
+
+a:hover::before {
+  width: 100%;
+}
+
 /* Enhanced Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);

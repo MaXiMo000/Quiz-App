@@ -1,31 +1,94 @@
-/* Advanced Admin Quizzes Styles with 3D Effects */
+/* ✨ AdminQuizzes.css - Ultra Beautiful World-Class Admin Experience ✨ */
+
+/* ✨ Enhanced CSS Variables for Championship Admin Feel ✨ */
 :root {
-    --quiz-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --quiz-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --quiz-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --quiz-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-    --quiz-danger: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
-    --quiz-warning: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    --shadow-hover: 0 30px 60px rgba(99, 102, 241, 0.3);
+    --admin-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --admin-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --admin-gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --admin-gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --admin-gradient-danger: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+    --admin-gradient-warning: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+    --admin-gradient-gold: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+    --admin-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    --admin-glow: 0 0 40px rgba(102, 126, 234, 0.8);
+    --admin-shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.3);
+    --admin-glass: rgba(255, 255, 255, 0.12);
+    --admin-border: rgba(255, 255, 255, 0.25);
+    --admin-shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    --admin-shadow-hover: 0 40px 80px rgba(99, 102, 241, 0.4);
 }
 
+/* ✨ Ultra Beautiful Admin Container ✨ */
 .admin-quiz-container {
     min-height: 100vh;
     background: 
-        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-        linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        radial-gradient(ellipse at top left, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, rgba(240, 147, 251, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(79, 172, 254, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(17, 153, 142, 0.08) 0%, transparent 50%),
+        linear-gradient(135deg, 
+            rgba(15, 15, 35, 0.95) 0%, 
+            rgba(26, 26, 46, 0.97) 25%,
+            rgba(22, 33, 62, 0.95) 50%,
+            rgba(30, 20, 60, 0.97) 75%,
+            rgba(15, 15, 35, 0.95) 100%
+        );
     position: relative;
     overflow-x: hidden;
-    perspective: 1000px;
-    padding: 2rem;
+    perspective: 1200px;
+    padding: var(--space-xl);
+    animation: containerFadeIn 1s ease-out;
 }
 
-/* Loading Styles */
+@keyframes containerFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.98); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+.admin-quiz-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--admin-gradient-gold);
+    border-radius: 0;
+    animation: adminHeaderGlow 3s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes adminHeaderGlow {
+    0%, 100% { 
+        background: var(--admin-gradient-gold); 
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); 
+    }
+    33% { 
+        background: var(--admin-gradient-1); 
+        box-shadow: 0 0 30px rgba(102, 126, 234, 0.6); 
+    }
+    66% { 
+        background: var(--admin-gradient-2); 
+        box-shadow: 0 0 30px rgba(240, 147, 251, 0.6); 
+    }
+}
+
+.admin-quiz-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ✨ Ultra Beautiful Loading Styles ✨ */
 .loading-container {
     display: flex;
     flex-direction: column;
@@ -33,13 +96,21 @@
     align-items: center;
     min-height: 80vh;
     text-align: center;
+    position: relative;
+    z-index: 2;
 }
 
 .loading-spinner {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     position: relative;
     margin-bottom: 2rem;
+    animation: spinnerFloat 2s ease-in-out infinite;
+}
+
+@keyframes spinnerFloat {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-10px) scale(1.05); }
 }
 
 .spinner-ring {
@@ -49,32 +120,87 @@
     border-top: 4px solid #6366f1;
     border-radius: 50%;
     background: conic-gradient(from 0deg, #6366f1, #8b5cf6, #06b6d4, #6366f1);
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5));
+    filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.8));
+    position: relative;
+}
+
+.spinner-ring::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: var(--admin-glass);
+    backdrop-filter: blur(10px);
 }
 
 .loading-text {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: #e2e8f0;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.5px;
+    background: var(--admin-gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: textPulse 2s ease-in-out infinite;
 }
 
+@keyframes textPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ✨ Ultra Beautiful Error Styles ✨ */
 .error-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 80vh;
+    position: relative;
+    z-index: 2;
 }
 
 .error-message {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: var(--admin-glass);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 2px solid rgba(239, 68, 68, 0.3);
     color: #fca5a5;
-    padding: 2rem;
-    border-radius: 1rem;
-    font-size: 1.1rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 20px 40px rgba(239, 68, 68, 0.1);
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    box-shadow: 
+        var(--admin-shadow-xl),
+        0 0 50px rgba(239, 68, 68, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-align: center;
+    position: relative;
+    animation: errorSlideIn 0.6s ease-out;
+}
+
+@keyframes errorSlideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+.error-message::before {
+    content: '⚠️';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: errorIconBounce 2s ease-in-out infinite;
+}
+
+@keyframes errorIconBounce {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
 }
 
 /* Header Styles */
