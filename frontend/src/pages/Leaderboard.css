@@ -1,22 +1,52 @@
-/* Leaderboard.css - Enhanced for Best Website Experience */
+/* ✨ Leaderboard.css - Ultra Beautiful World Championship Experience ✨ */
+
+/* ✨ Enhanced CSS Variables for Championship Feel ✨ */
+:root {
+    --leaderboard-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --leaderboard-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --leaderboard-gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --leaderboard-gradient-gold: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+    --leaderboard-gradient-silver: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%);
+    --leaderboard-gradient-bronze: linear-gradient(135deg, #cd7f32 0%, #b8860b 100%);
+    --leaderboard-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    --leaderboard-glow: 0 0 40px rgba(102, 126, 234, 0.8);
+    --leaderboard-shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.3);
+    --leaderboard-glass: rgba(255, 255, 255, 0.12);
+    --leaderboard-border: rgba(255, 255, 255, 0.25);
+}
+
+/* ✨ Ultra Beautiful Championship Container ✨ */
 .leaderboard-container {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: var(--space-xl) auto;
-    padding: var(--space-2xl);
-    background: var(--card-bg-glass);
-    backdrop-filter: blur(35px);
-    -webkit-backdrop-filter: blur(35px);
+    padding: 3rem;
+    background: var(--leaderboard-glass);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
     color: var(--text-color);
-    border-radius: var(--radius-2xl);
-    border: 1px solid var(--card-border);
+    border-radius: 2.5rem;
+    border: 2px solid var(--leaderboard-border);
     box-shadow: 
-        var(--shadow-2xl),
-        0 0 50px rgba(99, 102, 241, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--leaderboard-shadow-xl),
+        0 0 80px rgba(102, 126, 234, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.15);
     text-align: center;
     position: relative;
     overflow: hidden;
+    animation: containerSlideIn 1s ease-out;
+    box-sizing: border-box;
+}
+
+@keyframes containerSlideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(50px) scale(0.95); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
 }
 
 .leaderboard-container::before {
@@ -25,85 +55,316 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    height: 4px;
+    background: var(--leaderboard-gradient-gold);
+    border-radius: 2.5rem 2.5rem 0 0;
+    animation: championGlow 3s ease-in-out infinite;
 }
 
+@keyframes championGlow {
+    0%, 100% { 
+        background: var(--leaderboard-gradient-gold); 
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); 
+    }
+    33% { 
+        background: var(--leaderboard-gradient-silver); 
+        box-shadow: 0 0 30px rgba(192, 192, 192, 0.6); 
+    }
+    66% { 
+        background: var(--leaderboard-gradient-bronze); 
+        box-shadow: 0 0 30px rgba(205, 127, 50, 0.6); 
+    }
+}
+
+.leaderboard-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* ✨ Championship Title with Trophy Animation ✨ */
 .leaderboard-container h2 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    background: var(--leaderboard-gradient-gold);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: var(--space-xl);
+    margin-bottom: 2rem;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    animation: titleFloat 1s ease-out;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+}
+
+@keyframes titleFloat {
+    from { 
+        opacity: 0; 
+        transform: translateY(-30px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+.leaderboard-container h2::before {
+    content: '🏆';
+    font-size: 3rem;
+    animation: trophyBounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+}
+
+@keyframes trophyBounce {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
 }
 
 .leaderboard-container h2::after {
     content: '';
     position: absolute;
-    bottom: -10px;
+    bottom: -15px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    border-radius: var(--radius-full);
+    width: 120px;
+    height: 4px;
+    background: var(--leaderboard-gradient-gold);
+    border-radius: 2px;
+    animation: underlineGlow 2s ease-in-out infinite;
 }
 
+@keyframes underlineGlow {
+    0%, 100% { 
+        width: 120px; 
+        background: var(--leaderboard-gradient-gold); 
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); 
+    }
+    50% { 
+        width: 150px; 
+        background: var(--leaderboard-gradient-2); 
+        box-shadow: 0 0 25px rgba(240, 147, 251, 0.8); 
+    }
+}
+
+/* ✨ Ultra Beautiful Championship Table ✨ */
 .leaderboard-table {
-    margin-top: var(--space-xl);
-    overflow-x: auto;
-    background: var(--glass-bg);
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(15px);
+    margin-top: 2.5rem;
+    overflow: visible;
+    background: var(--leaderboard-glass);
+    border-radius: 1.5rem;
+    border: 2px solid var(--leaderboard-border);
+    backdrop-filter: blur(25px);
+    position: relative;
+    animation: tableSlideIn 0.8s ease-out 0.3s both;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@keyframes tableSlideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.leaderboard-table::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--leaderboard-shimmer);
+    animation: tableShimmer 6s ease-in-out infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes tableShimmer {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
 }
 
 .leaderboard-table table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    position: relative;
+    z-index: 5;
+    table-layout: auto;
+    box-sizing: border-box;
 }
 
+/* ✨ Beautiful Championship Headers ✨ */
 .leaderboard-table th {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    background: var(--leaderboard-gradient-1);
     color: white;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.9rem;
-    padding: var(--space-md) var(--space-lg);
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    padding: 1.2rem 0.8rem;
     border: none;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 15;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    text-align: center;
+    word-wrap: break-word;
+    min-width: fit-content;
 }
 
 .leaderboard-table th:first-child {
-    border-top-left-radius: var(--radius-xl);
+    border-top-left-radius: 1.5rem;
 }
 
 .leaderboard-table th:last-child {
-    border-top-right-radius: var(--radius-xl);
+    border-top-right-radius: 1.5rem;
 }
 
+/* ✨ Champion Row Styling ✨ */
 .leaderboard-table td, .leaderboard-table th {
-    padding: var(--space-md) var(--space-lg);
-    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0.8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    vertical-align: middle;
+    box-sizing: border-box;
 }
 
 .leaderboard-table td {
-    background: var(--card-bg-glass);
-    transition: all var(--transition-fast);
-    font-weight: 500;
+    background: var(--leaderboard-glass);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    font-weight: 600;
+    position: relative;
+    color: var(--text-color);
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .leaderboard-table tr:hover td {
-    background: var(--accent-light);
-    transform: scale(1.01);
+    background: rgba(102, 126, 234, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ✨ Rank Medal System ✨ */
+.leaderboard-table tbody tr:nth-child(1) td:first-child {
+    background: var(--leaderboard-gradient-gold);
+    color: #000;
+    font-weight: 900;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+    padding-left: 2.8rem;
+    text-align: center;
+    min-width: 80px;
+}
+
+.leaderboard-table tbody tr:nth-child(1) td:first-child::before {
+    content: '🥇';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    animation: medalSpin 3s ease-in-out infinite;
+    z-index: 1;
+}
+
+.leaderboard-table tbody tr:nth-child(1) td:first-child .rank-position {
+    position: relative;
+    z-index: 2;
+    color: #000;
+    font-weight: 900;
+}
+
+.leaderboard-table tbody tr:nth-child(2) td:first-child {
+    background: var(--leaderboard-gradient-silver);
+    color: #000;
+    font-weight: 900;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+    padding-left: 2.8rem;
+    text-align: center;
+    min-width: 80px;
+}
+
+.leaderboard-table tbody tr:nth-child(2) td:first-child::before {
+    content: '🥈';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    animation: medalSpin 3s ease-in-out infinite 0.5s;
+    z-index: 1;
+}
+
+.leaderboard-table tbody tr:nth-child(2) td:first-child .rank-position {
+    position: relative;
+    z-index: 2;
+    color: #000;
+    font-weight: 900;
+}
+
+.leaderboard-table tbody tr:nth-child(3) td:first-child {
+    background: var(--leaderboard-gradient-bronze);
+    color: #000;
+    font-weight: 900;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+    padding-left: 2.8rem;
+    text-align: center;
+    min-width: 80px;
+}
+
+.leaderboard-table tbody tr:nth-child(3) td:first-child::before {
+    content: '🥉';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    animation: medalSpin 3s ease-in-out infinite 1s;
+    z-index: 1;
+}
+
+.leaderboard-table tbody tr:nth-child(3) td:first-child .rank-position {
+    position: relative;
+    z-index: 2;
+    color: #000;
+    font-weight: 900;
+}
+
+@keyframes medalSpin {
+    0%, 100% { transform: translateY(-50%) rotate(0deg); }
+    50% { transform: translateY(-50%) rotate(180deg); }
+}
+
+/* ✨ Universal Table Text Visibility ✨ */
+.leaderboard-table tbody tr td {
+    color: var(--text-color) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.leaderboard-table tbody tr:nth-child(1) td:not(:first-child),
+.leaderboard-table tbody tr:nth-child(2) td:not(:first-child),
+.leaderboard-table tbody tr:nth-child(3) td:not(:first-child) {
+    color: var(--text-color) !important;
 }
 
 .leaderboard-buttons button {
@@ -373,17 +634,32 @@
     .leaderboard-table {
         margin-top: var(--space-lg);
         border-radius: var(--radius-lg);
+        overflow-x: auto;
     }
 
     .leaderboard-table th,
     .leaderboard-table td {
-        padding: var(--space-sm);
+        padding: var(--space-sm) var(--space-xs);
         font-size: 0.9rem;
     }
 
     .leaderboard-table th {
         font-size: 0.8rem;
         padding: var(--space-sm) var(--space-xs);
+    }
+
+    .leaderboard-table tbody tr:nth-child(1) td:first-child,
+    .leaderboard-table tbody tr:nth-child(2) td:first-child,
+    .leaderboard-table tbody tr:nth-child(3) td:first-child {
+        padding-left: 2.2rem;
+        min-width: 60px;
+    }
+
+    .leaderboard-table tbody tr:nth-child(1) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(2) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(3) td:first-child::before {
+        left: 4px;
+        font-size: 1rem;
     }
 
     .leaderboard-buttons {

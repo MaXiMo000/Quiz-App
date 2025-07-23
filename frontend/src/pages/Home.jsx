@@ -27,7 +27,7 @@ const Home = () => {
         const res = await axios.get(`/api/users/${storedUser._id}`);
         const data = res.data;
         setBadges(data.badges || []);
-        setXp(data.xp || 0);
+        setXp(Math.round(data.xp) || 0);
         setLevel(data.level || 1);
         // Update user state with fresh data from API
         setUser(data);
