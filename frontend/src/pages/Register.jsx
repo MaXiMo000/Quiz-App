@@ -4,12 +4,17 @@ import { motion } from "framer-motion";
 import axios from "../utils/axios";
 import "./Register.css"; // Import CSS for styling
 import "../App.css";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const Register = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -19,11 +24,11 @@ const Register = () => {
                 { headers: { "Content-Type": "application/json" } } // ✅ Fix Content-Type
             );
             console.log("Response:", response.data);
-            alert("Registration Successful! Please log in.");
-            navigate("/login");
+            showSuccess("Registration Successful! Please log in.");
+            setTimeout(() => navigate("/login"), 2000);
         } catch (error) {
             console.log("Error Response:", error.response?.data || error.message);
-            alert(error.response?.data?.message || "Registration Failed");
+            showError(error.response?.data?.message || "Registration Failed");
         }
     };
 
@@ -323,6 +328,15 @@ const Register = () => {
                 </motion.span>
             </motion.p>
         </motion.div>
+        
+        {/* Notification Modal */}
+        <NotificationModal
+            isOpen={notification.isOpen}
+            message={notification.message}
+            type={notification.type}
+            onClose={hideNotification}
+            autoClose={notification.autoClose}
+        />
         </motion.div>
     );
     };

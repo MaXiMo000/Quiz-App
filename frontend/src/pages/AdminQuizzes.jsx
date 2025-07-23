@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import "../App.css";
 import "./AdminQuizzes.css";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const AdminQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -13,6 +15,9 @@ const AdminQuizzes = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    
+    // Notification system
+    const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
     // Fetch existing quizzes
     const getQuiz = async () => {
@@ -43,7 +48,7 @@ const AdminQuizzes = () => {
     // Function to open Add Question modal
     const openAddQuestionModal = (quizId) => {
         if (!quizId) {
-            alert("Please select a quiz first!");
+            showWarning("Please select a quiz first!");
             return;
         }
         setSelectedQuizId(quizId);
@@ -63,7 +68,7 @@ const AdminQuizzes = () => {
         event.preventDefault();
 
         if (!aiTopic || aiNumQuestions <= 0) {
-            alert("Please enter a valid topic and number of questions.");
+            showWarning("Please enter a valid topic and number of questions.");
             return;
         }
 
@@ -79,12 +84,12 @@ const AdminQuizzes = () => {
             throw new Error(`Error Generating questions: ${response.status}`);
         }
 
-        alert("AI-generated questions added successfully!");
+        showSuccess("AI-generated questions added successfully!");
         document.getElementById("ai_question_modal").close();
         getQuiz(); // ✅ Refresh the quiz list
         } catch (error) {
             console.error("Error generating AI questions:", error);
-            alert("Failed to generate AI questions.");
+            showError("Failed to generate AI questions.");
         }
     };
 
@@ -102,17 +107,17 @@ const AdminQuizzes = () => {
 
             document.getElementById("create_quiz_modal").close();
             getQuiz();
-            // alert("Quiz created successfully!");
+            // showSuccess("Quiz created successfully!");
         } catch (error) {
             console.error("Error creating quiz:", error);
-            alert("Failed to create quiz. Check API response.");
+            showError("Failed to create quiz. Check API response.");
         }
     };
 
     // Handle Adding Question
     const addQuestion = async (event) => {
         event.preventDefault();
-        if (!selectedQuizId) return alert("No quiz selected!");
+        if (!selectedQuizId) return showWarning("No quiz selected!");
 
         const formData = new FormData(event.target);
         const questionData = {
@@ -132,16 +137,16 @@ const AdminQuizzes = () => {
 
             document.getElementById("add_question_modal").close();
             getQuiz();
-            // alert("Question added successfully!");
+            // showSuccess("Question added successfully!");
         } catch (error) {
             console.error("Error adding question:", error);
-            alert("Failed to add question. Check API response.");
+            showError("Failed to add question. Check API response.");
         }
     };
 
     const deleteQuiz = async (title) => {
         if (!title) {
-            alert("Quiz title is missing!");
+            showWarning("Quiz title is missing!");
             return;
         }
     
@@ -149,12 +154,12 @@ const AdminQuizzes = () => {
             const response = await axios.delete(`/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
     
             if (response.status === 200) {
-                alert("Quiz deleted successfully!");
+                showSuccess("Quiz deleted successfully!");
                 getQuiz(); // ✅ Refresh the quiz list
             }
         } catch (error) {
             console.error("Error deleting quiz:", error);
-            alert("Failed to delete quiz. Check the API response.");
+            showError("Failed to delete quiz. Check the API response.");
         }
     };
 
@@ -728,6 +733,15 @@ const AdminQuizzes = () => {
                     ease: "easeInOut",
                     delay: 2
                 }}
+            />
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
             />
         </motion.div>
     );

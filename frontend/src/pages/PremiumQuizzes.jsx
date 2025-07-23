@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import "../App.css";
 import "./PremiumQuizzes.css";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 
 const PremiumQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -13,6 +15,9 @@ const PremiumQuizzes = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+
+    // Notification system
+    const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
     const getQuiz = async () => {
         try {
@@ -40,7 +45,7 @@ const PremiumQuizzes = () => {
     }, []);
 
     const openAddQuestionModal = (quizId) => {
-        if (!quizId) return alert("Please select a quiz first!");
+        if (!quizId) return showWarning("Please select a quiz first!");
         setSelectedQuizId(quizId);
         document.getElementById("add_question_modal").showModal();
     };
@@ -55,7 +60,7 @@ const PremiumQuizzes = () => {
     const handleAiSubmit = async (event) => {
         event.preventDefault();
         if (!aiTopic || aiNumQuestions <= 0) {
-            alert("Please enter a valid topic and number of questions.");
+            showWarning("Please enter a valid topic and number of questions.");
             return;
         }
 
@@ -73,12 +78,12 @@ const PremiumQuizzes = () => {
                 throw new Error(`Error Generating questions: ${response.status}`);
             }
 
-            alert("AI-generated questions added successfully!");
+            showSuccess("AI-generated questions added successfully!");
             document.getElementById("ai_question_modal").close();
             getQuiz();
         } catch (error) {
             console.error("Error generating AI questions:", error);
-            alert("Failed to generate AI questions.");
+            showError("Failed to generate AI questions.");
         }
     };
 
@@ -96,13 +101,13 @@ const PremiumQuizzes = () => {
             getQuiz();
         } catch (error) {
             console.error("Error creating quiz:", error);
-            alert("Failed to create quiz. Check API response.");
+            showError("Failed to create quiz. Check API response.");
         }
     };
 
     const addQuestion = async (event) => {
         event.preventDefault();
-        if (!selectedQuizId) return alert("No quiz selected!");
+        if (!selectedQuizId) return showWarning("No quiz selected!");
 
         const formData = new FormData(event.target);
         const questionData = {
@@ -123,22 +128,22 @@ const PremiumQuizzes = () => {
             getQuiz();
         } catch (error) {
             console.error("Error adding question:", error);
-            alert("Failed to add question. Check API response.");
+            showError("Failed to add question. Check API response.");
         }
     };
 
     const deleteQuiz = async (title) => {
-        if (!title) return alert("Quiz title is missing!");
+        if (!title) return showWarning("Quiz title is missing!");
 
         try {
             const response = await axios.delete(`/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
             if (response.status === 200) {
-                alert("Quiz deleted successfully!");
+                showSuccess("Quiz deleted successfully!");
                 getQuiz();
             }
         } catch (error) {
             console.error("Error deleting quiz:", error);
-            alert("Failed to delete quiz. Check the API response.");
+            showError("Failed to delete quiz. Check the API response.");
         }
     };
 
@@ -735,6 +740,15 @@ const PremiumQuizzes = () => {
                     ease: "easeInOut",
                     delay: 5
                 }}
+            />
+            
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
             />
         </motion.div>
     );

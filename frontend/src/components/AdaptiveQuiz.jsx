@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import axios from "../utils/axios";
+import NotificationModal from "./NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 import "./AdaptiveQuiz.css"; // ✅ Custom styling
 
 const AdaptiveQuiz = () => {
@@ -14,6 +16,9 @@ const AdaptiveQuiz = () => {
     const [topic, setTopic] = useState("");
     const [numQuestions, setNumQuestions] = useState(5);
     const [performance, setPerformance] = useState(defaultPerformance);
+
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     useEffect(() => {
         const fetchTopic = async () => {
@@ -40,9 +45,9 @@ const AdaptiveQuiz = () => {
             // ✅ After adding, get the updated quiz to reflect all questions and indexes correctly
             const updatedQuiz = await axios.get(`/api/quizzes/${id}`);
             setResponse({ questions: updatedQuiz.data.questions }); // store all questions
-            alert("✅ Adaptive questions added!");
+            showSuccess("✅ Adaptive questions added!");
         } catch {
-            alert("❌ Failed to generate questions.");
+            showError("❌ Failed to generate questions.");
         } finally {
             setLoading(false);
         }
@@ -57,10 +62,10 @@ const AdaptiveQuiz = () => {
             await axios.delete(`/api/quizzes/${id}/questions/${index}`);
             const updatedQuestions = response.questions.filter((_, i) => i !== index);
             setResponse({ ...response, questions: updatedQuestions });
-            alert("❌ Question deleted.");
+            showSuccess("❌ Question deleted.");
         } catch (error) {
             console.error("Error deleting question:", error);
-            alert("Failed to delete question.");
+            showError("Failed to delete question.");
         }
     };
 
@@ -123,6 +128,10 @@ const AdaptiveQuiz = () => {
                     </div>
                 )}
             </div>
+            <NotificationModal 
+                notification={notification} 
+                onClose={hideNotification} 
+            />
         </div>
     );
 };

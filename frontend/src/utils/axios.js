@@ -30,9 +30,48 @@ instance.interceptors.response.use(
         const status = error.response?.status;
 
         if (status === 403) {
-            alert("⚠️ Please login first.");
-            localStorage.clear();
-            window.location.href = "/login";
+            // Create a more elegant notification for authentication failure
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 107, 107, 0.95);
+                backdrop-filter: blur(10px);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-weight: 500;
+                box-shadow: 0 8px 32px rgba(255, 107, 107, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.innerHTML = '⚠️ Please login first. Redirecting...';
+            
+            // Add animation keyframes if not already added
+            if (!document.querySelector('#auth-notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'auth-notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification and redirect after 2 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+                localStorage.clear();
+                window.location.href = "/login";
+            }, 2000);
         }
 
         return Promise.reject(error);

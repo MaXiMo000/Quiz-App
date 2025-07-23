@@ -347,3 +347,161 @@
     margin: var(--space-xs) 0;
   }
 }
+
+/* ✨ Notification Modal Styles ✨ */
+.notification-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--space-md);
+}
+
+.notification-modal-content {
+  position: relative;
+  background: var(--card-bg-glass);
+  backdrop-filter: blur(25px);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.notification-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.notification-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.notification-message {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.notification-close-btn {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-normal);
+  z-index: 10;
+}
+
+.notification-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  transform-origin: left;
+}
+
+.notification-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.notification-particle-1 {
+  top: 20%;
+  left: 15%;
+}
+
+.notification-particle-2 {
+  top: 30%;
+  right: 20%;
+}
+
+.notification-particle-3 {
+  bottom: 25%;
+  left: 25%;
+}
+
+/* ✨ Responsive Notification Modal ✨ */
+@media (max-width: 768px) {
+  .notification-modal-overlay {
+    padding: var(--space-sm);
+  }
+
+  .notification-modal-content {
+    padding: var(--space-lg);
+    max-width: 90vw;
+  }
+
+  .notification-icon {
+    font-size: 2.5rem;
+    height: 60px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .notification-message {
+    font-size: 1rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .notification-close-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-modal-content {
+    padding: var(--space-md);
+  }
+
+  .notification-icon {
+    font-size: 2rem;
+    height: 50px;
+  }
+
+  .notification-message {
+    font-size: 0.95rem;
+  }
+}
