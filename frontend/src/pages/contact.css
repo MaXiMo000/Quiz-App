@@ -2,10 +2,11 @@
 
 .contact {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     gap: var(--space-2xl);
     width: 100%;
-    max-width: 1400px;
+    max-width: 1000px;
     margin: var(--space-2xl) auto;
     padding: var(--space-2xl);
     box-sizing: border-box;
@@ -59,13 +60,13 @@
     background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(99, 102, 241, 0.1));
 }
 
-/* 🎯 Text Container - Left Side */
+/* 🎯 Text Container - Top Section */
 .textContainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: var(--space-xl);
-    padding: var(--space-xl);
+    gap: var(--space-lg);
+    padding: var(--space-2xl);
     background: var(--card-bg-glass);
     backdrop-filter: blur(35px);
     -webkit-backdrop-filter: blur(35px);
@@ -77,6 +78,7 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     transform-style: preserve-3d;
+    text-align: center;
 }
 
 .textContainer::before {
@@ -107,6 +109,7 @@
     line-height: 1.1;
     position: relative;
     cursor: pointer;
+    text-align: center;
 }
 
 .subtitle {
@@ -118,9 +121,10 @@
 }
 
 .contact-items {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--space-lg);
+    margin-top: var(--space-lg);
 }
 
 .item {
@@ -251,7 +255,7 @@
     opacity: 1;
 }
 
-/* 📝 Form Container - Right Side */
+/* 📝 Form Container - Bottom Section */
 .formContainer {
     background: var(--card-bg-glass);
     backdrop-filter: blur(35px);
@@ -266,6 +270,8 @@
     position: relative;
     transform-style: preserve-3d;
     overflow: hidden;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 .formContainer::before {
@@ -356,10 +362,6 @@
     pointer-events: none;
     color: rgba(99, 102, 241, 0.7);
     transition: all 0.3s ease;
-}
-
-.message-icon {
-    top: var(--space-lg);
 }
 
 .submit-btn {
@@ -482,7 +484,7 @@
 /* 🌟 Enhanced Mobile Responsiveness */
 @media (max-width: 1200px) {
     .contact {
-        max-width: 95%;
+        max-width: 90%;
         gap: var(--space-xl);
         padding: var(--space-xl);
     }
@@ -493,6 +495,10 @@
 
     .form-header h2 {
         font-size: 2.2rem;
+    }
+
+    .contact-items {
+        grid-template-columns: 1fr;
     }
 }
 
