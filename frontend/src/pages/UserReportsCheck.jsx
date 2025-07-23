@@ -135,7 +135,7 @@ export default function UserReportsCheck() {
                             whileHover={{ scale: 1.05 }}
                         >
                             <p className="score">
-                                Score: <strong>{report.score}</strong> / {report.total}
+                                Score: <strong>{Math.round(report.score)}</strong> / {report.total}
                             </p>
                             <motion.div 
                                 className={`result-badge ${report.score >= report.total * 0.5 ? 'passed' : 'failed'}`}
