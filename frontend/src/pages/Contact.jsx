@@ -276,7 +276,7 @@ const Contact = () => {
                         whileFocus={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <div className="input-icon">👤</div>
+                        <div className="input-icon">◉</div>
                         <input
                             type="text"
                             name="name"
@@ -292,7 +292,7 @@ const Contact = () => {
                         whileFocus={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <div className="input-icon">📧</div>
+                        <div className="input-icon">✉</div>
                         <input
                             type="email"
                             name="email"
@@ -308,7 +308,7 @@ const Contact = () => {
                         whileFocus={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <div className="input-icon">💬</div>
+                        <div className="input-icon">◈</div>
                         <textarea
                             name="message"
                             placeholder="Your Message"

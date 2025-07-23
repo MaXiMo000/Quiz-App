@@ -187,6 +187,7 @@
     border: 1px solid rgba(99, 102, 241, 0.2);
     border-radius: var(--radius-xl);
     padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
     box-shadow: 
         var(--shadow-lg),
         0 0 30px rgba(99, 102, 241, 0.08);
@@ -194,6 +195,9 @@
     position: relative;
     overflow: hidden;
     text-align: left;
+    min-height: auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .question-box::before {
@@ -244,7 +248,8 @@
 }
 
 /* ✅ Enhanced Question Titles */
-.question-box h3 {
+.question-box h3,
+.question-box h4 {
     font-size: 1.3rem;
     font-weight: 700;
     margin: 0 0 var(--space-lg) 0;
@@ -254,10 +259,12 @@
     background-clip: text;
     line-height: 1.4;
     transition: all var(--transition-normal);
+    min-height: auto;
 }
 
 /* ✅ Enhanced Options List */
-.options-list {
+.options-list,
+.question-box ul {
     list-style: none;
     padding: 0;
     margin: 0 0 var(--space-lg) 0;
@@ -266,7 +273,8 @@
     gap: var(--space-sm);
 }
 
-.options-list li {
+.options-list li,
+.question-box ul li {
     padding: var(--space-sm) var(--space-md);
     background: rgba(99, 102, 241, 0.05);
     backdrop-filter: blur(10px);
@@ -276,6 +284,8 @@
     cursor: pointer;
     font-size: 0.95rem;
     line-height: 1.5;
+    min-height: auto;
+    box-sizing: border-box;
 }
 
 .options-list li strong {
@@ -375,29 +385,6 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
-
-.question-box {
-    background: var(--card-bg);
-    padding: var(--space-md);
-    border-radius: 10px;
-    margin-bottom: var(--space-md);
-    box-shadow: 0 4px 12px var(--shadow);
-    text-align: left;
-}
-
-.question-box h3 {
-    margin-top: 0;
-}
-
-.question-box ul {
-    list-style: none;
-    padding: 0;
-}
-
-.question-box ul li {
-    padding: var(--space-xs) 0;
-    font-size: 0.9rem;
 }
 
 /* ✅ Enhanced Mobile Responsiveness */
