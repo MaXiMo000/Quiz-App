@@ -173,10 +173,11 @@
     }
 }
 
-.options button:nth-child(1) { animation-delay: 0.1s; }
-.options button:nth-child(2) { animation-delay: 0.2s; }
-.options button:nth-child(3) { animation-delay: 0.3s; }
-.options button:nth-child(4) { animation-delay: 0.4s; }
+/* Removed staggered animation delays to prevent lag when navigating questions */
+.options button:nth-child(1) { animation-delay: 0s; }
+.options button:nth-child(2) { animation-delay: 0s; }
+.options button:nth-child(3) { animation-delay: 0s; }
+.options button:nth-child(4) { animation-delay: 0s; }
 
 .options button::before {
     content: '';
@@ -226,7 +227,7 @@
     box-shadow: 0 20px 40px rgba(79, 172, 254, 0.3), 0 0 40px rgba(79, 172, 254, 0.5) !important;
     transform: scale(1.03) rotateX(1deg) !important;
     position: relative;
-    animation: success-glow 0.5s ease-out;
+    animation: success-glow 0.2s ease-out;
 }
 
 .options button.selected::before {
@@ -238,7 +239,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: white;
-    animation: checkmarkPop 0.3s ease-out;
+    animation: checkmarkPop 0.15s ease-out;
 }
 
 @keyframes checkmarkPop {
