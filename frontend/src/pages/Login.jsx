@@ -45,8 +45,9 @@ const Login = () => {
         }
     };
     const handleGoogleLogin = () => {
-        // 🔒 SECURE: Use relative URL for Google OAuth
-        window.location.href = "/api/users/google";
+        // 🔒 SECURE: Use full backend URL for Google OAuth
+        const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+        window.location.href = `${backendURL}/api/users/google`;
     };
 
     return (

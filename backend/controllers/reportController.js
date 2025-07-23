@@ -19,18 +19,18 @@ export const unlockThemesForLevel = (user) => {
         4: "material-light",
         6: "material-dark",
         8: "dracula",
-        10: "nord",
-        12: "solarized-light",
-        14: "solarized-dark",
-        16: "monokai",
-        18: "one-dark",
-        20: "gruvbox-dark",
-        22: "gruvbox-light",
-        24: "oceanic",
-        26: "synthwave",
-        28: "night-owl",
-        30: "tokyo-night",
-        32: "ayu-light"
+        12: "nord",
+        14: "solarized-light",
+        16: "solarized-dark",
+        18: "monokai",
+        20: "one-dark",
+        22: "gruvbox-dark",
+        24: "gruvbox-light",
+        26: "oceanic",
+        28: "synthwave",
+        30: "night-owl",
+        32: "tokyo-night",
+        34: "ayu-light"
     };
 
     for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
