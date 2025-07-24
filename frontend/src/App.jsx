@@ -35,6 +35,7 @@ const UserWrittenReports = lazy(() => import("./pages/UserWrittenReports"));
 const UserWrittenReportCheck = lazy(() => import("./pages/UserWrittenReportsCheck"));
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 import PremiumQuizzes from "./pages/PremiumQuizzes";
+import PremiumQuizQuestions from "./pages/PremiumQuizQuestions";
 import Contact from "./pages/Contact";
 import UserAnalyticsDashboard from "./pages/UserAnalyticsDashboard";
 import XPLeaderboard from "./pages/XPLeaderboard";
@@ -99,6 +100,7 @@ const App = () => {
                             <Route path="/analytics" element={<UserAnalyticsDashboard />} />
 
                             <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
+                            <Route path="/premium/quiz/:id" element={<PremiumQuizQuestions />} />
                         </Route>
                     </Routes>
                 </Suspense>

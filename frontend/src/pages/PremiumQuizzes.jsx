@@ -360,7 +360,7 @@ const PremiumQuizzes = () => {
                                     
                                     <motion.button 
                                         className="view-questions-btn premium-view-btn" 
-                                        onClick={() => navigate(`/admin/quiz/${quiz._id}`)}
+                                        onClick={() => navigate(`/premium/quiz/${quiz._id}`)}
                                         whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(251, 191, 36, 0.3)" }}
                                         whileTap={{ scale: 0.95 }}
                                     >
