@@ -1,6 +1,6 @@
-# 🧠 Quiz App
+# 🧠 QuizNest – AI Quiz App
 
-An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** that enables users to take quizzes, generate AI-based questions, and upgrade to premium for enhanced features like insights, achievements, and live battles.
+An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** that enables users to take intelligent quizzes, generate questions via AI, track performance, and enjoy gamified elements like achievements and leaderboards. Premium users get access to exclusive features such as insights, advanced theming, and live battles.
 
 ---
 
@@ -12,69 +12,94 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
 
 ## 🚀 Features
 
-- 🔐 **Authentication**
-  - Google OAuth, JWT-based authentication
-  - Role-based access (User, Premium, Admin)
+### 🔐 Authentication
 
-- 🧠 **AI-Powered Quiz Generation**
-  - Automatic question generation with duration and marks
-  - AI evaluates written test answers using NLP
+* Google OAuth & JWT-based secure login
+* Role-based access (User, Premium, Admin)
 
-- 📊 **Reports & Performance Tracking**
-  - Get score reports, quiz history, and question reviews
+### 🧠 AI-Powered Quiz Generation
 
-- 🏆 **Leaderboards & Achievements**
-  - View top scorers weekly/monthly
-  - Earn badges like “Quiz Master,” “Speed Genius,” etc.
+* Automatically generate MCQs & written questions
+* AI assigns duration, marks, and evaluates written answers using NLP
+* Adaptive difficulty: beginners get easier questions, advanced users get harder ones
 
-- 🤝 **Live Quiz Battles** *(in progress)*
-  - Challenge friends in real-time and compete live
+### 📊 Reports & Analytics
 
-- 💳 **Subscription Plans**
-  - Free: Limited quizzes
-  - Premium: Unlimited access + AI insights
+* Quiz history and detailed performance reports
+* Real-time feedback and score analytics
 
-- 🛡️ Admin Panel
-  QuizNest includes a powerful admin dashboard enabling full control over platform operations:
-  
-  - 🔍 Monitor: View reports on quiz usage and user performance.
-  - 🧩 Manage: Add/edit/delete quizzes and questions.
-  - 👥 Control Users: Promote, suspend, or analyze users by roles (User, Premium, Admin).
-  - 📈 View Insights: Access real-time statistics and analytics of quiz activity.
-  
-  Accessible to Admins only. Requires login with appropriate credentials.
+### 🏆 Gamification
+
+* **Achievements System** ✅
+
+  * Earn badges like “Quiz Master,” “Speed Genius,” and “Perfect Score”
+  * View badges and stats in user profile
+* **Leaderboards**
+
+  * Weekly and monthly top scorers
+  * Promotes user engagement and competition
+
+### ⚔️ Live Quiz Battles *(In Progress)*
+
+* Challenge other users in real-time quiz duels
+* See your opponent's live progress *(coming soon)*
+
+### 🎨 UI/UX Enhancements ✅
+
+* **Advanced Theme Selector** for Light/Dark/custom modes
+* **Mobile Navigation Bar** for improved phone/tablet usability
+* **Enhanced Dashboard UI** with upgraded design and data visualization
+* **New Test Page** for better quiz flow and feedback
+* Consistent design system and polished UI across all screens
+
+### 💳 Subscription Plans
+
+* **Free Plan**: Limited quizzes, core features
+* **Premium Plan**: Unlimited access, AI insights, achievements, and future battle mode
+
+### 🛡️ Admin Panel
+
+A powerful admin dashboard providing full control of platform operations:
+
+* 🔍 Monitor user activity and quiz submissions
+* 🧩 Add/Edit/Delete quizzes and questions
+* 👥 Manage users: roles, status, analytics
+* 📈 Real-time insights and platform stats
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React,CSS, Vite
-- **Backend**: Node.js, Express.js, MongoDB
-- **AI Integration**: Together AI, Google Gemini API
-- **Authentication**: JWT, Google OAuth
-- **Deployment**: Render
+* **Frontend**: React, CSS, Vite
+* **Backend**: Node.js, Express.js, MongoDB
+* **AI Integration**: Together AI, Google Gemini API
+* **Authentication**: JWT, Google OAuth
+* **Deployment**: Render
 
 ---
+
 ## 👤 Author
 
-Developed by [MaXiMo000](https://github.com/MaXiMo000)  
+Developed by [MaXiMo000](https://github.com/MaXiMo000)
 All rights reserved © 2025
 
-Please contact for licensing or collaboration inquiries.
-**Do not remove this credit in forks or copies. Attribution is required.**
+📩 For licensing or collaboration inquiries, feel free to reach out.
+⚠️ **Please do not remove credit in forks or copies. Attribution is required.**
+
 ---
 
-### 📦 Installation & Setup
+## 📦 Installation & Setup
 
-```🔗 Backend
+### 🔗 Backend Setup
 
-
-bash
+```bash
 cd backend
 npm install
-Create a .env file in the backend folder with the following:
+```
 
-env
+Create a `.env` file in the `backend` folder with:
+
+```env
 MONGO_URI=your_mongodb_uri
 PORT=5000
 TOGETHER_AI_API_KEY=your_ai_key
@@ -85,76 +110,94 @@ GOOGLE_CALLBACK_URL=http://localhost:4000/auth/google/callback
 FRONTEND_URL=http://localhost:5173
 GOOGLE_SECRET=your_google_secret
 GEMINI_API_KEY=your_gemini_api_key
+```
+
 Start the backend server:
 
-bash
+```bash
 npm start
+```
 
+### 💻 Frontend Setup
 
-💻 Frontend
-
-bash
+```bash
 cd frontend
 npm install
-Create a .env file in the frontend folder:
+```
 
-env
+Create a `.env` file in the `frontend` folder with:
+
+```env
 VITE_BACKEND_URL=https://your-backend-url.onrender.com
-VITE_CONTACT_KEY = from emailjs 
-VITE_CONTACT_SERVICE = from emailjs 
-VITE_CONTACT_TEMPLATE = from emailjs 
-Or use this for local testing:
+VITE_CONTACT_KEY=your_emailjs_key
+VITE_CONTACT_SERVICE=your_emailjs_service
+VITE_CONTACT_TEMPLATE=your_emailjs_template
+```
 
-env
+For local testing:
+
+```env
 VITE_BACKEND_URL=http://localhost:4000
+```
 
-In your pages jsx, access the backend URL like:
+Access env variables in React pages:
+
+```js
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+```
 
-Start the frontend server:
-bash
+Run the frontend dev server:
+
+```bash
 npm run dev
+```
 
+---
 
-📈 Project Progress Timeline:
-  Date	      Commit Description
-  07-03-2025	Initial commit: basic project structure
-  08-03-2025	AI-based question generation added
-  09-03-2025	Improved UI and quiz-taking UX
-  10-03-2025	Auto duration/marks for AI questions, backend deployed
-  10-03-2025	Added written test with AI evaluation
-  10-03-2025	Added AuthWrapper and mobile responsiveness
-  10-03-2025	Integrated JWT authentication and enhanced UI
+## 🗓️ Project Progress Timeline
 
+| Date       | Commit Description                                      |
+| ---------- | ------------------------------------------------------- |
+| 07-03-2025 | Initial commit: basic project structure                 |
+| 08-03-2025 | AI-based question generation added                      |
+| 09-03-2025 | Improved UI and quiz-taking UX                          |
+| 10-03-2025 | Auto duration/marks for AI questions, backend deployed  |
+| 10-03-2025 | Added written test with AI evaluation                   |
+| 10-03-2025 | AuthWrapper + responsive layout                         |
+| 10-03-2025 | Integrated JWT, enhanced frontend                       |
+| 23-07-2025 | Advanced Theme Selector, Mobile Navbar, Test Page added |
+| 23-07-2025 | Achievement System fully integrated                     |
+| 24-07-2025 | Full UI consistency pass + New Dashboard design         |
 
-✅ Completed Features:
-    ✅ Better UI/UX
-    ✅ AI-powered question generation
-    ✅ Time limits for tests
-    ✅ Role-based access with JWT
-    ✅ Quiz review/edit system
-    ✅ Written test with AI evaluation
-    ✅ AI-based difficulty level adjustment
-    ✅ Beginner users get easier questions
-    ✅ Advanced users face harder ones
-    ✅ Leaderboard for top scorers
-    ✅ Free vs Premium subscriptions
-    ✅Free users: Limited quizzes
-    ✅Premium users: Unlimited access, AI insights
+---
 
+## ✅ Completed Features
 
-🔄 In Progress:
-    🏅 Achievement Badges: => done
-        Earn badges like:
-            Quiz Master
-            Speed Genius
-            Perfect Score
+* ✅ Better UI/UX Design
+* ✅ AI-powered question generation
+* ✅ Adaptive test difficulty
+* ✅ JWT-based role management (User/Premium/Admin)
+* ✅ Written tests with AI NLP evaluation
+* ✅ Quiz result tracking and reviews
+* ✅ Achievement Badge System 🏆
+* ✅ Leaderboards (weekly/monthly)
+* ✅ Free vs Premium user flow
+* ✅ Advanced Theme Selector 🌙
+* ✅ Mobile Navbar for responsive layout 📱
+* ✅ Enhanced Dashboard & Test Page 🎯
 
-    ⚔️ Live Quiz Battles => in progress
-      Real-time quiz competition
-      View opponent’s progress during battle
+---
 
+## 🔄 In Progress
 
-💬 Feedback & Contributions:
-    Have suggestions or want to contribute?
-    Open an issue or a pull request — all contributions are welcome! 🙌
+* ⚔️ **Live Quiz Battles**
+
+  * Real-time 1v1 quiz mode
+  * View your opponent’s progress live
+
+---
+
+## 💬 Feedback & Contributions
+
+Got feedback, ideas, or want to collaborate?
+Open an issue or a pull request — all contributions are welcome! 🙌
