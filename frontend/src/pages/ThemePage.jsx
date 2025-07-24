@@ -7,7 +7,7 @@ import { useNotification } from "../hooks/useNotification";
 const ThemePage = () => {
 const { theme: currentTheme, changeTheme } = useContext(ThemeContext);
 const [unlocked, setUnlocked] = useState([]);
-const userFromStorage = JSON.parse(localStorage.getItem("user"));
+const [userFromStorage, setUserFromStorage] = useState(() => JSON.parse(localStorage.getItem("user")));
 const userId = userFromStorage?._id;
 
 // Notification system
@@ -15,20 +15,23 @@ const { notification, showSuccess, showError, hideNotification } = useNotificati
 
 useEffect(() => {
     const fetchUser = async () => {
-    if (!userId) {
+      // Always re-read user from localStorage on refresh
+      const latestUser = JSON.parse(localStorage.getItem("user"));
+      setUserFromStorage(latestUser);
+      const latestUserId = latestUser?._id;
+      if (!latestUserId) {
         showError('Please log in to access themes');
         return;
-    }
-    
-    try {
-        const res = await axios.get(`/api/users/${userId}`);
+      }
+      try {
+        const res = await axios.get(`/api/users/${latestUserId}`);
         setUnlocked(res.data.unlockedThemes || []);
-    } catch (err) {
+      } catch (err) {
         console.error("Error fetching themes:", err);
-    }
+      }
     };
     fetchUser();
-}, [userId, showError]);
+}, [showError]);
 
 const handleApply = async (themeName) => {
     if (!userId) {
