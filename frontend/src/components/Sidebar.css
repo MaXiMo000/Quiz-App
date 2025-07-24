@@ -14,6 +14,7 @@
     transition: all 0.3s ease;
     z-index: 1000;
     overflow-y: auto;
+    overflow-x: hidden;
     box-shadow: 4px 0 20px rgba(139, 69, 19, 0.1);
 }
 
@@ -306,6 +307,9 @@
     
     .sidebar.open {
         transform: translateX(0);
+        z-index: 1201;
+        box-shadow: 0 0 24px rgba(0,0,0,0.18);
+        padding-bottom: 72px;
     }
     
     .sidebar-overlay {
@@ -412,6 +416,10 @@
     background: transparent;
     border: 1px solid transparent;
     min-height: 38px;
+    /* Enhanced touch interactions */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 .sidebar a::before {
@@ -438,6 +446,21 @@
 .sidebar a:hover::before {
     opacity: 1;
     transform: scale(1);
+}
+
+/* Enhanced active states for touch devices */
+.sidebar a:active {
+    background: var(--color-link-hover-bg);
+    transform: translateX(2px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+@media (max-width: 768px) {
+    .sidebar a:active {
+        background: var(--color-link-hover-bg);
+        border-color: var(--accent);
+        transform: translateX(4px) scale(0.98);
+    }
 }
 
 /* ✅ Premium Dashboard Link Styling */
@@ -573,11 +596,29 @@
     box-shadow: 0 4px 16px var(--color-toggle-shadow);
     min-height: 48px;
     min-width: 48px;
+    /* Enhanced touch interactions */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 .sidebar-toggle:hover {
     background: var(--color-toggle-hover-bg);
     transform: scale(1.05);
+}
+
+.sidebar-toggle:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* Enhanced touch feedback */
+@media (max-width: 768px) {
+    .sidebar-toggle:active {
+        background: var(--color-toggle-hover-bg);
+        transform: scale(0.95) rotate(90deg);
+        box-shadow: 0 2px 8px var(--color-toggle-shadow);
+    }
 }
 
 /* ✅ Close Button */
@@ -602,42 +643,86 @@
 }
 
 /* ✅ Enhanced Mobile Responsiveness */
+/* Mobile overlay for better UX */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay {
+        display: block;
+    }
+}
+
 @media (max-width: 1024px) {
     .sidebar {
         width: 260px;
+        max-width: 90vw;
+    }
+    .sidebar-toggle {
+        display: block;
+    }
+    .close-btn-sidebar {
+        display: block;
     }
 }
 
 @media (max-width: 768px) {
+    /* Hide sidebar toggle when mobile nav is present */
+    .sidebar-toggle {
+        display: none;
+    }
+    
     .sidebar {
         transform: translateX(-100%);
         width: 300px;
         padding: var(--space-xl) var(--space-lg);
         box-shadow: 8px 0 32px rgba(0, 0, 0, 0.3);
+        /* Ensure sidebar is behind mobile nav */
+        z-index: 1000;
+
     }
 
     .sidebar.open {
         transform: translateX(0);
     }
 
-    .sidebar-toggle {
-        display: block;
-        position: fixed;
-        top: var(--space-lg);
-        left: var(--space-lg);
-        z-index: 1200;
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--shadow-xl);
-    }
-
     .close-btn-sidebar {
         display: block;
         position: absolute;
-        top: var(--space-lg);
-        right: var(--space-lg);
+        top: 10px;
+        right: 16px;
         z-index: 1200;
+        background: none;
+        border: none;
+        color: var(--color-close-btn);
+        font-size: 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: var(--space-sm);
+        border-radius: var(--radius-md);
+        width: 40px;
+        height: 40px;
+        max-width: 40px;
+        max-height: 40px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+    }
+
+    .close-btn-sidebar:hover {
+        color: var(--color-close-btn-hover);
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(90deg);
     }
 
     #title h2 {
@@ -668,19 +753,6 @@
     }
 }
 
-    .logout-btn {
-        padding: var(--space-lg) var(--space-xl);
-        font-size: 1rem;
-        margin-bottom: var(--space-xxl);
-    }
-
-    .sidebar button:not(.logout-btn) {
-        padding: var(--space-md) var(--space-lg);
-        margin-bottom: var(--space-md);
-        margin-top: var(--space-lg);
-        min-height: 48px;
-    }
-
 @media (max-width: 480px) {
     .sidebar {
         width: 260px;
@@ -701,7 +773,7 @@
     .logout-btn {
         padding: var(--space-md) var(--space-lg);
         font-size: 0.95rem;
-        margin-bottom: var(--space-xl);
+        margin-bottom: var(--space-sm);
         min-height: 46px;
     }
 
@@ -734,7 +806,7 @@
     .logout-btn {
         padding: var(--space-sm) var(--space-md);
         font-size: 0.9rem;
-        margin-bottom: var(--space-lg);
+        margin-bottom: var(--space-sm);
         min-height: 44px;
     }
 
@@ -750,12 +822,6 @@
         left: var(--space-sm);
         padding: var(--space-sm) var(--space-md);
         font-size: 18px;
-    }
-    
-    .logout-btn {
-        margin-bottom: var(--space-xl);
-        font-size: 0.9rem;
-        padding: var(--space-xs) var(--space-sm);
     }
 }
 
