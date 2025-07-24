@@ -11,7 +11,7 @@
     backdrop-filter: blur(20px);
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     padding: 2rem 0;
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.77,0,0.175,1), all 0.3s ease;
     z-index: 1000;
     overflow-y: auto;
     overflow-x: hidden;
@@ -679,8 +679,8 @@
         position: absolute;
         top: 16px;
         right: 16px;
-        max-width: 50px;
-        max-height: 50px;
+        max-width: 40px;
+        max-height: 40px;
         font-size: 2rem;
         align-items: center;
         justify-content: center;
@@ -691,6 +691,7 @@
         border: 2px solid rgba(139,69,19,0.12);
         box-shadow: 0 2px 12px rgba(0,0,0,0.12);
         z-index: 1200;
+        transition: transform 0.3s cubic-bezier(0.77,0,0.175,1), opacity 0.2s;
     }
 
     .close-btn-sidebar:hover {
@@ -816,4 +817,21 @@
     .close-btn-sidebar {
         display: none !important;
     }
+}
+
+.close-btn-sidebar {
+    transition: transform 0.3s cubic-bezier(0.77,0,0.175,1), opacity 0.2s;
+}
+
+.close-btn-sidebar.slide-left {
+    transform: translateX(-120px);
+    opacity: 0;
+}
+
+.sidebar {
+    transition: transform 0.3s cubic-bezier(0.77,0,0.175,1);
+}
+
+.sidebar.slide-left {
+    transform: translateX(-100%) !important;
 }

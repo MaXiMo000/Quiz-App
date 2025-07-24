@@ -11,6 +11,8 @@ import useTouchHandler from "../hooks/useTouchHandler";
 const Sidebar = ({ isOpen = false, onClose }) => {
     const [user, setUser] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [closeBtnSlide, setCloseBtnSlide] = useState(false);
+    const [sidebarSlide, setSidebarSlide] = useState(false);
     const navigate = useNavigate();
     
     // Enhanced mobile responsiveness
@@ -36,8 +38,9 @@ const Sidebar = ({ isOpen = false, onClose }) => {
         // Enhanced mobile link handling with haptic feedback
         if (isMobile || breakpoints.mobile || window.innerWidth <= 768) {
             setIsSidebarOpen(false);
+            setCloseBtnSlide(false);
+            setSidebarSlide(false);
             if (onClose) onClose(); // Close via parent component on mobile
-            // Add haptic feedback on mobile devices
             if (isTouchDevice) {
                 vibrate([10]); // Light vibration
             }
@@ -118,7 +121,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                 )}
                 
                 <aside 
-                    className={`sidebar ${((isMobile || breakpoints.mobile) ? isOpen : isSidebarOpen) ? "open" : ""}`}
+                    className={`sidebar ${((isMobile || breakpoints.mobile) ? isOpen : isSidebarOpen) ? "open" : ""} ${sidebarSlide ? "slide-left" : ""}`}
                     {...(isMobile ? swipeHandlers : {})}
                 >
                     <motion.div
@@ -129,11 +132,19 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                                 {/* Mobile close button */}
                         {(isMobile || breakpoints.mobile) && (
                             <button 
-                                className="close-btn-sidebar"
+                                className={`close-btn-sidebar${closeBtnSlide ? " slide-left" : ""}`}
                                 aria-label="Close sidebar"
                                 onClick={() => {
-                                    setIsSidebarOpen(false);
-                                    if (onClose) onClose();
+                                    setCloseBtnSlide(true);
+                                    setTimeout(() => {
+                                        setSidebarSlide(true);
+                                        setTimeout(() => {
+                                            setIsSidebarOpen(false);
+                                            setCloseBtnSlide(false);
+                                            setSidebarSlide(false);
+                                            if (onClose) onClose();
+                                        }, 350);
+                                    }, 300);
                                 }}
                             >
                                 <span style={{fontSize: '2rem', lineHeight: '1', display: 'block', fontWeight: 700}}>&#10005;</span>
