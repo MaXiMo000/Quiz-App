@@ -4,6 +4,9 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
+    grid-template-areas: 
+        "header"
+        "form";
     gap: var(--space-2xl);
     width: 100%;
     max-width: 1000px;
@@ -62,6 +65,7 @@
 
 /* 🎯 Text Container - Top Section */
 .textContainer {
+    grid-area: header;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -257,6 +261,7 @@
 
 /* 📝 Form Container - Bottom Section */
 .formContainer {
+    grid-area: form;
     background: var(--card-bg-glass);
     backdrop-filter: blur(35px);
     -webkit-backdrop-filter: blur(35px);
@@ -272,6 +277,7 @@
     overflow: hidden;
     max-width: 700px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .formContainer::before {
@@ -311,6 +317,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
+    width: 100%;
+    position: relative;
 }
 
 .input-group {
@@ -428,29 +436,6 @@
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid white;
     border-radius: 50%;
-}
-
-.message {
-    padding: var(--space-md) var(--space-lg);
-    border-radius: var(--radius-lg);
-    font-weight: 600;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: var(--space-md);
-}
-
-.message.error {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border-color: rgba(239, 68, 68, 0.3);
-}
-
-.message.success {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-    border-color: rgba(34, 197, 94, 0.3);
 }
 
 .error-message {
@@ -739,48 +724,4 @@
     background: linear-gradient(135deg, var(--accent2), var(--accent));
 }
 
-/* Error and Success Messages */
-.error-message {
-    background: rgba(248, 113, 113, 0.1);
-    border: 1px solid rgba(248, 113, 113, 0.3);
-    border-radius: 16px;
-    padding: 16px 20px;
-    margin-top: 16px;
-    color: #fca5a5;
-    font-size: 14px;
-    font-weight: 500;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(248, 113, 113, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: slideInUp 0.3s ease-out;
-}
 
-.success-message {
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    border-radius: 16px;
-    padding: 16px 20px;
-    margin-top: 16px;
-    color: #86efac;
-    font-size: 14px;
-    font-weight: 500;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: slideInUp 0.3s ease-out;
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
