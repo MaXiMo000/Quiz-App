@@ -56,7 +56,22 @@ export const getDashboardData = async (req, res) => {
         console.log(`Found ${reports.length} reports for user ${user.name}`);
         
         // Calculate basic stats
-        const totalQuizzes = await Quiz.countDocuments();
+        let quizFilter;
+        if (user.role === "admin") {
+            quizFilter = {};
+        } else if (user.role === "premium") {
+            // Premium: quizzes created by admin and by this user
+            quizFilter = {
+                $or: [
+                    { "createdBy._id": null },
+                    { "createdBy._id": user._id }
+                ]
+            };
+        } else {
+            // User: only quizzes created by admin
+            quizFilter = { "createdBy._id": null };
+        }
+        const totalQuizzes = await Quiz.countDocuments(quizFilter);
         const completedQuizzes = reports.length;
         const averageScore = reports.length > 0 
             ? Math.round(reports.reduce((sum, report) => sum + (report.score / report.total * 100), 0) / reports.length * 10) / 10
