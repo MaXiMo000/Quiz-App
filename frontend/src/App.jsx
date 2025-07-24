@@ -40,6 +40,11 @@ import UserAnalyticsDashboard from "./pages/UserAnalyticsDashboard";
 import XPLeaderboard from "./pages/XPLeaderboard";
 import ThemePage from "./pages/ThemePage";
 
+// ✨ Import new enhanced components
+import EnhancedDashboard from "./components/EnhancedDashboard";
+import AchievementSystem from "./components/AchievementSystem";
+const TestPage = lazy(() => import("./pages/TestPage"));
+
 const App = () => {
     // 🔒 SECURITY: Removed unnecessary user state and logging
     useEffect(() => {
@@ -62,6 +67,9 @@ const App = () => {
                         {/* Protected Routes */}
                         <Route element={<AuthWrapper><Layout /></AuthWrapper>}>
                             <Route path="/" element={<Home />} />
+                            <Route path="/test-features" element={<TestPage />} />
+                            <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />
+                            <Route path="/achievements" element={<AchievementSystem />} />
                             <Route path="/themes" element={<ThemePage />} />
                             <Route path="/admin" element={<AdminDashboard />} />
                             <Route path="/admin/create" element={<AdminQuizzes />} />

@@ -5,6 +5,7 @@ import "./Home.css";
 import "../App.css";
 import axios from "../utils/axios";
 import ThemeSelector from "../components/ThemeSelector";
+import AdvancedThemeSelector from "../components/AdvancedThemeSelector";
 import { ThemeContext } from "../context/ThemeContext";
 
 const Home = () => {
@@ -142,8 +143,16 @@ const Home = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
+            className="theme-selectors"
         >
             <ThemeSelector />
+            <AdvancedThemeSelector 
+                currentTheme={document.documentElement.getAttribute('data-theme') || 'Default'}
+                onThemeChange={(themeName) => {
+                    document.documentElement.setAttribute('data-theme', themeName);
+                    localStorage.setItem('theme', themeName);
+                }}
+            />
         </motion.div>
 
         <motion.p

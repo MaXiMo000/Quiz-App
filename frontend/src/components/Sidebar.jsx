@@ -98,7 +98,21 @@ const Sidebar = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.65, duration: 0.4 }}
+                                >
+                                    <Link to="/enhanced-dashboard" className="premium-dashboard" onClick={handleLinkClick}>📈 Premium Dashboard</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.7, duration: 0.4 }}
+                                >
+                                    <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.75, duration: 0.4 }}
                                 >
                                     <Link to="/admin/create" onClick={handleLinkClick}>📚 Create Quiz</Link>
                                 </motion.div>
@@ -112,7 +126,7 @@ const Sidebar = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.9, duration: 0.4 }}
+                                    transition={{ delay: 0.85, duration: 0.4 }}
                                 >
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
                                 </motion.div>
@@ -133,9 +147,23 @@ const Sidebar = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.65, duration: 0.4 }}
+                                >
+                                    <Link to="/enhanced-dashboard" className="premium-dashboard" onClick={handleLinkClick}>📈 Premium Dashboard</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.7, duration: 0.4 }}
                                 >
-                                    <Link to="/premium/quizzes" onClick={handleLinkClick}>🧠 My Quizzes</Link>
+                                    <Link to="/premium/quizzes" className="premium-dashboard" onClick={handleLinkClick}>🧠 My Quizzes</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.75, duration: 0.4 }}
+                                >
+                                    <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
                                 </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -190,9 +218,23 @@ const Sidebar = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.62, duration: 0.4 }}
+                                >
+                                    <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.7, duration: 0.4 }}
                                 >
                                     <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.75, duration: 0.4 }}
+                                >
+                                    <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
                                 </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
