@@ -163,11 +163,15 @@ const AdvancedThemeSelector = ({ currentTheme, onThemeChange }) => {
     { id: 'retro', name: 'Retro', icon: '📼' }
   ];
 
-  const allThemes = [...themes.light, ...themes.dark, ...themes.nature, ...themes.retro];
+
+  // Remove duplicate theme names (if any)
+  const allThemes = [...themes.light, ...themes.dark, ...themes.nature, ...themes.retro].filter((theme, idx, arr) =>
+    arr.findIndex(t => t.name === theme.name) === idx
+  );
 
   const filteredThemes = allThemes.filter(theme => {
     const matchesSearch = theme.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         theme.description.toLowerCase().includes(searchTerm.toLowerCase());
+      theme.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || theme.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -266,63 +270,77 @@ const AdvancedThemeSelector = ({ currentTheme, onThemeChange }) => {
                 </div>
               </div>
 
-              <div className="themes-grid">
-                {filteredThemes.map((theme, index) => (
-                  <motion.div
-                    key={theme.name}
-                    className={`theme-card ${currentTheme === theme.name ? 'current' : ''} ${previewTheme?.name === theme.name ? 'previewing' : ''}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onMouseEnter={() => handlePreview(theme)}
-                    onMouseLeave={clearPreview}
-                  >
-                    <div className="theme-preview" style={{
-                      background: `linear-gradient(135deg, ${theme.preview.bg}, ${theme.preview.card})`,
-                      border: `2px solid ${theme.preview.accent}`
-                    }}>
-                      <div className="preview-elements">
-                        <div 
-                          className="preview-accent" 
-                          style={{ backgroundColor: theme.preview.accent }}
-                        ></div>
-                        <div 
-                          className="preview-text"
-                          style={{ color: theme.preview.text }}
-                        >
-                          Aa
+              <div className="themes-grid" style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                gap: '2rem',
+                width: '100%',
+                margin: '0 auto',
+                padding: '2rem 0',
+                maxWidth: '900px'
+              }}>
+                {filteredThemes.length === 0 ? (
+                  <div style={{textAlign: 'center', color: '#888', gridColumn: '1/-1'}}>No themes found.</div>
+                ) : (
+                  filteredThemes.map((theme, index) => (
+                    <motion.div
+                      key={theme.name}
+                      className={`theme-card ${currentTheme === theme.name ? 'current' : ''} ${previewTheme?.name === theme.name ? 'previewing' : ''}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      onMouseEnter={() => handlePreview(theme)}
+                      onMouseLeave={clearPreview}
+                      style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: `2px solid ${theme.preview.accent}`,
+                        borderRadius: '1rem',
+                        padding: '1.5rem',
+                        minHeight: '180px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 16px rgba(99,102,241,0.08)'
+                      }}
+                    >
+                      <div className="theme-preview" style={{
+                        background: `linear-gradient(135deg, ${theme.preview.bg}, ${theme.preview.card})`,
+                        border: `2px solid ${theme.preview.accent}`
+                      }}>
+                        <div className="preview-elements">
+                          <div 
+                            className="preview-accent" 
+                            style={{ backgroundColor: theme.preview.accent }}
+                          ></div>
+                          <div 
+                            className="preview-text"
+                            style={{ color: theme.preview.text }}
+                          >
+                            Aa
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="theme-info">
-                      <h3>{theme.name}</h3>
-                      <p>{theme.description}</p>
-                      
-                      <div className="theme-actions">
-                        {currentTheme === theme.name ? (
-                          <span className="current-badge">✨ Current</span>
-                        ) : (
-                          <button
-                            className="apply-btn"
-                            onClick={() => handleApplyTheme(theme.name)}
-                          >
-                            Apply Theme
-                          </button>
-                        )}
+                      <div className="theme-info">
+                        <h3>{theme.name}</h3>
+                        <p>{theme.description}</p>
+                        <div className="theme-actions">
+                          {currentTheme === theme.name ? (
+                            <span className="current-badge">✨ Current</span>
+                          ) : (
+                            <button
+                              className="apply-btn"
+                              onClick={() => handleApplyTheme(theme.name)}
+                            >
+                              Apply Theme
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))
+                )}
               </div>
-
-              {filteredThemes.length === 0 && (
-                <div className="no-themes">
-                  <span className="no-themes-icon">🎨</span>
-                  <h3>No themes found</h3>
-                  <p>Try adjusting your search or category filter</p>
-                </div>
-              )}
 
               {previewTheme && (
                 <div className="preview-notice">
