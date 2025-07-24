@@ -126,11 +126,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
                     >
-                        <Link to={user?.role === "admin" ? "/admin" : "/"} id="title">
-                            <h2>QuizNest</h2>
-                        </Link>
-                        
-                        {/* Mobile close button */}
+                                                {/* Mobile close button */}
                         {(isMobile || breakpoints.mobile) && (
                             <button 
                                 className="close-btn-sidebar"
@@ -143,6 +139,10 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 <span style={{fontSize: '2rem', lineHeight: '1', display: 'block', fontWeight: 700}}>&#10005;</span>
                             </button>
                         )}
+
+                        <Link to={user?.role === "admin" ? "/admin" : "/"} id="title">
+                            <h2>QuizNest</h2>
+                        </Link>
                     </motion.div>
 
                     <motion.nav

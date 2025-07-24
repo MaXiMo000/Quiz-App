@@ -621,27 +621,6 @@
     }
 }
 
-/* ✅ Close Button */
-.close-btn-sidebar {
-    position: absolute;
-    top: var(--space-md);
-    right: var(--space-md);
-    background: none;
-    border: none;
-    color: var(--color-close-btn);
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 1100;
-    display: none;
-    transition: all 0.3s ease;
-    padding: var(--space-sm);
-}
-
-.close-btn-sidebar:hover {
-    color: var(--color-close-btn-hover);
-    transform: rotate(90deg);
-}
-
 /* ✅ Enhanced Mobile Responsiveness */
 /* Mobile overlay for better UX */
 .sidebar-overlay {
@@ -696,27 +675,22 @@
     }
 
     .close-btn-sidebar {
-        display: block;
-        position: absolute;
-        top: 10px;
-        right: 16px;
-        z-index: 1200;
-        background: none;
-        border: none;
-        color: var(--color-close-btn);
-        font-size: 2rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        padding: var(--space-sm);
-        border-radius: var(--radius-md);
-        width: 40px;
-        height: 40px;
-        max-width: 40px;
-        max-height: 40px;
-        box-sizing: border-box;
         display: flex;
-        align-items: flex-start;
-        justify-content: flex-end;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        max-width: 50px;
+        max-height: 50px;
+        font-size: 2rem;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.22);
+        color: #8B4513;
+        border: 2px solid rgba(139,69,19,0.12);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        z-index: 1200;
     }
 
     .close-btn-sidebar:hover {
