@@ -30,6 +30,40 @@ instance.interceptors.response.use(
     (error) => {
         const status = error.response?.status;
 
+        // Handle rate limiting specifically
+        if (status === 429) {
+            console.error('❌ Rate Limited:', error.message);
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 107, 107, 0.95);
+                backdrop-filter: blur(10px);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-weight: 500;
+                box-shadow: 0 8px 32px rgba(255, 107, 107, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                max-width: 300px;
+            `;
+            notification.innerHTML = '⚠️ Too many requests. Please wait a moment and try again.';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+            
+            return Promise.reject(error);
+        }
+
         // Handle CORS errors specifically
         if (error.code === 'ERR_NETWORK' || !error.response) {
             console.error('❌ Network/CORS Error:', error.message);

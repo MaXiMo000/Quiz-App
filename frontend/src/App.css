@@ -43,6 +43,8 @@
     margin-left: 0;
     padding: var(--space-md);
     padding-top: calc(70px + var(--space-md));
+    /* Add bottom padding for mobile navigation bar */
+    padding-bottom: calc(80px + var(--space-md) + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -303,6 +305,7 @@
     margin-top: 0;
     padding: var(--space-sm);
     padding-top: calc(70px + var(--space-lg)); /* Account for sidebar toggle button */
+    padding-bottom: calc(80px + var(--space-lg) + env(safe-area-inset-bottom, 0px)); /* Account for mobile nav bar */
     min-height: calc(100vh - 70px);
   }
 
@@ -326,6 +329,7 @@
   .main-content {
     padding: var(--space-xs);
     padding-top: calc(60px + var(--space-md));
+    padding-bottom: calc(75px + var(--space-md) + env(safe-area-inset-bottom, 0px));
   }
 
   .container {
@@ -340,6 +344,7 @@
   .main-content {
     padding: var(--space-xs);
     padding-top: calc(55px + var(--space-sm));
+    padding-bottom: calc(70px + var(--space-sm) + env(safe-area-inset-bottom, 0px));
   }
 
   .container {

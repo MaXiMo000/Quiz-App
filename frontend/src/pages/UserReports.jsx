@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
@@ -8,16 +8,24 @@ import { useNotification } from "../hooks/useNotification";
 
 const UserReports = () => {
     const [reports, setReports] = useState([]);
-    const user = JSON.parse(localStorage.getItem("user"));
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
-    const getReport = async () => {
+    // Initialize user from localStorage once
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        setUser(storedUser);
+    }, []);
+
+    const getReport = useCallback(async () => {
+        if (!user?.name) return;
+        
         try {
-            const response = await axios.get(`/api/reports/user?username=${user?.name}`); // auto-token
+            const response = await axios.get(`/api/reports/user?username=${user.name}`); // auto-token
             setReports(response.data);
         } catch (error) {
             console.error("Error fetching quizzes:", error);
@@ -26,11 +34,13 @@ const UserReports = () => {
         finally{
             setLoading(false);
         }
-    };
+    }, [user?.name]);
 
     useEffect(() => {
-        getReport();
-    }, [user]);
+        if (user?.name) {
+            getReport();
+        }
+    }, [user?.name, getReport]); // ✅ Include getReport in dependencies
 
     const deleteReport = async (id) => {
         if (!id) {

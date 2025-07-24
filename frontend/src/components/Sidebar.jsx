@@ -5,11 +5,17 @@ import axios from "../utils/axios"; // Make sure this uses the backend base URL
 import "./Sidebar.css";
 import NotificationModal from "./NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import useResponsive from "../hooks/useResponsive";
+import useTouchHandler from "../hooks/useTouchHandler";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen = false, onClose }) => {
     const [user, setUser] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
+    
+    // Enhanced mobile responsiveness
+    const { isMobile, deviceType, breakpoints } = useResponsive();
+    const { handleSwipe, vibrate, isTouchDevice } = useTouchHandler();
     
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
@@ -27,10 +33,37 @@ const Sidebar = () => {
     };
 
     const handleLinkClick = () => {
-        if (window.innerWidth <= 768) {
+        // Enhanced mobile link handling with haptic feedback
+        if (isMobile || breakpoints.mobile || window.innerWidth <= 768) {
             setIsSidebarOpen(false);
+            if (onClose) onClose(); // Close via parent component on mobile
+            // Add haptic feedback on mobile devices
+            if (isTouchDevice) {
+                vibrate([10]); // Light vibration
+            }
         }
     };
+
+    // Enhanced sidebar toggle with haptic feedback
+    const toggleSidebar = () => {
+        setIsSidebarOpen((prev) => !prev);
+        if (isTouchDevice) {
+            vibrate([5]); // Light vibration
+        }
+    };
+
+    // Swipe gestures for mobile
+    const swipeHandlers = handleSwipe(
+        () => {
+            setIsSidebarOpen(false);
+            if (onClose) onClose();
+        }, // Swipe left to close
+        () => {
+            setIsSidebarOpen(true);
+        },  // Swipe right to open (but controlled by parent)
+        null, // No up swipe
+        null  // No down swipe
+    );
 
     // Update role function
     const updateRole = async (newRole) => {
@@ -59,17 +92,34 @@ const Sidebar = () => {
         <>
             <motion.button 
                 className="sidebar-toggle" 
-                onClick={() => setIsSidebarOpen((prev) => !prev)}
-                whileHover={{ scale: 1.1 }}
+                onClick={toggleSidebar}
+                whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ duration: 0.2 }}
+                {...(isMobile ? swipeHandlers : {})}
             >
                 ☰
             </motion.button>
 
             <AnimatePresence>
+                {/* Mobile overlay */}
+                {((isMobile || breakpoints.mobile) ? isOpen : isSidebarOpen) && (isMobile || breakpoints.mobile) && (
+                    <motion.div
+                        className="sidebar-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => {
+                            setIsSidebarOpen(false);
+                            if (onClose) onClose();
+                        }}
+                        transition={{ duration: 0.3 }}
+                    />
+                )}
+                
                 <aside 
-                    className={`sidebar ${isSidebarOpen ? "open" : ""}`}
+                    className={`sidebar ${((isMobile || breakpoints.mobile) ? isOpen : isSidebarOpen) ? "open" : ""}`}
+                    {...(isMobile ? swipeHandlers : {})}
                 >
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
@@ -79,6 +129,20 @@ const Sidebar = () => {
                         <Link to={user?.role === "admin" ? "/admin" : "/"} id="title">
                             <h2>QuizNest</h2>
                         </Link>
+                        
+                        {/* Mobile close button */}
+                        {(isMobile || breakpoints.mobile) && (
+                            <button 
+                                className="close-btn-sidebar"
+                                aria-label="Close sidebar"
+                                onClick={() => {
+                                    setIsSidebarOpen(false);
+                                    if (onClose) onClose();
+                                }}
+                            >
+                                <span style={{fontSize: '2rem', lineHeight: '1', display: 'block', fontWeight: 700}}>&#10005;</span>
+                            </button>
+                        )}
                     </motion.div>
 
                     <motion.nav
