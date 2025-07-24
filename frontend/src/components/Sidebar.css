@@ -679,8 +679,10 @@
         position: absolute;
         top: 16px;
         right: 16px;
-        max-width: 45px;
-        max-height: 45px;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
         font-size: 2rem;
         align-items: center;
         justify-content: center;
@@ -692,6 +694,20 @@
         box-shadow: 0 2px 12px rgba(0,0,0,0.12);
         z-index: 1200;
         transition: transform 0.3s cubic-bezier(0.77,0,0.175,1), opacity 0.2s;
+        overflow: hidden;
+    }
+
+    .close-btn-sidebar span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        color: var(--color-close-btn, #8B4513);
+        font-size: 1.7rem;
+        font-weight: 600;
+        line-height: 1;
+        pointer-events: none;
     }
 
     .close-btn-sidebar:hover {
