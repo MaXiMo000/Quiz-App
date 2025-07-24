@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AdvancedThemeSelector.css';
 import { useNotification } from '../hooks/useNotification';
 import NotificationModal from './NotificationModal';
+import { ThemeContext } from '../context/ThemeContext';
 
-const AdvancedThemeSelector = ({ currentTheme, onThemeChange }) => {
+const AdvancedThemeSelector = () => {
+  const { theme: currentTheme, changeTheme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const [previewTheme, setPreviewTheme] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -178,16 +180,15 @@ const AdvancedThemeSelector = ({ currentTheme, onThemeChange }) => {
 
   const handlePreview = (theme) => {
     setPreviewTheme(theme);
-    // Apply temporary theme for preview
-    const root = document.documentElement;
-    root.style.setProperty('--preview-bg', theme.preview.bg);
-    root.style.setProperty('--preview-accent', theme.preview.accent);
-    root.style.setProperty('--preview-text', theme.preview.text);
-    root.style.setProperty('--preview-card', theme.preview.card);
+    // Apply preview theme visually (but not persistently)
+    if (theme && theme.name && theme.name !== currentTheme) {
+      document.documentElement.setAttribute('data-theme', theme.name);
+    }
   };
 
   const handleApplyTheme = (themeName) => {
-    onThemeChange(themeName);
+    if (!themeName || typeof themeName !== 'string') return;
+    changeTheme(themeName);
     setIsOpen(false);
     setPreviewTheme(null);
     showSuccess(`🎨 ${themeName} theme applied successfully!`);
@@ -195,11 +196,10 @@ const AdvancedThemeSelector = ({ currentTheme, onThemeChange }) => {
 
   const clearPreview = () => {
     setPreviewTheme(null);
-    const root = document.documentElement;
-    root.style.removeProperty('--preview-bg');
-    root.style.removeProperty('--preview-accent');
-    root.style.removeProperty('--preview-text');
-    root.style.removeProperty('--preview-card');
+    // Restore current theme when preview ends
+    if (currentTheme) {
+      document.documentElement.setAttribute('data-theme', currentTheme);
+    }
   };
 
   return (
@@ -331,6 +331,7 @@ const AdvancedThemeSelector = ({ currentTheme, onThemeChange }) => {
                             <button
                               className="apply-btn"
                               onClick={() => handleApplyTheme(theme.name)}
+                              disabled={!theme.name}
                             >
                               Apply Theme
                             </button>
@@ -342,13 +343,15 @@ const AdvancedThemeSelector = ({ currentTheme, onThemeChange }) => {
                 )}
               </div>
 
-              {previewTheme && (
+              {previewTheme && previewTheme.name !== currentTheme && (
                 <div className="preview-notice">
                   <span className="preview-icon">👁️</span>
                   Previewing: <strong>{previewTheme.name}</strong>
                   <button 
                     className="apply-preview-btn"
-                    onClick={() => handleApplyTheme(previewTheme.name)}
+                    onClick={() => {
+                      handleApplyTheme(previewTheme.name);
+                    }}
                   >
                     Apply This Theme
                   </button>
