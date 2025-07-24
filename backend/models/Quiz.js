@@ -20,7 +20,7 @@ const quizSchema = new mongoose.Schema({
     questions:     [questionSchema],
     createdBy: {
         _id:  { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz", default: null },
-        name: { type: String, default: "Admin" }
+        name: { type: String, default: "admin" }
     }
 }, { timestamps: true });
 
