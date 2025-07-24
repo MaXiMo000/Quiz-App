@@ -767,6 +767,14 @@
     z-index: 1;
 }
 
+.theme-selectors {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
 .theme-selector-container {
     display: flex;
     justify-content: center;

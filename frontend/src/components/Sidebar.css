@@ -440,6 +440,58 @@
     transform: scale(1);
 }
 
+/* ✅ Premium Dashboard Link Styling */
+.sidebar a.premium-dashboard {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.1), 
+        rgba(255, 193, 7, 0.05));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #FFD700;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar a.premium-dashboard::before {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.sidebar a.premium-dashboard::after {
+    content: "✨";
+    position: absolute;
+    right: var(--space-sm);
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.sidebar a.premium-dashboard:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2), 
+        rgba(255, 193, 7, 0.1));
+    border-color: #FFD700;
+    color: #FFF;
+    transform: translateX(6px) scale(1.05);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+}
+
+.sidebar a.premium-dashboard:hover::after {
+    opacity: 1;
+    animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 0.7;
+    }
+    50% { 
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+    }
+}
+
 /* ✅ Logout Button */
 .logout-btn {
     margin-top: auto;

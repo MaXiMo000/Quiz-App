@@ -4,6 +4,7 @@ import config from "../config/config.js";
 const instance = axios.create({
     baseURL: config.BACKEND_URL,
     timeout: config.API_TIMEOUT,
+    withCredentials: true, // Important for CORS with credentials
     // Security headers
     headers: {
         'Content-Type': 'application/json',
@@ -23,11 +24,44 @@ instance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Handle 403 (Forbidden) globally
+// Handle 403 (Forbidden) and CORS errors globally
 instance.interceptors.response.use(
     (response) => response,
     (error) => {
         const status = error.response?.status;
+
+        // Handle CORS errors specifically
+        if (error.code === 'ERR_NETWORK' || !error.response) {
+            console.error('❌ Network/CORS Error:', error.message);
+            
+            // Show user-friendly CORS error message
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 165, 0, 0.95);
+                backdrop-filter: blur(10px);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-weight: 500;
+                box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                max-width: 300px;
+            `;
+            notification.innerHTML = '⚠️ Connection issue detected. Please refresh the page.';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
 
         if (status === 403) {
             // Create a more elegant notification for authentication failure
