@@ -147,7 +147,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     }, 300);
                                 }}
                             >
-                                <span style={{fontSize: '2rem', lineHeight: '1', display: 'block', fontWeight: 700}}>&#10005;</span>
+                                <span>Go Back</span>
                             </button>
                         )}
 
