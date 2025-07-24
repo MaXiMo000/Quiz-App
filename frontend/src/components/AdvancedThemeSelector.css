@@ -44,7 +44,7 @@
   width: 100%;
   max-width: 900px;
   max-height: 90vh;
-  overflow: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -163,7 +163,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-lg);
-  max-height: 60vh;
+  min-height: 60vh;
   overflow-y: auto;
 }
 
