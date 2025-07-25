@@ -68,6 +68,7 @@ router.get("/me", verifyToken, async (req, res) => {
             email: user.email,
             role: user.role,
             xp: user.xp || 0,
+            totalXP: user.totalXP || 0,
             level: user.level || 1,
             loginStreak: user.loginStreak || 0,
             quizStreak: user.quizStreak || 0,

@@ -2,6 +2,7 @@ import Report from "../models/Report.js";
 import moment from "moment";
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
+import mongoose from "mongoose";
 
 export async function getReports(req, res) {
     const reports = await Report.find();
@@ -43,6 +44,7 @@ export const unlockThemesForLevel = (user) => {
 export async function createReport(req, res) {
     try {
         const { username, quizName, score, total, questions } = req.body;
+        const userId = req.user?.id; // Get user ID from JWT token
 
         if (!username || !quizName || !questions || questions.length === 0) {
             return res.status(400).json({ message: "Missing required fields" });
@@ -51,9 +53,56 @@ export async function createReport(req, res) {
         const report = new Report({ username, quizName, score, total, questions });
         await report.save();
 
-        const user = await UserQuiz.findOne({ name: username });
+        // ✅ Use user ID from JWT token first, fallback to username lookup
+        let user;
+        if (userId) {
+            // Validate ObjectId format
+            if (mongoose.Types.ObjectId.isValid(userId)) {
+                user = await UserQuiz.findById(userId);
+                console.log("User lookup by ID:", userId, "Found:", !!user);
+            } else {
+                console.error("Invalid user ID format:", userId);
+            }
+        }
+        
+        // Fallback to username lookup if user not found by ID
         if (!user) {
+            // Try different name matching strategies for Google OAuth users
+            user = await UserQuiz.findOne({ name: username });
+            
+            if (!user) {
+                // Try case-insensitive search
+                user = await UserQuiz.findOne({ 
+                    name: { $regex: new RegExp(`^${username}$`, 'i') } 
+                });
+            }
+            
+            if (!user) {
+                // Try trimmed version
+                user = await UserQuiz.findOne({ name: username.trim() });
+            }
+            
+            console.log("User lookup by name:", username, "Found:", !!user);
+        }
+        
+        if (!user) {
+            console.error("User not found - userId:", userId, "username:", username);
             return res.status(404).json({ message: "User not found" });
+        }
+
+        console.log("Found user for XP update:", user.name, "ID:", user._id);
+        console.log("Current user XP data:", {
+            xp: user.xp,
+            totalXP: user.totalXP,
+            level: user.level,
+            loginStreak: user.loginStreak,
+            quizStreak: user.quizStreak
+        });
+
+        // ✅ Ensure totalXP field exists for all users (especially Google OAuth users)
+        if (typeof user.totalXP === 'undefined' || user.totalXP === null) {
+            user.totalXP = user.xp || 0;
+            console.log("Initialized totalXP for user:", user.name, "to:", user.totalXP);
         }
 
         // 🏅 Award badges

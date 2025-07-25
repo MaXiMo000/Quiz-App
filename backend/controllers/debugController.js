@@ -1,5 +1,6 @@
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
+import mongoose from "mongoose";
 
 // Debug endpoint to check user XP and recent XP logs
 export const debugUserXP = async (req, res) => {
@@ -79,6 +80,64 @@ export const resetUserXP = async (req, res) => {
         res.json({ message: "User XP reset successfully", user });
     } catch (error) {
         console.error("Reset XP error:", error);
+        res.status(500).json({ error: "Server error", details: error.message });
+    }
+};
+
+// Fix Google OAuth users missing fields
+export const fixGoogleOAuthUsers = async (req, res) => {
+    try {
+        // Find users that might be Google OAuth users (no password field or missing totalXP)
+        const usersToFix = await UserQuiz.find({
+            $or: [
+                { totalXP: { $exists: false } },
+                { totalXP: null },
+                { quizStreak: { $exists: false } },
+                { lastLogin: { $exists: false } },
+                { lastQuizDate: { $exists: false } }
+            ]
+        });
+
+        console.log(`Found ${usersToFix.length} users that need fixing`);
+
+        let fixedCount = 0;
+        for (const user of usersToFix) {
+            let needsSave = false;
+
+            if (typeof user.totalXP === 'undefined' || user.totalXP === null) {
+                user.totalXP = user.xp || 0;
+                needsSave = true;
+            }
+
+            if (typeof user.quizStreak === 'undefined' || user.quizStreak === null) {
+                user.quizStreak = 0;
+                needsSave = true;
+            }
+
+            if (!user.lastLogin) {
+                user.lastLogin = null;
+                needsSave = true;
+            }
+
+            if (!user.lastQuizDate) {
+                user.lastQuizDate = null;
+                needsSave = true;
+            }
+
+            if (needsSave) {
+                await user.save();
+                fixedCount++;
+                console.log(`Fixed user: ${user.name} (${user.email})`);
+            }
+        }
+
+        res.json({ 
+            message: `Fixed ${fixedCount} users successfully`,
+            totalFound: usersToFix.length,
+            fixedUsers: usersToFix.map(u => ({ name: u.name, email: u.email }))
+        });
+    } catch (error) {
+        console.error("Fix Google OAuth users error:", error);
         res.status(500).json({ error: "Server error", details: error.message });
     }
 };
