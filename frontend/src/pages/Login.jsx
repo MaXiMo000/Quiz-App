@@ -23,14 +23,12 @@ const Login = () => {
             const res = await axios.post(`/api/users/login`, { email, password }, {
                 headers: { "Content-Type": "application/json" }
             });
-            console.log(JSON.stringify(res.data))
             // ✅ Save token and user to localStorage
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
 
             // ✅ Apply theme immediately after login
             const userTheme = res.data.user.selectedTheme || "Default";
-            console.log('Login: Applying theme:', userTheme);
             changeTheme(userTheme);
 
             // ✅ Navigate based on role

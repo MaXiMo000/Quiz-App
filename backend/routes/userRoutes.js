@@ -70,6 +70,7 @@ router.get("/me", verifyToken, async (req, res) => {
             xp: user.xp || 0,
             level: user.level || 1,
             loginStreak: user.loginStreak || 0,
+            quizStreak: user.quizStreak || 0,
             badges: user.badges || [],
             unlockedThemes: user.unlockedThemes || [],
             selectedTheme: user.selectedTheme || "Default",
