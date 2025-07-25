@@ -1,0 +1,318 @@
+/* Smart Recommendations Component Styles */
+.smart-recommendations {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--card-background);
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.smart-recommendations.loading,
+.smart-recommendations.error,
+.smart-recommendations.empty {
+    text-align: center;
+    padding: 3rem;
+}
+
+.smart-recommendations.loading .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.recommendations-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.recommendations-header h3 {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.user-insights {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.insight-item {
+    background: var(--accent-color-light);
+    color: var(--accent-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.recommendation-card {
+    background: var(--background);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.recommendation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.recommendation-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--primary-color);
+}
+
+.recommendation-card:hover::before {
+    transform: scaleX(1);
+}
+
+.recommendation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.quiz-title h4 {
+    color: var(--text-primary);
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.quiz-category {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    background: var(--surface-color);
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.reason-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color-light);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.recommendation-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.quiz-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.stat-label {
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.recommendation-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.confidence-badge {
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.take-quiz-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.take-quiz-btn:hover {
+    background: var(--primary-color-dark);
+    transform: translateX(2px);
+}
+
+.user-areas {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.areas-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.strong-areas h4,
+.weak-areas h4 {
+    color: var(--text-primary);
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.areas-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.area-tag {
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.area-tag.strong {
+    background: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.area-tag.weak {
+    background: #fff3e0;
+    color: #f57c00;
+    border: 1px solid #ffcc02;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .area-tag.strong {
+    background: #1b3d1b;
+    color: #81c784;
+    border-color: #2e7d32;
+}
+
+[data-theme="dark"] .area-tag.weak {
+    background: #2d1b0d;
+    color: #ffb74d;
+    border-color: #f57c00;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .smart-recommendations {
+        margin: 1rem 0;
+        padding: 1rem;
+    }
+    
+    .recommendations-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .recommendation-card {
+        padding: 1rem;
+    }
+    
+    .quiz-stats {
+        gap: 0.75rem;
+    }
+    
+    .areas-section {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .recommendation-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .take-quiz-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Enhanced hover effects for desktop */
+@media (hover: hover) {
+    .recommendation-card:hover .reason-icon {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .recommendation-card:hover .quiz-title h4 {
+        color: var(--primary-color);
+        transition: color 0.3s ease;
+    }
+}

@@ -21,6 +21,27 @@ const quizSchema = new mongoose.Schema({
     createdBy: {
         _id:  { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz", default: null },
         name: { type: String, default: "admin" }
+    },
+    
+    // Phase 2: Intelligence Layer - Enhanced quiz metadata
+    tags: [{ type: String }], // For better categorization
+    averageScore: { type: Number, default: 0 },
+    totalAttempts: { type: Number, default: 0 },
+    averageTime: { type: Number, default: 0 }, // in seconds
+    popularityScore: { type: Number, default: 0 }, // Based on attempts and ratings
+    
+    // Difficulty distribution
+    difficultyDistribution: {
+        easy: { type: Number, default: 0 },
+        medium: { type: Number, default: 0 },
+        hard: { type: Number, default: 0 }
+    },
+    
+    // Recommended for (auto-populated based on performance data)
+    recommendedFor: {
+        categories: [{ type: String }],
+        skillLevels: [{ type: String, enum: ["beginner", "intermediate", "advanced"] }],
+        weakAreas: [{ type: String }]
     }
 }, { timestamps: true });
 

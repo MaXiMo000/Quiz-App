@@ -161,6 +161,8 @@ const TakeQuiz = () => {
 
         try {
             const user = JSON.parse(localStorage.getItem("user"));
+            
+            // Save the report as before
             await axios.post(`/api/reports`, {
                 username: user?.name,
                 quizName: quiz.title,
@@ -168,6 +170,29 @@ const TakeQuiz = () => {
                 total: totalMarks,
                 questions: detailedQuestions,
             });
+
+            // Phase 2: Update quiz statistics
+            const totalTimeSpent = Object.values(answerTimes).reduce((sum, time) => sum + time, 0);
+            await axios.post(`/api/quizzes/${id}/stats`, {
+                quizId: id,
+                score: scoreAchieved,
+                totalQuestions: quiz.questions.length,
+                timeSpent: totalTimeSpent
+            });
+
+            // Phase 2: Update user preferences and performance tracking
+            if (user?._id) {
+                await axios.post('/api/intelligence/preferences', {
+                    quizId: id,
+                    score: scoreAchieved, 
+                    totalQuestions: quiz.questions.length,
+                    timeSpent: totalTimeSpent,
+                    category: quiz.category || 'General',
+                    difficulty: quiz.questions.length > 10 ? 'hard' : 
+                               quiz.questions.length > 5 ? 'medium' : 'easy'
+                });
+            }
+
             setShowResultModal(true);
             exitFullScreen();
         } catch (error) {

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import axios from "../utils/axios";
 import "./AdminDashboard.css";
 import "../App.css";
 import Spinner from "../components/Spinner";
+import MigrationPanel from "../components/MigrationPanel";
 
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
@@ -51,6 +52,12 @@ const AdminDashboard = () => {
                 const isScrollable = scrollHeight > clientHeight;
                 const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
                 
+                // Remove scroll hint when scrolling or at bottom
+                const scrollHint = tableContainer.querySelector('.scroll-hint');
+                if (scrollHint && (scrollTop > 0 || isAtBottom)) {
+                    scrollHint.remove();
+                }
+                
                 if (isScrollable && !isAtBottom) {
                     tableContainer.classList.add('scrollable');
                 } else {
@@ -60,31 +67,32 @@ const AdminDashboard = () => {
 
             // Initial setup
             const isScrollable = tableContainer.scrollHeight > tableContainer.clientHeight;
-            const hasManyUsers = users && users.length > 8; // Show hint if more than 8 users
+            const hasManyUsers = users && users.length > 5;
             
             tableContainer.classList.toggle('scrollable', isScrollable);
-            tableContainer.classList.toggle('has-many-users', hasManyUsers && isScrollable);
+            
+            // Add scroll hint if needed
+            if (hasManyUsers && isScrollable && !tableContainer.querySelector('.scroll-hint')) {
+                const scrollHint = document.createElement('div');
+                scrollHint.className = 'scroll-hint';
+                scrollHint.textContent = '↓ More users below ↓';
+                tableContainer.appendChild(scrollHint);
+                
+                // Auto-remove hint after 5 seconds
+                setTimeout(() => {
+                    if (scrollHint.parentNode) {
+                        scrollHint.remove();
+                    }
+                }, 5000);
+            }
 
             tableContainer.addEventListener('scroll', handleScroll);
             
-            // Remove the hint after scrolling starts or after 5 seconds
-            const removeHint = () => {
-                tableContainer.classList.remove('has-many-users');
-                tableContainer.removeEventListener('scroll', removeHint);
-            };
-            
-            if (hasManyUsers && isScrollable) {
-                setTimeout(() => {
-                    tableContainer.addEventListener('scroll', removeHint);
-                }, 5000); // Remove hint after 5 seconds or first scroll
-            }
-
             // Check initially
             handleScroll();
 
             return () => {
                 tableContainer.removeEventListener('scroll', handleScroll);
-                tableContainer.removeEventListener('scroll', removeHint);
             };
         }
     }, [users]); // Re-run when users change
@@ -262,6 +270,15 @@ const AdminDashboard = () => {
                     </motion.div>
                 </motion.div>
 
+                {/* Migration Panel */}
+                <motion.div
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                    <MigrationPanel />
+                </motion.div>
+
                 <motion.div
                     className="users-section"
                     initial={{ y: 100, opacity: 0 }}
@@ -290,7 +307,7 @@ const AdminDashboard = () => {
                     </motion.h2>
                     
                     <motion.div 
-                        className="table-container"
+                        className={`table-container ${users.length > 5 ? 'has-many-users' : ''}`}
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.6, delay: 0.8 }}
@@ -299,79 +316,40 @@ const AdminDashboard = () => {
                         }}
                     >
                         <table>
-                            <motion.thead
-                                initial={{ y: -20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ duration: 0.5, delay: 0.9 }}
-                            >
+                            <thead>
                                 <tr>
-                                    <motion.th
-                                        initial={{ x: -20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        transition={{ duration: 0.4, delay: 1.0 }}
-                                    >
-                                        Name
-                                    </motion.th>
-                                    <motion.th
-                                        initial={{ y: -20, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        transition={{ duration: 0.4, delay: 1.1 }}
-                                    >
-                                        Email
-                                    </motion.th>
-                                    <motion.th
-                                        initial={{ x: 20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        transition={{ duration: 0.4, delay: 1.2 }}
-                                    >
-                                        Role
-                                    </motion.th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
                                 </tr>
-                            </motion.thead>
+                            </thead>
                             <tbody>
-                                <AnimatePresence>
-                                    {users.map((user, index) => (
-                                        <motion.tr 
-                                            key={user._id}
-                                            className={user.role === 'PREMIUM' ? 'premium-user' : ''}
-                                            initial={{ x: -50, opacity: 0 }}
-                                            animate={{ x: 0, opacity: 1 }}
-                                            transition={{ 
-                                                duration: 0.4, 
-                                                delay: 1.3 + (index * 0.1)
-                                            }}
-                                            whileHover={{ 
-                                                scale: 1.02,
-                                                backgroundColor: user.role === 'PREMIUM' 
-                                                    ? "rgba(251, 191, 36, 0.1)" 
-                                                    : "rgba(99, 102, 241, 0.05)",
-                                                transition: { duration: 0.2 }
-                                            }}
-                                            layout
-                                        >
-                                            <motion.td
-                                                whileHover={{ x: 5 }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                {user.name}
-                                            </motion.td>
-                                            <motion.td
-                                                whileHover={{ x: 5 }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                {user.email}
-                                            </motion.td>
-                                            <motion.td
-                                                whileHover={{ x: 5 }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                <span className={`role-badge ${user.role.toLowerCase()}`}>
-                                                    {user.role}
-                                                </span>
-                                            </motion.td>
-                                        </motion.tr>
-                                    ))}
-                                </AnimatePresence>
+                                {users.map((user, index) => (
+                                    <motion.tr 
+                                        key={user._id}
+                                        className={user.role === 'PREMIUM' ? 'premium-user' : ''}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ 
+                                            duration: 0.4, 
+                                            delay: 1.3 + (index * 0.1)
+                                        }}
+                                        whileHover={{ 
+                                            backgroundColor: user.role === 'PREMIUM' 
+                                                ? "rgba(251, 191, 36, 0.1)" 
+                                                : "rgba(99, 102, 241, 0.05)",
+                                            transition: { duration: 0.2 }
+                                        }}
+                                    >
+                                        <td>{user.name || 'Unknown'}</td>
+                                        <td>{user.email || 'No email'}</td>
+                                        <td>
+                                            <span className={`role-badge ${(user.role || 'user').toLowerCase()}`}>
+                                                {user.role || 'USER'}
+                                            </span>
+                                        </td>
+                                    </motion.tr>
+                                ))}
                             </tbody>
                         </table>
                     </motion.div>

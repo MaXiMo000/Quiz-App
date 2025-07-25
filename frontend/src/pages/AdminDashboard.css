@@ -829,21 +829,24 @@ td {
     opacity: 1;
 }
 
-.table-container.has-many-users::before {
-    content: '↓ More users below ↓';
+/* Scroll hint indicator */
+.scroll-hint {
     position: absolute;
     bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(99, 102, 241, 0.8);
+    background: rgba(99, 102, 241, 0.9);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 1rem;
     font-size: 0.8rem;
     font-weight: 600;
-    z-index: 10;
+    z-index: 15;
     animation: pulseHint 2s ease-in-out infinite;
     pointer-events: none;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes pulseHint {
@@ -913,21 +916,52 @@ td {
     .table-container {
         border-radius: 1.5rem;
         max-height: 50vh;
+        overflow-x: auto;
+        margin: 0 -1rem;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
+    
+    table {
+        min-width: 600px;
     }
     
     th {
-        padding: 1rem;
+        padding: 1rem 0.75rem;
         font-size: 0.8rem;
+        white-space: nowrap;
     }
     
     td {
-        padding: 1rem;
+        padding: 1rem 0.75rem;
         font-size: 0.85rem;
+    }
+    
+    td:first-child {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    td:nth-child(2) {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     
     .role-badge {
         font-size: 0.7rem;
         padding: 0.4rem 0.8rem;
+        white-space: nowrap;
+    }
+    
+    .scroll-hint {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+        bottom: 15px;
     }
     
     .floating-element {

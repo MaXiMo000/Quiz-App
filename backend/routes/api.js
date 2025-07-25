@@ -1,10 +1,11 @@
 import { Router } from "express";
 const router = Router();
-import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQuestion } from "../controllers/quizController.js";
+import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQuestion, updateQuizStats } from "../controllers/quizController.js";
 import { getReports, createReport, getReportsUser, deleteReport, getReportsUserID, getTopScorers } from "../controllers/reportController.js";
 import { generateQuizQuestions, generateAdaptiveQuestions } from "../controllers/aiQuestionController.js";
 import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport, getWrittenReportsUserID } from "../controllers/writtenTestReportController.js";
 import { getWeeklyXP, getMonthlyXP } from "../controllers/leaderboardController.js";
+import { runMigration } from "../controllers/migrationController.js"; // Phase 2: Migration
 import { verifyToken } from "../middleware/auth.js";
 
 // Quiz Routes
@@ -14,6 +15,7 @@ router.post("/quizzes", verifyToken, createQuiz);
 router.post("/quizzes/:id/questions", verifyToken, addQuestion);
 router.delete("/quizzes/delete/quiz", verifyToken, deleteQuiz);
 router.delete("/quizzes/:id/questions/:questionIndex", verifyToken, deleteQuestion);
+router.post("/quizzes/:id/stats", verifyToken, updateQuizStats); // Phase 2: Update quiz statistics
 
 
 router.post("/quizzes/:id/generate-questions", generateQuizQuestions);
@@ -35,5 +37,8 @@ router.get("/written-test-reports/:id", verifyToken, getWrittenReportsUserID);
 
 router.get("/leaderboard/weekly", verifyToken, getWeeklyXP);
 router.get("/leaderboard/monthly", verifyToken, getMonthlyXP);
+
+// Phase 2: Migration endpoint (admin only)
+router.post("/migrate/quiz-difficulty", verifyToken, runMigration);
 
 export default router;

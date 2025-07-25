@@ -20,6 +20,7 @@ import apiRoutes from "./routes/api.js";
 import writtenTestRoutes from "./routes/writtenTestRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import intelligenceRoutes from "./routes/intelligenceRoutes.js"; // Phase 2: Intelligence Layer
 
 const app = express();
 
@@ -215,6 +216,7 @@ app.use("/api", apiRoutes);
 app.use("/api/written-tests", writtenTestRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api", dashboardRoutes);
+app.use("/api/intelligence", intelligenceRoutes); // Phase 2: Intelligence Layer
 
 // Global error handler for CORS and other issues
 app.use((error, req, res, next) => {

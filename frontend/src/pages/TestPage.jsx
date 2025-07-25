@@ -54,6 +54,22 @@ const TestPage = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           whileHover={{ scale: 1.05 }}
         >
+          <Link to="/intelligence-dashboard" className="test-link">
+            <div className="test-icon">🧠</div>
+            <h3>Intelligence Dashboard</h3>
+            <p>AI-powered insights, smart recommendations, and learning analytics</p>
+            <span className="test-status new">NEW</span>
+            <div className="test-note">Premium Feature</div>
+          </Link>
+        </motion.div>
+
+        <motion.div 
+          className="test-card"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          whileHover={{ scale: 1.05 }}
+        >
           <div className="test-link">
             <div className="test-icon">🎨</div>
             <h3>Advanced Theme Selector</h3>
@@ -67,7 +83,7 @@ const TestPage = () => {
           className="test-card"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
           whileHover={{ scale: 1.05 }}
         >
           <Link to="/themes" className="test-link">
@@ -82,7 +98,7 @@ const TestPage = () => {
           className="test-card"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
           whileHover={{ scale: 1.05 }}
         >
           <Link to="/analytics" className="test-link">
@@ -97,7 +113,7 @@ const TestPage = () => {
           className="test-card"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
           whileHover={{ scale: 1.05 }}
         >
           <Link to="/" className="test-link">
@@ -113,10 +129,11 @@ const TestPage = () => {
         className="test-info"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.7 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
       >
         <h2>🎯 What's New?</h2>
         <ul>
+          <li><strong>Intelligence Dashboard:</strong> AI-powered insights with smart recommendations and learning analytics (Premium)</li>
           <li><strong>Enhanced Dashboard:</strong> Beautiful data visualizations with Chart.js</li>
           <li><strong>Achievement System:</strong> Gamified learning with unlockable badges</li>
           <li><strong>Advanced Theme Selector:</strong> Live preview with categories and search</li>
