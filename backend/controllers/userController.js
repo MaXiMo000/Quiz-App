@@ -110,17 +110,22 @@ export const loginUser = async (req, res) => {
 
         // ✅ Check daily login streak
         const today = new Date();
-        const todayMidnight = new Date(today.setHours(0, 0, 0, 0));
-        const lastLoginMidnight = user.lastLogin ? new Date(user.lastLogin).setHours(0, 0, 0, 0) : null;
+        const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+        const lastLoginMidnight = lastLogin ? new Date(lastLogin.getFullYear(), lastLogin.getMonth(), lastLogin.getDate()) : null;
 
-        if (lastLoginMidnight !== todayMidnight.getTime()) {
-            // New login today
-            const oneDay = 24 * 60 * 60 * 1000;
-            if (lastLoginMidnight === todayMidnight.getTime() - oneDay) {
+        // Check if this is a new day (different from last login day)
+        const isNewDay = !lastLoginMidnight || todayMidnight.getTime() !== lastLoginMidnight.getTime();
+
+        if (isNewDay) {
+            // Check if it's consecutive day for streak
+            const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
+            
+            if (lastLoginMidnight && lastLoginMidnight.getTime() === oneDayAgo.getTime()) {
                 // Continued streak
                 user.loginStreak += 1;
             } else {
-                // Streak reset
+                // Reset streak or first login
                 user.loginStreak = 1;
             }
 
@@ -129,17 +134,19 @@ export const loginUser = async (req, res) => {
             // ✅ Award XP bonus
             const loginBonusXP = 50;
             user.xp += loginBonusXP;
-            await new XPLog({ user: user._id, xp: loginBonusXP }).save();
+            user.totalXP = (user.totalXP || 0) + loginBonusXP;
+            await new XPLog({ user: user._id, xp: loginBonusXP, source: 'login' }).save();
 
-            // ✅ Level-up logic
+            // ✅ Level-up logic (keep total XP, only subtract current level XP)
+            let currentLevelXP = user.xp;
             let xpForNext = user.level * 100;
-            while (user.xp >= xpForNext) {
-                user.xp -= xpForNext;
+            while (currentLevelXP >= xpForNext) {
+                currentLevelXP -= xpForNext;
                 user.level += 1;
                 xpForNext = user.level * 100;
-
                 unlockThemesForLevel(user);
             }
+            user.xp = currentLevelXP; // Set remaining XP for current level
         }
 
         // ≫≫ THEME UNLOCKING ≪≪

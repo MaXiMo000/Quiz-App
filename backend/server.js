@@ -21,6 +21,7 @@ import writtenTestRoutes from "./routes/writtenTestRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import intelligenceRoutes from "./routes/intelligenceRoutes.js"; // Phase 2: Intelligence Layer
+import debugRoutes from "./routes/debugRoutes.js"; // Temporary debug routes
 
 const app = express();
 
@@ -217,6 +218,7 @@ app.use("/api/written-tests", writtenTestRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api", dashboardRoutes);
 app.use("/api/intelligence", intelligenceRoutes); // Phase 2: Intelligence Layer
+app.use("/api/debug", debugRoutes); // Temporary debug routes - REMOVE IN PRODUCTION
 
 // Global error handler for CORS and other issues
 app.use((error, req, res, next) => {

@@ -20,23 +20,38 @@ const Home = () => {
     const fetchUserData = useCallback(async () => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser) {
-        navigate("/login");
+            navigate("/login");
+            return;
         } else {
-        setUser(storedUser);
+            setUser(storedUser);
         }
         try {
-        const res = await axios.get(`/api/users/${storedUser._id}`);
-        const data = res.data;
-        setBadges(data.badges || []);
-        setXp(Math.round(data.xp) || 0);
-        setLevel(data.level || 1);
-        // Update user state with fresh data from API
-        setUser(data);
+            // Use the /me endpoint for consistency
+            const res = await axios.get(`/api/users/me`);
+            const data = res.data;
+            setBadges(data.badges || []);
+            setXp(Math.round(data.xp) || 0);
+            setLevel(data.level || 1);
+            // Update user state with fresh data from API and localStorage
+            setUser(data);
+            localStorage.setItem("user", JSON.stringify(data));
         } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError("Error fetching user data. Try again later.");
+            console.error("Error fetching user data:", error);
+            // Fallback to /:id endpoint if /me fails
+            try {
+                const res = await axios.get(`/api/users/${storedUser._id}`);
+                const data = res.data;
+                setBadges(data.badges || []);
+                setXp(Math.round(data.xp) || 0);
+                setLevel(data.level || 1);
+                setUser(data);
+                localStorage.setItem("user", JSON.stringify(data));
+            } catch (fallbackError) {
+                console.error("Error with fallback user data fetch:", fallbackError);
+                setError("Error fetching user data. Try again later.");
+            }
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     }, [navigate]);
 

@@ -73,14 +73,22 @@ export async function createReport(req, res) {
         const xpGained = score * 10;
         let totalXPGained = xpGained;
 
-        await new XPLog({ user: user._id, xp: xpGained }).save();
+        await new XPLog({ user: user._id, xp: xpGained, source: 'quiz' }).save();
 
         // 🔥 Daily quiz streak bonus
-        const today = new Date().setHours(0, 0, 0, 0);
-        const lastQuiz = user.lastQuizDate ? new Date(user.lastQuizDate).setHours(0, 0, 0, 0) : null;
+        const today = new Date();
+        const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const lastQuiz = user.lastQuizDate ? new Date(user.lastQuizDate) : null;
+        const lastQuizMidnight = lastQuiz ? new Date(lastQuiz.getFullYear(), lastQuiz.getMonth(), lastQuiz.getDate()) : null;
 
-        if (lastQuiz !== today) {
-            if (lastQuiz === today - 86400000) {
+        // Check if this is a new day for quiz taking
+        const isNewQuizDay = !lastQuizMidnight || todayMidnight.getTime() !== lastQuizMidnight.getTime();
+
+        if (isNewQuizDay) {
+            // Check if it's consecutive day for streak
+            const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
+            
+            if (lastQuizMidnight && lastQuizMidnight.getTime() === oneDayAgo.getTime()) {
                 user.quizStreak += 1;
             } else {
                 user.quizStreak = 1;
@@ -91,26 +99,27 @@ export async function createReport(req, res) {
             const quizBonusXP = 20;
             totalXPGained += quizBonusXP;
 
-            await new XPLog({ user: user._id, xp: quizBonusXP }).save();
+            await new XPLog({ user: user._id, xp: quizBonusXP, source: 'streak' }).save();
         }
 
-        console.log("XP before:", user.xp, "Level:", user.level, "Needed:", user.level * 100);
+        console.log("XP before:", user.xp, "Level:", user.level, "Total XP:", user.totalXP);
 
-        // 🎓 Update XP and level using totalXP method
+        // 🎓 Update XP and level using proper totalXP method
         user.xp += totalXPGained;
         user.totalXP = (user.totalXP || 0) + totalXPGained;
 
-        // Recalculate level from XP
+        // Recalculate level from current XP (don't subtract, just check thresholds)
+        let currentLevelXP = user.xp;
         let xpForNext = user.level * 100;
-        while (user.xp >= xpForNext) {
-            user.xp -= xpForNext;
+        while (currentLevelXP >= xpForNext) {
+            currentLevelXP -= xpForNext;
             user.level += 1;
             xpForNext = user.level * 100;
-
             unlockThemesForLevel(user);
         }
+        user.xp = currentLevelXP; // Set remaining XP for current level
 
-        console.log("XP after:", user.xp, "Level:", user.level, "Needed:", user.level * 100);
+        console.log("XP after:", user.xp, "Level:", user.level, "Total XP:", user.totalXP);
 
         await user.save();
 
