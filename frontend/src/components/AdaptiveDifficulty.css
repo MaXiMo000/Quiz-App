@@ -58,11 +58,11 @@
 }
 
 .category-dropdown {
-    background: var(--background);
-    border: 2px solid var(--border-color);
+    background: var(--card-background, var(--background, #ffffff));
+    border: 2px solid var(--border-color, #e5e7eb);
     border-radius: 8px;
     padding: 0.75rem 1rem;
-    color: var(--text-primary);
+    color: var(--text-primary, #374151);
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
@@ -79,16 +79,32 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Fallback colors */
+    background-color: #ffffff;
+    border-color: #d1d5db;
+}
+
+.category-dropdown option {
+    background: var(--card-background, var(--background, #ffffff));
+    color: var(--text-primary, #374151);
+    padding: 0.5rem;
+    border: none;
+    font-size: 0.9rem;
+    /* Fallback colors */
+    background-color: #ffffff;
+    color: #374151;
 }
 
 .category-dropdown:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color, #3b82f6);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 .category-dropdown:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+    border-color: var(--primary-color, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 59, 130, 246), 0.1);
 }
 
 .difficulty-recommendation {
@@ -280,6 +296,13 @@
         width: 100%;
         min-width: unset;
         max-width: none;
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .category-dropdown option {
+        padding: 0.4rem;
+        font-size: 0.85rem;
     }
     
     .difficulty-header h4 {
@@ -334,12 +357,74 @@
 
 /* Dark theme adjustments */
 [data-theme="dark"] .category-dropdown {
-    background: var(--surface-color);
+    background: var(--surface-color, #2a2a2a);
+    border-color: var(--border-color, #404040);
+    color: var(--text-primary, #ffffff);
+    background-image: url('data:svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ffffff" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+}
+
+[data-theme="dark"] .category-dropdown option {
+    background: var(--surface-color, #2a2a2a);
+    color: var(--text-primary, #ffffff);
+}
+
+[data-theme="dark"] .category-dropdown:hover {
+    border-color: var(--primary-color, #3b82f6);
+    background: var(--card-background, #333333);
+}
+
+[data-theme="dark"] .category-dropdown:focus {
+    border-color: var(--primary-color, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 [data-theme="dark"] .difficulty-explanation {
     background: rgba(52, 152, 219, 0.1);
     border-color: rgba(52, 152, 219, 0.3);
+}
+
+/* Light theme specific adjustments */
+[data-theme="light"] .category-dropdown,
+[data-theme="Default"] .category-dropdown {
+    background: #ffffff;
+    border-color: #e5e7eb;
+    color: #374151;
+}
+
+[data-theme="light"] .category-dropdown option,
+[data-theme="Default"] .category-dropdown option {
+    background: #ffffff;
+    color: #374151;
+}
+
+/* Material theme adjustments */
+[data-theme="material-light"] .category-dropdown {
+    background: #fafafa;
+    border-color: #e0e0e0;
+    color: #212121;
+}
+
+[data-theme="material-dark"] .category-dropdown {
+    background: #424242;
+    border-color: #616161;
+    color: #ffffff;
+    background-image: url('data:svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ffffff" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+}
+
+/* Galaxy theme */
+[data-theme="Galaxy"] .category-dropdown {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #764ba2;
+    color: #ffffff;
+    background-image: url('data:svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ffffff" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+}
+
+/* Forest theme */
+[data-theme="Forest"] .category-dropdown {
+    background: #2d5016;
+    border-color: #4a7c59;
+    color: #ffffff;
+    background-image: url('data:svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ffffff" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
 }
 
 /* Accessibility */

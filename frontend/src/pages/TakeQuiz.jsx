@@ -193,6 +193,14 @@ const TakeQuiz = () => {
                 });
             }
 
+            // ✅ Refresh user data to get updated XP and level
+            try {
+                const updatedUserRes = await axios.get('/api/users/me');
+                localStorage.setItem("user", JSON.stringify(updatedUserRes.data));
+            } catch (userError) {
+                console.warn("Could not refresh user data:", userError);
+            }
+
             setShowResultModal(true);
             exitFullScreen();
         } catch (error) {
