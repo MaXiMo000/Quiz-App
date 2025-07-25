@@ -23,6 +23,15 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
 * AI assigns duration, marks, and evaluates written answers using NLP
 * Adaptive difficulty: beginners get easier questions, advanced users get harder ones
 
+### 🤖 Intelligence Dashboard *(Premium Feature)* ✅
+
+* **Smart Quiz Recommendations**: AI-powered quiz suggestions based on performance, favorite categories, and learning patterns
+* **Adaptive Difficulty System**: Dynamic difficulty adjustment based on recent performance with confidence scoring
+* **Learning Analytics**: Comprehensive performance insights with trends, predictions, and personalized study recommendations
+* **Performance Trends**: Visual weekly performance tracking with interactive charts
+* **Next Quiz Predictions**: AI predicts expected performance on upcoming quizzes
+* **Personalized Study Tips**: Custom recommendations for optimal study times and improvement areas
+
 ### 📊 Reports & Analytics
 
 * Quiz history and detailed performance reports
@@ -55,7 +64,7 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
 ### 💳 Subscription Plans
 
 * **Free Plan**: Limited quizzes, core features
-* **Premium Plan**: Unlimited access, AI insights, achievements, and future battle mode
+* **Premium Plan**: Unlimited access, AI insights, Intelligence Dashboard, achievements, and future battle mode
 
 ### 🛡️ Admin Panel
 
@@ -168,6 +177,7 @@ npm run dev
 | 23-07-2025 | Advanced Theme Selector, Mobile Navbar, Test Page added |
 | 23-07-2025 | Achievement System fully integrated                     |
 | 24-07-2025 | Full UI consistency pass + New Dashboard design         |
+| 25-07-2025 | Intelligence Dashboard with AI insights added (Premium) |
 
 ---
 
@@ -185,6 +195,7 @@ npm run dev
 * ✅ Advanced Theme Selector 🌙
 * ✅ Mobile Navbar for responsive layout 📱
 * ✅ Enhanced Dashboard & Test Page 🎯
+* ✅ Intelligence Dashboard with AI-powered insights 🧠
 
 ---
 

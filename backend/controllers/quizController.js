@@ -105,6 +105,12 @@ export async function addQuestion(req, res) {
         quiz.passingMarks = Math.floor(quiz.totalMarks / 2);
         quiz.duration = quiz.questions.length * 2;
 
+        // Phase 2: Update difficulty distribution
+        if (!quiz.difficultyDistribution) {
+            quiz.difficultyDistribution = { easy: 0, medium: 0, hard: 0 };
+        }
+        quiz.difficultyDistribution[questionData.difficulty] += 1;
+
         await quiz.save();
         res.json(quiz);
     } catch (error) {
@@ -135,6 +141,13 @@ export async function deleteQuestion(req, res) {
             return res.status(400).json({ message: "Invalid question index" });
         }
 
+        // Phase 2: Update difficulty distribution before removing question
+        const questionToRemove = quiz.questions[questionIndex];
+        if (quiz.difficultyDistribution && questionToRemove.difficulty) {
+            quiz.difficultyDistribution[questionToRemove.difficulty] = Math.max(0, 
+                quiz.difficultyDistribution[questionToRemove.difficulty] - 1);
+        }
+
         quiz.questions.splice(questionIndex, 1);
         quiz.totalMarks -= 1;
         quiz.passingMarks = Math.floor(quiz.totalMarks / 2);
@@ -145,5 +158,48 @@ export async function deleteQuestion(req, res) {
     } catch (error) {
         console.error("Error deleting question:", error);
         res.status(500).json({ message: "Error deleting question", error });
+    }
+}
+
+// Phase 2: Function to update quiz statistics after each attempt
+export async function updateQuizStats(req, res) {
+    try {
+        const { quizId, score, totalQuestions, timeSpent } = req.body;
+        
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        // Update quiz statistics
+        const newTotalAttempts = (quiz.totalAttempts || 0) + 1;
+        const currentAverageScore = quiz.averageScore || 0;
+        const currentAverageTime = quiz.averageTime || 0;
+        
+        // Calculate new averages using incremental average formula
+        const newAverageScore = ((currentAverageScore * (newTotalAttempts - 1)) + (score / totalQuestions)) / newTotalAttempts;
+        const newAverageTime = ((currentAverageTime * (newTotalAttempts - 1)) + timeSpent) / newTotalAttempts;
+        
+        // Update popularity score (combination of attempts and average score)
+        const popularityScore = newTotalAttempts * newAverageScore;
+        
+        quiz.totalAttempts = newTotalAttempts;
+        quiz.averageScore = newAverageScore;
+        quiz.averageTime = newAverageTime;
+        quiz.popularityScore = popularityScore;
+        
+        await quiz.save();
+        
+        res.json({ 
+            message: "Quiz statistics updated successfully",
+            stats: {
+                totalAttempts: quiz.totalAttempts,
+                averageScore: Math.round(quiz.averageScore * 100),
+                averageTime: Math.round(quiz.averageTime),
+                popularityScore: Math.round(quiz.popularityScore * 100)
+            }
+        });
+        
+    } catch (error) {
+        console.error("Error updating quiz stats:", error);
+        res.status(500).json({ message: "Error updating quiz stats", error });
     }
 }

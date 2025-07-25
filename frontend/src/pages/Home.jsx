@@ -179,6 +179,25 @@ const Home = () => {
         >
             Start Quiz
         </motion.button>
+
+        {/* Premium Intelligence Dashboard Link */}
+        {(user?.role === "premium") && (
+            <motion.button 
+                className="intelligence-dashboard-btn"
+                onClick={() => navigate("/intelligence-dashboard")}
+                initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.9, duration: 0.6, type: "spring", stiffness: 120 }}
+                whileHover={{ 
+                    scale: 1.05, 
+                    y: -5,
+                    transition: { duration: 0.3 }
+                }}
+                whileTap={{ scale: 0.95 }}
+            >
+                🧠 Intelligence Dashboard
+            </motion.button>
+        )}
         
         <motion.div 
             className="badge-list"

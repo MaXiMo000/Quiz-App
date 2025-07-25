@@ -1,0 +1,369 @@
+/* Adaptive Difficulty Component Styles */
+.adaptive-difficulty {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--card-background);
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.adaptive-difficulty.loading,
+.adaptive-difficulty.empty {
+    text-align: center;
+    padding: 2rem;
+}
+
+.adaptive-difficulty.loading .loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+.difficulty-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.difficulty-header h4 {
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.difficulty-header p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.category-selector {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.category-selector label {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.category-dropdown {
+    background: var(--background);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    min-width: 180px;
+    max-width: 300px;
+    appearance: none;
+    background-image: url('data:svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.65rem auto;
+    padding-right: 2.5rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.category-dropdown:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.category-dropdown:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.difficulty-recommendation {
+    background: var(--background);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.recommendation-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    min-height: 80px;
+}
+
+.difficulty-icon {
+    font-size: 3rem;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-color);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.difficulty-info {
+    flex: 1;
+    min-width: 0; /* Allow flex item to shrink */
+}
+
+.difficulty-info h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.difficulty-info p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.confidence-section {
+    margin-bottom: 1rem;
+}
+
+.confidence-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.confidence-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.confidence-text {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.analysis-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--surface-color);
+    border-radius: 8px;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    min-height: 50px;
+}
+
+.detail-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.detail-value {
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.difficulty-explanation {
+    background: var(--info-color-light);
+    border: 1px solid var(--info-color);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.difficulty-explanation h5 {
+    color: var(--info-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.difficulty-explanation p {
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .category-selector {
+        justify-content: flex-start;
+    }
+    
+    .category-dropdown {
+        flex: 1;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .adaptive-difficulty {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .recommendation-card {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+    
+    .difficulty-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .difficulty-info {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .difficulty-info h3 {
+        font-size: 1.3rem;
+    }
+    
+    .analysis-details {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .category-selector {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .category-dropdown {
+        width: 100%;
+        min-width: unset;
+        max-width: none;
+    }
+    
+    .difficulty-header h4 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .adaptive-difficulty {
+        padding: 1rem;
+        margin: 0.75rem 0;
+    }
+    
+    .difficulty-recommendation {
+        padding: 1rem;
+    }
+    
+    .difficulty-icon {
+        font-size: 1.8rem;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .difficulty-info h3 {
+        font-size: 1.1rem;
+    }
+    
+    .difficulty-info p {
+        font-size: 0.85rem;
+    }
+    
+    .detail-item {
+        padding: 0.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        min-height: auto;
+    }
+    
+    .detail-value {
+        text-align: left;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .category-dropdown {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .category-dropdown {
+    background: var(--surface-color);
+}
+
+[data-theme="dark"] .difficulty-explanation {
+    background: rgba(52, 152, 219, 0.1);
+    border-color: rgba(52, 152, 219, 0.3);
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .confidence-fill {
+        transition: none;
+    }
+    
+    .difficulty-recommendation {
+        transition: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .recommendation-card {
+        border: 2px solid var(--text-primary);
+    }
+    
+    .confidence-bar {
+        border: 1px solid var(--text-secondary);
+    }
+    
+    .detail-item {
+        border: 1px solid var(--border-color);
+    }
+}

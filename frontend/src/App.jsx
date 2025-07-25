@@ -46,6 +46,9 @@ import EnhancedDashboard from "./components/EnhancedDashboard";
 import AchievementSystem from "./components/AchievementSystem";
 const TestPage = lazy(() => import("./pages/TestPage"));
 
+// Phase 2: Intelligence Dashboard
+const IntelligenceDashboard = lazy(() => import("./pages/IntelligenceDashboard"));
+
 const App = () => {
     // 🔒 SECURITY: Removed unnecessary user state and logging
     useEffect(() => {
@@ -98,6 +101,9 @@ const App = () => {
                             <Route path="/contactUs" element={<ContactUs />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/analytics" element={<UserAnalyticsDashboard />} />
+
+                            {/* Phase 2: Intelligence Dashboard - Premium Feature */}
+                            <Route path="/intelligence-dashboard" element={<IntelligenceDashboard />} />
 
                             <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                             <Route path="/premium/quiz/:id" element={<PremiumQuizQuestions />} />

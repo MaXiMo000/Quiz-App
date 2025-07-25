@@ -16,7 +16,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
     const navigate = useNavigate();
     
     // Enhanced mobile responsiveness
-    const { isMobile, deviceType, breakpoints } = useResponsive();
+    const { isMobile, breakpoints } = useResponsive();
     const { handleSwipe, vibrate, isTouchDevice } = useTouchHandler();
     
     // Notification system
@@ -180,6 +180,13 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.67, duration: 0.4 }}
+                                >
+                                    <Link to="/intelligence-dashboard" className="premium-dashboard intelligence-link" onClick={handleLinkClick}>🧠 Intelligence Dashboard</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.7, duration: 0.4 }}
                                 >
                                     <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
@@ -225,6 +232,13 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 0.65, duration: 0.4 }}
                                 >
                                     <Link to="/enhanced-dashboard" className="premium-dashboard" onClick={handleLinkClick}>📈 Premium Dashboard</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.67, duration: 0.4 }}
+                                >
+                                    <Link to="/intelligence-dashboard" className="premium-dashboard intelligence-link" onClick={handleLinkClick}>🧠 Intelligence Dashboard</Link>
                                 </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
