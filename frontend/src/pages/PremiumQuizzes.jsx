@@ -301,19 +301,19 @@ const PremiumQuizzes = () => {
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.6 + index * 0.1 }}
                                 >
-                                    <motion.p whileHover={{ x: 5 }}>
+                                    <motion.p>
                                         <span className="info-icon">🏆</span>
                                         Category: {quiz.category}
                                     </motion.p>
-                                    <motion.p whileHover={{ x: 5 }}>
+                                    <motion.p>
                                         <span className="info-icon">⏰</span>
                                         Duration: {quiz.duration} minutes
                                     </motion.p>
-                                    <motion.p whileHover={{ x: 5 }}>
+                                    <motion.p>
                                         <span className="info-icon">⭐</span>
                                         Total Marks: {quiz.totalMarks}
                                     </motion.p>
-                                    <motion.p whileHover={{ x: 5 }}>
+                                    <motion.p>
                                         <span className="info-icon">🎯</span>
                                         Passing Marks: {quiz.passingMarks}
                                     </motion.p>
@@ -326,7 +326,7 @@ const PremiumQuizzes = () => {
                                     transition={{ delay: 0.7 + index * 0.1 }}
                                 >
                                     <motion.button 
-                                        className="delete-btn" 
+                                        className="delete-btn premium-delete-btn" 
                                         onClick={() => deleteQuiz(quiz.title)}
                                         whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(239, 68, 68, 0.3)" }}
                                         whileTap={{ scale: 0.95 }}
@@ -382,9 +382,12 @@ const PremiumQuizzes = () => {
                                             transition={{ delay: 0.9 + index * 0.1 + i * 0.05 }}
                                             whileHover={{ x: 10, backgroundColor: "rgba(251, 191, 36, 0.05)" }}
                                         >
-                                            <strong>Q{i + 1}:</strong> {q.question}
-                                            <br /> 
-                                            <span className="correct-answer premium-answer">✨ Answer: {q.correctAnswer}</span>
+                                            <div className="question-text">
+                                                <strong>Q{i + 1}:</strong> {q.question}
+                                            </div>
+                                            <div className="correct-answer premium-answer">
+                                                ✨ Answer: {q.options && q.options[['A', 'B', 'C', 'D'].indexOf(q.correctAnswer)] || q.correctAnswer}
+                                            </div>
                                         </motion.li>
                                     ))}
                                 </motion.ul>
