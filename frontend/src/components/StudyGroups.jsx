@@ -412,6 +412,8 @@ const GroupCard = React.memo(({ group, showJoin = false, showLeave = false, curr
 const StudyGroups = () => {
     const navigate = useNavigate();
     const { showSuccess, showError, notification, hideNotification } = useNotification();
+    
+    // State declarations
     const [activeTab, setActiveTab] = useState('myGroups');
     const [myGroups, setMyGroups] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
@@ -441,7 +443,6 @@ const StudyGroups = () => {
     ];
 
     useEffect(() => {
-        fetchMyGroups();
         // Get current user ID from token or localStorage
         const token = localStorage.getItem('token');
         if (token) {
@@ -452,7 +453,7 @@ const StudyGroups = () => {
                 console.error('Error parsing token:', error);
             }
         }
-    }, [fetchMyGroups]);
+    }, []);
 
     const fetchMyGroups = useCallback(async () => {
         try {
@@ -465,6 +466,10 @@ const StudyGroups = () => {
             setLoading(false);
         }
     }, [showError]);
+
+    useEffect(() => {
+        fetchMyGroups();
+    }, [fetchMyGroups]);
 
     const searchGroups = useCallback(async () => {
         if (activeTab !== 'browse') return; // Only search when on browse tab
@@ -602,6 +607,106 @@ const StudyGroups = () => {
             navigate(`/user/test/${quizId}`);
         }
     };
+
+    // Render functions
+    const renderMyGroups = () => (
+        <motion.div
+            key="my-groups"
+            className="tab-content"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+        >
+            <div className="groups-grid">
+                {myGroups.length > 0 ? (
+                    myGroups.map(group => (
+                        <GroupCard
+                            key={group._id}
+                            group={group}
+                            showLeave={true}
+                            currentUserId={currentUserId}
+                            onViewDetails={viewGroupDetails}
+                            onJoinGroup={joinGroup}
+                            onLeaveGroup={leaveGroup}
+                            onOpenSettings={openGroupSettings}
+                        />
+                    ))
+                ) : (
+                    <div className="empty-state">
+                        <h3>No Study Groups Yet</h3>
+                        <p>Join existing groups or create your own to start learning together!</p>
+                        <button
+                            className="primary-btn"
+                            onClick={() => setShowCreateModal(true)}
+                        >
+                            Create Your First Group
+                        </button>
+                    </div>
+                )}
+            </div>
+        </motion.div>
+    );
+
+    const renderBrowseGroups = () => (
+        <motion.div
+            key="browse-groups"
+            className="tab-content"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+        >
+            <div className="browse-filters">
+                <div className="search-box">
+                    <input
+                        type="text"
+                        placeholder="Search groups by name, description, or tags..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+                <div className="category-filter">
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                        <option value="">All Categories</option>
+                        {categories.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+            {searchLoading ? (
+                <div className="loading-state">
+                    <div className="spinner"></div>
+                    <p>Loading groups...</p>
+                </div>
+            ) : (
+                <div className="groups-grid">
+                    {searchResults.length > 0 ? (
+                        searchResults.map(group => (
+                            <GroupCard
+                                key={group._id}
+                                group={group}
+                                showJoin={true}
+                                currentUserId={currentUserId}
+                                onViewDetails={viewGroupDetails}
+                                onJoinGroup={joinGroup}
+                                onLeaveGroup={leaveGroup}
+                                onOpenSettings={openGroupSettings}
+                            />
+                        ))
+                    ) : (
+                        <div className="empty-state">
+                            <h3>No Groups Found</h3>
+                            <p>Try adjusting your search criteria or create a new group!</p>
+                        </div>
+                    )}
+                </div>
+            )}
+        </motion.div>
+    );
 
     const GroupDetailsModal = () => (
         <AnimatePresence>
@@ -754,104 +859,8 @@ const StudyGroups = () => {
             </div>
 
             <AnimatePresence mode="wait">
-                {activeTab === 'myGroups' && (
-                    <motion.div
-                        key="my-groups"
-                        className="tab-content"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                    >
-                        <div className="groups-grid">
-                            {myGroups.length > 0 ? (
-                                myGroups.map(group => (
-                                    <GroupCard
-                                        key={group._id}
-                                        group={group}
-                                        showLeave={true}
-                                        currentUserId={currentUserId}
-                                        onViewDetails={viewGroupDetails}
-                                        onJoinGroup={joinGroup}
-                                        onLeaveGroup={leaveGroup}
-                                        onOpenSettings={openGroupSettings}
-                                    />
-                                ))
-                            ) : (
-                                <div className="empty-state">
-                                    <h3>No Study Groups Yet</h3>
-                                    <p>Join existing groups or create your own to start learning together!</p>
-                                    <button
-                                        className="primary-btn"
-                                        onClick={() => setShowCreateModal(true)}
-                                    >
-                                        Create Your First Group
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </motion.div>
-                )}
-
-                {activeTab === 'browse' && (
-                    <motion.div
-                        key="browse-groups"
-                        className="tab-content"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                    >
-                        <div className="browse-filters">
-                            <div className="search-box">
-                                <input
-                                    type="text"
-                                    placeholder="Search groups by name, description, or tags..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                            </div>
-                            <div className="category-filter">
-                                <select
-                                    value={selectedCategory}
-                                    onChange={(e) => setSelectedCategory(e.target.value)}
-                                >
-                                    <option value="">All Categories</option>
-                                    {categories.map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-
-                        {searchLoading ? (
-                            <div className="loading-state">
-                                <div className="spinner"></div>
-                                <p>Loading groups...</p>
-                            </div>
-                        ) : (
-                            <div className="groups-grid">
-                                {searchResults.length > 0 ? (
-                                    searchResults.map(group => (
-                                        <GroupCard
-                                            key={group._id}
-                                            group={group}
-                                            showJoin={true}
-                                            currentUserId={currentUserId}
-                                            onViewDetails={viewGroupDetails}
-                                            onJoinGroup={joinGroup}
-                                            onLeaveGroup={leaveGroup}
-                                            onOpenSettings={openGroupSettings}
-                                        />
-                                    ))
-                                ) : (
-                                    <div className="empty-state">
-                                        <h3>No Groups Found</h3>
-                                        <p>Try adjusting your search criteria or create a new group!</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </motion.div>
-                )}
+                {activeTab === 'myGroups' && renderMyGroups()}
+                {activeTab === 'browse' && renderBrowseGroups()}
             </AnimatePresence>
                 </>
             )}
