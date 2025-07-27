@@ -1145,16 +1145,16 @@ const GamificationHub = () => {
                     🎯 Daily Challenges
                 </button>
                 <button
-                    className={`tab-button ${activeTab === 'tournaments' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('tournaments')}
-                >
-                    🏆 Tournaments
-                </button>
-                <button
                     className={`tab-button ${activeTab === 'completed-challenges' ? 'active' : ''}`}
                     onClick={() => setActiveTab('completed-challenges')}
                 >
                     ✅ Completed Challenges
+                </button>
+                <button
+                    className={`tab-button ${activeTab === 'tournaments' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('tournaments')}
+                >
+                    🏆 Tournaments
                 </button>
                 <button
                     className={`tab-button ${activeTab === 'completed-tournaments' ? 'active' : ''}`}

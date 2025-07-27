@@ -2544,7 +2544,7 @@
     .hub-tabs {
         flex-direction: column;
         gap: 0.5rem;
-        align-items: stretch;
+        align-items: center;
     }
 
     .tab-button {
