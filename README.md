@@ -1,6 +1,34 @@
 # 🧠 QuizNest – AI Quiz App
 
-An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** that enables users to take intelligent quizzes, generate questions via AI, track performance, and enjoy gamified elements like achievements and leaderboards. Premium users get access to exclusive features such as insights, advanced theming, and live battles.
+An advan### 🏆 Gamification
+
+* **Daily Challenges** ✅
+
+  * Fresh daily quiz challenges with special rewards
+  * Progress tracking and completion status
+  * XP and points system for engagement
+  * Reset timer for next day's challenges
+* **Tournament System** ✅
+
+  * Create and participate in quiz tournaments
+  * Registration-based competitive gameplay
+  * Prize distribution for top performers
+  * Real-time leaderboards and rankings
+* **Achievements System** ✅
+
+  * Earn badges like "Quiz Master," "Speed Genius," and "Perfect Score"
+  * View badges and stats in user profile
+* **Enhanced Quiz Experience** ✅
+
+  * Interactive quiz modal with progress tracking
+  * Mobile-optimized quiz interface
+  * Real-time timer and question indicators
+  * Smooth animations and responsive design
+* **Leaderboards**
+
+  * Weekly and monthly top scorers
+  * Tournament-specific rankings
+  * Promotes user engagement and competitionstack **AI-powered Quiz App** built with the **MERN Stack** that enables users to take intelligent quizzes, generate questions via AI, track performance, and enjoy gamified elements like achievements and leaderboards. Premium users get access to exclusive features such as insights, advanced theming, and live battles.
 
 ---
 
@@ -58,6 +86,8 @@ An advanced, full-stack **AI-powered Quiz App** built with the **MERN Stack** th
 * **Advanced Theme Selector** for Light/Dark/custom modes
 * **Mobile Navigation Bar** for improved phone/tablet usability
 * **Enhanced Dashboard UI** with upgraded design and data visualization
+* **Gamification Hub** with daily challenges and tournament management
+* **Interactive Quiz Modal** with mobile-responsive design and progress tracking
 * **New Test Page** for better quiz flow and feedback
 * Consistent design system and polished UI across all screens
 
@@ -178,6 +208,8 @@ npm run dev
 | 23-07-2025 | Achievement System fully integrated                     |
 | 24-07-2025 | Full UI consistency pass + New Dashboard design         |
 | 25-07-2025 | Intelligence Dashboard with AI insights added (Premium) |
+| 27-07-2025 | Gamification Hub: Daily Challenges and Tournaments      |
+| 27-07-2025 | Enhanced Quiz Modal UI with mobile optimization         |
 
 ---
 
@@ -196,6 +228,8 @@ npm run dev
 * ✅ Mobile Navbar for responsive layout 📱
 * ✅ Enhanced Dashboard & Test Page 🎯
 * ✅ Intelligence Dashboard with AI-powered insights 🧠
+* ✅ Gamification Hub with Daily Challenges and Tournaments 🏆
+* ✅ Mobile-optimized Quiz Modal with enhanced UX 📱
 
 ---
 
