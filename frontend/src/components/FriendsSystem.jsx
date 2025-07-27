@@ -143,7 +143,7 @@ const FriendsSystem = () => {
             </div>
             <div className="friend-info">
                 <h4>{friend.name}</h4>
-                <p className="friend-level">Level {friend.level} • {friend.xp} XP</p>
+                <p className="friend-level">Level {Math.round(friend.level)} • {Math.round(friend.xp)} XP</p>
                 <div className="friend-status">
                     <span className={`status-indicator ${friend.isOnline ? 'online' : 'offline'}`}></span>
                     {friend.isOnline ? 'Online' : 'Offline'}
@@ -243,7 +243,7 @@ const FriendsSystem = () => {
             </div>
             <div className="search-result-info">
                 <h4>{user.name}</h4>
-                <p className="search-result-level">Level {user.level} • {user.xp} XP</p>
+                <p className="search-result-level">Level {Math.round(user.level)} • {Math.round(user.xp)} XP</p>
             </div>
             <div className="search-result-actions">
                 <button

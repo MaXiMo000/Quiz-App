@@ -56,6 +56,7 @@
     margin-bottom: 30px;
     gap: 10px;
     padding: 0 5px;
+    flex-wrap: wrap;
 }
 
 .tab-button {
@@ -75,6 +76,7 @@
     -webkit-tap-highlight-color: transparent;
     min-height: 44px;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .tab-button.active {
@@ -86,14 +88,13 @@
 }
 
 .tab-button:hover:not(.active) {
-    background: var(--hover-bg);
-    color: var(--text-primary);
     border-color: var(--primary-color);
+    color: var(--text-primary);
     transform: translateY(-1px);
 }
 
 .tab-count {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
     color: var(--text-secondary);
     border-radius: 50%;
     padding: 2px 8px;
@@ -103,6 +104,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 600;
 }
 
 .tab-button.active .tab-count {
@@ -219,12 +221,12 @@
 /* Block User Button */
 .block-user-btn {
     position: absolute;
-    top: 40px;
-    right: 10px;
+    top: 10px;
+    right: 40px;
     background: #ff6b6b;
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 4px 8px;
     cursor: pointer;
     font-size: 10px;
@@ -643,38 +645,37 @@
     }
     
     .friends-tabs {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
         margin-bottom: 20px;
-        padding-bottom: 5px;
-    }
-    
-    .friends-tabs::-webkit-scrollbar {
-        display: none;
+        padding: 0 10px;
     }
     
     .tab-button {
-        padding: 12px 20px;
+        padding: 12px 18px;
         font-size: 0.9em;
         white-space: nowrap;
-        min-width: fit-content;
-        border-radius: 20px;
-        margin-right: 8px;
+        border-radius: 25px;
+        flex-shrink: 0;
     }
     
     .tab-button.active {
-        border-radius: 20px;
-        border-bottom: none;
         background: var(--primary-color);
         color: white;
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(var(--primary-color-rgb), 0.2);
     }
     
     .tab-count {
-        background: rgba(255, 255, 255, 0.3);
-        color: var(--primary-color);
+        background: rgba(255, 255, 255, 0.2);
+        font-size: 0.8em;
+    }
+    
+    .tab-button.active .tab-count {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
     }
     
     .tab-button.active .tab-count {
@@ -789,11 +790,19 @@
     
     .remove-friend-btn {
         opacity: 1; /* Always visible on mobile for better UX */
-        right: 15px;
-        top: 15px;
-        width: 28px;
-        height: 28px;
-        font-size: 16px;
+        right: 12px;
+        top: 12px;
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+    }
+
+    .block-user-btn {
+        opacity: 1; /* Always visible on tablet */
+        top: 12px;
+        right: 44px;
+        padding: 4px 8px;
+        font-size: 10px;
     }
     
     .error-message {
@@ -833,9 +842,27 @@
         font-size: 0.95em;
     }
     
+    .friends-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 25px;
+    }
+    
     .tab-button {
         padding: 10px 16px;
         font-size: 0.85em;
+        flex: 1;
+        min-width: calc(50% - 4px);
+        max-width: 180px;
+        justify-content: center;
+    }
+    
+    .tab-count {
+        font-size: 0.75em;
+        min-width: 18px;
+        height: 18px;
+        padding: 1px 6px;
     }
     
     .friend-card, .search-result-card, .request-card {
@@ -854,10 +881,20 @@
     }
     
     .block-user-btn {
-        top: 35px;
-        right: 8px;
+        top: 10px;
+        right: 40px;
         padding: 3px 6px;
         font-size: 9px;
+        opacity: 1; /* Always visible on mobile */
+    }
+
+    .remove-friend-btn {
+        top: 10px;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        opacity: 1; /* Always visible on mobile */
     }
     
     .unblock-user-btn {

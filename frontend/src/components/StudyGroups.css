@@ -360,6 +360,8 @@
     justify-content: center;
     z-index: 10002;
     padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-content {
@@ -370,6 +372,8 @@
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    -webkit-overflow-scrolling: touch;
+    position: relative;
 }
 
 .modal-header {
@@ -378,6 +382,10 @@
     align-items: center;
     padding: 20px 25px;
     border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    z-index: 1;
 }
 
 .modal-header h2 {
@@ -1138,5 +1146,73 @@
 
     .quiz-stats {
         font-size: 0.75em;
+    }
+
+    /* Mobile Modal Improvements */
+    .modal-overlay {
+        padding: 10px;
+        align-items: flex-start;
+        justify-content: center;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-top: 80px; /* More space for mobile navbar */
+        padding-bottom: 100px; /* Space for bottom navbar */
+    }
+
+    .modal-content {
+        margin: 0 auto;
+        max-height: calc(100vh - 180px); /* Account for both navbars */
+        width: calc(100vw - 20px);
+        border-radius: 12px;
+        position: relative;
+        overflow: visible;
+    }
+
+    .group-details-modal {
+        max-height: 90vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .create-form {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    /* Group Details Mobile Improvements */
+    .group-details-content {
+        padding: 20px 15px;
+    }
+
+    .group-meta {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .group-meta span {
+        align-self: flex-start;
+        margin-right: 0;
+    }
+
+    .group-overview p {
+        text-align: left;
+        margin-left: 0;
+    }
+
+    .members-list,
+    .activities-list {
+        margin-left: 0;
+        padding-left: 0;
     }
 }
