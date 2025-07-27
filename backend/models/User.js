@@ -43,7 +43,95 @@ const userSchema = new mongoose.Schema({
         recommended: { type: Date, default: Date.now },
         taken: { type: Boolean, default: false },
         takenAt: Date
-    }]
+    }],
+    
+    // Phase 3: Social Features
+    social: {
+        // Friends system
+        friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" }],
+        friendRequests: {
+            sent: [{ type: mongoose.Schema.Types.ObjectId, ref: "Friend" }],
+            received: [{ type: mongoose.Schema.Types.ObjectId, ref: "Friend" }]
+        },
+        
+        // Study groups
+        studyGroups: [{ type: mongoose.Schema.Types.ObjectId, ref: "StudyGroup" }],
+        
+        // Social stats
+        socialStats: {
+            quizzesShared: { type: Number, default: 0 },
+            groupsCreated: { type: Number, default: 0 },
+            challengesWon: { type: Number, default: 0 },
+            tournamentsParticipated: { type: Number, default: 0 },
+            tournamentsWon: { type: Number, default: 0 }
+        },
+        
+        // Privacy settings
+        privacy: {
+            profileVisibility: { type: String, enum: ["public", "friends", "private"], default: "public" },
+            showOnlineStatus: { type: Boolean, default: true },
+            allowFriendRequests: { type: Boolean, default: true },
+            showProgressToFriends: { type: Boolean, default: true }
+        }
+    },
+    
+    // Phase 3: Advanced Gamification
+    gamification: {
+        // Skill trees
+        skillTrees: {
+            mathMaster: {
+                level: { type: Number, default: 0 },
+                xp: { type: Number, default: 0 },
+                unlockedSkills: [{ type: String }]
+            },
+            scienceGuru: {
+                level: { type: Number, default: 0 },
+                xp: { type: Number, default: 0 },
+                unlockedSkills: [{ type: String }]
+            },
+            historyBuff: {
+                level: { type: Number, default: 0 },
+                xp: { type: Number, default: 0 },
+                unlockedSkills: [{ type: String }]
+            },
+            languageLord: {
+                level: { type: Number, default: 0 },
+                xp: { type: Number, default: 0 },
+                unlockedSkills: [{ type: String }]
+            }
+        },
+        
+        // Daily challenges progress
+        dailyChallenges: {
+            current: { type: mongoose.Schema.Types.ObjectId, ref: "DailyChallenge" },
+            completed: [{ type: mongoose.Schema.Types.ObjectId, ref: "DailyChallenge" }],
+            streak: { type: Number, default: 0 },
+            lastCompleted: { type: Date }
+        },
+        
+        // Tournaments
+        tournaments: {
+            participating: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tournament" }],
+            completed: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tournament" }],
+            wins: { type: Number, default: 0 },
+            totalParticipations: { type: Number, default: 0 }
+        },
+        
+        // Special titles earned
+        titles: [{
+            name: { type: String },
+            description: { type: String },
+            earnedAt: { type: Date, default: Date.now },
+            rarity: { type: String, enum: ["common", "rare", "epic", "legendary"], default: "common" }
+        }],
+        
+        // Current equipped title
+        activeTitle: { type: String }
+    },
+    
+    // Activity status
+    lastSeen: { type: Date, default: Date.now },
+    isOnline: { type: Boolean, default: false }
 }, { timestamps: true });
 
 export default mongoose.model("UserQuiz", userSchema);

@@ -5,12 +5,15 @@ import "../App.css";
 import "./UserQuiz.css";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import ShareQuizModal from "../components/ShareQuizModal";
 
 const UserQuiz = () => {
     const [quizzes, setQuizzes] = useState([]);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [shareModalOpen, setShareModalOpen] = useState(false);
+    const [selectedQuiz, setSelectedQuiz] = useState(null);
 
     useEffect(() => {
         const fetchQuizzes = async () => {
@@ -28,6 +31,11 @@ const UserQuiz = () => {
 
         fetchQuizzes();
     }, []);
+
+    const handleQuizShared = (groupCount) => {
+        // Show success message
+        alert(`Quiz shared successfully with ${groupCount} group${groupCount !== 1 ? 's' : ''}!`);
+    };
 
     if (loading) return (
         <motion.div 
@@ -75,6 +83,7 @@ const UserQuiz = () => {
     );
 
     return (
+        <>
         <motion.div 
             className="user-quiz-container"
             initial={{ opacity: 0 }}
@@ -219,27 +228,54 @@ const UserQuiz = () => {
                                         </motion.div>
                                     </motion.div>
                                     
-                                    <motion.button 
-                                        className="start-quiz-btn"
-                                        onClick={() => navigate(`/user/test/${quiz._id}`)}
-                                        initial={{ y: 30, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        transition={{ delay: 0.7 + index * 0.1 }}
-                                        whileHover={{ 
-                                            scale: 1.05,
-                                            boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                                            y: -2
-                                        }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <motion.span
-                                            animate={{ rotate: [0, 10, -10, 0] }}
-                                            transition={{ duration: 2, repeat: Infinity }}
+                                    <div className="quiz-actions">
+                                        <motion.button 
+                                            className="start-quiz-btn"
+                                            onClick={() => navigate(`/user/test/${quiz._id}`)}
+                                            initial={{ y: 30, opacity: 0 }}
+                                            animate={{ y: 0, opacity: 1 }}
+                                            transition={{ delay: 0.7 + index * 0.1 }}
+                                            whileHover={{ 
+                                                scale: 1.05,
+                                                boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
+                                                y: -2
+                                            }}
+                                            whileTap={{ scale: 0.95 }}
                                         >
-                                            🚀
-                                        </motion.span>
-                                        Start Quiz
-                                    </motion.button>
+                                            <motion.span
+                                                animate={{ rotate: [0, 10, -10, 0] }}
+                                                transition={{ duration: 2, repeat: Infinity }}
+                                            >
+                                                🚀
+                                            </motion.span>
+                                            Start Quiz
+                                        </motion.button>
+                                        
+                                        <motion.button 
+                                            className="share-quiz-btn"
+                                            onClick={() => {
+                                                setSelectedQuiz(quiz);
+                                                setShareModalOpen(true);
+                                            }}
+                                            initial={{ y: 30, opacity: 0 }}
+                                            animate={{ y: 0, opacity: 1 }}
+                                            transition={{ delay: 0.8 + index * 0.1 }}
+                                            whileHover={{ 
+                                                scale: 1.05,
+                                                boxShadow: "0 8px 25px rgba(34, 197, 94, 0.3)",
+                                                y: -2
+                                            }}
+                                            whileTap={{ scale: 0.95 }}
+                                        >
+                                            <motion.span
+                                                animate={{ scale: [1, 1.1, 1] }}
+                                                transition={{ duration: 1.5, repeat: Infinity }}
+                                            >
+                                                📤
+                                            </motion.span>
+                                            Share
+                                        </motion.button>
+                                    </div>
                                 </motion.div>
                                 
                                 <div className="quiz-card-bg-effect"></div>
@@ -292,6 +328,17 @@ const UserQuiz = () => {
                 }}
             />
         </motion.div>
+        
+        <ShareQuizModal 
+            quiz={selectedQuiz}
+            isOpen={shareModalOpen}
+            onClose={() => {
+                setShareModalOpen(false);
+                setSelectedQuiz(null);
+            }}
+            onShare={handleQuizShared}
+        />
+        </>
     );
 };
 

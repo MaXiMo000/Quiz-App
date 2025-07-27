@@ -173,27 +173,6 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.65, duration: 0.4 }}
-                                >
-                                    <Link to="/enhanced-dashboard" className="premium-dashboard" onClick={handleLinkClick}>📈 Premium Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.67, duration: 0.4 }}
-                                >
-                                    <Link to="/intelligence-dashboard" className="premium-dashboard intelligence-link" onClick={handleLinkClick}>🧠 Intelligence Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.7, duration: 0.4 }}
-                                >
-                                    <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.75, duration: 0.4 }}
                                 >
                                     <Link to="/admin/create" onClick={handleLinkClick}>📚 Create Quiz</Link>
@@ -211,6 +190,29 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 0.85, duration: 0.4 }}
                                 >
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
+                                </motion.div>
+                                
+                                {/* Phase 3: Social & Gamification Links */}
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.9, duration: 0.4 }}
+                                >
+                                    <Link to="/friends" onClick={handleLinkClick}>🤝 Friends</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.95, duration: 0.4 }}
+                                >
+                                    <Link to="/study-groups" onClick={handleLinkClick}>📚 Study Groups</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.0, duration: 0.4 }}
+                                >
+                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
                                 </motion.div>
                                 {/* <Link to="/admin/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link>
                                 <Link to="/admin/written-test/report" onClick={handleLinkClick}>📄 Tests Reports</Link> */}
@@ -275,12 +277,43 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
                                 </motion.div>
+                                
+                                {/* Phase 3: Social & Gamification Links */}
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.05, duration: 0.4 }}
+                                >
+                                    <Link to="/friends" onClick={handleLinkClick}>🤝 Friends</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.1, duration: 0.4 }}
+                                >
+                                    <Link to="/study-groups" onClick={handleLinkClick}>📚 Study Groups</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.15, duration: 0.4 }}
+                                >
+                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
+                                </motion.div>
+                                
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 1.1, duration: 0.4 }}
                                 >
                                     <Link to="/contact" onClick={handleLinkClick}>📄 Contact Me</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.62, duration: 0.4 }}
+                                >
+                                    <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
                                 </motion.div>
                                 <motion.button 
                                     onClick={() => updateRole("user")}
@@ -303,13 +336,6 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 0.6, duration: 0.4 }}
                                 >
                                     <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.62, duration: 0.4 }}
-                                >
-                                    <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
                                 </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -346,11 +372,28 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/xp-leaderboard" onClick={handleLinkClick}>🏆 XP LeaderBoard</Link>
                                 </motion.div>
+                                
+                                {/* Phase 3: Social & Gamification Links */}
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.05, duration: 0.4 }}
+                                >
+                                    <Link to="/friends" onClick={handleLinkClick}>🤝 Friends</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.15, duration: 0.4 }}
+                                >
+                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
+                                </motion.div>
+                                
                                 <motion.button 
                                     onClick={() => updateRole("premium")}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 1.1, duration: 0.4 }}
+                                    transition={{ delay: 1.2, duration: 0.4 }}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -365,7 +408,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                         onClick={handleLogout}
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1.3, duration: 0.5 }}
+                        transition={{ delay: 1.4, duration: 0.5 }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
