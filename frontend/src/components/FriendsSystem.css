@@ -193,10 +193,18 @@
     background: #a4b0be;
 }
 
-.remove-friend-btn {
+/* Friend Actions Flex Container */
+.friend-actions {
+    display: flex;
+    gap: 0.5rem;
     position: absolute;
     top: 10px;
     right: 10px;
+    z-index: 2;
+}
+
+.remove-friend-btn {
+    position: static;
     background: #ff4757;
     color: white;
     border: none;
@@ -220,9 +228,7 @@
 
 /* Block User Button */
 .block-user-btn {
-    position: absolute;
-    top: 10px;
-    right: 40px;
+    position: static;
     background: #ff6b6b;
     color: white;
     border: none;
@@ -869,6 +875,14 @@
         padding: 14px;
         overflow: hidden;
     }
+
+    .friend-actions{
+        flex-direction: row;
+        gap: 0.3rem;
+        position: static;
+        justify-content: flex-end;
+        align-items: center;
+    }
     
     .search-result-card {
         display: flex;
@@ -881,20 +895,20 @@
     }
     
     .block-user-btn {
-        top: 10px;
-        right: 40px;
+        position: static;
+        width: 20px;
+        height: 20px;
         padding: 3px 6px;
-        font-size: 9px;
-        opacity: 1; /* Always visible on mobile */
+        font-size: 11px;
+        opacity: 1;
     }
 
     .remove-friend-btn {
-        top: 10px;
-        right: 8px;
+        position: static;
         width: 20px;
         height: 20px;
         font-size: 12px;
-        opacity: 1; /* Always visible on mobile */
+        opacity: 1;
     }
     
     .unblock-user-btn {
