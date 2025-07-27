@@ -13,13 +13,14 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const generateFromGemini = async (prompt) => {
     try {
-        const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
         const result = await model.generateContent({
             contents: [{ parts: [{ text: prompt }] }]
         });
 
         const raw = result.response.text();
+        console.log("🔍 Gemini API Response:", raw);
         console.log("✅ Gemini API success");
         return raw;
     } catch (error) {
@@ -63,14 +64,17 @@ export const generateQuizQuestions = async (req, res) => {
 
         while (finalQuestions.length < numQuestions && attempts < maxAttempts) {
             const prompt = `
-                Generate ${numQuestions} multiple-choice questions about "${topic}".
-                Each must include:
-                - "question"
-                - "options" (array of 4)
-                - "correctAnswer" (as "A", "B", "C", or "D")
-                - "difficulty" ("easy" | "medium" | "hard")
+                You are an expert quiz designer. Your task is to generate ${numQuestions} high-quality multiple-choice questions about "${topic}".
 
-                Return ONLY JSON like this:
+                The response MUST be ONLY a single, valid JSON object. Do not include any text, explanations, or markdown formatting outside of the JSON object.
+                
+                The JSON object must have a single key "questions", which contains an array of question objects. Each question object must have the following exact structure and keys:
+                - "question": A string containing the question text.
+                - "options": An array of exactly 4 strings representing the possible answers.
+                - "correctAnswer": A string with the letter corresponding to the correct option ("A", "B", "C", or "D"). The first option is "A", the second is "B", and so on.
+                - "difficulty": A string that is one of "easy", "medium", or "hard".
+                Here is an example of the required output format:
+                Output format:
                 {
                 "questions": [
                     {
@@ -149,8 +153,18 @@ export const generateAdaptiveQuestions = async (req, res) => {
 
         while (finalQuestions.length < numQuestions && attempts < maxAttempts) {
             const prompt = `
-                Generate ${numQuestions} multiple-choice questions on "${topic}".
-                All should have difficulty: "${difficulty}".
+                You are an adaptive learning specialist. Your task is to generate exactly ${numQuestions} multiple-choice questions on the topic of "${topic}".
+                All questions generated MUST have a difficulty level of "${difficulty}".
+                
+                The response MUST be ONLY a single, valid JSON object. Do not include any text, explanations, or markdown formatting outside of the JSON object.
+                
+                The JSON object must have a single key "questions", which contains an array of question objects. Each question object must have the following exact structure and keys:
+                - "question": A string containing the question text.
+                - "options": An array of exactly 4 strings representing the possible answers.
+                - "correctAnswer": A string with the letter corresponding to the correct option ("A", "B", "C", or "D"). The first option is "A", the second is "B", and so on.
+                - "difficulty": A string that must be exactly "${difficulty}".
+                
+                Here is an example of the required output format for a '${difficulty}' question:
                 Output format:
                 {
                 "questions": [
@@ -158,7 +172,7 @@ export const generateAdaptiveQuestions = async (req, res) => {
                     "question": "What is 2 + 2?",
                     "options": ["3", "4", "5", "6"],
                     "correctAnswer": "B",
-                    "difficulty": "easy"
+                    "difficulty": '${difficulty}'
                     }
                 ]
                 }
