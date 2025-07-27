@@ -312,6 +312,103 @@ const CreateGroupModal = React.memo(({
     );
 });
 
+// GroupCard component - moved outside to prevent hoisting issues
+const GroupCard = React.memo(({ group, showJoin = false, showLeave = false, currentUserId, onViewDetails, onJoinGroup, onLeaveGroup, onOpenSettings }) => {
+    // Ensure group and members exist
+    if (!group) return null;
+    
+    // Check if current user is admin of this group
+    const userMember = group.members?.find(member => {
+        const memberId = member.user?._id || member.user;
+        return memberId === currentUserId;
+    });
+    const isAdmin = userMember?.role === 'admin';
+
+    return (
+        <motion.div
+            className="group-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0,0,0,0.15)" }}
+        >
+            <div className="group-header">
+                <div className="group-avatar">
+                    {group.name?.charAt(0).toUpperCase()}
+                </div>
+                <div className="group-basic-info">
+                    <h3>{group.name}</h3>
+                    <p className="group-category">{group.category}</p>
+                </div>
+                <div className="group-privacy">
+                    {group.isPrivate ? '🔒' : '🌍'}
+                    {isAdmin && (
+                        <button
+                            className="settings-btn"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenSettings(group);
+                            }}
+                            title="Group Settings"
+                        >
+                            ⚙️
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <div className="group-description">
+                <p>{group.description || 'No description available'}</p>
+            </div>
+
+            <div className="group-tags">
+                {group.tags?.map(tag => (
+                    <span key={tag} className="group-tag">{tag}</span>
+                ))}
+            </div>
+
+            <div className="group-stats">
+                <div className="stat">
+                    <span className="stat-value">{group.memberCount || group.members?.length || 0}</span>
+                    <span className="stat-label">Members</span>
+                </div>
+                <div className="stat">
+                    <span className="stat-value">{group.maxMembers}</span>
+                    <span className="stat-label">Max</span>
+                </div>
+                <div className="stat">
+                    <span className="stat-value">{group.stats?.totalQuizzes || 0}</span>
+                    <span className="stat-label">Quizzes</span>
+                </div>
+            </div>
+
+            <div className="group-actions">
+                <button
+                    className="view-details-btn"
+                    onClick={() => onViewDetails(group._id)}
+                >
+                    View Details
+                </button>
+                {showJoin && (
+                    <button
+                        className="join-btn"
+                        onClick={() => onJoinGroup(group._id)}
+                    >
+                        Join Group
+                    </button>
+                )}
+                {showLeave && (
+                    <button
+                        className="leave-btn"
+                        onClick={() => onLeaveGroup(group._id)}
+                    >
+                        Leave Group
+                    </button>
+                )}
+            </div>
+        </motion.div>
+    );
+});
+
 const StudyGroups = () => {
     const navigate = useNavigate();
     const { showSuccess, showError, notification, hideNotification } = useNotification();
@@ -506,102 +603,6 @@ const StudyGroups = () => {
         }
     };
 
-    const GroupCard = ({ group, showJoin = false, showLeave = false, currentUserId }) => {
-        // Ensure group and members exist
-        if (!group) return null;
-        
-        // Check if current user is admin of this group
-        const userMember = group.members?.find(member => {
-            const memberId = member.user?._id || member.user;
-            return memberId === currentUserId;
-        });
-        const isAdmin = userMember?.role === 'admin';
-
-        return (
-        <motion.div
-            className="group-card"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0,0,0,0.15)" }}
-        >
-            <div className="group-header">
-                <div className="group-avatar">
-                    {group.name?.charAt(0).toUpperCase()}
-                </div>
-                <div className="group-basic-info">
-                    <h3>{group.name}</h3>
-                    <p className="group-category">{group.category}</p>
-                </div>
-                <div className="group-privacy">
-                    {group.isPrivate ? '🔒' : '🌍'}
-                    {isAdmin && (
-                        <button
-                            className="settings-btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                openGroupSettings(group);
-                            }}
-                            title="Group Settings"
-                        >
-                            ⚙️
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            <div className="group-description">
-                <p>{group.description || 'No description available'}</p>
-            </div>
-
-            <div className="group-tags">
-                {group.tags.map(tag => (
-                    <span key={tag} className="group-tag">{tag}</span>
-                ))}
-            </div>
-
-            <div className="group-stats">
-                <div className="stat">
-                    <span className="stat-value">{group.memberCount || group.members?.length || 0}</span>
-                    <span className="stat-label">Members</span>
-                </div>
-                <div className="stat">
-                    <span className="stat-value">{group.maxMembers}</span>
-                    <span className="stat-label">Max</span>
-                </div>
-                <div className="stat">
-                    <span className="stat-value">{group.stats?.totalQuizzes || 0}</span>
-                    <span className="stat-label">Quizzes</span>
-                </div>
-            </div>
-
-            <div className="group-actions">
-                <button
-                    className="view-details-btn"
-                    onClick={() => viewGroupDetails(group._id)}
-                >
-                    View Details
-                </button>
-                {showJoin && (
-                    <button
-                        className="join-btn"
-                        onClick={() => joinGroup(group._id)}
-                    >
-                        Join Group
-                    </button>
-                )}
-                {showLeave && (
-                    <button
-                        className="leave-btn"
-                        onClick={() => leaveGroup(group._id)}
-                    >
-                        Leave Group
-                    </button>
-                )}
-            </div>
-        </motion.div>
-        );
-    };
-
     const GroupDetailsModal = () => (
         <AnimatePresence>
             {selectedGroup && (
@@ -769,6 +770,10 @@ const StudyGroups = () => {
                                         group={group}
                                         showLeave={true}
                                         currentUserId={currentUserId}
+                                        onViewDetails={viewGroupDetails}
+                                        onJoinGroup={joinGroup}
+                                        onLeaveGroup={leaveGroup}
+                                        onOpenSettings={openGroupSettings}
                                     />
                                 ))
                             ) : (
@@ -831,6 +836,10 @@ const StudyGroups = () => {
                                             group={group}
                                             showJoin={true}
                                             currentUserId={currentUserId}
+                                            onViewDetails={viewGroupDetails}
+                                            onJoinGroup={joinGroup}
+                                            onLeaveGroup={leaveGroup}
+                                            onOpenSettings={openGroupSettings}
                                         />
                                     ))
                                 ) : (
