@@ -44,6 +44,12 @@ import ThemePage from "./pages/ThemePage";
 // ✨ Import new enhanced components
 import EnhancedDashboard from "./components/EnhancedDashboard";
 import AchievementSystem from "./components/AchievementSystem";
+
+// Phase 3: Social & Gamification Components
+import FriendsSystem from "./components/FriendsSystem";
+import StudyGroups from "./components/StudyGroups";
+import GamificationHub from "./components/GamificationHub";
+
 const TestPage = lazy(() => import("./pages/TestPage"));
 
 // Phase 2: Intelligence Dashboard
@@ -75,6 +81,12 @@ const App = () => {
                             <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />
                             <Route path="/achievements" element={<AchievementSystem />} />
                             <Route path="/themes" element={<ThemePage />} />
+                            
+                            {/* Phase 3: Social & Gamification Routes */}
+                            <Route path="/friends" element={<FriendsSystem />} />
+                            <Route path="/study-groups" element={<StudyGroups />} />
+                            <Route path="/gamification" element={<GamificationHub />} />
+                            
                             <Route path="/admin" element={<AdminDashboard />} />
                             <Route path="/admin/create" element={<AdminQuizzes />} />
                             <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />

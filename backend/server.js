@@ -7,6 +7,7 @@ import session from "express-session";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
+import cron from "node-cron";
 
 // ✅ Load environment variables before anything else
 dotenv.config();
@@ -22,6 +23,14 @@ import analyticsRoutes from "./routes/analyticsRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import intelligenceRoutes from "./routes/intelligenceRoutes.js"; // Phase 2: Intelligence Layer
 import debugRoutes from "./routes/debugRoutes.js"; // Temporary debug routes
+
+// Phase 3: Social & Gamification Routes
+import socialRoutes from "./routes/socialRoutes.js";
+import studyGroupRoutes from "./routes/studyGroupRoutes.js";
+import gamificationRoutes from "./routes/gamificationRoutes.js";
+
+// Import the daily challenge reset function
+import { resetDailyChallenges } from "./controllers/gamificationController.js";
 
 const app = express();
 
@@ -220,6 +229,11 @@ app.use("/api", dashboardRoutes);
 app.use("/api/intelligence", intelligenceRoutes); // Phase 2: Intelligence Layer
 app.use("/api/debug", debugRoutes); // Temporary debug routes - REMOVE IN PRODUCTION
 
+// Phase 3: Social & Gamification Routes
+app.use("/api/social", socialRoutes);
+app.use("/api/study-groups", studyGroupRoutes);
+app.use("/api/gamification", gamificationRoutes);
+
 // Global error handler for CORS and other issues
 app.use((error, req, res, next) => {
     // Handle CORS errors specifically
@@ -258,6 +272,36 @@ mongoose.connect(process.env.MONGO_URI, {
 })
 .then(() => {
     console.log("✅ Connected to MongoDB");
+    
+    // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
+    // Schedule daily challenge reset every hour (for more frequent checking)
+    // This will check and reset challenges that were completed more than 24 hours ago
+    cron.schedule('0 * * * *', async () => {
+        console.log('🔄 Running hourly daily challenge reset check...');
+        try {
+            const result = await resetDailyChallenges();
+            if (result.success && result.usersReset > 0) {
+                console.log(`✅ Reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+            }
+        } catch (error) {
+            console.error('❌ Error in scheduled reset:', error);
+        }
+    });
+    
+    // Also run once at server startup to catch any challenges that should have been reset
+    console.log('🚀 Running initial daily challenge reset check...');
+    resetDailyChallenges()
+        .then(result => {
+            if (result.success && result.usersReset > 0) {
+                console.log(`✅ Startup reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+            } else {
+                console.log('📝 No challenges needed reset at startup');
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error in startup reset:', error);
+        });
+    
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 })
 .catch((err) => console.error("❌ MongoDB Connection Error:", err));

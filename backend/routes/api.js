@@ -6,6 +6,7 @@ import { generateQuizQuestions, generateAdaptiveQuestions } from "../controllers
 import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport, getWrittenReportsUserID } from "../controllers/writtenTestReportController.js";
 import { getWeeklyXP, getMonthlyXP } from "../controllers/leaderboardController.js";
 import { runMigration } from "../controllers/migrationController.js"; // Phase 2: Migration
+import { cleanupEmptyChallenges, cleanupEmptyTournaments } from "../controllers/gamificationController.js";
 import { verifyToken } from "../middleware/auth.js";
 
 // Quiz Routes
@@ -40,5 +41,9 @@ router.get("/leaderboard/monthly", verifyToken, getMonthlyXP);
 
 // Phase 2: Migration endpoint (admin only)
 router.post("/migrate/quiz-difficulty", verifyToken, runMigration);
+
+// Gamification cleanup endpoints (admin only)
+router.delete("/challenges/cleanup-empty", verifyToken, cleanupEmptyChallenges);
+router.delete("/tournaments/cleanup-empty", verifyToken, cleanupEmptyTournaments);
 
 export default router;
