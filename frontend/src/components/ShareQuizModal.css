@@ -3,17 +3,41 @@
     border-radius: 15px;
     width: 100%;
     max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: 85vh;
+    overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border-bottom: 1px solid var(--border-color);
+    background: var(--card-bg);
+    z-index: 1;
+    flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -44,15 +68,26 @@
 }
 
 .modal-content {
-    padding: 25px;
+    padding: 20px;
+    text-align: left;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    margin-left: 30px;
+    align-items: stretch;
 }
 
 .quiz-info {
     background: var(--background-light);
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     border-left: 4px solid var(--primary-color);
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .quiz-info h3 {
@@ -83,7 +118,9 @@
 }
 
 .message-section {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .message-section label {
@@ -125,6 +162,8 @@
 
 .groups-section {
     margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .groups-section h4 {
@@ -191,9 +230,10 @@
 .groups-list {
     display: grid;
     gap: 12px;
-    max-height: 280px;
+    max-height: 220px;
     overflow-y: auto;
     padding-right: 4px;
+    margin-bottom: 10px;
 }
 
 .groups-list::-webkit-scrollbar {
@@ -308,10 +348,10 @@
     display: flex;
     gap: 15px;
     justify-content: flex-end;
-    padding: 20px 25px 25px;
+    padding: 15px 20px;
     border-top: 1px solid var(--border-color);
-    margin-top: 25px;
     background: var(--card-bg);
+    flex-shrink: 0;
 }
 
 .cancel-btn, .share-btn {
@@ -355,49 +395,209 @@
     box-shadow: none;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
+/* Desktop/Laptop optimizations */
+@media (min-width: 769px) {
+    .modal-overlay {
+        padding: 40px;
+        overflow-y: auto;
+    }
+    
     .share-quiz-modal {
-        margin: 10px;
-        max-height: calc(100vh - 20px);
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
     }
     
     .modal-content {
-        padding: 20px;
+        padding: 25px;
+        overflow-y: auto;
+        max-height: none;
+    }
+    
+    .groups-list {
+        max-height: 300px;
+        padding-right: 8px;
+    }
+    
+    .groups-section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .groups-section h4 {
+        text-align: left;
+        width: 100%;
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: 5px;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 60px; /* Reduced space for mobile navbar */
+        padding-bottom: 80px; /* Reduced space for bottom navbar */
+    }
+
+    .share-quiz-modal {
+        margin: 0;
+        max-height: calc(100vh - 150px); /* More space for content */
+        width: calc(100vw - 10px);
+        border-radius: 12px;
+    }
+    
+    .modal-header {
+        padding: 10px 15px; /* Reduced header padding */
+    }
+
+    .modal-header h2 {
+        font-size: 1.3em;
+    }
+    
+    .modal-content {
+        padding: 12px 15px; /* Reduced content padding */
+        margin-left: 10px;  
     }
     
     .quiz-info {
-        padding: 15px;
+        padding: 10px;
+        margin-bottom: 12px; /* Reduced margin */
+    }
+
+    .quiz-info h3 {
+        font-size: 1.1em;
+        margin-bottom: 8px;
     }
     
     .quiz-meta {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 6px;
+    }
+
+    .message-section {
+        margin-bottom: 15px; /* Reduced margin */
+    }
+
+    .message-section textarea {
+        min-height: 60px; /* Reduced textarea height */
+        max-height: 80px;
     }
     
     .groups-list {
-        max-height: 200px;
+        max-height: 180px; /* Increased groups list height */
+        margin-bottom: 5px;
     }
     
     .group-item {
-        padding: 14px;
+        padding: 10px;
     }
     
     .group-avatar {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1em;
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
     }
     
     .modal-actions {
         flex-direction: column;
-        padding: 20px;
+        padding: 10px 15px; /* Reduced footer padding */
+        gap: 8px;
     }
     
     .cancel-btn, .share-btn {
         width: 100%;
-        padding: 14px 20px;
+        padding: 10px 16px; /* Reduced button padding */
+        font-size: 0.95em;
+    }
+}
+
+/* Extra small screens - phones */
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 5px;
+        padding-top: 50px; /* Further reduced top padding */
+        padding-bottom: 60px; /* Further reduced bottom padding */
+    }
+
+    .share-quiz-modal {
+        width: calc(100vw - 10px);
+        max-height: calc(100vh - 60px); /* More space for content */
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        padding: 8px 12px; /* Minimal header padding */
+    }
+
+    .modal-header h2 {
+        font-size: 1.1em; /* Smaller header text */
+    }
+
+    .modal-content {
+        padding: 10px 12px; /* Minimal content padding */
+        margin-left: 0px;   
+    }
+
+    .quiz-info {
+        padding: 8px;
+        margin-bottom: 10px; /* Reduced margin */
+    }
+
+    .quiz-info h3 {
         font-size: 1em;
+        margin-bottom: 6px;
+    }
+
+    .message-section {
+        margin-bottom: 12px; /* Reduced margin */
+    }
+
+    .message-section textarea {
+        min-height: 50px; /* Compact textarea */
+        max-height: 70px;
+        padding: 8px 12px;
+    }
+
+    .groups-section h4 {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+
+    .groups-list {
+        max-height: 200px; /* Increased groups list height */
+        margin-bottom: 5px;
+    }
+
+    .group-item {
+        padding: 8px;
+        gap: 8px; /* Reduced gap */
+    }
+
+    .group-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85em;
+    }
+
+    .group-info h5 {
+        font-size: 0.95em;
+    }
+
+    .group-info p {
+        font-size: 0.8em;
+    }
+
+    .modal-actions {
+        padding: 8px 12px; /* Minimal footer padding */
+        gap: 6px;
+    }
+
+    .cancel-btn, .share-btn {
+        padding: 8px 12px; /* Compact buttons */
+        font-size: 0.85em;
     }
 }

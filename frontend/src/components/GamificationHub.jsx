@@ -990,8 +990,8 @@ const GamificationHub = () => {
                             {userProgress.quizScores.map((score, index) => (
                                 <div key={index} className="score-item">
                                     <span className="quiz-number">Quiz {index + 1}</span>
-                                    <span className="quiz-score">{score.score} pts</span>
-                                    <span className="quiz-percentage">({score.percentage}%)</span>
+                                    <span className="quiz-score">{Math.round(score.score)} pts</span>
+                                    <span className="quiz-percentage">({Math.round(score.percentage)}%)</span>
                                 </div>
                             ))}
                         </div>
@@ -1083,7 +1083,7 @@ const GamificationHub = () => {
                                 <div key={index} className="prize-list">
                                     <div className="prize-item">
                                         <span className="prize-icon">⭐</span>
-                                        <span className="prize-text">{prize.xp} XP</span>
+                                        <span className="prize-text">{Math.round(prize.xp)} XP</span>
                                     </div>
                                     {prize.badge && (
                                         <div className="prize-item">
