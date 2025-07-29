@@ -1,19 +1,18 @@
-/* ✨ TakeQuiz.css - Ultra Beautiful World-Class Quiz Experience ✨ */
+/* ✨ TakeQuiz.css - Performance Optimized Quiz Experience ✨ */
 
-/* ✨ Enhanced CSS Variables for Ultra Beauty ✨ */
+/* ✨ Optimized CSS Variables ✨ */
 :root {
     --quiz-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --quiz-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --quiz-gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     --quiz-gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    --quiz-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    --quiz-glow: 0 0 30px rgba(102, 126, 234, 0.6);
-    --quiz-shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+    --quiz-glow: 0 0 15px rgba(102, 126, 234, 0.3);
+    --quiz-shadow-xl: 0 8px 25px rgba(0, 0, 0, 0.12);
     --quiz-glass: rgba(255, 255, 255, 0.1);
     --quiz-border: rgba(255, 255, 255, 0.2);
 }
 
-/* ✨ Ultra Beautiful Quiz Container with Dynamic Background ✨ */
+/* ✨ Optimized Quiz Container ✨ */
 .quiz-container {
     display: flex;
     flex-direction: column;
@@ -24,25 +23,23 @@
     margin: var(--space-xl) auto;
     padding: 3rem;
     background: var(--quiz-glass);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: var(--text-color);
     border-radius: 2.5rem;
     border: 2px solid var(--quiz-border);
-    box-shadow: 
-        var(--quiz-shadow-xl),
-        0 0 60px rgba(102, 126, 234, 0.15),
-        inset 0 2px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: var(--quiz-shadow-xl);
     position: relative;
     overflow: hidden;
     min-height: 75vh;
-    animation: containerSlideIn 1s ease-out;
+    transform: translateZ(0); /* Hardware acceleration */
+    will-change: auto;
 }
 
 @keyframes containerSlideIn {
     from { 
         opacity: 0; 
-        transform: translateY(50px) scale(0.95); 
+        transform: translateY(20px) scale(0.98); 
     }
     to { 
         opacity: 1; 
@@ -59,7 +56,6 @@
     height: 3px;
     background: var(--quiz-gradient-1);
     border-radius: 2.5rem 2.5rem 0 0;
-    animation: headerGlow 3s ease-in-out infinite;
 }
 
 @keyframes headerGlow {
@@ -82,7 +78,7 @@
     pointer-events: none;
 }
 
-/* ✨ Beautiful Question Card with Animation ✨ */
+/* ✨ Optimized Question Card ✨ */
 .question {
     width: 100%;
     font-size: 1.5rem;
@@ -97,16 +93,16 @@
     padding: 2rem;
     border-radius: 1.5rem;
     border: 2px solid var(--quiz-border);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(8px);
     position: relative;
-    animation: questionSlide 0.8s ease-out;
-    box-shadow: 0 20px 40px rgba(79, 172, 254, 0.1);
+    box-shadow: 0 8px 20px rgba(79, 172, 254, 0.05);
+    transform: translateZ(0);
 }
 
 @keyframes questionSlide {
     from { 
         opacity: 0; 
-        transform: translateX(-30px); 
+        transform: translateX(-15px); 
     }
     to { 
         opacity: 1; 
@@ -115,14 +111,7 @@
 }
 
 .question::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: var(--quiz-shimmer);
-    animation: questionShimmer 3s ease-in-out infinite;
+    display: none; /* Removed heavy shimmer effect */
 }
 
 @keyframes questionShimmer {
@@ -131,7 +120,7 @@
     100% { left: 100%; }
 }
 
-/* ✨ Ultra Beautiful Answer Options with 3D Effects ✨ */
+/* ✨ Optimized Answer Options ✨ */
 .options {
     width: 100%;
     display: flex;
@@ -142,13 +131,13 @@
 .options button {
     width: 100%;
     background: var(--quiz-glass);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(8px);
     color: var(--text-color);
     border: 2px solid var(--quiz-border);
     border-radius: 1.25rem;
     padding: 1.5rem;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s ease;
     font-size: 1.1rem;
     font-weight: 600;
     text-align: left;
@@ -157,77 +146,35 @@
     min-height: 70px;
     display: flex;
     align-items: center;
-    transform-style: preserve-3d;
-    animation: optionSlideIn 0.6s ease-out;
-    animation-fill-mode: both;
+    transform: translateZ(0);
+    will-change: transform, background;
 }
 
-@keyframes optionSlideIn {
-    from { 
-        opacity: 0; 
-        transform: translateX(50px) rotateY(10deg); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateX(0) rotateY(0deg); 
-    }
-}
-
-/* Removed staggered animation delays to prevent lag when navigating questions */
-.options button:nth-child(1) { animation-delay: 0s; }
-.options button:nth-child(2) { animation-delay: 0s; }
-.options button:nth-child(3) { animation-delay: 0s; }
-.options button:nth-child(4) { animation-delay: 0s; }
-
+/* Removed heavy animations and shimmer effects */
 .options button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: var(--quiz-shimmer);
-    transition: left 0.5s ease;
+    display: none;
 }
 
 .options button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
-    border-radius: inherit;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.options button:hover::before {
-    left: 100%;
-}
-
-.options button:hover::after {
-    opacity: 1;
+    display: none;
 }
 
 .options button:hover {
     background: var(--quiz-glass);
     border-color: rgba(102, 126, 234, 0.4);
-    transform: translateY(-5px) scale(1.02) rotateX(2deg);
-    box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.15),
-        0 0 30px rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     color: rgba(255, 255, 255, 0.95);
 }
 
-/* ✨ Beautiful Selected Option State ✨ */
+/* ✨ Optimized Selected Option State ✨ */
 .options button.selected {
     background: var(--quiz-gradient-3) !important;
     color: white !important;
     border-color: rgba(79, 172, 254, 0.6) !important;
-    box-shadow: 0 20px 40px rgba(79, 172, 254, 0.3), 0 0 40px rgba(79, 172, 254, 0.5) !important;
-    transform: scale(1.03) rotateX(1deg) !important;
+    box-shadow: 0 8px 20px rgba(79, 172, 254, 0.2) !important;
+    transform: scale(1.02) !important;
     position: relative;
-    animation: success-glow 0.2s ease-out;
 }
 
 .options button.selected::before {
@@ -239,7 +186,6 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: white;
-    animation: checkmarkPop 0.15s ease-out;
 }
 
 @keyframes checkmarkPop {
@@ -253,7 +199,7 @@
     }
 }
 
-/* ✨ Ultra Beautiful Navigation Buttons ✨ */
+/* ✨ Optimized Navigation Buttons ✨ */
 .navigation-buttons {
     display: flex;
     gap: 1.5rem;
@@ -269,47 +215,32 @@
     border-radius: 1.25rem;
     padding: 1rem 2rem;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s ease;
     font-weight: 700;
     font-size: 1rem;
-    box-shadow: 
-        0 15px 35px rgba(102, 126, 234, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+    backdrop-filter: blur(8px);
     min-height: 56px;
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    transform: translateZ(0);
 }
 
 .navigation-buttons button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: var(--quiz-shimmer);
-    transition: left 0.5s ease;
-}
-
-.navigation-buttons button:hover::before {
-    left: 100%;
+    display: none; /* Remove shimmer effect */
 }
 
 .navigation-buttons button:hover {
     background: var(--quiz-gradient-2);
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 
-        0 25px 50px rgba(240, 147, 251, 0.4),
-        0 0 40px rgba(240, 147, 251, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(240, 147, 251, 0.2);
     border-color: rgba(240, 147, 251, 0.4);
 }
 
 .navigation-buttons button:active {
-    transform: translateY(-1px) scale(1.02);
+    transform: translateY(-1px) scale(1.01);
 }
 /* ✨ Beautiful Disabled Button State ✨ */
 .disabled-btn {
@@ -457,7 +388,7 @@
 .result-icon {
     font-size: 3rem;
     margin-bottom: var(--space-md);
-    animation: bounce 1s ease-in-out;
+    /* animation: bounce 1s ease-in-out; */
 }
 
 .result-header h2 {

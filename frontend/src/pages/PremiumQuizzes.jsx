@@ -210,42 +210,20 @@ const PremiumQuizzes = () => {
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                    <motion.span
-                        className="header-icon"
-                        animate={{ 
-                            rotateY: [0, 360],
-                            scale: [1, 1.2, 1]
-                        }}
-                        transition={{ 
-                            rotateY: { duration: 4, repeat: Infinity },
-                            scale: { duration: 2.5, repeat: Infinity }
-                        }}
-                    >
+                    <span className="header-icon">
                         💎
-                    </motion.span>
+                    </span>
                     Premium Quizzes
                 </motion.h2>
-                <motion.button 
+                <button 
                     className="create-btn" 
                     onClick={() => document.getElementById("create_quiz_modal").showModal()}
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    whileHover={{ 
-                        scale: 1.05, 
-                        boxShadow: "0 10px 30px rgba(251, 191, 36, 0.3)",
-                        y: -2
-                    }}
-                    whileTap={{ scale: 0.95 }}
                 >
-                    <motion.span
-                        animate={{ rotate: [0, 90, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                    >
+                    <span>
                         ✨
-                    </motion.span>
+                    </span>
                     Create Premium Quiz
-                </motion.button>
+                </button>
             </motion.div>
 
             <motion.div 
@@ -255,132 +233,85 @@ const PremiumQuizzes = () => {
                 transition={{ duration: 0.6, delay: 0.3 }}
             >
                 <AnimatePresence>
-                    {quizzes.map((quiz, index) => (
-                        <motion.div 
+                    {quizzes.map((quiz, _index) => (
+                        <div 
                             key={quiz._id} 
                             className="quiz-box premium-box"
-                            initial={{ x: -100, opacity: 0, scale: 0.8 }}
-                            animate={{ x: 0, opacity: 1, scale: 1 }}
-                            exit={{ x: 100, opacity: 0, scale: 0.8 }}
-                            transition={{ 
-                                duration: 0.5, 
-                                delay: index * 0.1,
-                                type: "spring",
-                                stiffness: 100
-                            }}
-                            whileHover={{ 
-                                y: -15, 
-                                scale: 1.03,
-                                rotateY: 3,
-                                boxShadow: "0 30px 60px rgba(251, 191, 36, 0.25)"
-                            }}
-                            layout
                         >
-                            <motion.div className="premium-badge">
-                                <motion.span
-                                    animate={{ rotate: [0, 360] }}
-                                    transition={{ duration: 4, repeat: Infinity }}
-                                >
+                            <div className="premium-badge">
+                                <span>
                                     👑
-                                </motion.span>
+                                </span>
                                 PREMIUM
-                            </motion.div>
+                            </div>
                             
-                            <motion.div className="quiz-content">
-                                <motion.h3
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.5 + index * 0.1 }}
-                                >
+                            <div className="quiz-content">
+                                <h3>
                                     {quiz.title}
-                                </motion.h3>
+                                </h3>
                                 
-                                <motion.div 
+                                <div 
                                     className="quiz-info"
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.6 + index * 0.1 }}
                                 >
-                                    <motion.p>
+                                    <p>
                                         <span className="info-icon">🏆</span>
                                         Category: {quiz.category}
-                                    </motion.p>
-                                    <motion.p>
+                                    </p>
+                                    <p>
                                         <span className="info-icon">⏰</span>
                                         Duration: {quiz.duration} minutes
-                                    </motion.p>
-                                    <motion.p>
+                                    </p>
+                                    <p>
                                         <span className="info-icon">⭐</span>
                                         Total Marks: {quiz.totalMarks}
-                                    </motion.p>
-                                    <motion.p>
+                                    </p>
+                                    <p>
                                         <span className="info-icon">🎯</span>
                                         Passing Marks: {quiz.passingMarks}
-                                    </motion.p>
-                                </motion.div>
+                                    </p>
+                                </div>
 
-                                <motion.div 
+                                <div 
                                     className="quiz-actions"
-                                    initial={{ y: 30, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.7 + index * 0.1 }}
                                 >
-                                    <motion.button 
+                                    <button 
                                         className="delete-btn premium-delete-btn" 
                                         onClick={() => deleteQuiz(quiz.title)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(239, 68, 68, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
                                     >
                                         🗑️ Delete
-                                    </motion.button>
+                                    </button>
                                     
-                                    <motion.button 
+                                    <button 
                                         className="add-ai-btn premium-ai-btn" 
                                         onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(251, 191, 36, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
                                     >
-                                        <motion.span
-                                            animate={{ rotate: [0, 360] }}
-                                            transition={{ duration: 3, repeat: Infinity }}
-                                        >
+                                        <span>
                                             🤖
-                                        </motion.span>
+                                        </span>
                                         AI Premium
-                                    </motion.button>
+                                    </button>
                                     
-                                    <motion.button 
+                                    <button 
                                         className="add-question-btn premium-add-btn" 
                                         onClick={() => openAddQuestionModal(quiz._id)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(251, 191, 36, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
                                     >
                                         ➕ Add Question
-                                    </motion.button>
+                                    </button>
                                     
-                                    <motion.button 
+                                    <button 
                                         className="view-questions-btn premium-view-btn" 
                                         onClick={() => navigate(`/premium/quiz/${quiz._id}`)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(251, 191, 36, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
                                     >
                                         📜 View Questions
-                                    </motion.button>
-                                </motion.div>
+                                    </button>
+                                </div>
 
-                                <motion.ul 
+                                <ul 
                                     className="display-ans premium-questions"
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    transition={{ delay: 0.8 + index * 0.1 }}
                                 >
                                     {quiz.questions.map((q, i) => (
-                                        <motion.li 
+                                        <li 
                                             key={i}
-                                            initial={{ x: -20, opacity: 0 }}
-                                            animate={{ x: 0, opacity: 1 }}
-                                            transition={{ delay: 0.9 + index * 0.1 + i * 0.05 }}
-                                            whileHover={{ x: 10, backgroundColor: "rgba(251, 191, 36, 0.05)" }}
                                         >
                                             <div className="question-text">
                                                 <strong>Q{i + 1}:</strong> {q.question}
@@ -388,13 +319,13 @@ const PremiumQuizzes = () => {
                                             <div className="correct-answer premium-answer">
                                                 ✨ Answer: {q.options && q.options[['A', 'B', 'C', 'D'].indexOf(q.correctAnswer)] || q.correctAnswer}
                                             </div>
-                                        </motion.li>
+                                        </li>
                                     ))}
-                                </motion.ul>
-                            </motion.div>
+                                </ul>
+                            </div>
                             
                             <div className="premium-bg-effect"></div>
-                        </motion.div>
+                        </div>
                     ))}
                 </AnimatePresence>
             </motion.div>
@@ -409,11 +340,8 @@ const PremiumQuizzes = () => {
                     }
                 }}
             >
-                <motion.div 
+                <div 
                     className="modal-box premium-modal-box"
-                    initial={{ scale: 0.8, opacity: 0, rotateX: -10 }}
-                    animate={{ scale: 1, opacity: 1, rotateX: 0 }}
-                    transition={{ duration: 0.3, type: "spring" }}
                 >
                     <form onSubmit={handleAiSubmit}>
                         <button 
@@ -428,59 +356,40 @@ const PremiumQuizzes = () => {
                             ✕
                         </button>
 
-                        <motion.h3 
+                        <h3 
                             className="modal-title premium-title"
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.1 }}
                         >
-                            <motion.span
-                                animate={{ rotate: [0, 360] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                            >
+                            <span>
                                 🤖
-                            </motion.span>
+                            </span>
                             Premium AI Generation
-                        </motion.h3>
+                        </h3>
                         
-                        <motion.input 
+                        <input 
                             type="text" 
                             name="aiTopic" 
                             placeholder="Enter Premium Topic" 
                             value={aiTopic} 
                             onChange={(e) => setAiTopic(e.target.value)} 
                             required 
-                            initial={{ x: -20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(251, 191, 36, 0.3)" }}
                         />
                         
-                        <motion.input 
+                        <input 
                             type="number" 
                             name="aiNumQuestions" 
                             placeholder="Number of Premium Questions" 
                             value={aiNumQuestions} 
                             onChange={(e) => setAiNumQuestions(e.target.value)} 
                             required 
-                            initial={{ x: 20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(251, 191, 36, 0.3)" }}
                         />
                         
-                        <motion.button 
+                        <button 
                             className="submit-btn premium-submit"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(251, 191, 36, 0.3)" }}
-                            whileTap={{ scale: 0.95 }}
                         >
                             ✨ Generate Premium Questions
-                        </motion.button>
+                        </button>
                     </form>
-                </motion.div>
+                </div>
             </dialog>
 
             {/* Create Quiz Modal */}
@@ -493,11 +402,8 @@ const PremiumQuizzes = () => {
                     }
                 }}
             >
-                <motion.div 
+                <div 
                     className="modal-box premium-modal-box"
-                    initial={{ scale: 0.8, opacity: 0, rotateX: -10 }}
-                    animate={{ scale: 1, opacity: 1, rotateX: 0 }}
-                    transition={{ duration: 0.3, type: "spring" }}
                 >
                     <form onSubmit={createQuiz}>
                         <button 
@@ -512,55 +418,36 @@ const PremiumQuizzes = () => {
                             ✕
                         </button>
                         
-                        <motion.h3 
+                        <h3 
                             className="modal-title premium-title"
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.1 }}
                         >
-                            <motion.span
-                                animate={{ rotateY: [0, 360] }}
-                                transition={{ duration: 3, repeat: Infinity }}
-                            >
+                            <span>
                                 💎
-                            </motion.span>
+                            </span>
                             Create Premium Quiz
-                        </motion.h3>
+                        </h3>
                         
-                        <motion.input 
+                        <input 
                             type="text" 
                             name="title" 
                             placeholder="Enter Premium Quiz Title" 
                             required 
-                            initial={{ x: -20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(251, 191, 36, 0.3)" }}
                         />
                         
-                        <motion.input 
+                        <input 
                             type="text" 
                             name="category" 
                             placeholder="Enter Premium Category" 
                             required 
-                            initial={{ x: 20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(251, 191, 36, 0.3)" }}
                         />
                         
-                        <motion.button 
+                        <button 
                             className="submit-btn premium-submit"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(251, 191, 36, 0.3)" }}
-                            whileTap={{ scale: 0.95 }}
                         >
                             ✨ Create Premium Quiz
-                        </motion.button>
+                        </button>
                     </form>
-                </motion.div>
+                </div>
             </dialog>
 
             {/* Add Question Modal */}

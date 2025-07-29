@@ -6,39 +6,26 @@
     --user-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
     --user-glass: rgba(255, 255, 255, 0.08);
     --user-border: rgba(255, 255, 255, 0.15);
-    --user-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-    --user-glow: 0 0 40px rgba(102, 126, 234, 0.5);
+    --user-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    --user-glow: 0 0 20px rgba(102, 126, 234, 0.4);
     --quiz-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
     --quiz-gradient-2: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #43e97b 100%);
     --quiz-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
-/* ✨ Ultra Beautiful Container with Dynamic Background ✨ */
+/* ✨ Optimized Container ✨ */
 .user-quiz-container {
     min-height: 100vh;
-    background: 
-        radial-gradient(ellipse at top left, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(240, 147, 251, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(79, 172, 254, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(67, 233, 123, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 75%, #1a1a2e 100%);
-    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 400% 400%;
-    animation: gradientShift 20s ease infinite;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 75%, #1a1a2e 100%);
     position: relative;
     overflow-x: hidden;
-    perspective: 1200px;
     padding: 2rem;
     z-index: 1;
 }
 
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    25% { background-position: 100% 50%; }
-    50% { background-position: 100% 100%; }
-    75% { background-position: 0% 100%; }
-}
+/* Removed heavy infinite animations for performance */
 
-/* ✨ Ultra Beautiful Loading Spinner with Glow Effects ✨ */
+/* ✨ Optimized Loading Spinner ✨ */
 .loading-container {
     display: flex;
     flex-direction: column;
@@ -49,23 +36,7 @@
     position: relative;
 }
 
-.loading-container::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
-    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
-}
+/* Removed heavy pulse animation for performance */
 
 .loading-spinner {
     width: 100px;
@@ -82,28 +53,11 @@
     border-top: 6px solid transparent;
     border-radius: 50%;
     background: conic-gradient(from 0deg, #667eea, #764ba2, #f093fb, #4facfe, #00f2fe, #667eea);
-    animation: spin 2s linear infinite, glow 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.8));
+    filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.4));
     position: relative;
 }
 
-.spinner-ring::before {
-    content: '';
-    position: absolute;
-    inset: 10px;
-    border-radius: 50%;
-    background: conic-gradient(from 180deg, #43e97b, #38f9d7, #4facfe, #43e97b);
-    animation: spin 3s linear infinite reverse;
-}
-
-.spinner-ring::after {
-    content: '';
-    position: absolute;
-    inset: 20px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
-    animation: pulse 1.5s ease-in-out infinite;
-}
+/* Removed complex nested animations for performance */
 
 @keyframes spin {
     from { transform: rotate(0deg); }
