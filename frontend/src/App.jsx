@@ -5,12 +5,21 @@ import Layout from "./components/Layout"; // ✅ Your layout with Sidebar
 import "./App.css";
 import Spinner from "./components/Spinner";
 import GoogleAuth from "./components/GoogleAuth";
+import OfflineBanner from "./components/OfflineBanner"; // ✅ Offline status banner
+import pwaManager from './utils/pwaUtils'; // ✅ PWA management utilities
+import { useNetworkStatus } from './hooks/useNetworkStatus'; // ✅ Network status detection
+
+// ✅ PWA Debug utilities (development only)
+if (import.meta.env.DEV) {
+  import('./utils/pwaDebug.js');
+}
 
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import RefundPolicy from './pages/RefundPolicy';
 import ShippingPolicy from './pages/ShippingPolicy';
 import ContactUs from './pages/ContactUs';
+import PWAInstallTest from './components/PWAInstallTest';
 import { ThemeProvider } from "./context/ThemeContext";
 
 // ✅ Lazy load all pages
@@ -60,6 +69,8 @@ const TestPage = lazy(() => import("./pages/TestPage"));
 const IntelligenceDashboard = lazy(() => import("./pages/IntelligenceDashboard"));
 
 const App = () => {
+    const isOnline = useNetworkStatus(); // ✅ Monitor network status
+    
     // 🔒 SECURITY: Removed unnecessary user state and logging
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -68,15 +79,107 @@ const App = () => {
         }
     }, []);
 
+    // ✅ PWA initialization and management
+    useEffect(() => {
+        // Initialize PWA manager
+        console.log('🚀 PWA Manager initialized');
+        
+        // Make PWA manager globally accessible for debugging
+        window.pwaManager = pwaManager;
+        
+        // Add enhanced PWA debug utilities
+        window.pwaDebug = {
+            checkStatus: () => pwaManager.getInstallationInfo(),
+            checkCriteria: () => pwaManager.checkInstallability(),
+            forceInstallCheck: () => {
+                console.log('🔍 Forcing PWA installability check...');
+                window.dispatchEvent(new CustomEvent('pwa-check-installability'));
+                return pwaManager.checkInstallability();
+            },
+            simulateInstallPrompt: () => {
+                console.log('🎯 Simulating install prompt for testing...');
+                if (pwaManager.installPrompt) {
+                    return pwaManager.promptInstall();
+                } else {
+                    console.log('⚠️ No install prompt available - showing browser-specific instructions');
+                    pwaManager.showBrowserSpecificInstructions();
+                    return false;
+                }
+            },
+            getManifest: async () => {
+                try {
+                    const manifestLink = document.querySelector('link[rel="manifest"]');
+                    if (manifestLink) {
+                        const response = await fetch(manifestLink.href);
+                        return await response.json();
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('Failed to fetch manifest:', error);
+                    return null;
+                }
+            },
+            clearPWAData: () => {
+                localStorage.removeItem('pwa_installed_at');
+                localStorage.removeItem('pwa_install_source');
+                console.log('🗑️ PWA data cleared');
+            },
+            testInstallFlow: () => {
+                console.log('🧪 Testing PWA install flow...');
+                const status = pwaManager.getInstallationInfo();
+                console.log('Current status:', status);
+                
+                if (status.canInstall) {
+                    console.log('✅ Can install - showing prompt');
+                    return pwaManager.promptInstall();
+                } else {
+                    console.log('❌ Cannot install - showing browser-specific instructions');
+                    pwaManager.showBrowserSpecificInstructions();
+                    return false;
+                }
+            }
+        };
+        
+        console.log('🔧 PWA Debug utilities loaded. Use window.pwaDebug.checkStatus() to check PWA status');
+        
+        // Check for updates periodically when online
+        if (isOnline) {
+            pwaManager.checkForUpdates();
+        }
+        
+        // Log PWA installation status
+        const pwaInfo = pwaManager.getInstallationInfo();
+        console.log('📱 PWA Initial Status:', pwaInfo);
+        
+        // Force check for beforeinstallprompt event with multiple attempts
+        setTimeout(() => {
+            const newPwaInfo = pwaManager.getInstallationInfo();
+            console.log('📱 PWA Status after delay:', newPwaInfo);
+            
+            // If still not installable, force a check
+            if (!newPwaInfo.isInstallable && !newPwaInfo.isInstalled) {
+                console.log('🔍 PWA not installable after delay, forcing check...');
+                pwaManager.checkInstallability();
+                
+                // Try again after another delay
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('pwa-check-installability'));
+                }, 2000);
+            }
+        }, 2000);
+    }, [isOnline]);
+
     return (
         <ThemeProvider>
             <Router>
+                <OfflineBanner /> {/* ✅ Global offline status banner */}
                 <Suspense fallback={<Spinner />}>
                     <Routes>
                         {/* Public Routes */}
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/google-auth" element={<GoogleAuth />} />
+                        <Route path="/pwa-test" element={<PWAInstallTest />} />
 
                         {/* Protected Routes */}
                         <Route element={<AuthWrapper><Layout /></AuthWrapper>}>

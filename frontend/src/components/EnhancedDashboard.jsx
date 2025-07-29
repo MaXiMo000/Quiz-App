@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
+import pwaManager from '../utils/pwaUtils'; // ✅ Import PWA utilities
+import { useNetworkStatus } from '../hooks/useNetworkStatus'; // ✅ Network status
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -43,6 +45,161 @@ const EnhancedDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // ✅ PWA State Management
+  const isOnline = useNetworkStatus();
+  const [canInstall, setCanInstall] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(() => {
+    // Check immediately on component mount
+    const immediate = window.matchMedia('(display-mode: standalone)').matches || 
+                     window.navigator.standalone === true ||
+                     window.matchMedia('(display-mode: fullscreen)').matches;
+    return immediate;
+  });
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  // ✅ Check PWA installation status
+  useEffect(() => {
+    const checkPWAStatus = () => {
+      const pwaInfo = pwaManager.getInstallationInfo();
+      console.log('📱 PWA Status Check:', pwaInfo);
+      
+      setIsInstalled(pwaInfo.isInstalled);
+      setCanInstall(pwaInfo.canInstall);
+      setIsInstallable(pwaInfo.isInstallable);
+      
+      console.log('Dashboard PWA State:', {
+        isInstalled: pwaInfo.isInstalled,
+        canInstall: pwaInfo.canInstall,
+        isInstallable: pwaInfo.isInstallable,
+        hasPrompt: pwaInfo.hasPrompt,
+        displayMode: pwaInfo.displayMode
+      });
+
+      // Additional standalone detection logging
+      console.log('🔍 Standalone Detection:', {
+        mediaQuery: window.matchMedia('(display-mode: standalone)').matches,
+        navigatorStandalone: window.navigator.standalone,
+        fullscreen: window.matchMedia('(display-mode: fullscreen)').matches,
+        windowDimensions: {
+          outer: { width: window.outerWidth, height: window.outerHeight },
+          inner: { width: window.innerWidth, height: window.innerHeight }
+        }
+      });
+    };
+    
+    checkPWAStatus();
+    
+    // Listen for PWA events
+    const handlePWAInstallable = () => {
+      console.log('🎯 PWA installable event received');
+      checkPWAStatus();
+    };
+    
+    const handlePWAInstalled = () => {
+      console.log('🎉 PWA installed event received');
+      checkPWAStatus();
+    };
+    
+    window.addEventListener('pwa-installable', handlePWAInstallable);
+    window.addEventListener('pwa-installed', handlePWAInstalled);
+    
+    // Check periodically for changes (less frequent when installed)
+    const initialPWAInfo = pwaManager.getInstallationInfo();
+    const checkInterval = initialPWAInfo.isInstalled ? 30000 : 5000; // 30s if installed, 5s if not
+    const interval = setInterval(checkPWAStatus, checkInterval);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('pwa-installable', handlePWAInstallable);
+      window.removeEventListener('pwa-installed', handlePWAInstalled);
+    };
+  }, []);
+
+  // ✅ PWA Install Handler
+  const handlePWAInstall = async () => {
+    console.log('🚀 PWA Install button clicked');
+    console.log('Current PWA state:', { 
+      canInstall, 
+      isInstalled, 
+      isInstallable,
+      hasPrompt: !!pwaManager.installPrompt 
+    });
+    
+    try {
+      const success = await pwaManager.promptInstall();
+      console.log('📱 PWA Install result:', success);
+      
+      if (success) {
+        console.log('🎉 PWA installation initiated successfully!');
+        
+        // Update state immediately
+        setCanInstall(false);
+        setIsInstallable(false);
+        
+        // Show success notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #48bb78, #38a169);
+          color: white;
+          padding: 16px 24px;
+          border-radius: 12px;
+          font-weight: 600;
+          box-shadow: 0 8px 32px rgba(72, 187, 120, 0.3);
+          z-index: 10000;
+          animation: slideIn 0.3s ease-out;
+        `;
+        notification.innerHTML = '🎉 QuizNest installation started!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.remove();
+          }
+        }, 3000);
+      } else {
+        console.log('📱 PWA installation was cancelled or showing manual instructions');
+        
+        // Show helpful message for manual installation
+        const helpNotification = document.createElement('div');
+        helpNotification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+          color: white;
+          padding: 16px 24px;
+          border-radius: 12px;
+          font-weight: 600;
+          box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+          z-index: 10000;
+          max-width: 300px;
+          animation: slideIn 0.3s ease-out;
+        `;
+        helpNotification.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span>📱</span>
+            <strong>Manual Installation Available</strong>
+          </div>
+          <div style="font-size: 14px; opacity: 0.9;">
+            Look for the install icon in your address bar or browser menu!
+          </div>
+        `;
+        document.body.appendChild(helpNotification);
+        
+        setTimeout(() => {
+          if (helpNotification.parentNode) {
+            helpNotification.remove();
+          }
+        }, 5000);
+      }
+    } catch (error) {
+      console.error('PWA installation failed:', error);
+    }
+  };
+
   // Fetch real data from API
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -57,10 +214,7 @@ const EnhancedDashboard = () => {
         throw new Error('User not found. Please log in again.');
       }
 
-      console.log('Fetching dashboard data for user:', userId);
       const response = await axios.get(`/api/dashboard/${userId}?timeRange=${timeRange}`);
-      
-      console.log('Dashboard response:', response.data);
       
       if (response.data && response.status === 200) {
         // Process and validate the data
@@ -73,8 +227,7 @@ const EnhancedDashboard = () => {
           categoryPerformance: response.data.categoryPerformance || {},
           recentAchievements: response.data.recentAchievements || []
         };
-        
-        console.log('Processed dashboard data:', processedData);
+
         setDashboardData(processedData);
       } else {
         throw new Error('Invalid response from server');
@@ -120,8 +273,7 @@ const EnhancedDashboard = () => {
           }
         ]
       };
-      
-      console.log('Using fallback data:', fallbackData);
+
       setDashboardData(fallbackData);
     } finally {
       setLoading(false);
@@ -635,36 +787,74 @@ const EnhancedDashboard = () => {
             </motion.div>
           </div>
 
-          {/* PWA Installation Banner */}
-          <motion.div 
-            className="pwa-install-banner"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-          >
-            <div className="pwa-content">
-              <div className="pwa-icon">📱</div>
-              <div className="pwa-text">
-                <h4>Install QuizNest App</h4>
-                <p>Get the full experience with offline access and push notifications</p>
-              </div>
-            </div>
-            <motion.button 
-              className="pwa-install-btn"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
-                  // This will trigger the browser's install prompt if available
-                  window.dispatchEvent(new Event('beforeinstallprompt'));
-                } else {
-                  alert('🚀 Add QuizNest to your home screen for the best experience!\n\n📱 On mobile: Use your browser\'s "Add to Home Screen" option\n💻 On desktop: Click the install icon in your address bar');
-                }
-              }}
+          {/* Connection Status Indicator - Only show in browser mode */}
+          {!isInstalled && (
+            <motion.div 
+              className={`connection-status ${isOnline ? 'online' : 'offline'}`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              Install
-            </motion.button>
-          </motion.div>
+              <div className="status-indicator">
+                <div className={`status-dot ${isOnline ? 'online' : 'offline'}`}></div>
+                <span className="status-text">
+                  {isOnline ? '🌐 Online' : '📱 Offline Mode'} 
+                  {!isOnline && ' - Cached content available'}
+                </span>
+              </div>
+            </motion.div>
+          )}
+
+          {/* PWA Installed Status - Show when app is installed */}
+          {isInstalled && (
+            <motion.div 
+              className="pwa-installed-status"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="installed-content">
+                <div className="installed-icon">✅</div>
+                <div className="installed-text">
+                  <h4>App Installed</h4>
+                  <p>QuizNest is running as an installed app! Enjoy the full experience.</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* PWA Installation Banner - Only show when not installed */}
+          {!isInstalled && (
+            <motion.div 
+              className="pwa-install-banner"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <div className="pwa-content">
+                <div className="pwa-icon">📱</div>
+                <div className="pwa-text">
+                  <h4>Install QuizNest App</h4>
+                  <p>{canInstall 
+                    ? (pwaManager.installPrompt ? 'Ready to install! Click below for native installation.' : 'App is installable! Click below to install.')
+                    : 'All requirements met! Click below for installation instructions.'
+                  }</p>
+                </div>
+              </div>
+              <motion.button 
+                className="pwa-install-btn"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePWAInstall}
+                disabled={isInstalled}
+                style={{ 
+                  cursor: isInstalled ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {canInstall ? '📱 Install App' : '📋 Show Install Guide'}
+              </motion.button>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </div>
