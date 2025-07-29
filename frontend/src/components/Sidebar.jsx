@@ -301,10 +301,26 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
                                 </motion.div>
                                 
+                                {/* Phase 4: Next-Gen Features */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.1, duration: 0.4 }}
+                                    transition={{ delay: 1.2, duration: 0.4 }}
+                                >
+                                    <Link to="/ai-study-buddy" onClick={handleLinkClick}>🤖 AI Study Buddy</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.25, duration: 0.4 }}
+                                >
+                                    <Link to="/real-time-quiz" onClick={handleLinkClick}>⚡ Real-Time Quiz</Link>
+                                </motion.div>
+                                
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.3, duration: 0.4 }}
                                 >
                                     <Link to="/contact" onClick={handleLinkClick}>📄 Contact Me</Link>
                                 </motion.div>

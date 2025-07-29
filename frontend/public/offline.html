@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Offline - QuizNest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .offline-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .features h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .feature-list li::before {
+            content: '✓ ';
+            color: #48bb78;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .retry-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .retry-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .offline-quiz {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .offline-quiz h4 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .quiz-question {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .quiz-options {
+            list-style: none;
+        }
+
+        .quiz-options li {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 8px 0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .quiz-options li:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .offline-icon {
+                font-size: 60px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="offline-icon">📴</div>
+        <h1>You're Offline</h1>
+        <p>Don't worry! You can still access some QuizNest features while offline.</p>
+        
+        <div class="features">
+            <h3>Available Offline:</h3>
+            <ul class="feature-list">
+                <li>View cached quiz content</li>
+                <li>Review your progress</li>
+                <li>Practice with saved quizzes</li>
+                <li>Browse study materials</li>
+            </ul>
+        </div>
+
+        <div class="offline-quiz">
+            <h4>🧠 Quick Offline Quiz</h4>
+            <div class="quiz-question">
+                <strong>What is the primary benefit of progressive web apps?</strong>
+            </div>
+            <ul class="quiz-options">
+                <li onclick="showAnswer(this, false)">A) They only work online</li>
+                <li onclick="showAnswer(this, true)">B) They work offline and feel like native apps</li>
+                <li onclick="showAnswer(this, false)">C) They are slower than websites</li>
+                <li onclick="showAnswer(this, false)">D) They require app store approval</li>
+            </ul>
+        </div>
+
+        <a href="javascript:location.reload()" class="retry-btn">🔄 Try Again</a>
+        <a href="/" class="retry-btn">🏠 Go Home</a>
+    </div>
+
+    <script>
+        function showAnswer(element, isCorrect) {
+            // Clear previous selections
+            document.querySelectorAll('.quiz-options li').forEach(li => {
+                li.style.background = 'rgba(255, 255, 255, 0.1)';
+                li.style.color = 'white';
+            });
+
+            // Show result
+            if (isCorrect) {
+                element.style.background = '#48bb78';
+                element.style.color = 'white';
+                setTimeout(() => {
+                    alert('🎉 Correct! PWAs provide native app-like experiences with offline capabilities.');
+                }, 100);
+            } else {
+                element.style.background = '#f56565';
+                element.style.color = 'white';
+                setTimeout(() => {
+                    alert('❌ Not quite! The correct answer is B) They work offline and feel like native apps.');
+                }, 100);
+            }
+        }
+
+        // Check for network connectivity
+        function checkConnection() {
+            if (navigator.onLine) {
+                const status = document.createElement('div');
+                status.innerHTML = '🌐 Connection restored! Refreshing...';
+                status.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #48bb78;
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    z-index: 1000;
+                `;
+                document.body.appendChild(status);
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        }
+
+        // Listen for connection changes
+        window.addEventListener('online', checkConnection);
+        
+        // Check connection periodically
+        setInterval(checkConnection, 5000);
+
+        // Service worker registration check
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(() => {
+                console.log('Service worker is ready for offline functionality');
+            });
+        }
+    </script>
+</body>
+</html>

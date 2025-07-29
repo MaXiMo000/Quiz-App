@@ -25,6 +25,15 @@ const userSchema = new mongoose.Schema({
         strongAreas: { type: [String], default: [] }
     },
     
+    // Intelligence tracking for AI features
+    intelligence: {
+        weakAreas: { type: [String], default: [] },
+        strongAreas: { type: [String], default: [] },
+        learningStyle: { type: String, enum: ["visual", "auditory", "kinesthetic", "reading"], default: "visual" },
+        adaptiveDifficulty: { type: String, enum: ["easy", "medium", "hard"], default: "medium" },
+        lastAnalyzed: { type: Date, default: Date.now }
+    },
+    
     // Performance tracking for adaptive difficulty
     performanceHistory: [{
         quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz" },
@@ -63,7 +72,9 @@ const userSchema = new mongoose.Schema({
             groupsCreated: { type: Number, default: 0 },
             challengesWon: { type: Number, default: 0 },
             tournamentsParticipated: { type: Number, default: 0 },
-            tournamentsWon: { type: Number, default: 0 }
+            tournamentsWon: { type: Number, default: 0 },
+            multiplayerGames: { type: Number, default: 0 },
+            multiplayerWins: { type: Number, default: 0 }
         },
         
         // Privacy settings
@@ -131,7 +142,27 @@ const userSchema = new mongoose.Schema({
     
     // Activity status
     lastSeen: { type: Date, default: Date.now },
-    isOnline: { type: Boolean, default: false }
+    isOnline: { type: Boolean, default: false },
+    
+    // AI Study Buddy features
+    studyPlans: [{
+        content: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now },
+        isActive: { type: Boolean, default: true },
+        source: { type: String, enum: ["ai_generated", "manual", "template"], default: "ai_generated" },
+        completedTasks: [{ type: String }],
+        progress: { type: Number, default: 0 } // percentage completed
+    }],
+    
+    reminders: [{
+        text: { type: String, required: true },
+        context: { type: String, default: "general" },
+        createdAt: { type: Date, default: Date.now },
+        scheduledFor: { type: Date },
+        isActive: { type: Boolean, default: true },
+        source: { type: String, enum: ["ai_study_buddy", "manual", "system"], default: "manual" },
+        notificationSent: { type: Boolean, default: false }
+    }]
 }, { timestamps: true });
 
 export default mongoose.model("UserQuiz", userSchema);

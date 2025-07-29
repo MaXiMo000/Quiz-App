@@ -48,6 +48,10 @@ import AchievementSystem from "./components/AchievementSystem";
 // Phase 3: Social & Gamification Components
 import FriendsSystem from "./components/FriendsSystem";
 import StudyGroups from "./components/StudyGroups";
+
+// Phase 4: Next-Gen Features
+import AIStudyBuddy from "./components/AIStudyBuddy";
+import RealTimeQuiz from "./components/RealTimeQuiz";
 import GamificationHub from "./components/GamificationHub";
 
 const TestPage = lazy(() => import("./pages/TestPage"));
@@ -86,6 +90,10 @@ const App = () => {
                             <Route path="/friends" element={<FriendsSystem />} />
                             <Route path="/study-groups" element={<StudyGroups />} />
                             <Route path="/gamification" element={<GamificationHub />} />
+                            
+                            {/* Phase 4: Next-Gen Features */}
+                            <Route path="/ai-study-buddy" element={<AIStudyBuddy />} />
+                            <Route path="/real-time-quiz" element={<RealTimeQuiz />} />
                             
                             <Route path="/admin" element={<AdminDashboard />} />
                             <Route path="/admin/create" element={<AdminQuizzes />} />

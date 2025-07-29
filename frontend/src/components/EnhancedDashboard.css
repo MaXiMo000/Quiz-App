@@ -737,3 +737,313 @@
     border-color: rgba(255, 255, 255, 0.03);
   }
 }
+
+/* Next-Gen Features Showcase */
+.features-showcase-card {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, 
+    rgba(102, 126, 234, 0.08), 
+    rgba(118, 75, 162, 0.05));
+  backdrop-filter: blur(25px);
+  padding: var(--space-xl);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  box-shadow: var(--shadow-xl), 0 0 30px rgba(102, 126, 234, 0.1);
+  transition: all var(--transition-normal);
+  margin-top: var(--space-lg);
+}
+
+.features-showcase-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2xl), 0 0 40px rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.features-showcase-card h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 var(--space-xl) 0;
+  text-align: center;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.feature-card {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.08), 
+    rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(20px);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.feature-card.ai-feature::before {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.feature-card.realtime-feature::before {
+  background: linear-gradient(90deg, #f093fb, #f5576c);
+}
+
+.feature-card.social-feature::before {
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+}
+
+.feature-card.gamification-feature::before {
+  background: linear-gradient(90deg, #43e97b, #38f9d7);
+}
+
+.feature-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.ai-feature .feature-icon {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.realtime-feature .feature-icon {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.social-feature .feature-icon {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.gamification-feature .feature-icon {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+
+.feature-content {
+  flex: 1;
+}
+
+.feature-content h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.feature-content p {
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-md) 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.feature-tags {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.feature-tag {
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.feature-arrow {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  transition: all var(--transition-normal);
+}
+
+.feature-card:hover .feature-arrow {
+  transform: translateX(5px);
+  color: var(--text-color);
+}
+
+/* PWA Install Banner */
+.pwa-install-banner {
+  background: linear-gradient(135deg, 
+    rgba(72, 187, 120, 0.1), 
+    rgba(56, 161, 105, 0.05));
+  border: 1px solid rgba(72, 187, 120, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.pwa-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex: 1;
+}
+
+.pwa-icon {
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+}
+
+.pwa-text h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.pwa-text p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.pwa-install-btn {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+  border: none;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+  white-space: nowrap;
+}
+
+.pwa-install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+}
+
+/* Mobile Responsive for Features */
+@media (max-width: 768px) {
+  .features-showcase-card {
+    padding: var(--space-lg);
+    margin-top: var(--space-md);
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .feature-card {
+    padding: var(--space-md);
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2.5rem;
+  }
+
+  .feature-content {
+    text-align: center;
+  }
+
+  .feature-tags {
+    justify-content: center;
+  }
+
+  .feature-arrow {
+    display: none;
+  }
+
+  .pwa-install-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .pwa-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .pwa-install-btn {
+    width: 100%;
+    padding: var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .features-showcase-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .feature-card {
+    padding: var(--space-sm);
+  }
+
+  .feature-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 2rem;
+  }
+
+  .feature-content h4 {
+    font-size: 1rem;
+  }
+
+  .feature-content p {
+    font-size: 0.85rem;
+  }
+
+  .feature-tag {
+    font-size: 0.7rem;
+  }
+}
