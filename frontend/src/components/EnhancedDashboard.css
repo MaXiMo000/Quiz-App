@@ -25,6 +25,7 @@
 
 .dashboard-header {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-2xl);
