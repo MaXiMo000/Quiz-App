@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 PWA Installation Guide - Quiz Master</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 { text-align: center; font-size: 2.5em; margin-bottom: 30px; }
+        h2 { color: #ffd700; font-size: 1.8em; margin-top: 30px; }
+        .step-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 5px solid #ffd700;
+        }
+        .browser-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .browser-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        .browser-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .debug-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-good { background: #28a745; }
+        .status-bad { background: #dc3545; }
+        .status-warning { background: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 PWA Installation Guide</h1>
+        
+        <div class="success">
+            <h3>✅ Current Status</h3>
+            <div id="pwa-status">
+                <div><span class="status-indicator status-good"></span>Service Worker: <span id="sw-status">Loading...</span></div>
+                <div><span class="status-indicator status-good"></span>Manifest: <span id="manifest-status">Loading...</span></div>
+                <div><span class="status-indicator status-good"></span>HTTPS/Localhost: <span id="secure-status">Loading...</span></div>
+                <div><span class="status-indicator" id="install-indicator"></span>Install Available: <span id="install-status">Loading...</span></div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Why PWA Install Might Not Work</h3>
+            <ul>
+                <li><strong>Browser Requirements:</strong> Chrome, Edge, Safari, Firefox (with limitations)</li>
+                <li><strong>User Engagement:</strong> Browser needs to detect user interaction with the site</li>
+                <li><strong>Time Delay:</strong> Browser may take 2-3 minutes to show install prompt</li>
+                <li><strong>Previous Dismissals:</strong> If user dismissed before, prompt won't show again</li>
+            </ul>
+        </div>
+
+        <h2>🌐 Browser-Specific Instructions</h2>
+        
+        <div class="browser-guide">
+            <div class="browser-card">
+                <span class="browser-icon">🟦</span>
+                <h3>Microsoft Edge</h3>
+                <div class="step-card">
+                    <ol>
+                        <li>Look for <strong>📱 Install app</strong> icon in address bar</li>
+                        <li>Or click <strong>⋯ menu</strong> → <strong>Apps</strong> → <strong>Install this site as an app</strong></li>
+                        <li>Click <strong>Install</strong> in popup</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="browser-card">
+                <span class="browser-icon">🟢</span>
+                <h3>Google Chrome</h3>
+                <div class="step-card">
+                    <ol>
+                        <li>Look for <strong>📱 Install</strong> icon in address bar</li>
+                        <li>Or click <strong>⋮ menu</strong> → <strong>Install Quiz Master...</strong></li>
+                        <li>Click <strong>Install</strong> when prompted</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="browser-card">
+                <span class="browser-icon">🦊</span>
+                <h3>Firefox</h3>
+                <div class="step-card">
+                    <ol>
+                        <li>Firefox has limited PWA support</li>
+                        <li>You can bookmark the site for quick access</li>
+                        <li>Consider using Chrome or Edge for full PWA experience</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="browser-card">
+                <span class="browser-icon">🧭</span>
+                <h3>Safari (iOS/Mac)</h3>
+                <div class="step-card">
+                    <ol>
+                        <li>Tap <strong>Share</strong> button (□↗)</li>
+                        <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
+                        <li>Tap <strong>Add</strong> to confirm</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <h2>🛠️ Troubleshooting Steps</h2>
+        
+        <div class="step-card">
+            <h3>Step 1: Clear Browser Data</h3>
+            <p>Clear cache and cookies for this site, then reload the page.</p>
+            <button class="btn" onclick="clearSiteData()">🗑️ Clear Site Data</button>
+        </div>
+
+        <div class="step-card">
+            <h3>Step 2: Wait and Interact</h3>
+            <p>Browse the site for 2-3 minutes. The install prompt appears after user engagement.</p>
+            <div id="engagement-timer">Time on site: <span id="timer">0</span> seconds</div>
+        </div>
+
+        <div class="step-card">
+            <h3>Step 3: Check DevTools</h3>
+            <p>Open DevTools (F12) → Application tab → Manifest section</p>
+            <button class="btn" onclick="openDevTools()">🔧 Open DevTools Instructions</button>
+        </div>
+
+        <div class="step-card">
+            <h3>Step 4: Manual Install</h3>
+            <p>If automatic prompt doesn't work, use browser's manual install option.</p>
+            <button class="btn" onclick="showManualInstructions()">📱 Show Manual Install</button>
+        </div>
+
+        <h2>🧪 Debug Tools</h2>
+        
+        <div class="debug-section">
+            <h3>PWA Debug Console</h3>
+            <div>
+                <button class="btn" onclick="checkPWAStatus()">🔍 Check PWA Status</button>
+                <button class="btn" onclick="testInstallFlow()">🧪 Test Install</button>
+                <button class="btn" onclick="simulatePrompt()">⚡ Force Prompt</button>
+            </div>
+            <div id="debug-output" style="margin-top: 15px; min-height: 100px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; font-size: 12px;"></div>
+        </div>
+
+        <div class="success">
+            <h3>✅ Success Indicators</h3>
+            <ul>
+                <li>App appears in your browser's app menu</li>
+                <li>Desktop shortcut is created (Windows/Mac)</li>
+                <li>App runs in standalone window (no browser UI)</li>
+                <li>App works offline</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" onclick="window.location.href='/enhanced-dashboard'" style="font-size: 18px; padding: 15px 30px;">
+                🚀 Go to Quiz Master Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let startTime = Date.now();
+        let debugOutput = document.getElementById('debug-output');
+
+        // Update timer
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('timer').textContent = elapsed;
+        }, 1000);
+
+        // Check PWA status on load
+        window.addEventListener('load', () => {
+            checkInitialStatus();
+        });
+
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            debugOutput.innerHTML += `[${timestamp}] ${message}<br>`;
+            debugOutput.scrollTop = debugOutput.scrollHeight;
+        }
+
+        function checkInitialStatus() {
+            // Service Worker status
+            const swStatus = 'serviceWorker' in navigator ? '✅ Available' : '❌ Not Available';
+            document.getElementById('sw-status').textContent = swStatus;
+
+            // Manifest status
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            const manifestStatus = manifestLink ? '✅ Found' : '❌ Missing';
+            document.getElementById('manifest-status').textContent = manifestStatus;
+
+            // Secure context
+            const secureStatus = (location.protocol === 'https:' || location.hostname === 'localhost') ? '✅ Secure' : '❌ Not Secure';
+            document.getElementById('secure-status').textContent = secureStatus;
+
+            // Install availability
+            if (window.pwaManager) {
+                const info = window.pwaManager.getInstallationInfo();
+                const installStatus = info.canInstall ? '✅ Available' : '❌ Not Available';
+                document.getElementById('install-status').textContent = installStatus;
+                document.getElementById('install-indicator').className = `status-indicator ${info.canInstall ? 'status-good' : 'status-bad'}`;
+            } else {
+                document.getElementById('install-status').textContent = '⏳ Loading...';
+            }
+
+            addLog('🔍 Initial PWA status check completed');
+        }
+
+        function checkPWAStatus() {
+            if (window.pwaDebug) {
+                const status = window.pwaDebug.checkStatus();
+                addLog(`📱 PWA Status: ${JSON.stringify(status, null, 2)}`);
+                
+                const criteria = window.pwaDebug.checkCriteria();
+                addLog(`✅ Install Criteria: ${JSON.stringify(criteria, null, 2)}`);
+            } else {
+                addLog('❌ PWA Debug utilities not available');
+            }
+        }
+
+        function testInstallFlow() {
+            if (window.pwaDebug) {
+                addLog('🧪 Testing PWA install flow...');
+                const result = window.pwaDebug.testInstallFlow();
+                addLog(`🧪 Install test result: ${result}`);
+            } else {
+                addLog('❌ PWA Debug utilities not available');
+            }
+        }
+
+        function simulatePrompt() {
+            if (window.pwaDebug) {
+                addLog('⚡ Attempting to simulate install prompt...');
+                const result = window.pwaDebug.simulateInstallPrompt();
+                addLog(`⚡ Simulation result: ${result}`);
+            } else {
+                addLog('❌ PWA Debug utilities not available');
+            }
+        }
+
+        function clearSiteData() {
+            if (window.pwaDebug) {
+                window.pwaDebug.clearPWAData();
+            }
+            
+            // Clear localStorage
+            localStorage.clear();
+            
+            // Clear sessionStorage
+            sessionStorage.clear();
+            
+            addLog('🗑️ Site data cleared. Please refresh the page.');
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+
+        function openDevTools() {
+            addLog('🔧 DevTools Instructions:');
+            addLog('1. Press F12 to open DevTools');
+            addLog('2. Go to Application tab');
+            addLog('3. Check Manifest section on left');
+            addLog('4. Look for "Add to homescreen" installability');
+            addLog('5. Check Service Workers section');
+        }
+
+        function showManualInstructions() {
+            const userAgent = navigator.userAgent;
+            let instructions = '';
+            
+            if (userAgent.includes('Chrome')) {
+                instructions = 'Chrome: Click ⋮ menu → Install Quiz Master...';
+            } else if (userAgent.includes('Edge')) {
+                instructions = 'Edge: Click ⋯ menu → Apps → Install this site as an app';
+            } else if (userAgent.includes('Safari')) {
+                instructions = 'Safari: Click Share → Add to Home Screen';
+            } else if (userAgent.includes('Firefox')) {
+                instructions = 'Firefox: Limited PWA support. Try Chrome or Edge.';
+            } else {
+                instructions = 'Look for install option in browser menu or address bar';
+            }
+            
+            addLog(`📱 Manual Install: ${instructions}`);
+        }
+
+        // Listen for PWA events
+        window.addEventListener('beforeinstallprompt', (e) => {
+            addLog('🎯 beforeinstallprompt event fired! Install is now available.');
+            checkInitialStatus();
+        });
+
+        window.addEventListener('appinstalled', () => {
+            addLog('🎉 PWA installed successfully!');
+            checkInitialStatus();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#16213e">
+    <title>🔧 PWA Installation Test - Quiz Master</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 { text-align: center; font-size: 2.5em; margin-bottom: 30px; }
+        .status-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .success { background: rgba(40, 167, 69, 0.2); border: 2px solid #28a745; }
+        .warning { background: rgba(255, 193, 7, 0.2); border: 2px solid #ffc107; }
+        .error { background: rgba(220, 53, 69, 0.2); border: 2px solid #dc3545; }
+        .console {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .install-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: white;
+            color: #333;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 PWA Installation Test</h1>
+        
+        <div class="status-card success">
+            <h2>✅ Current Status</h2>
+            <div id="status-info">Loading...</div>
+        </div>
+
+        <div class="status-card">
+            <h2>🧪 Test Actions</h2>
+            <button class="btn" onclick="testBasicPWA()">🔍 Test Basic PWA</button>
+            <button class="btn" onclick="testInstallPrompt()">📱 Test Install Prompt</button>
+            <button class="btn" onclick="testBrowserInstall()">🌐 Test Browser Install</button>
+            <button class="btn" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+
+        <div class="status-card">
+            <h2>📋 Manual Install Instructions</h2>
+            <div id="browser-instructions">
+                <h3>🟢 For Chrome Users:</h3>
+                <ol>
+                    <li>Look in the address bar for a <strong>📱 Install</strong> icon</li>
+                    <li>If you see it, click it and then click <strong>Install</strong></li>
+                    <li>If not visible, click <strong>⋮ Menu</strong> → <strong>Install Quiz Master...</strong></li>
+                </ol>
+                
+                <h3>🟦 For Edge Users:</h3>
+                <ol>
+                    <li>Look in the address bar for a <strong>📱 Install app</strong> icon</li>
+                    <li>Or click <strong>⋯ Menu</strong> → <strong>Apps</strong> → <strong>Install this site as an app</strong></li>
+                </ol>
+                
+                <button class="btn" onclick="showDetailedInstructions()">📖 Show Detailed Instructions</button>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h2>📝 Test Console</h2>
+            <div id="console" class="console"></div>
+            <button class="btn" onclick="clearConsole()">🗑️ Clear Console</button>
+        </div>
+
+        <div class="status-card warning">
+            <h2>⚠️ Important Notes</h2>
+            <ul>
+                <li><strong>PWA Install prompts are controlled by the browser</strong></li>
+                <li><strong>Chrome may not show install prompt immediately</strong> - wait 2-3 minutes</li>
+                <li><strong>If you dismissed the prompt before</strong>, it won't show again automatically</li>
+                <li><strong>Manual install always works</strong> - use browser menu options</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Install Modal -->
+    <div id="install-modal" class="install-modal hidden">
+        <div class="modal-content">
+            <h2>📱 Install Quiz Master</h2>
+            <div id="modal-content"></div>
+            <button class="btn" onclick="closeModal()">Got it!</button>
+        </div>
+    </div>
+
+    <script>
+        let consoleDiv = document.getElementById('console');
+        
+        // Simple PWA Manager for testing
+        class SimplePWAManager {
+            constructor() {
+                this.installPrompt = null;
+                this.setupEventListeners();
+            }
+            
+            setupEventListeners() {
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    this.installPrompt = e;
+                    log('🎯 Install prompt captured!');
+                });
+                
+                window.addEventListener('appinstalled', () => {
+                    log('🎉 PWA installed successfully!');
+                });
+            }
+            
+            async promptInstall() {
+                if (this.installPrompt) {
+                    const result = await this.installPrompt.prompt();
+                    log(`📱 Install prompt result: ${result.outcome}`);
+                    return result.outcome === 'accepted';
+                } else {
+                    log('❌ No install prompt available');
+                    this.showBrowserSpecificInstructions();
+                    return false;
+                }
+            }
+            
+            showBrowserSpecificInstructions() {
+                const userAgent = navigator.userAgent;
+                let browser = 'Unknown';
+                
+                if (userAgent.includes('Chrome') && !userAgent.includes('Edge')) {
+                    browser = 'Chrome';
+                } else if (userAgent.includes('Edge')) {
+                    browser = 'Edge';
+                }
+                
+                showBrowserInstructions(browser);
+            }
+            
+            getInstallationInfo() {
+                return {
+                    isInstalled: window.matchMedia('(display-mode: standalone)').matches,
+                    hasPrompt: !!this.installPrompt,
+                    isInstallable: !!this.installPrompt,
+                    canInstall: !!this.installPrompt,
+                    displayMode: window.matchMedia('(display-mode: standalone)').matches ? 'standalone' : 'browser'
+                };
+            }
+        }
+        
+        // Initialize PWA Manager
+        window.pwaManager = new SimplePWAManager();
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            consoleDiv.textContent += `[${timestamp}] ${message}\n`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function clearConsole() {
+            consoleDiv.textContent = '';
+        }
+
+        function clearAllData() {
+            localStorage.clear();
+            sessionStorage.clear();
+            log('🗑️ All local data cleared');
+            
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+                log('🗑️ All caches cleared');
+            }
+            
+            setTimeout(() => {
+                log('🔄 Reloading page...');
+                window.location.reload();
+            }, 1000);
+        }
+
+        function testBasicPWA() {
+            log('🔍 Testing basic PWA requirements...');
+            
+            const tests = {
+                serviceWorker: 'serviceWorker' in navigator,
+                manifest: !!document.querySelector('link[rel="manifest"]'),
+                https: location.protocol === 'https:' || location.hostname === 'localhost',
+                standalone: window.matchMedia('(display-mode: standalone)').matches
+            };
+            
+            log(`✅ Service Worker: ${tests.serviceWorker ? 'Available' : 'Missing'}`);
+            log(`✅ Manifest: ${tests.manifest ? 'Found' : 'Missing'}`);
+            log(`✅ Secure Context: ${tests.https ? 'Yes' : 'No'}`);
+            log(`📱 Standalone Mode: ${tests.standalone ? 'Yes' : 'No'}`);
+            
+            if (tests.serviceWorker && tests.manifest && tests.https) {
+                log('🎉 Basic PWA requirements met!');
+            } else {
+                log('❌ Some PWA requirements missing');
+            }
+        }
+
+        function testInstallPrompt() {
+            log('🧪 Testing install prompt...');
+            
+            if (window.pwaManager) {
+                const status = window.pwaManager.getInstallationInfo();
+                log(`📱 PWA Status: ${JSON.stringify(status, null, 2)}`);
+                
+                if (status.canInstall) {
+                    log('✅ Install prompt available, triggering...');
+                    window.pwaManager.promptInstall();
+                } else {
+                    log('❌ Install prompt not available');
+                    log('💡 This is normal - browser controls when prompt appears');
+                }
+            } else {
+                log('❌ PWA Manager not found');
+            }
+        }
+
+        function testBrowserInstall() {
+            log('🌐 Testing browser-specific install...');
+            
+            const userAgent = navigator.userAgent;
+            let browser = 'Unknown';
+            
+            if (userAgent.includes('Chrome') && !userAgent.includes('Edge')) {
+                browser = 'Chrome';
+            } else if (userAgent.includes('Edge')) {
+                browser = 'Edge';
+            } else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) {
+                browser = 'Safari';
+            } else if (userAgent.includes('Firefox')) {
+                browser = 'Firefox';
+            }
+            
+            log(`🌐 Detected browser: ${browser}`);
+            
+            if (window.pwaManager && window.pwaManager.showBrowserSpecificInstructions) {
+                log('📱 Showing browser-specific install instructions...');
+                window.pwaManager.showBrowserSpecificInstructions();
+            } else {
+                showBrowserInstructions(browser);
+            }
+        }
+
+        function showBrowserInstructions(browser) {
+            let content = '';
+            
+            switch(browser) {
+                case 'Chrome':
+                    content = `
+                        <h3>🟢 Chrome Installation</h3>
+                        <p>1. Look for the <strong>📱 Install</strong> icon in the address bar</p>
+                        <p>2. Or click <strong>⋮ Menu</strong> → <strong>Install Quiz Master...</strong></p>
+                        <p>3. Click <strong>Install</strong> when prompted</p>
+                    `;
+                    break;
+                case 'Edge':
+                    content = `
+                        <h3>🟦 Edge Installation</h3>
+                        <p>1. Look for the <strong>📱 Install app</strong> icon in the address bar</p>
+                        <p>2. Or click <strong>⋯ Menu</strong> → <strong>Apps</strong> → <strong>Install this site as an app</strong></p>
+                        <p>3. Click <strong>Install</strong> when prompted</p>
+                    `;
+                    break;
+                case 'Safari':
+                    content = `
+                        <h3>🧭 Safari Installation</h3>
+                        <p><strong>iPhone/iPad:</strong> Share → Add to Home Screen</p>
+                        <p><strong>Mac:</strong> File → Add to Dock</p>
+                    `;
+                    break;
+                case 'Firefox':
+                    content = `
+                        <h3>🦊 Firefox Limitations</h3>
+                        <p>Firefox has limited PWA support.</p>
+                        <p>Consider using Chrome or Edge for full PWA experience.</p>
+                    `;
+                    break;
+                default:
+                    content = `
+                        <h3>📱 Generic Installation</h3>
+                        <p>Look for install options in your browser menu or address bar.</p>
+                    `;
+            }
+            
+            showModal(content);
+        }
+
+        function showDetailedInstructions() {
+            const content = `
+                <h3>📋 Complete Installation Guide</h3>
+                <p><strong>The PWA install button is working correctly!</strong></p>
+                <p>When you click it, you get browser-specific instructions because that's the most reliable way to install PWAs.</p>
+                
+                <h4>Why this happens:</h4>
+                <ul>
+                    <li>Browser controls when native prompts appear</li>
+                    <li>Requires user engagement over time</li>
+                    <li>May be disabled if previously dismissed</li>
+                </ul>
+                
+                <h4>Manual install always works:</h4>
+                <ul>
+                    <li><strong>Chrome:</strong> Address bar install icon or menu</li>
+                    <li><strong>Edge:</strong> Address bar install icon or Apps menu</li>
+                    <li><strong>Safari:</strong> Share → Add to Home Screen</li>
+                </ul>
+                
+                <p><a href="/pwa-install-guide.html" target="_blank">📋 View Complete Guide</a></p>
+            `;
+            showModal(content);
+        }
+
+        function showModal(content) {
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('install-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('install-modal').classList.add('hidden');
+        }
+
+        // Initialize
+        window.addEventListener('load', async () => {
+            log('🚀 PWA Installation Test loaded');
+            
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    log('✅ Service Worker registered successfully');
+                    
+                    // Wait for service worker to be ready
+                    await registration.ready;
+                    log('🎯 Service Worker is ready');
+                    
+                    // Force PWA installability check after SW is ready
+                    setTimeout(() => {
+                        log('🔍 Checking for PWA installability...');
+                        testBasicPWA();
+                    }, 2000);
+                    
+                } catch (error) {
+                    log(`❌ Service Worker registration failed: ${error.message}`);
+                }
+            }
+            
+            // Update status
+            const statusDiv = document.getElementById('status-info');
+            statusDiv.innerHTML = `
+                <strong>Browser:</strong> ${navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+                                         navigator.userAgent.includes('Edge') ? 'Edge' : 
+                                         navigator.userAgent.includes('Safari') ? 'Safari' : 
+                                         navigator.userAgent.includes('Firefox') ? 'Firefox' : 'Other'}<br>
+                <strong>URL:</strong> ${window.location.href}<br>
+                <strong>Protocol:</strong> ${window.location.protocol}<br>
+                <strong>PWA Manager:</strong> ${window.pwaManager ? 'Available' : 'Not Found'}
+            `;
+            
+            testBasicPWA();
+        });
+
+        // Listen for PWA events
+        window.addEventListener('beforeinstallprompt', (e) => {
+            log('🎯 beforeinstallprompt event fired! Native install now available.');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            log('🎉 PWA installed successfully!');
+        });
+
+        // Close modal on background click
+        document.getElementById('install-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'install-modal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
