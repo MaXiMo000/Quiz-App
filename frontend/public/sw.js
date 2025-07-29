@@ -147,7 +147,7 @@ async function handleImageRequest(request) {
         return networkResponse;
     } catch (error) {
         // Return a fallback image for offline
-        return new Response('', { status: 404 });
+        return new Response(error, { status: 404 });
     }
 }
 
@@ -300,7 +300,7 @@ self.addEventListener('notificationclick', event => {
     
     if (event.action === 'explore') {
         event.waitUntil(
-            clients.openWindow('/enhanced-dashboard')
+            self.clients.openWindow('/enhanced-dashboard')
         );
     } else if (event.action === 'close') {
         // Just close the notification
@@ -308,7 +308,7 @@ self.addEventListener('notificationclick', event => {
     } else {
         // Default action - open app
         event.waitUntil(
-            clients.openWindow('/')
+            self.clients.openWindow('/')
         );
     }
 });
@@ -343,7 +343,7 @@ async function getStoredSubmissions() {
     return [];
 }
 
-async function removeStoredSubmission(id) {
+async function removeStoredSubmission(_id) {
     // Implement IndexedDB removal
     return true;
 }
@@ -353,7 +353,7 @@ async function getStoredChatMessages() {
     return [];
 }
 
-async function removeStoredChatMessage(id) {
+async function removeStoredChatMessage(_id) {
     // Implement IndexedDB removal
     return true;
 }
