@@ -552,6 +552,120 @@ const EnhancedDashboard = () => {
             )}
           </div>
         </motion.div>
+
+        {/* Next-Gen Features Showcase */}
+        <motion.div 
+          className="features-showcase-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <h3>🚀 Next-Gen Features</h3>
+          <div className="features-grid">
+            <motion.div 
+              className="feature-card ai-feature"
+              whileHover={{ scale: 1.02, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.location.href = '/ai-study-buddy'}
+            >
+              <div className="feature-icon">🤖</div>
+              <div className="feature-content">
+                <h4>AI Study Buddy</h4>
+                <p>Your personal AI tutor that creates quizzes, explains concepts, and tracks your progress</p>
+                <div className="feature-tags">
+                  <span className="feature-tag">Personalized</span>
+                  <span className="feature-tag">Smart</span>
+                </div>
+              </div>
+              <div className="feature-arrow">→</div>
+            </motion.div>
+
+            <motion.div 
+              className="feature-card realtime-feature"
+              whileHover={{ scale: 1.02, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.location.href = '/real-time-quiz'}
+            >
+              <div className="feature-icon">⚡</div>
+              <div className="feature-content">
+                <h4>Real-Time Quiz Battles</h4>
+                <p>Challenge friends and players worldwide in live multiplayer quiz competitions</p>
+                <div className="feature-tags">
+                  <span className="feature-tag">Multiplayer</span>
+                  <span className="feature-tag">Live</span>
+                </div>
+              </div>
+              <div className="feature-arrow">→</div>
+            </motion.div>
+
+            <motion.div 
+              className="feature-card social-feature"
+              whileHover={{ scale: 1.02, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.location.href = '/friends'}
+            >
+              <div className="feature-icon">🤝</div>
+              <div className="feature-content">
+                <h4>Social Learning</h4>
+                <p>Connect with friends, join study groups, and learn together</p>
+                <div className="feature-tags">
+                  <span className="feature-tag">Friends</span>
+                  <span className="feature-tag">Groups</span>
+                </div>
+              </div>
+              <div className="feature-arrow">→</div>
+            </motion.div>
+
+            <motion.div 
+              className="feature-card gamification-feature"
+              whileHover={{ scale: 1.02, y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.location.href = '/gamification'}
+            >
+              <div className="feature-icon">🎮</div>
+              <div className="feature-content">
+                <h4>Gamification Hub</h4>
+                <p>Earn XP, unlock achievements, compete in tournaments and daily challenges</p>
+                <div className="feature-tags">
+                  <span className="feature-tag">XP System</span>
+                  <span className="feature-tag">Tournaments</span>
+                </div>
+              </div>
+              <div className="feature-arrow">→</div>
+            </motion.div>
+          </div>
+
+          {/* PWA Installation Banner */}
+          <motion.div 
+            className="pwa-install-banner"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+          >
+            <div className="pwa-content">
+              <div className="pwa-icon">📱</div>
+              <div className="pwa-text">
+                <h4>Install QuizNest App</h4>
+                <p>Get the full experience with offline access and push notifications</p>
+              </div>
+            </div>
+            <motion.button 
+              className="pwa-install-btn"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
+                  // This will trigger the browser's install prompt if available
+                  window.dispatchEvent(new Event('beforeinstallprompt'));
+                } else {
+                  alert('🚀 Add QuizNest to your home screen for the best experience!\n\n📱 On mobile: Use your browser\'s "Add to Home Screen" option\n💻 On desktop: Click the install icon in your address bar');
+                }
+              }}
+            >
+              Install
+            </motion.button>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

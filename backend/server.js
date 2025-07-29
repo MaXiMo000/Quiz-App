@@ -8,6 +8,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import cron from "node-cron";
+import { createServer } from "http";
 
 // ✅ Load environment variables before anything else
 dotenv.config();
@@ -28,6 +29,11 @@ import debugRoutes from "./routes/debugRoutes.js"; // Temporary debug routes
 import socialRoutes from "./routes/socialRoutes.js";
 import studyGroupRoutes from "./routes/studyGroupRoutes.js";
 import gamificationRoutes from "./routes/gamificationRoutes.js";
+
+// Phase 4: Next-Gen Features
+import aiStudyBuddyRoutes from "./routes/aiStudyBuddyRoutes.js";
+import realTimeQuizRoutes from "./routes/realTimeQuizRoutes.js";
+import { initializeRealTimeQuiz } from "./controllers/realTimeQuizController.js";
 
 // Import the daily challenge reset function
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
@@ -234,6 +240,10 @@ app.use("/api/social", socialRoutes);
 app.use("/api/study-groups", studyGroupRoutes);
 app.use("/api/gamification", gamificationRoutes);
 
+// Phase 4: Next-Gen Features
+app.use("/api/ai-study-buddy", aiStudyBuddyRoutes);
+app.use("/api/real-time-quiz", realTimeQuizRoutes);
+
 // Global error handler for CORS and other issues
 app.use((error, req, res, next) => {
     // Handle CORS errors specifically
@@ -273,6 +283,19 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => {
     console.log("✅ Connected to MongoDB");
     
+    // ===================== START HTTP SERVER WITH SOCKET.IO =====================
+    const server = createServer(app);
+    
+    // Initialize real-time quiz functionality
+    initializeRealTimeQuiz(server);
+    
+    server.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+        console.log(`🔄 Real-time quiz rooms enabled with Socket.IO`);
+        console.log(`🤖 AI Study Buddy enabled with Gemini API`);
+    });
+    
     // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
     // Schedule daily challenge reset every hour (for more frequent checking)
     // This will check and reset challenges that were completed more than 24 hours ago
@@ -301,7 +324,5 @@ mongoose.connect(process.env.MONGO_URI, {
         .catch(error => {
             console.error('❌ Error in startup reset:', error);
         });
-    
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 })
 .catch((err) => console.error("❌ MongoDB Connection Error:", err));

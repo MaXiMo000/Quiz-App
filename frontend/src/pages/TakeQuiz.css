@@ -394,19 +394,32 @@
 
 /* ✨ Modal Enhancement */
 .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     backdrop-filter: blur(15px);
     background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
 }
 
 .modal-content {
-    background: var(--card-bg-glass);
+    background: var(--quiz-glass);
     backdrop-filter: blur(35px);
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--quiz-border);
     box-shadow: 
-        var(--shadow-2xl),
+        var(--quiz-shadow-xl),
         0 0 50px rgba(99, 102, 241, 0.2);
     position: relative;
     overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 20px;
 }
 
 .modal-content::before {
@@ -416,7 +429,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--gradient-primary);
+    background: var(--quiz-gradient-1);
 }
 
 .modal-actions {
@@ -429,11 +442,12 @@
 
 /* ✨ Enhanced Result Modal Styles */
 .result-modal {
-    min-width: 400px;
+    width: 100%;
     max-width: 500px;
+    min-width: 320px;
     padding: var(--space-2xl);
-    margin-top: var(--space-lg); /* Added top spacing */
     text-align: center;
+    margin: 0;
 }
 
 .result-header {
