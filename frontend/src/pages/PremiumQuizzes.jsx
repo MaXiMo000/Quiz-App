@@ -14,6 +14,7 @@ const PremiumQuizzes = () => {
     const [aiNumQuestions, setAiNumQuestions] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [isGeneratingAI, setIsGeneratingAI] = useState(false);
     const navigate = useNavigate();
 
     // Notification system
@@ -64,6 +65,7 @@ const PremiumQuizzes = () => {
             return;
         }
 
+        setIsGeneratingAI(true);
         try {
             const response = await axios.post(
                 `/api/quizzes/${selectedQuizId}/generate-questions`,
@@ -84,6 +86,8 @@ const PremiumQuizzes = () => {
         } catch (error) {
             console.error("Error generating AI questions:", error);
             showError("Failed to generate AI questions.");
+        } finally {
+            setIsGeneratingAI(false);
         }
     };
 
@@ -385,8 +389,9 @@ const PremiumQuizzes = () => {
                         
                         <button 
                             className="submit-btn premium-submit"
+                            disabled={isGeneratingAI}
                         >
-                            ✨ Generate Premium Questions
+                            {isGeneratingAI ? '⏳ Generating...' : '✨ Generate Premium Questions'}
                         </button>
                     </form>
                 </div>
