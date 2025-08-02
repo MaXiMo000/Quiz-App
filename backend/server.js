@@ -35,6 +35,9 @@ import aiStudyBuddyRoutes from "./routes/aiStudyBuddyRoutes.js";
 import realTimeQuizRoutes from "./routes/realTimeQuizRoutes.js";
 import { initializeRealTimeQuiz } from "./controllers/realTimeQuizController.js";
 
+// Phase 5: Advanced Learning Path Engine
+import learningPathRoutes from "./routes/learningPathRoutes.js";
+
 // Import the daily challenge reset function
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
 
@@ -243,6 +246,9 @@ app.use("/api/gamification", gamificationRoutes);
 // Phase 4: Next-Gen Features
 app.use("/api/ai-study-buddy", aiStudyBuddyRoutes);
 app.use("/api/real-time-quiz", realTimeQuizRoutes);
+
+// Phase 5: Advanced Learning Path Engine
+app.use("/api/learning-paths", learningPathRoutes);
 
 // Global error handler for CORS and other issues
 app.use((error, req, res, next) => {

@@ -317,10 +317,19 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     <Link to="/real-time-quiz" onClick={handleLinkClick}>⚡ Real-Time Quiz</Link>
                                 </motion.div>
                                 
+                                {/* Phase 5: Advanced Learning Path Engine */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 1.3, duration: 0.4 }}
+                                >
+                                    <Link to="/learning-paths" onClick={handleLinkClick}>🎯 Learning Paths</Link>
+                                </motion.div>
+                                
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.35, duration: 0.4 }}
                                 >
                                     <Link to="/contact" onClick={handleLinkClick}>📄 Contact Me</Link>
                                 </motion.div>

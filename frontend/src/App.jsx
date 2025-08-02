@@ -63,6 +63,9 @@ import AIStudyBuddy from "./components/AIStudyBuddy";
 import RealTimeQuiz from "./components/RealTimeQuiz";
 import GamificationHub from "./components/GamificationHub";
 
+// Phase 5: Advanced Learning Path Engine
+import LearningPathHub from "./components/LearningPathHub";
+
 const TestPage = lazy(() => import("./pages/TestPage"));
 
 // Phase 2: Intelligence Dashboard
@@ -197,6 +200,9 @@ const App = () => {
                             {/* Phase 4: Next-Gen Features */}
                             <Route path="/ai-study-buddy" element={<AIStudyBuddy />} />
                             <Route path="/real-time-quiz" element={<RealTimeQuiz />} />
+                            
+                            {/* Phase 5: Advanced Learning Path Engine */}
+                            <Route path="/learning-paths" element={<LearningPathHub />} />
                             
                             <Route path="/admin" element={<AdminDashboard />} />
                             <Route path="/admin/create" element={<AdminQuizzes />} />
