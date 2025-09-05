@@ -13,6 +13,8 @@ import {
     manualResetDailyChallenges,
     getDailyChallengeStatus,
     cleanupOldChallengeData,
+    getUserChallengeHistory,
+    getChallengeHistoryAdmin,
     
     // Tournaments
     getAvailableTournaments,
@@ -31,7 +33,7 @@ import {
     submitTournamentQuiz,
     
     // History & Completed
-    getChallengeHistory,
+    getUserCompletedChallenges,
     getTournamentHistory,
     getCompletedChallenges,
     getCompletedTournaments
@@ -57,6 +59,10 @@ router.post("/challenges/cleanup", cleanupEmptyChallenges); // Admin only - clea
 router.post("/challenges/reset", manualResetDailyChallenges); // Manual reset for testing
 router.post("/challenges/cleanup-old", cleanupOldChallengeData); // Cleanup old data
 
+// Challenge History Routes
+router.get("/challenges/:challengeId/history", getUserChallengeHistory); // Get user's history for specific challenge
+router.get("/challenges/:challengeId/history/all", getChallengeHistoryAdmin); // Admin only - get all history for challenge
+
 // Challenge Quiz Routes
 router.get("/challenges/:challengeId/quiz/start", startChallengeQuiz);
 router.post("/challenges/:challengeId/quiz/submit", submitChallengeQuiz);
@@ -78,7 +84,7 @@ router.post("/tournaments/:tournamentId/quiz/submit", submitTournamentQuiz);
 router.get("/quizzes/available", getAvailableQuizzes); // Admin only - for creating challenges/tournaments
 
 // =================== HISTORY ===================
-router.get("/challenges/history", getChallengeHistory);
+router.get("/challenges/history", getUserCompletedChallenges);
 router.get("/tournaments/history", getTournamentHistory);
 
 // =================== COMPLETED CHALLENGES & TOURNAMENTS ===================

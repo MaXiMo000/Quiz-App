@@ -19,6 +19,8 @@ const GamificationHub = () => {
     const [showCreateTournament, setShowCreateTournament] = useState(false);
     const [challengeHistory, setChallengeHistory] = useState([]);
     const [tournamentHistory, setTournamentHistory] = useState([]);
+    const [selectedChallengeHistory, setSelectedChallengeHistory] = useState(null);
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
     
     // Quiz taking states
     const [currentQuizData, setCurrentQuizData] = useState(null);
@@ -27,7 +29,7 @@ const GamificationHub = () => {
     const [gamificationId, setGamificationId] = useState(null);
 
     // Notification system
-    const { notification, showSuccess, showError, showWarning, showInfo, hideNotification } = useNotification();
+    const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
     useEffect(() => {
         // Get user data from localStorage
@@ -79,7 +81,7 @@ const GamificationHub = () => {
                 
                 // Log reset challenges for debugging
                 availableChallenges.forEach(challenge => {
-                    if (challenge.status === 'available' && challenge.userProgress && challenge.userProgress.progress > 0) {
+                    if (challenge.wasReset) {
                         console.log(`🔄 Challenge "${challenge.title}" has been reset and is available again`);
                     }
                 });
@@ -308,6 +310,21 @@ const GamificationHub = () => {
         }
     };
 
+    const viewChallengeHistory = async (challengeId) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`/api/gamification/challenges/${challengeId}/history`);
+            
+            setSelectedChallengeHistory(response.data);
+            setShowHistoryModal(true);
+        } catch (error) {
+            console.error('Error fetching challenge history:', error);
+            showError('Failed to load challenge history');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Cleanup empty challenges (admin only)
     const cleanupEmptyChallenges = async () => {
         if (!window.confirm('Are you sure you want to cleanup all challenges with no quizzes?')) {
@@ -459,7 +476,7 @@ const GamificationHub = () => {
         
         switch (challengeStatus) {
             case 'available':
-                if (challengeUserProgress.progress > 0) {
+                if (challenge.wasReset) {
                     statusMessage = '🔄 Challenge Reset - Ready to Continue!';
                     statusClass = 'status-reset';
                 } else {
@@ -548,6 +565,13 @@ const GamificationHub = () => {
                             </div>
                         )}
                     </div>
+                    <button 
+                        className="view-history-btn"
+                        onClick={() => viewChallengeHistory(challenge._id)}
+                        title="View your history for this challenge"
+                    >
+                        📊 History
+                    </button>
                 </div>
 
                 <div className="challenge-actions">
@@ -585,11 +609,11 @@ const GamificationHub = () => {
                         </div>
                     ) : (challengeStatus === 'available' || challengeStatus === 'in_progress') && isAvailable ? (
                         <div className="available-actions">
-                            {challengeStatus === 'available' && challengeUserProgress.progress > 0 ? (
+                            {challenge.wasReset ? (
                                 <div className="reset-continue-section">
                                     <div className="reset-info">
                                         <span className="reset-message">
-                                            🔄 This challenge has been reset! Your previous progress was: {Math.round(challengeUserProgress.progress)}%
+                                            🔄 This challenge has been reset! You can start fresh now.
                                         </span>
                                     </div>
                                     <button
@@ -603,9 +627,22 @@ const GamificationHub = () => {
                             ) : challengeStatus === 'in_progress' || isParticipating ? (
                                 <div className="quiz-progress-actions">
                                     <div className="quiz-progress-info">
-                                        <span className="quiz-count">
-                                            {participantData?.completedQuizzes?.length || 0} / {challenge.quizzes?.length || challenge.parameters?.quizCount || 3} quizzes completed
-                                        </span>
+                                        <div className="quiz-progress-display">
+                                            <div className="quiz-progress-stats">
+                                                <span className="completed-count">{participantData?.completedQuizzes?.length || 0}</span>
+                                                <span className="progress-separator">/</span>
+                                                <span className="total-count">{challenge.quizzes?.length || challenge.parameters?.quizCount || 3}</span>
+                                                <span className="progress-label">Quizzes</span>
+                                            </div>
+                                            <div className="quiz-progress-bar">
+                                                <div 
+                                                    className="quiz-progress-fill"
+                                                    style={{
+                                                        width: `${((participantData?.completedQuizzes?.length || 0) / (challenge.quizzes?.length || challenge.parameters?.quizCount || 3)) * 100}%`
+                                                    }}
+                                                ></div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <button
                                         className="continue-challenge-btn"
@@ -817,9 +854,22 @@ const GamificationHub = () => {
                     ) : isRegistered && tournament.status === 'in_progress' ? (
                         <div className="tournament-progress-actions">
                             <div className="tournament-progress-info">
-                                <span className="quiz-count">
-                                    {userProgress?.quizzesCompleted || 0} / {tournament.quizCount || tournament.settings?.quizCount || 0} quizzes completed
-                                </span>
+                                <div className="quiz-progress-display">
+                                    <div className="quiz-progress-stats">
+                                        <span className="completed-count">{userProgress?.quizzesCompleted || 0}</span>
+                                        <span className="progress-separator">/</span>
+                                        <span className="total-count">{tournament.quizCount || tournament.settings?.quizCount || 0}</span>
+                                        <span className="progress-label">Quizzes</span>
+                                    </div>
+                                    <div className="quiz-progress-bar">
+                                        <div 
+                                            className="quiz-progress-fill"
+                                            style={{
+                                                width: `${((userProgress?.quizzesCompleted || 0) / (tournament.quizCount || tournament.settings?.quizCount || 1)) * 100}%`
+                                            }}
+                                        ></div>
+                                    </div>
+                                </div>
                             </div>
                             <button 
                                 className="participate-btn"
@@ -1507,6 +1557,63 @@ const GamificationHub = () => {
                 }
             />
             
+            {/* Challenge History Modal */}
+            {showHistoryModal && selectedChallengeHistory && (
+                <div className="modal-overlay" onClick={() => setShowHistoryModal(false)}>
+                    <div className="modal-content challenge-history-modal" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>📊 Challenge History: {selectedChallengeHistory.challengeTitle}</h3>
+                            <button className="close-btn" onClick={() => setShowHistoryModal(false)}>✕</button>
+                        </div>
+                        
+                        <div className="modal-body">
+                            <div className="history-summary">
+                                <p><strong>🎯 Total Attempts:</strong> {selectedChallengeHistory.totalAttempts}</p>
+                                {selectedChallengeHistory.currentParticipation && (
+                                    <div className="current-attempt">
+                                        <h4>🔄 Current Attempt</h4>
+                                        <p><strong>Progress:</strong> {Math.round(selectedChallengeHistory.currentParticipation.progress || 0)}%</p>
+                                        <p><strong>Status:</strong> {selectedChallengeHistory.currentParticipation.completed ? '✅ Completed' : '⏳ In Progress'}</p>
+                                        <p><strong>Attempts:</strong> {selectedChallengeHistory.currentParticipation.attempts || 0}</p>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {selectedChallengeHistory.historicalCompletions.length > 0 && (
+                                <div className="historical-completions">
+                                    <h4>📈 Previous Completions</h4>
+                                    {selectedChallengeHistory.historicalCompletions.map((completion, index) => (
+                                        <div key={index} className="completion-item">
+                                            <div className="completion-header">
+                                                <span className="completion-date">
+                                                    {new Date(completion.completedAt).toLocaleDateString()}
+                                                </span>
+                                                <span className="completion-progress">
+                                                    {Math.round(completion.progress || 0)}% Complete
+                                                </span>
+                                            </div>
+                                            <div className="completion-details">
+                                                <p><strong>🎯 Attempts:</strong> {completion.attempts || 0}</p>
+                                                <p><strong>📝 Quizzes:</strong> {completion.completedQuizzes?.length || 0}</p>
+                                                {completion.quizScores && completion.quizScores.length > 0 && (
+                                                    <p><strong>🏆 Total Score:</strong> {completion.quizScores.reduce((sum, score) => sum + (score.score || 0), 0)} points</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {selectedChallengeHistory.historicalCompletions.length === 0 && !selectedChallengeHistory.currentParticipation && (
+                                <div className="no-history">
+                                    <p>No history found for this challenge yet.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}
