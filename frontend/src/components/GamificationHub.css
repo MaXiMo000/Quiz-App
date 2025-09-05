@@ -3048,3 +3048,484 @@
 .gap-2 { gap: 1rem; }
 .gap-3 { gap: 1.5rem; }
 
+/* ✨ Challenge History Button & Modal Styles ✨ */
+.view-history-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.view-history-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.challenge-history-modal {
+    max-width: 700px;
+    width: 95%;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--gamification-border);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--gamification-shadow);
+}
+
+.challenge-history-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--gamification-border);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 20px 20px 0 0;
+    margin: -1px -1px 0 -1px;
+}
+
+.challenge-history-modal .modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.challenge-history-modal .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.challenge-history-modal .close-btn:hover {
+    color: var(--text-primary);
+}
+
+.challenge-history-modal .modal-body {
+    padding: 2rem;
+    max-height: calc(85vh - 120px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.history-summary {
+    background: var(--gamification-glass);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--gamification-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.history-summary p {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.history-summary p:last-child {
+    margin-bottom: 0;
+}
+
+.current-attempt {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.current-attempt h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.current-attempt p {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.historical-completions {
+    margin-top: 2rem;
+}
+
+.historical-completions h4 {
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.completion-item {
+    background: var(--gamification-glass);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--gamification-border);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.completion-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.completion-item:last-child {
+    margin-bottom: 0;
+}
+
+.completion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.completion-date {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.completion-date::before {
+    content: "📅";
+    font-size: 1rem;
+}
+
+.completion-progress {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(67, 233, 123, 0.3);
+    white-space: nowrap;
+}
+
+.completion-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.completion-details p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.completion-details p strong {
+    color: var(--text-primary);
+}
+
+.no-history {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    background: var(--gamification-glass);
+    border-radius: 16px;
+    border: 1px solid var(--gamification-border);
+}
+
+.no-history::before {
+    content: "📊";
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* 📱 Responsive Design for History Modal */
+@media (max-width: 768px) {
+    .challenge-history-modal {
+        width: 98%;
+        max-width: none;
+        max-height: 90vh;
+        margin: 0.5rem;
+        border-radius: 16px;
+    }
+    
+    .challenge-history-modal .modal-header {
+        padding: 1rem 1.5rem;
+        border-radius: 16px 16px 0 0;
+    }
+    
+    .challenge-history-modal .modal-header h3 {
+        font-size: 1.2rem;
+        line-height: 1.3;
+    }
+    
+    .challenge-history-modal .modal-body {
+        padding: 1.5rem;
+        max-height: calc(90vh - 100px);
+    }
+    
+    .completion-details {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .completion-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .completion-progress {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .challenge-history-modal {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        margin: 0;
+    }
+    
+    .challenge-history-modal .modal-header {
+        padding: 1rem;
+        border-radius: 0;
+    }
+    
+    .challenge-history-modal .modal-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .challenge-history-modal .modal-body {
+        padding: 1rem;
+        max-height: calc(100vh - 80px);
+    }
+    
+    .history-summary,
+    .current-attempt,
+    .completion-item {
+        padding: 1rem;
+    }
+}
+
+/* ✨ Enhanced Quiz Progress Display ✨ */
+.quiz-progress-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.2rem 2rem;
+    background: var(--gamification-glass);
+    border-radius: 16px;
+    border: 1px solid var(--gamification-border);
+    min-height: 70px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.quiz-progress-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.completed-count {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #43e97b;
+    text-shadow: 0 2px 4px rgba(67, 233, 123, 0.3);
+}
+
+.progress-separator {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    margin: 0 0.2rem;
+}
+
+.total-count {
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.progress-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-left: 0.8rem;
+    font-weight: 500;
+}
+
+.quiz-progress-bar {
+    flex: 1;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    min-width: 120px;
+    margin-left: 1rem;
+}
+
+.quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 2px 8px rgba(67, 233, 123, 0.4);
+    position: relative;
+}
+
+.quiz-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Enhanced styling for progress info containers */
+.quiz-progress-info,
+.tournament-progress-info {
+    margin-bottom: 1rem;
+}
+
+.quiz-progress-actions,
+.tournament-progress-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* 📱 Responsive Design for Mobile */
+@media (max-width: 768px) {
+    .quiz-progress-display {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+        padding: 1.5rem;
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    .quiz-progress-stats {
+        justify-content: center;
+        order: 1;
+    }
+    
+    .quiz-progress-bar {
+        width: 100%;
+        max-width: 280px;
+        margin-left: 0;
+        order: 2;
+    }
+    
+    .completed-count {
+        font-size: 2rem;
+    }
+    
+    .total-count {
+        font-size: 1.6rem;
+    }
+    
+    .progress-separator {
+        font-size: 1.6rem;
+    }
+    
+    .progress-label {
+        font-size: 1.1rem;
+        margin-left: 1rem;
+    }
+    
+    /* Make History button bigger on mobile */
+    .view-history-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .quiz-progress-display {
+        padding: 1.2rem;
+        gap: 1rem;
+        max-width: 100%;
+    }
+    
+    .completed-count {
+        font-size: 1.8rem;
+    }
+    
+    .total-count {
+        font-size: 1.4rem;
+    }
+    
+    .progress-separator {
+        font-size: 1.4rem;
+    }
+    
+    .progress-label {
+        font-size: 1rem;
+        margin-left: 0.8rem;
+    }
+    
+    .quiz-progress-bar {
+        max-width: 100%;
+        height: 8px;
+    }
+    
+    /* Bigger History button on small mobile */
+    .view-history-btn {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        min-width: 140px;
+        border-radius: 12px;
+    }
+}
+

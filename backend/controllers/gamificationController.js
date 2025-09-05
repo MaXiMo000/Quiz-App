@@ -11,28 +11,51 @@ export const getCurrentDailyChallenge = async (req, res) => {
     try {
         const now = new Date();
         const userId = req.user.id;
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-        // Find active challenges that the user hasn't completed yet
-        let dailyChallenges = await DailyChallenge.find({
+        // Find ALL active challenges (don't filter by user completion yet)
+        let allActiveChallenges = await DailyChallenge.find({
             startDate: { $lte: now },
             endDate: { $gte: now },
-            isActive: true,
-            $or: [
-                { 'participants.user': { $ne: userId } },
-                { 
-                    'participants.user': userId,
-                    'participants.completed': false
-                }
-            ]
+            isActive: true
         }).populate('quizzes');
 
-        console.log('Debug - Daily challenges lookup result:', dailyChallenges.length + ' found');
-        if (dailyChallenges.length > 0) {
-            console.log('Debug - Challenge titles:', dailyChallenges.map(c => c.title));
-        }
+        console.log('Debug - Found active challenges:', allActiveChallenges.length);
+
+        // Filter challenges based on user participation and 24-hour reset logic
+        const availableChallenges = allActiveChallenges.filter(challenge => {
+            const userParticipant = challenge.participants.find(p => 
+                p.user.toString() === userId
+            );
+
+            // If user hasn't participated, challenge is available
+            if (!userParticipant) {
+                return true;
+            }
+
+            // If user participated but didn't complete, challenge is available
+            if (!userParticipant.completed) {
+                return true;
+            }
+
+            // If user completed but it was more than 24 hours ago, challenge is available again
+            if (userParticipant.completed && userParticipant.completedAt) {
+                const isMoreThan24HoursAgo = userParticipant.completedAt < twentyFourHoursAgo;
+                if (isMoreThan24HoursAgo) {
+                    console.log(`🔄 Challenge "${challenge.title}" available again for user ${userId} (completed ${userParticipant.completedAt})`);
+                    return true;
+                }
+                console.log(`⏰ Challenge "${challenge.title}" completed recently by user ${userId} (completed ${userParticipant.completedAt})`);
+                return false; // Recently completed, not available
+            }
+
+            return false;
+        });
+
+        console.log('Debug - Available challenges after filtering:', availableChallenges.length);
 
         // If no challenges exist and user is admin, suggest creating one
-        if (dailyChallenges.length === 0) {
+        if (availableChallenges.length === 0) {
             if (req.user.role === 'admin') {
                 return res.status(404).json({ 
                     message: "No daily challenges available today", 
@@ -46,25 +69,41 @@ export const getCurrentDailyChallenge = async (req, res) => {
             }
         }
 
-        // Get user's progress for each challenge
-        const challengesWithProgress = dailyChallenges.map(challenge => {
+        // Get user's progress for each available challenge
+        const challengesWithProgress = availableChallenges.map(challenge => {
             const userProgress = challenge.participants.find(p => 
                 p.user.toString() === userId
             );
 
-            return {
-                ...challenge.toObject(),
-                userProgress: userProgress || {
+            // If user completed more than 24 hours ago, reset their progress data for display
+            let displayProgress = userProgress;
+            let wasReset = false;
+            if (userProgress && userProgress.completed && userProgress.completedAt < twentyFourHoursAgo) {
+                displayProgress = {
                     progress: 0,
                     completed: false,
                     attempts: 0,
                     completedQuizzes: [],
                     quizScores: []
-                }
+                };
+                wasReset = true;
+                console.log(`🔄 Displaying reset progress for challenge "${challenge.title}" for user ${userId}`);
+            }
+
+            return {
+                ...challenge.toObject(),
+                userProgress: displayProgress || {
+                    progress: 0,
+                    completed: false,
+                    attempts: 0,
+                    completedQuizzes: [],
+                    quizScores: []
+                },
+                wasReset: wasReset
             };
         });
 
-        console.log('Debug - User progress found for challenges:', challengesWithProgress.length);
+        console.log('Debug - Final challenges with progress:', challengesWithProgress.length);
 
         res.json({
             challenges: challengesWithProgress
@@ -96,26 +135,76 @@ export const joinDailyChallenge = async (req, res) => {
             return res.status(400).json({ message: "Challenge is not available" });
         }
 
-        // Check if already participating
-        const isParticipating = challenge.participants.some(p => 
+        // Check if already participating and handle 24-hour reset logic
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const existingParticipant = challenge.participants.find(p => 
             p.user.toString() === userId
         );
 
-        if (isParticipating) {
-            return res.status(400).json({ message: "Already participating in this challenge" });
+        if (existingParticipant) {
+            // If user completed more than 24 hours ago, reset their participation
+            if (existingParticipant.completed && existingParticipant.completedAt && 
+                existingParticipant.completedAt < twentyFourHoursAgo) {
+                
+                console.log(`🔄 Resetting participation for user ${userId} in challenge "${challenge.title}"`);
+                
+                // Preserve old results in historical completions
+                if (!challenge.historicalCompletions) {
+                    challenge.historicalCompletions = [];
+                }
+                challenge.historicalCompletions.push({
+                    user: existingParticipant.user,
+                    completedAt: existingParticipant.completedAt,
+                    progress: existingParticipant.progress,
+                    attempts: existingParticipant.attempts,
+                    completedQuizzes: existingParticipant.completedQuizzes,
+                    quizScores: existingParticipant.quizScores,
+                    resetAt: new Date()
+                });
+                
+                // Update historical completion stats
+                if (!challenge.stats.totalHistoricalCompletions) {
+                    challenge.stats.totalHistoricalCompletions = 0;
+                }
+                challenge.stats.totalHistoricalCompletions += 1;
+                
+                // Reset participant data
+                existingParticipant.progress = 0;
+                existingParticipant.completed = false;
+                existingParticipant.completedAt = null;
+                existingParticipant.attempts = 0;
+                existingParticipant.completedQuizzes = [];
+                existingParticipant.quizScores = [];
+                
+                // Update user's daily challenge data
+                await UserQuiz.findByIdAndUpdate(userId, {
+                    $pull: { 'gamification.dailyChallenges.completed': challengeId },
+                    $set: { 'gamification.dailyChallenges.current': challengeId }
+                });
+                
+            } else if (existingParticipant.completed) {
+                return res.status(400).json({ 
+                    message: "Challenge completed recently. Please wait 24 hours before attempting again.",
+                    nextAvailableTime: new Date(existingParticipant.completedAt.getTime() + 24 * 60 * 60 * 1000)
+                });
+            } else {
+                return res.status(400).json({ message: "Already participating in this challenge" });
+            }
         }
 
-        // Add participant
-        challenge.participants.push({
-            user: userId,
-            progress: 0,
-            completed: false,
-            attempts: 0,
-            completedQuizzes: [], // Initialize empty array for completed quizzes
-            quizScores: [] // Initialize empty array for quiz scores
-        });
+        // Add participant only if they don't exist
+        if (!existingParticipant) {
+            challenge.participants.push({
+                user: userId,
+                progress: 0,
+                completed: false,
+                attempts: 0,
+                completedQuizzes: [], // Initialize empty array for completed quizzes
+                quizScores: [] // Initialize empty array for quiz scores
+            });
+            challenge.stats.totalParticipants += 1;
+        }
 
-        challenge.stats.totalParticipants += 1;
         await challenge.save();
 
         // Update user's current daily challenge
@@ -1393,7 +1482,7 @@ export const submitTournamentQuiz = async (req, res) => {
 // ===================== HISTORY ENDPOINTS =====================
 
 // Get user's challenge history
-export const getChallengeHistory = async (req, res) => {
+export const getUserCompletedChallenges = async (req, res) => {
     try {
         const userId = req.user.id;
         
@@ -1627,6 +1716,26 @@ export const resetDailyChallenges = async () => {
                     participant.completedAt && 
                     participant.completedAt < twentyFourHoursAgo) {
                     
+                    // Preserve old results in historical completions
+                    if (!challenge.historicalCompletions) {
+                        challenge.historicalCompletions = [];
+                    }
+                    challenge.historicalCompletions.push({
+                        user: participant.user,
+                        completedAt: participant.completedAt,
+                        progress: participant.progress,
+                        attempts: participant.attempts,
+                        completedQuizzes: participant.completedQuizzes,
+                        quizScores: participant.quizScores,
+                        resetAt: new Date()
+                    });
+                    
+                    // Update historical completion stats
+                    if (!challenge.stats.totalHistoricalCompletions) {
+                        challenge.stats.totalHistoricalCompletions = 0;
+                    }
+                    challenge.stats.totalHistoricalCompletions += 1;
+                    
                     // Reset participant data
                     challenge.participants[i] = {
                         user: participant.user,
@@ -1759,6 +1868,75 @@ export const isChallengeAvailableForUser = async (challengeId, userId) => {
     }
 };
 
+// Get historical challenge completions for a user
+export const getUserChallengeHistory = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { challengeId } = req.params;
+
+        const challenge = await DailyChallenge.findById(challengeId);
+        if (!challenge) {
+            return res.status(404).json({ message: "Challenge not found" });
+        }
+
+        // Get user's historical completions for this challenge
+        const userHistory = (challenge.historicalCompletions || []).filter(h => 
+            h.user.toString() === userId
+        );
+
+        // Get current participation if exists
+        const currentParticipation = challenge.participants.find(p => 
+            p.user.toString() === userId
+        );
+
+        res.json({
+            challengeId: challengeId,
+            challengeTitle: challenge.title,
+            currentParticipation: currentParticipation,
+            historicalCompletions: userHistory,
+            totalAttempts: userHistory.length + (currentParticipation?.completed ? 1 : 0)
+        });
+
+    } catch (error) {
+        console.error("Error getting user challenge history:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// Get all historical completions for a challenge (admin only)
+export const getChallengeHistoryAdmin = async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: "Admin access required" });
+        }
+
+        const { challengeId } = req.params;
+
+        const challenge = await DailyChallenge.findById(challengeId)
+            .populate('historicalCompletions.user', 'name email')
+            .populate('participants.user', 'name email');
+
+        if (!challenge) {
+            return res.status(404).json({ message: "Challenge not found" });
+        }
+
+        res.json({
+            challenge: {
+                title: challenge.title,
+                description: challenge.description,
+                totalHistoricalCompletions: challenge.stats.totalHistoricalCompletions,
+                currentParticipants: challenge.participants.length,
+                historicalCompletions: challenge.historicalCompletions,
+                participants: challenge.participants
+            }
+        });
+
+    } catch (error) {
+        console.error("Error getting challenge history:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // Get daily challenge status for a user (enhanced with reset logic)
 export const getDailyChallengeStatus = async (req, res) => {
     try {
@@ -1817,11 +1995,19 @@ export const getDailyChallengeStatus = async (req, res) => {
                 };
             }
 
+            // Check if this challenge was reset for this user
+            let wasReset = false;
+            if (participant && participant.completed && participant.completedAt) {
+                const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                wasReset = participant.completedAt < twentyFourHoursAgo && status === 'available';
+            }
+
             challengeStatuses.push({
                 ...challenge.toObject(),
                 status,
                 isAvailable,
                 userProgress,
+                wasReset,
                 nextResetTime: participant?.completedAt ? 
                     new Date(participant.completedAt.getTime() + 24 * 60 * 60 * 1000) : null
             });

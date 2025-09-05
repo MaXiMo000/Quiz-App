@@ -51,11 +51,29 @@ const dailyChallengeSchema = new mongoose.Schema({
         }]
     }],
     
+    // Historical completions (preserves old results when challenges reset)
+    historicalCompletions: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" },
+        completedAt: { type: Date, required: true },
+        progress: { type: Number, default: 0 },
+        attempts: { type: Number, default: 0 },
+        completedQuizzes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }],
+        quizScores: [{
+            quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz" },
+            score: { type: Number },
+            percentage: { type: Number },
+            timeSpent: { type: Number },
+            completedAt: { type: Date, default: Date.now }
+        }],
+        resetAt: { type: Date, default: Date.now } // When this completion was moved to history
+    }],
+    
     // Challenge statistics
     stats: {
         totalParticipants: { type: Number, default: 0 },
         completionRate: { type: Number, default: 0 },
-        averageAttempts: { type: Number, default: 0 }
+        averageAttempts: { type: Number, default: 0 },
+        totalHistoricalCompletions: { type: Number, default: 0 } // Total completions including historical
     }
 }, { timestamps: true });
 
