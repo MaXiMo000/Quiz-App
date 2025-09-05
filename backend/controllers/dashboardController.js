@@ -49,11 +49,8 @@ export const getDashboardData = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        console.log('Found user:', { id: user._id, name: user.name });
-
         // Get all user reports using the user's name (since reports use username)
         const reports = await Report.find({ username: user.name });
-        console.log(`Found ${reports.length} reports for user ${user.name}`);
         
         // Calculate basic stats
         let quizFilter;
@@ -76,8 +73,6 @@ export const getDashboardData = async (req, res) => {
         const averageScore = reports.length > 0 
             ? Math.round(reports.reduce((sum, report) => sum + (report.score / report.total * 100), 0) / reports.length * 10) / 10
             : 0;
-
-        console.log('Basic stats:', { totalQuizzes, completedQuizzes, averageScore });
 
         // Calculate current streak
         const currentStreak = await calculateStreak(user.name);

@@ -11,7 +11,6 @@ const ParticleBackground = () => {
 
   // Generate particles based on theme
   useEffect(() => {
-    console.log('Current theme in ParticleBackground:', theme); // Debug log
     let particleCount = 35;
     let baseOpacity = [0.1, 0.3, 0.1];
     let animationProps = {};

@@ -91,7 +91,6 @@ const EnhancedDashboard = () => {
     
     // Listen for PWA events
     const handlePWAInstallable = () => {
-      console.log('🎯 PWA installable event received');
       checkPWAStatus();
     };
     

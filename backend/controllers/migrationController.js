@@ -3,7 +3,6 @@ import Quiz from "../models/Quiz.js";
 
 export const migrateQuizDifficultyDistribution = async () => {
     try {
-        console.log("🔄 Starting quiz difficulty distribution migration...");
         
         const quizzes = await Quiz.find({
             $or: [
@@ -48,8 +47,7 @@ export const migrateQuizDifficultyDistribution = async () => {
             await Quiz.findByIdAndUpdate(quiz._id, updateData);
             updatedCount++;
         }
-        
-        console.log(`✅ Migration completed! Updated ${updatedCount} quizzes.`);
+
         return { success: true, updatedCount };
         
     } catch (error) {

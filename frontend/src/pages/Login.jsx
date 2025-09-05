@@ -38,8 +38,8 @@ const Login = () => {
             } else {
                 navigate("/");
             }
+        // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            console.log(error);
             showError("Login Failed");
         } finally {
             setLoading(false);

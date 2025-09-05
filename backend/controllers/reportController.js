@@ -59,7 +59,6 @@ export async function createReport(req, res) {
             // Validate ObjectId format
             if (mongoose.Types.ObjectId.isValid(userId)) {
                 user = await UserQuiz.findById(userId);
-                console.log("User lookup by ID:", userId, "Found:", !!user);
             } else {
                 console.error("Invalid user ID format:", userId);
             }
@@ -82,7 +81,6 @@ export async function createReport(req, res) {
                 user = await UserQuiz.findOne({ name: username.trim() });
             }
             
-            console.log("User lookup by name:", username, "Found:", !!user);
         }
         
         if (!user) {
@@ -90,19 +88,9 @@ export async function createReport(req, res) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        console.log("Found user for XP update:", user.name, "ID:", user._id);
-        console.log("Current user XP data:", {
-            xp: user.xp,
-            totalXP: user.totalXP,
-            level: user.level,
-            loginStreak: user.loginStreak,
-            quizStreak: user.quizStreak
-        });
-
         // ✅ Ensure totalXP field exists for all users (especially Google OAuth users)
         if (typeof user.totalXP === 'undefined' || user.totalXP === null) {
             user.totalXP = user.xp || 0;
-            console.log("Initialized totalXP for user:", user.name, "to:", user.totalXP);
         }
 
         // 🏅 Award badges
@@ -151,8 +139,6 @@ export async function createReport(req, res) {
             await new XPLog({ user: user._id, xp: quizBonusXP, source: 'streak' }).save();
         }
 
-        console.log("XP before:", user.xp, "Level:", user.level, "Total XP:", user.totalXP);
-
         // 🎓 Update XP and level using proper totalXP method
         user.xp += totalXPGained;
         user.totalXP = (user.totalXP || 0) + totalXPGained;
@@ -167,8 +153,6 @@ export async function createReport(req, res) {
             unlockThemesForLevel(user);
         }
         user.xp = currentLevelXP; // Set remaining XP for current level
-
-        console.log("XP after:", user.xp, "Level:", user.level, "Total XP:", user.totalXP);
 
         await user.save();
 

@@ -9,7 +9,6 @@ export const ThemeProvider = ({ children }) => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         const storedTheme = storedUser?.selectedTheme || "Default";
 
-        console.log('ThemeContext: Setting theme to:', storedTheme); // Debug log
         setTheme(storedTheme);
         document.documentElement.setAttribute("data-theme", storedTheme);
     }, []);
@@ -45,7 +44,6 @@ export const ThemeProvider = ({ children }) => {
     }, [theme]);
 
     const changeTheme = (newTheme) => {
-        console.log('Changing theme to:', newTheme); // Debug log
         setTheme(newTheme);
         document.documentElement.setAttribute("data-theme", newTheme);
 

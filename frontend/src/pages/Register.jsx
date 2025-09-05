@@ -20,15 +20,13 @@ const Register = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post(`/api/users/register`,
+            await axios.post(`/api/users/register`,
                 { name, email, password },
                 { headers: { "Content-Type": "application/json" } } // ✅ Fix Content-Type
             );
-            console.log("Response:", response.data);
             showSuccess("Registration Successful! Please log in.");
             setTimeout(() => navigate("/login"), 2000);
         } catch (error) {
-            console.log("Error Response:", error.response?.data || error.message);
             showError(error.response?.data?.message || "Registration Failed");
         } finally {
             setLoading(false);

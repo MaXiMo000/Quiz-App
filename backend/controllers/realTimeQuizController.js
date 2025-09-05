@@ -102,7 +102,6 @@ export const initializeRealTimeQuiz = (server) => {
     });
 
     io.on('connection', (socket) => {
-        console.log(`🔌 User ${socket.userInfo.name} connected (${socket.userId})`);
         
         // Send user info to frontend
         socket.emit('authenticated', socket.userInfo);
@@ -134,17 +133,6 @@ export const initializeRealTimeQuiz = (server) => {
                 room.addPlayer(socket.userId, socket.userInfo);
                 activeRooms.set(roomId, room);
 
-                console.log('✅ Room created:', {
-                    roomId,
-                    hostId: room.hostId,
-                    playerCount: room.getPlayerCount(),
-                    players: Array.from(room.players.keys()),
-                    playersData: room.getAllPlayers(),
-                    socketUserId: socket.userId,
-                    socketUserInfo: socket.userInfo,
-                    canStart: room.canStart()
-                });
-
                 // Join socket room
                 socket.join(roomId);
                 socket.currentRoom = roomId;
@@ -167,7 +155,6 @@ export const initializeRealTimeQuiz = (server) => {
                     }
                 });
 
-                console.log(`🏠 Room ${roomId} created by ${socket.userInfo.name}`);
             } catch (error) {
                 console.error('Error creating room:', error);
                 socket.emit('error', { message: 'Failed to create room' });
@@ -230,7 +217,6 @@ export const initializeRealTimeQuiz = (server) => {
                     }
                 });
 
-                console.log(`👥 ${socket.userInfo.name} joined room ${roomId}`);
             } catch (error) {
                 console.error('Error joining room:', error);
                 socket.emit('error', { message: 'Failed to join room' });
@@ -240,31 +226,15 @@ export const initializeRealTimeQuiz = (server) => {
         // Start the quiz (host only)
         socket.on('start_quiz', () => {
             try {
-                console.log('🚀 start_quiz event triggered by:', socket.userInfo.name, 'socketId:', socket.id);
                 const roomId = socket.currentRoom;
-                console.log('Current room ID:', roomId);
-                
                 const room = activeRooms.get(roomId);
-                console.log('Room found:', !!room);
                 
                 if (!room) {
-                    console.log('❌ Room not found:', roomId);
                     socket.emit('error', { message: 'Room not found' });
                     return;
                 }
-                
-                console.log('Room details:', {
-                    id: room.id,
-                    hostId: room.hostId,
-                    socketUserId: socket.userId,
-                    isHost: room.isHost(socket.userId),
-                    playerCount: room.players.size,
-                    status: room.status,
-                    hasQuiz: !!room.quiz
-                });
 
                 if (!room.isHost(socket.userId)) {
-                    console.log('❌ Not host:', socket.userId, 'vs', room.hostId);
                     socket.emit('error', { message: 'Only the host can start the quiz' });
                     return;
                 }
@@ -275,13 +245,6 @@ export const initializeRealTimeQuiz = (server) => {
                     if (!room.quiz) reasons.push('No quiz selected');
                     if (room.status !== 'waiting') reasons.push(`Room status is ${room.status}, should be waiting`);
                     
-                    console.log('❌ Cannot start quiz:', { 
-                        playerCount: room.players.size,
-                        hasQuiz: !!room.quiz,
-                        status: room.status,
-                        reasons,
-                        players: Array.from(room.players.keys())
-                    });
                     
                     socket.emit('error', { message: `Cannot start quiz: ${reasons.join(', ')}` });
                     return;
@@ -302,7 +265,6 @@ export const initializeRealTimeQuiz = (server) => {
                 // Start first question
                 startQuestion(room, io);
 
-                console.log(`🚀 Quiz started in room ${roomId}`);
             } catch (error) {
                 console.error('Error starting quiz:', error);
                 socket.emit('error', { message: 'Failed to start quiz' });
@@ -355,7 +317,6 @@ export const initializeRealTimeQuiz = (server) => {
                     setTimeout(() => nextQuestion(room, io), 2000); // 2 second delay
                 }
 
-                console.log(`📝 ${socket.userInfo.name} submitted answer for Q${questionIndex + 1}`);
             } catch (error) {
                 console.error('Error submitting answer:', error);
                 socket.emit('error', { message: 'Failed to submit answer' });
@@ -369,7 +330,6 @@ export const initializeRealTimeQuiz = (server) => {
 
         // Handle disconnect
         socket.on('disconnect', () => {
-            console.log(`🔌 User ${socket.userInfo?.name} disconnected`);
             leaveRoom(socket, io);
             userSockets.delete(socket.userId);
         });
@@ -456,14 +416,6 @@ export const initializeRealTimeQuiz = (server) => {
                 }
             }
 
-            console.log(`Debug Real-time Q${questionIndex + 1} - Player ${player.name}:`, {
-                userAnswer: playerAnswer?.answer,
-                correctAnswer,
-                userAnswerType: typeof playerAnswer?.answer,
-                correctAnswerType: typeof correctAnswer,
-                isCorrect
-            });
-
             let points = 0;
             if (isCorrect) {
                 // Award points based on speed (faster = more points)
@@ -519,10 +471,8 @@ export const initializeRealTimeQuiz = (server) => {
         // Clean up room after 5 minutes
         setTimeout(() => {
             activeRooms.delete(room.id);
-            console.log(`🧹 Room ${room.id} cleaned up`);
         }, 5 * 60 * 1000);
 
-        console.log(`🏁 Quiz finished in room ${room.id}`);
     }
 
     function getLeaderboard(room) {
@@ -571,11 +521,9 @@ export const initializeRealTimeQuiz = (server) => {
                     const newLevel = Math.floor(user.xp / 1000) + 1;
                     if (newLevel > user.level) {
                         user.level = newLevel;
-                        console.log(`🎉 ${user.name} leveled up to ${newLevel}!`);
                     }
 
                     await user.save();
-                    console.log(`📊 Updated stats for ${user.name}: +${xpReward} XP, Level ${user.level}`);
                 }
             } catch (error) {
                 console.error(`Error updating stats for player ${player.playerId}:`, error);
@@ -617,7 +565,6 @@ export const initializeRealTimeQuiz = (server) => {
             }
         }
 
-        console.log(`👋 ${socket.userInfo?.name} left room ${roomId}`);
     }
 
     return io;
