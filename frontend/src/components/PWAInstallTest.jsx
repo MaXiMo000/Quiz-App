@@ -8,7 +8,6 @@ const PWAInstallTest = () => {
   const addLog = (message) => {
     const timestamp = new Date().toLocaleTimeString();
     setLogs(prev => [...prev, `[${timestamp}] ${message}`]);
-    console.log(message);
   };
 
   useEffect(() => {
@@ -16,17 +15,14 @@ const PWAInstallTest = () => {
     if (window.pwaManager) {
       const status = window.pwaManager.getInstallationInfo();
       setPwaStatus(status);
-      addLog('📱 Initial PWA status loaded');
     }
 
     // Listen for PWA events
     const handleInstallable = () => {
-      addLog('🎯 PWA became installable!');
       updateStatus();
     };
 
     const handleInstalled = () => {
-      addLog('🎉 PWA was installed!');
       updateStatus();
     };
 
@@ -48,7 +44,6 @@ const PWAInstallTest = () => {
 
   const checkInstallability = () => {
     if (window.pwaManager) {
-      addLog('🔍 Checking PWA installability criteria...');
       const criteria = window.pwaManager.checkInstallability();
       setInstallabilityCheck(criteria);
     }
@@ -56,7 +51,6 @@ const PWAInstallTest = () => {
 
   const testInstallFlow = () => {
     if (window.pwaDebug) {
-      addLog('🧪 Testing PWA install flow...');
       window.pwaDebug.testInstallFlow();
     }
   };
@@ -112,8 +106,7 @@ const PWAInstallTest = () => {
           </button>
           <button 
             onClick={async () => {
-              const manifest = await window.pwaDebug?.getManifest();
-              addLog(`📋 Manifest: ${JSON.stringify(manifest, null, 2)}`);
+              await window.pwaDebug?.getManifest();
             }}
           >
             📋 Get Manifest

@@ -85,86 +85,64 @@ const App = () => {
     // ✅ PWA initialization and management
     useEffect(() => {
         // Initialize PWA manager
-        console.log('🚀 PWA Manager initialized');
-        
-        // Make PWA manager globally accessible for debugging
         window.pwaManager = pwaManager;
         
-        // Add enhanced PWA debug utilities
-        window.pwaDebug = {
-            checkStatus: () => pwaManager.getInstallationInfo(),
-            checkCriteria: () => pwaManager.checkInstallability(),
-            forceInstallCheck: () => {
-                console.log('🔍 Forcing PWA installability check...');
-                window.dispatchEvent(new CustomEvent('pwa-check-installability'));
-                return pwaManager.checkInstallability();
-            },
-            simulateInstallPrompt: () => {
-                console.log('🎯 Simulating install prompt for testing...');
-                if (pwaManager.installPrompt) {
-                    return pwaManager.promptInstall();
-                } else {
-                    console.log('⚠️ No install prompt available - showing browser-specific instructions');
-                    pwaManager.showBrowserSpecificInstructions();
-                    return false;
-                }
-            },
-            getManifest: async () => {
-                try {
-                    const manifestLink = document.querySelector('link[rel="manifest"]');
-                    if (manifestLink) {
-                        const response = await fetch(manifestLink.href);
-                        return await response.json();
+        // Add PWA debug utilities (development only)
+        if (import.meta.env.DEV) {
+            window.pwaDebug = {
+                checkStatus: () => pwaManager.getInstallationInfo(),
+                checkCriteria: () => pwaManager.checkInstallability(),
+                forceInstallCheck: () => {
+                    window.dispatchEvent(new CustomEvent('pwa-check-installability'));
+                    return pwaManager.checkInstallability();
+                },
+                simulateInstallPrompt: () => {
+                    if (pwaManager.installPrompt) {
+                        return pwaManager.promptInstall();
+                    } else {
+                        pwaManager.showBrowserSpecificInstructions();
+                        return false;
                     }
-                    return null;
-                } catch (error) {
-                    console.error('Failed to fetch manifest:', error);
-                    return null;
+                },
+                getManifest: async () => {
+                    try {
+                        const manifestLink = document.querySelector('link[rel="manifest"]');
+                        if (manifestLink) {
+                            const response = await fetch(manifestLink.href);
+                            return await response.json();
+                        }
+                        return null;
+                    } catch (error) {
+                        console.error('Failed to fetch manifest:', error);
+                        return null;
+                    }
+                },
+                clearPWAData: () => {
+                    localStorage.removeItem('pwa_installed_at');
+                    localStorage.removeItem('pwa_install_source');
+                },
+                testInstallFlow: () => {
+                    const status = pwaManager.getInstallationInfo();
+                    if (status.canInstall) {
+                        return pwaManager.promptInstall();
+                    } else {
+                        pwaManager.showBrowserSpecificInstructions();
+                        return false;
+                    }
                 }
-            },
-            clearPWAData: () => {
-                localStorage.removeItem('pwa_installed_at');
-                localStorage.removeItem('pwa_install_source');
-                console.log('🗑️ PWA data cleared');
-            },
-            testInstallFlow: () => {
-                console.log('🧪 Testing PWA install flow...');
-                const status = pwaManager.getInstallationInfo();
-                console.log('Current status:', status);
-                
-                if (status.canInstall) {
-                    console.log('✅ Can install - showing prompt');
-                    return pwaManager.promptInstall();
-                } else {
-                    console.log('❌ Cannot install - showing browser-specific instructions');
-                    pwaManager.showBrowserSpecificInstructions();
-                    return false;
-                }
-            }
-        };
-        
-        console.log('🔧 PWA Debug utilities loaded. Use window.pwaDebug.checkStatus() to check PWA status');
+            };
+        }
         
         // Check for updates periodically when online
         if (isOnline) {
             pwaManager.checkForUpdates();
         }
         
-        // Log PWA installation status
-        const pwaInfo = pwaManager.getInstallationInfo();
-        console.log('📱 PWA Initial Status:', pwaInfo);
-        
-        // Force check for beforeinstallprompt event with multiple attempts
+        // Check for beforeinstallprompt event
         setTimeout(() => {
             const newPwaInfo = pwaManager.getInstallationInfo();
-            console.log('📱 PWA Status after delay:', newPwaInfo);
-            
-            // If still not installable, force a check
             if (!newPwaInfo.isInstallable && !newPwaInfo.isInstalled) {
-                console.log('🔍 PWA not installable after delay, forcing check...');
                 pwaManager.checkInstallability();
-                
-                // Try again after another delay
                 setTimeout(() => {
                     window.dispatchEvent(new CustomEvent('pwa-check-installability'));
                 }, 2000);

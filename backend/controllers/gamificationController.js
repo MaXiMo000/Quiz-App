@@ -20,7 +20,6 @@ export const getCurrentDailyChallenge = async (req, res) => {
             isActive: true
         }).populate('quizzes');
 
-        console.log('Debug - Found active challenges:', allActiveChallenges.length);
 
         // Filter challenges based on user participation and 24-hour reset logic
         const availableChallenges = allActiveChallenges.filter(challenge => {
@@ -42,17 +41,14 @@ export const getCurrentDailyChallenge = async (req, res) => {
             if (userParticipant.completed && userParticipant.completedAt) {
                 const isMoreThan24HoursAgo = userParticipant.completedAt < twentyFourHoursAgo;
                 if (isMoreThan24HoursAgo) {
-                    console.log(`🔄 Challenge "${challenge.title}" available again for user ${userId} (completed ${userParticipant.completedAt})`);
                     return true;
                 }
-                console.log(`⏰ Challenge "${challenge.title}" completed recently by user ${userId} (completed ${userParticipant.completedAt})`);
                 return false; // Recently completed, not available
             }
 
             return false;
         });
 
-        console.log('Debug - Available challenges after filtering:', availableChallenges.length);
 
         // If no challenges exist and user is admin, suggest creating one
         if (availableChallenges.length === 0) {
@@ -87,7 +83,6 @@ export const getCurrentDailyChallenge = async (req, res) => {
                     quizScores: []
                 };
                 wasReset = true;
-                console.log(`🔄 Displaying reset progress for challenge "${challenge.title}" for user ${userId}`);
             }
 
             return {
@@ -103,7 +98,6 @@ export const getCurrentDailyChallenge = async (req, res) => {
             };
         });
 
-        console.log('Debug - Final challenges with progress:', challengesWithProgress.length);
 
         res.json({
             challenges: challengesWithProgress
@@ -351,11 +345,6 @@ export const createDailyChallenge = async (req, res) => {
             timeLimit
         } = req.body;
 
-        console.log('Debug - Creating challenge with data:', {
-            title,
-            quizzesLength: quizzes?.length,
-            timeLimit
-        });
 
         const challenge = new DailyChallenge({
             title,
@@ -379,7 +368,6 @@ export const createDailyChallenge = async (req, res) => {
 
         await challenge.save();
 
-        console.log('Debug - Challenge created with quizzes:', challenge.quizzes.length);
 
         res.status(201).json({
             message: "Daily challenge created successfully",
@@ -402,11 +390,9 @@ export const createSampleDailyChallenge = async (req, res) => {
 
         // Get some sample quizzes for the challenge (remove isActive filter)
         const availableQuizzes = await Quiz.find({}).limit(3);
-        console.log('Debug - Available quizzes in database:', availableQuizzes.length);
         
         if (availableQuizzes.length === 0) {
             // Create a sample quiz if none exist
-            console.log('Debug - No quizzes found, creating a sample quiz...');
             
             const sampleQuiz = new Quiz({
                 title: "Sample Quiz for Daily Challenge",
@@ -440,7 +426,6 @@ export const createSampleDailyChallenge = async (req, res) => {
             });
             
             await sampleQuiz.save();
-            console.log('Debug - Sample quiz created:', sampleQuiz._id);
             availableQuizzes.push(sampleQuiz);
         }
 
@@ -469,7 +454,6 @@ export const createSampleDailyChallenge = async (req, res) => {
         });
 
         await sampleChallenge.save();
-        console.log('Debug - Sample challenge created with quizzes:', sampleChallenge.quizzes.length);
 
         res.status(201).json({
             message: "Sample daily challenge created successfully",
@@ -541,12 +525,6 @@ export const getAvailableTournaments = async (req, res) => {
                 p.user.toString() === userId
             );
 
-            console.log('Debug - Tournament user participation:', {
-                tournamentId: tournament._id,
-                isParticipating: !!userParticipation,
-                quizzesCompleted: userParticipation?.quizzesCompleted || 0,
-                currentScore: userParticipation?.currentScore || 0
-            });
 
             return {
                 ...tournament.toObject(),
@@ -632,7 +610,6 @@ export const getAvailableQuizzes = async (req, res) => {
             .populate('createdBy', 'name')
             .sort({ createdAt: -1 }); // Sort by newest first
 
-        console.log('Found quizzes:', quizzes.length); // Debug log
 
         res.json({ quizzes });
 
@@ -839,11 +816,6 @@ export const createTournament = async (req, res) => {
 
         const tournamentData = req.body;
         
-        console.log('Debug - Creating tournament with data:', {
-            name: tournamentData.name,
-            quizzesLength: tournamentData.quizzes?.length,
-            settings: tournamentData.settings
-        });
         
         // Ensure dates are properly converted
         if (tournamentData.registrationStart) {
@@ -878,7 +850,6 @@ export const createTournament = async (req, res) => {
         const tournament = new Tournament(tournamentData);
         await tournament.save();
 
-        console.log('Debug - Tournament created with quizzes:', tournament.quizzes.length);
 
         res.status(201).json({
             message: "Tournament created successfully",
@@ -901,11 +872,9 @@ export const createSampleTournament = async (req, res) => {
 
         // Get some sample quizzes for the tournament (remove isActive filter)
         let availableQuizzes = await Quiz.find({}).limit(5);
-        console.log('Debug - Available quizzes for tournament:', availableQuizzes.length);
         
         if (availableQuizzes.length === 0) {
             // Create sample quizzes if none exist
-            console.log('Debug - No quizzes found, creating sample quizzes for tournament...');
             
             const sampleQuizzes = [];
             for (let i = 1; i <= 3; i++) {
@@ -935,7 +904,6 @@ export const createSampleTournament = async (req, res) => {
                 
                 await sampleQuiz.save();
                 sampleQuizzes.push(sampleQuiz);
-                console.log(`Debug - Tournament quiz ${i} created:`, sampleQuiz._id);
             }
             availableQuizzes = sampleQuizzes;
         }
@@ -986,7 +954,6 @@ export const createSampleTournament = async (req, res) => {
         });
 
         await sampleTournament.save();
-        console.log('Debug - Sample tournament created with quizzes:', sampleTournament.quizzes.length);
 
         res.status(201).json({
             message: "Sample tournament created successfully",
@@ -1010,8 +977,6 @@ export const startChallengeQuiz = async (req, res) => {
             return res.status(404).json({ message: "Challenge not found" });
         }
 
-        console.log('Debug - Challenge found:', challenge.title);
-        console.log('Debug - Challenge has quizzes:', challenge.quizzes ? challenge.quizzes.length : 0);
 
         // Check if challenge has any quizzes
         if (!challenge.quizzes || challenge.quizzes.length === 0) {
@@ -1030,9 +995,6 @@ export const startChallengeQuiz = async (req, res) => {
             !completedQuizzes.includes(quiz._id.toString())
         );
 
-        console.log('Debug - Challenge quizzes:', challenge.quizzes.length);
-        console.log('Debug - Completed quizzes:', completedQuizzes.length);
-        console.log('Debug - Available quizzes:', availableQuizzes.length);
 
         if (availableQuizzes.length === 0) {
             return res.status(400).json({ message: "No more quizzes available in this challenge" });
@@ -1070,12 +1032,6 @@ export const submitChallengeQuiz = async (req, res) => {
         // Handle both timeSpent and timeTaken for compatibility
         const actualTimeSpent = timeSpent || timeTaken || 0;
 
-        console.log('Debug - Quiz submission data:', {
-            quizId,
-            answersLength: answers?.length,
-            timeSpent: actualTimeSpent,
-            frontendScore: score
-        });
 
         const challenge = await DailyChallenge.findById(challengeId).populate('quizzes');
         if (!challenge) {
@@ -1097,15 +1053,6 @@ export const submitChallengeQuiz = async (req, res) => {
         let correctAnswers = 0;
         const totalQuestions = quiz.questions.length;
 
-        console.log('Debug - Quiz questions structure:', {
-            totalQuestions,
-            firstQuestion: quiz.questions[0] ? {
-                question: quiz.questions[0].question?.substring(0, 50),
-                correctAnswer: quiz.questions[0].correctAnswer,
-                points: quiz.questions[0].points,
-                options: quiz.questions[0].options?.length
-            } : 'No questions'
-        });
 
         quiz.questions.forEach((question, index) => {
             const userAnswer = answers[index];
@@ -1127,14 +1074,6 @@ export const submitChallengeQuiz = async (req, res) => {
                 isCorrect = userAnswer === correctAnswer;
             }
             
-            console.log(`Debug - Question ${index + 1}:`, {
-                userAnswer,
-                correctAnswer,
-                userAnswerType: typeof userAnswer,
-                correctAnswerType: typeof correctAnswer,
-                isCorrect,
-                questionPoints
-            });
             
             if (isCorrect) {
                 correctAnswers++;
@@ -1146,14 +1085,6 @@ export const submitChallengeQuiz = async (req, res) => {
         const finalScore = calculatedScore;
         const percentage = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
 
-        console.log('Debug - Score calculation:', {
-            frontendScore: score,
-            calculatedScore,
-            finalScore,
-            correctAnswers,
-            totalQuestions,
-            percentage
-        });
 
         // Update participant progress
         if (!participant.completedQuizzes) {
@@ -1173,12 +1104,6 @@ export const submitChallengeQuiz = async (req, res) => {
             completedAt: new Date()
         });
 
-        console.log('Debug - Added quiz score:', {
-            quizId,
-            score: finalScore,
-            percentage,
-            timeSpent: actualTimeSpent
-        });
 
         // Update participant attempts
         participant.attempts += 1;  
@@ -1211,13 +1136,6 @@ export const submitChallengeQuiz = async (req, res) => {
 
         await challenge.save();
 
-        console.log('Debug - Challenge saved, final participant state:', {
-            progress: participant.progress,
-            completed: participant.completed,
-            attempts: participant.attempts,
-            completedQuizzes: participant.completedQuizzes.length,
-            quizScores: participant.quizScores.length
-        });
 
         res.json({
             message: completedCount >= totalQuizzes ? "Challenge completed!" : "Quiz submitted successfully",
@@ -1260,9 +1178,6 @@ export const startTournamentQuiz = async (req, res) => {
             return res.status(404).json({ message: "Tournament not found" });
         }
 
-        console.log('Debug - Tournament found:', tournament.name);
-        console.log('Debug - Tournament has quizzes:', tournament.quizzes ? tournament.quizzes.length : 0);
-        console.log('Debug - Tournament status:', tournament.status);
 
         // Check if tournament has any quizzes
         if (!tournament.quizzes || tournament.quizzes.length === 0) {
@@ -1284,9 +1199,6 @@ export const startTournamentQuiz = async (req, res) => {
             !completedQuizzes.includes(quiz._id.toString())
         );
 
-        console.log('Debug - Tournament quizzes:', tournament.quizzes.length);
-        console.log('Debug - Completed quizzes:', completedQuizzes.length);
-        console.log('Debug - Available quizzes:', availableQuizzes.length);
 
         if (availableQuizzes.length === 0) {
             return res.status(400).json({ message: "No more quizzes available in this tournament" });
@@ -1324,12 +1236,6 @@ export const submitTournamentQuiz = async (req, res) => {
         // Handle both timeSpent and timeTaken for compatibility
         const actualTimeSpent = timeSpent || timeTaken || 0;
 
-        console.log('Debug - Tournament quiz submission data:', {
-            quizId,
-            answersLength: answers?.length,
-            timeSpent: actualTimeSpent,
-            frontendScore: score
-        });
 
         const tournament = await Tournament.findById(tournamentId).populate('quizzes');
         if (!tournament) {
@@ -1351,15 +1257,6 @@ export const submitTournamentQuiz = async (req, res) => {
         let correctAnswers = 0;
         const totalQuestions = quiz.questions.length;
 
-        console.log('Debug - Tournament quiz questions structure:', {
-            totalQuestions,
-            firstQuestion: quiz.questions[0] ? {
-                question: quiz.questions[0].question?.substring(0, 50),
-                correctAnswer: quiz.questions[0].correctAnswer,
-                points: quiz.questions[0].points,
-                options: quiz.questions[0].options?.length
-            } : 'No questions'
-        });
 
         quiz.questions.forEach((question, index) => {
             const userAnswer = answers[index];
@@ -1381,14 +1278,6 @@ export const submitTournamentQuiz = async (req, res) => {
                 isCorrect = userAnswer === correctAnswer;
             }
             
-            console.log(`Debug - Tournament Question ${index + 1}:`, {
-                userAnswer,
-                correctAnswer,
-                userAnswerType: typeof userAnswer,
-                correctAnswerType: typeof correctAnswer,
-                isCorrect,
-                questionPoints
-            });
             
             if (isCorrect) {
                 correctAnswers++;
@@ -1400,14 +1289,6 @@ export const submitTournamentQuiz = async (req, res) => {
         const finalScore = calculatedScore;
         const percentage = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
 
-        console.log('Debug - Tournament score calculation:', {
-            frontendScore: score,
-            calculatedScore,
-            finalScore,
-            correctAnswers,
-            totalQuestions,
-            percentage
-        });
 
         // Update participant progress
         if (!participant.completedQuizzes) {
@@ -1427,12 +1308,6 @@ export const submitTournamentQuiz = async (req, res) => {
             completedAt: new Date()
         });
 
-        console.log('Debug - Added tournament quiz score:', {
-            quizId,
-            score: finalScore,
-            percentage,
-            timeSpent: actualTimeSpent
-        });
 
         // Update tournament stats
         participant.currentScore += finalScore;
@@ -1496,7 +1371,6 @@ export const getUserCompletedChallenges = async (req, res) => {
             }
         }).sort({ endDate: -1 }).limit(20);
         
-        console.log('Debug - Found challenges for history:', challenges.length);
 
         // Extract user's specific data for each completed challenge
         const challengeHistory = challenges.map(challenge => {
@@ -1510,13 +1384,6 @@ export const getUserCompletedChallenges = async (req, res) => {
                 return null;
             }
             
-            console.log('Debug - User participation:', {
-                challengeId: challenge._id,
-                progress: userParticipation.progress,
-                completed: userParticipation.completed,
-                attempts: userParticipation.attempts,
-                quizScores: userParticipation.quizScores
-            });
             
             return {
                 _id: challenge._id,
@@ -1534,7 +1401,6 @@ export const getUserCompletedChallenges = async (req, res) => {
             };
         }).filter(challenge => challenge !== null); // Remove null entries
 
-        console.log('Debug - Returning challenge history:', challengeHistory.length);
         res.json({ challenges: challengeHistory });
 
     } catch (error) {
@@ -1560,7 +1426,6 @@ export const getTournamentHistory = async (req, res) => {
             ]
         }).sort({ tournamentEnd: -1 }).limit(20);
 
-        console.log('Debug - Found tournaments for history:', tournaments.length);
 
         // Extract user's specific data for each tournament
         const tournamentHistory = tournaments.map(tournament => {
@@ -1602,7 +1467,6 @@ export const getTournamentHistory = async (req, res) => {
             };
         });
 
-        console.log('Debug - Returning tournament history:', tournamentHistory.length);
         res.json({ tournaments: tournamentHistory });
 
     } catch (error) {
@@ -1627,11 +1491,9 @@ export const cleanupEmptyChallenges = async (req, res) => {
             ]
         });
 
-        console.log('Debug - Found empty challenges:', emptyChallenges.length);
 
         // Delete empty challenges
         for (const challenge of emptyChallenges) {
-            console.log('Debug - Deleting empty challenge:', challenge.title);
             await DailyChallenge.findByIdAndDelete(challenge._id);
         }
 
@@ -1662,11 +1524,9 @@ export const cleanupEmptyTournaments = async (req, res) => {
             ]
         });
 
-        console.log('Debug - Found empty tournaments:', emptyTournaments.length);
 
         // Delete empty tournaments
         for (const tournament of emptyTournaments) {
-            console.log('Debug - Deleting empty tournament:', tournament.name);
             await Tournament.findByIdAndDelete(tournament._id);
         }
 

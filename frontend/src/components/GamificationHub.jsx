@@ -70,7 +70,6 @@ const GamificationHub = () => {
                     
                     // Hide completed challenges - they should only appear in completed tab
                     if (status === 'completed_today') {
-                        console.log(`🚫 Hiding completed challenge "${challenge.title}" from daily view - belongs in completed tab`);
                         return false;
                     }
                     
@@ -86,7 +85,6 @@ const GamificationHub = () => {
                     }
                 });
                 
-                console.log(`📊 Daily Challenges Tab: Showing ${availableChallenges.length} available/in-progress challenges`);
             } else {
                 setDailyChallenges([]);
             }
@@ -124,7 +122,6 @@ const GamificationHub = () => {
             
             if (response.data.completedChallenges) {
                 setCompletedChallenges(response.data.completedChallenges);
-                console.log(`📊 Completed Challenges Tab: Showing ${response.data.completedChallenges.length} completed challenges`);
             } else {
                 setCompletedChallenges([]);
             }
@@ -279,8 +276,8 @@ const GamificationHub = () => {
     // Create sample tournament for testing
     const createSampleTournament = async () => {
         try {
+            // eslint-disable-next-line no-unused-vars
             const response = await axios.post('/api/gamification/tournaments/create-sample');
-            console.log('Sample tournament created:', response.data);
             showSuccess('Sample tournament created successfully!');
             
             // Refresh tournaments list

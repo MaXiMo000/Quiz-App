@@ -667,9 +667,7 @@ async function ensureBasicData() {
         const pathCount = await LearningPath.countDocuments();
         
         if (pathCount === 0) {
-            console.log('🌱 No learning paths found. Auto-seeding database...');
             await seedLearningPaths();
-            console.log('✅ Learning paths seeded successfully');
         }
     } catch (error) {
         console.error('❌ Error in auto-seeding:', error);

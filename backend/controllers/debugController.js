@@ -98,8 +98,6 @@ export const fixGoogleOAuthUsers = async (req, res) => {
             ]
         });
 
-        console.log(`Found ${usersToFix.length} users that need fixing`);
-
         let fixedCount = 0;
         for (const user of usersToFix) {
             let needsSave = false;
@@ -127,7 +125,6 @@ export const fixGoogleOAuthUsers = async (req, res) => {
             if (needsSave) {
                 await user.save();
                 fixedCount++;
-                console.log(`Fixed user: ${user.name} (${user.email})`);
             }
         }
 

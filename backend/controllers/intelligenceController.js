@@ -300,23 +300,16 @@ export const getAdaptiveDifficulty = async (req, res) => {
             username: user.name
         }).sort({ createdAt: -1 });
 
-        console.log(`[DEBUG] Adaptive Difficulty - User: ${user.name}, Category: ${category}`);
-        console.log(`[DEBUG] All reports found: ${allReports.length}`);
-        console.log(`[DEBUG] Report quiz names:`, allReports.map(r => r.quizName));
-
         let categoryReports;
         if (category && category.toLowerCase() !== 'general') {
             // Filter reports by category extracted from quiz names
             categoryReports = allReports.filter(report => {
                 const reportCategory = extractCategoryFromQuizName(report.quizName);
-                console.log(`[DEBUG] Quiz "${report.quizName}" -> Category: ${reportCategory}`);
                 return reportCategory.toLowerCase() === category.toLowerCase();
             }).slice(0, 5);
-            console.log(`[DEBUG] Filtered reports for category "${category}": ${categoryReports.length}`);
         } else {
             // For 'general' category, get all recent reports
             categoryReports = allReports.slice(0, 5);
-            console.log(`[DEBUG] General category - using all reports: ${categoryReports.length}`);
         }
 
         let recommendedDifficulty = "medium";
@@ -368,8 +361,7 @@ export const getAdaptiveDifficulty = async (req, res) => {
             basedOnQuizzes: categoryReports.length,
             category: category || "general"
         };
-
-        console.log(`[DEBUG] Adaptive Difficulty Response:`, response);
+        
         res.json(response);
 
     } catch (error) {

@@ -20,11 +20,8 @@ const generateFromGemini = async (prompt) => {
         });
 
         const raw = result.response.text();
-        console.log("🔍 Gemini API Response:", raw);
-        console.log("✅ Gemini API success");
         return raw;
     } catch (error) {
-        console.error("❌ Gemini API error:", error);
         throw error;
     }
 };
@@ -34,7 +31,6 @@ const parseAIResponse = (aiText) => {
         const cleanText = aiText.replace(/```(?:json)?\s*([\s\S]*?)\s*```/, '$1').trim();
         return JSON.parse(cleanText);
     } catch (e) {
-        console.error("❌ JSON Parsing Error:", e, "\nOriginal AI Text:", aiText);
         throw new Error("AI returned invalid JSON: " + e.message);
     }
 };
