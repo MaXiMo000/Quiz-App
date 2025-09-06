@@ -14,6 +14,7 @@
     align-items: center;
     z-index: 1000;
     padding: 20px;
+    padding-bottom: calc(20px + 80px); /* Add space for mobile navbar */
 }
 
 .ai-modal-content {
@@ -374,12 +375,15 @@
 @media (max-width: 768px) {
     .ai-modal-overlay {
         padding: 15px;
+        padding-bottom: calc(15px + 80px); /* Add space for mobile navbar */
     }
     
     .ai-modal-content {
         max-width: 100%;
         border-radius: 15px;
         margin: 0 auto;
+        max-height: calc(100vh - 120px); /* Ensure modal doesn't exceed viewport */
+        overflow-y: auto;
     }
     
     .ai-modal-header {
@@ -388,6 +392,7 @@
     
     .ai-modal-body {
         padding: 20px 20px 25px;
+        padding-bottom: calc(25px + 20px); /* Extra space for mobile navbar */
     }
     
     .ai-modal-title {
@@ -405,6 +410,7 @@
     .ai-modal-buttons {
         flex-direction: column;
         gap: 10px;
+        margin-bottom: 20px; /* Extra margin to prevent navbar overlap */
     }
     
     .ai-btn {
@@ -425,6 +431,7 @@
 @media (max-width: 480px) {
     .ai-modal-overlay {
         padding: 10px;
+        padding-bottom: calc(10px + 80px); /* Add space for mobile navbar */
     }
     
     .ai-modal-header {
@@ -433,6 +440,7 @@
     
     .ai-modal-body {
         padding: 15px 15px 20px;
+        padding-bottom: calc(20px + 20px); /* Extra space for mobile navbar */
     }
     
     .ai-modal-title {
@@ -462,6 +470,7 @@
 @media (max-width: 480px) {
     .ai-modal-overlay {
         padding: 10px;
+        padding-bottom: calc(10px + 80px); /* Add space for mobile navbar */
     }
     
     .ai-modal-header {
@@ -470,6 +479,7 @@
     
     .ai-modal-body {
         padding: 15px 20px 20px;
+        padding-bottom: calc(20px + 20px); /* Extra space for mobile navbar */
     }
     
     .ai-modal-title {
