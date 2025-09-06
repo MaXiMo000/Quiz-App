@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./TakeQuiz.css";
@@ -44,8 +44,95 @@ const TakeQuiz = () => {
             }
         };
         fetchQuiz();
-        enterFullScreen();
     }, [id]);
+
+    // Listen for fullscreen changes
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            const isCurrentlyFullscreen = !!(
+                document.fullscreenElement ||
+                document.mozFullScreenElement ||
+                document.webkitFullscreenElement ||
+                document.msFullscreenElement
+            );
+            setIsFullScreen(isCurrentlyFullscreen);
+            
+            // Add/remove fullscreen class to body for better CSS targeting
+            if (isCurrentlyFullscreen) {
+                document.body.classList.add('quiz-fullscreen');
+                console.log("Fullscreen mode activated");
+                // Verify class was added
+                setTimeout(() => {
+                    console.log("Body classes after adding quiz-fullscreen:", document.body.className);
+                    console.log("Quiz-fullscreen class present:", document.body.classList.contains('quiz-fullscreen'));
+                }, 50);
+            } else {
+                document.body.classList.remove('quiz-fullscreen');
+                console.log("Fullscreen mode deactivated");
+            }
+        };
+
+        // Check initial fullscreen state on mount
+        const checkInitialFullscreen = () => {
+            const isCurrentlyFullscreen = !!(
+                document.fullscreenElement ||
+                document.mozFullScreenElement ||
+                document.webkitFullscreenElement ||
+                document.msFullscreenElement
+            );
+            console.log("Checking initial fullscreen state:", {
+                fullscreenElement: document.fullscreenElement,
+                mozFullScreenElement: document.mozFullScreenElement,
+                webkitFullscreenElement: document.webkitFullscreenElement,
+                msFullscreenElement: document.msFullscreenElement,
+                isCurrentlyFullscreen
+            });
+            if (isCurrentlyFullscreen) {
+                setIsFullScreen(true);
+                document.body.classList.add('quiz-fullscreen');
+                console.log("Fullscreen mode already active on mount");
+                // Verify class was added
+                setTimeout(() => {
+                    console.log("Body classes after adding quiz-fullscreen:", document.body.className);
+                    console.log("Quiz-fullscreen class present:", document.body.classList.contains('quiz-fullscreen'));
+                }, 50);
+            }
+        };
+
+        // Check initial state with a small delay to ensure proper detection after navigation
+        setTimeout(checkInitialFullscreen, 100);
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                const isCurrentlyFullscreen = !!(
+                    document.fullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.msFullscreenElement
+                );
+                if (isCurrentlyFullscreen) {
+                    exitFullScreen();
+                }
+            }
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('keydown', handleKeyDown);
+            // Clean up class on unmount
+            document.body.classList.remove('quiz-fullscreen');
+            console.log("Fullscreen mode deactivated");
+        };
+    }, []); // Remove isFullScreen dependency to prevent re-running
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -53,78 +140,17 @@ const TakeQuiz = () => {
         return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
     };
 
-    useEffect(() => {
-        if (timeLeft === null) return;
-        if (timeLeft <= 0) {
-            handleSubmit();
-            return;
-        }
-
-        const timer = setInterval(() => {
-            setTimeLeft(prev => prev - 1);
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [timeLeft]);
-
-    const enterFullScreen = () => {
-        const element = document.documentElement;
-        if (element.requestFullscreen) element.requestFullscreen();
-        else if (element.mozRequestFullScreen) element.mozRequestFullScreen();
-        else if (element.webkitRequestFullscreen) element.webkitRequestFullscreen();
-        else if (element.msRequestFullscreen) element.msRequestFullscreen();
-        console.log("Entered full screen mode", isFullScreen);
-        setIsFullScreen(true);
-    };
-
-    const exitFullScreen = () => {
-        if (document.exitFullscreen) document.exitFullscreen();
-        else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-        else if (document.msExitFullscreen) document.msExitFullscreen();
-        setIsFullScreen(false);
-    };
-
-    // SAVE THE INDEX, NOT THE LETTER
-    const handleAnswer = (optionIndex) => {
-        setAnswers(prev => ({
-            ...prev,
-            [currentQuestion]: optionIndex
-        }));
-    };
-
-    const handleClearAnswer = () => {
-        setAnswers(prev => {
-            const copy = { ...prev };
-            delete copy[currentQuestion];
-            return copy;
-        });
-    };
-
-    const recordAnswerTime = () => {
+    const recordAnswerTime = useCallback(() => {
         const timeSpent = (Date.now() - questionStartTime) / 1000;
         setAnswerTimes(prev => ({
         ...prev,
         [currentQuestion]: (prev[currentQuestion] || 0) + timeSpent
         }));
         setQuestionStartTime(Date.now());
-    };
-    
-    const handleNext = () => {
-        recordAnswerTime();
-        if (currentQuestion < quiz.questions.length - 1) {
-        setCurrentQuestion(prev => prev + 1);
-        }
-    };
-    
-    const handlePrev = () => {
-        recordAnswerTime();
-        if (currentQuestion > 0) {
-            setCurrentQuestion(prev => prev - 1);
-        }
-    };
+    }, [questionStartTime, currentQuestion]);
 
-    const handleSubmit = async () => {
+    // Fixed: handleSubmit defined before useEffect that uses it
+    const handleSubmit = useCallback(async () => {
         recordAnswerTime();
         let correctCount = 0;
 
@@ -207,6 +233,59 @@ const TakeQuiz = () => {
             console.error("Error saving report:", error);
             showError("Failed to save your score. Please try again.");
         }
+    }, [quiz, answers, answerTimes, optionLetters, showError, id, recordAnswerTime]);
+
+    useEffect(() => {
+        if (timeLeft === null) return;
+        if (timeLeft <= 0) {
+            handleSubmit();
+            return;
+        }
+
+        const timer = setInterval(() => {
+            setTimeLeft(prev => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [timeLeft, handleSubmit]);
+
+
+    const exitFullScreen = () => {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if (document.msExitFullscreen) document.msExitFullscreen();
+        setIsFullScreen(false);
+    };
+
+    // SAVE THE INDEX, NOT THE LETTER
+    const handleAnswer = (optionIndex) => {
+        setAnswers(prev => ({
+            ...prev,
+            [currentQuestion]: optionIndex
+        }));
+    };
+
+    const handleClearAnswer = () => {
+        setAnswers(prev => {
+            const copy = { ...prev };
+            delete copy[currentQuestion];
+            return copy;
+        });
+    };
+
+    const handleNext = () => {
+        recordAnswerTime();
+        if (currentQuestion < quiz.questions.length - 1) {
+        setCurrentQuestion(prev => prev + 1);
+        }
+    };
+    
+    const handlePrev = () => {
+        recordAnswerTime();
+        if (currentQuestion > 0) {
+            setCurrentQuestion(prev => prev - 1);
+        }
     };
 
     if (loading) return <Spinner message="Loading quiz..." />;
@@ -214,41 +293,54 @@ const TakeQuiz = () => {
 
     return (
         <div className="quiz-container">
-            <h1>{quiz.title}</h1>
-            <div className="timer">Time Left: {formatTime(timeLeft)}</div>
+            {/* Fullscreen exit button */}
+            {isFullScreen && (
+                <button 
+                    className="exit-fullscreen-btn"
+                    onClick={exitFullScreen}
+                    title="Exit Fullscreen"
+                >
+                    ✕
+                </button>
+            )}
+            
+            <div className="quiz-content">
+                <h1>{quiz.title}</h1>
+                <div className="timer">Time Left: {formatTime(timeLeft)}</div>
 
-            <div className="question-box">
-                <p className="question">{currentQ.question}</p>
-                <div className="options">
-                    {currentQ.options.map((option, i) => (
-                        <button
-                            key={`q${currentQuestion}-opt${i}`}
-                            className={answers[currentQuestion] === i ? "selected" : ""}
-                            onClick={() => handleAnswer(i)}
-                        >
-                            {option}
-                        </button>
-                    ))}
+                <div className="question-box">
+                    <p className="question">{currentQ.question}</p>
+                    <div className="options">
+                        {currentQ.options.map((option, i) => (
+                            <button
+                                key={`q${currentQuestion}-opt${i}`}
+                                className={answers[currentQuestion] === i ? "selected" : ""}
+                                onClick={() => handleAnswer(i)}
+                            >
+                                {option}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-            </div>
 
-            <div className="navigation-buttons">  
-                <button
-                    onClick={handlePrev}
-                    disabled={currentQuestion === 0}
-                    className={`navigation-button ${currentQuestion === 0 ? "disabled-btn" : ""}`}
-                >
-                    Previous
-                </button>
-                <button onClick={handleClearAnswer}>Clear Answer</button>
-                <button
-                    onClick={handleNext}
-                    disabled={currentQuestion === quiz.questions.length - 1}
-                    className={`navigation-button ${currentQuestion === quiz.questions.length - 1 ? "disabled-btn" : ""}`}
-                >
-                    Next
-                </button>
-                <button onClick={handleSubmit}>Submit Quiz</button>
+                <div className="navigation-buttons">  
+                    <button
+                        onClick={handlePrev}
+                        disabled={currentQuestion === 0}
+                        className={`navigation-button ${currentQuestion === 0 ? "disabled-btn" : ""}`}
+                    >
+                        Previous
+                    </button>
+                    <button onClick={handleClearAnswer}>Clear Answer</button>
+                    <button
+                        onClick={handleNext}
+                        disabled={currentQuestion === quiz.questions.length - 1}
+                        className={`navigation-button ${currentQuestion === quiz.questions.length - 1 ? "disabled-btn" : ""}`}
+                    >
+                        Next
+                    </button>
+                    <button onClick={handleSubmit}>Submit Quiz</button>
+                </div>
             </div>
 
             {showResultModal && (
