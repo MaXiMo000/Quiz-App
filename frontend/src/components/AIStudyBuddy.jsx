@@ -17,7 +17,7 @@ const AIStudyBuddy = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [_sessionId, setSessionId] = useState(null); // Using underscore to indicate internal use
     const [userProfile, setUserProfile] = useState(null);
-    const [recommendations, setRecommendations] = useState([]);
+    const [_recommendations, setRecommendations] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);

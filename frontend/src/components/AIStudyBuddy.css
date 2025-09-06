@@ -787,57 +787,74 @@
 @media (max-width: 768px) {
     .ai-study-buddy {
         padding: 8px;
-        height: calc(100vh - 40px);
-        min-height: calc(100vh - 40px);
+        height: calc(100vh - 60px);
+        min-height: calc(100vh - 60px);
+        max-height: calc(100vh - 60px);
+        overflow: hidden;
     }
 
     .ai-study-buddy.active {
-        height: calc(100vh - 40px);
-        min-height: calc(100vh - 40px);
+        height: calc(100vh - 60px);
+        min-height: calc(100vh - 60px);
+        max-height: calc(100vh - 60px);
+        overflow: hidden;
     }
 
     .ai-welcome {
-        padding: 30px 15px;
+        padding: 20px 15px;
+        height: 100%;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .ai-welcome h2 {
         font-size: 2.2rem;
+        margin-bottom: 15px;
     }
 
     .ai-welcome p {
         font-size: 1.1rem;
-        margin-bottom: 35px;
+        margin-bottom: 25px;
+        text-align: center;
     }
 
     .ai-avatar {
         font-size: 80px;
         margin-bottom: 20px;
+        flex-shrink: 0;
     }
 
     .features-preview {
         grid-template-columns: 1fr;
-        gap: 15px;
-        margin-bottom: 35px;
+        gap: 12px;
+        margin-bottom: 25px;
+        width: 100%;
+        max-width: 100%;
     }
 
     .feature {
-        padding: 18px 20px;
-        gap: 12px;
+        padding: 15px 18px;
+        gap: 10px;
     }
 
     .feature-icon {
-        font-size: 24px;
+        font-size: 22px;
+        flex-shrink: 0;
     }
 
     .feature span:last-child {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
 
     .start-session-btn {
-        padding: 16px 40px;
-        font-size: 1.1rem;
+        padding: 14px 35px;
+        font-size: 1rem;
         width: 100%;
-        max-width: 300px;
+        max-width: 280px;
+        margin-top: auto;
     }
 
     .message {
@@ -860,6 +877,20 @@
     .end-session-btn {
         padding: 4px 10px;
         font-size: 0.8rem;
+    }
+
+    .chat-area {
+        height: calc(100vh - 100px);
+        min-height: calc(100vh - 100px);
+        max-height: calc(100vh - 100px);
+        overflow: hidden;
+    }
+
+    .messages-container {
+        height: calc(100vh - 180px);
+        min-height: calc(100vh - 180px);
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
     }
 
     /* Mobile Recommendations - Much more compact */
@@ -935,27 +966,36 @@
 
 @media (max-width: 480px) {
     .ai-study-buddy {
-        padding: 8px;
+        padding: 6px;
         width: 100%;
-        height: calc(100vh - 40px);
-        min-height: calc(100vh - 40px);
+        height: calc(100vh - 50px);
+        min-height: calc(100vh - 50px);
+        max-height: calc(100vh - 50px);
+        overflow: hidden;
     }
 
     .ai-study-buddy.active {
-        height: calc(100vh - 40px);
-        min-height: calc(100vh - 40px);
+        height: calc(100vh - 50px);
+        min-height: calc(100vh - 50px);
+        max-height: calc(100vh - 50px);
         border-radius: 15px;
+        overflow: hidden;
     }
 
     .ai-welcome {
-        padding: 25px 15px;
-        padding-top: 100px;
+        padding: 15px 12px;
+        height: 100%;
+        overflow-y: auto;
         border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .ai-welcome h2 {
-        font-size: 1.8rem;
-        margin-bottom: 15px;
+        font-size: 1.6rem;
+        margin-bottom: 12px;
         line-height: 1.2;
         word-break: break-word;
         hyphens: auto;
@@ -965,9 +1005,9 @@
     }
 
     .ai-welcome p {
-        font-size: 1rem;
-        margin-bottom: 30px;
-        line-height: 1.5;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        line-height: 1.4;
         text-align: center;
         max-width: 100%;
         word-break: break-word;
@@ -975,61 +1015,79 @@
 
     .ai-avatar {
         font-size: 60px;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        flex-shrink: 0;
     }
 
     .features-preview {
         grid-template-columns: 1fr;
-        gap: 15px;
-        margin-bottom: 30px;
+        gap: 10px;
+        margin-bottom: 20px;
         max-width: 100%;
+        width: 100%;
     }
 
     .feature {
-        padding: 15px 20px;
-        gap: 12px;
+        padding: 12px 15px;
+        gap: 8px;
     }
 
     .feature-icon {
-        font-size: 24px;
+        font-size: 20px;
         flex-shrink: 0;
     }
 
     .feature span:last-child {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         line-height: 1.3;
         word-break: break-word;
     }
 
     .start-session-btn {
-        font-size: 1rem;
-        padding: 15px 35px;
+        font-size: 0.95rem;
+        padding: 12px 30px;
         width: 100%;
-        max-width: 280px;
+        max-width: 260px;
+        margin-top: auto;
     }
 
     /* Chat interface mobile fixes */
     .chat-header {
-        padding: 12px 15px;
+        padding: 10px 12px;
+        flex-shrink: 0;
     }
 
     .ai-info h3 {
-        font-size: 1rem;
+        font-size: 0.95rem;
         line-height: 1.2;
         word-break: break-word;
-        max-width: calc(100vw - 150px);
+        max-width: calc(100vw - 120px);
     }
 
     .ai-info p {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         opacity: 0.9;
     }
 
     .end-session-btn {
-        font-size: 0.8rem;
-        padding: 6px 12px;
+        font-size: 0.75rem;
+        padding: 5px 10px;
         white-space: nowrap;
         flex-shrink: 0;
+    }
+
+    .chat-area {
+        height: calc(100vh - 120px);
+        min-height: calc(100vh - 120px);
+        max-height: calc(100vh - 120px);
+        overflow: hidden;
+    }
+
+    .messages-container {
+        height: calc(100vh - 200px);
+        min-height: calc(100vh - 200px);
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
     }
 
     .features-preview {

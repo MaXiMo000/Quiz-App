@@ -29,10 +29,10 @@ const LearningAnalytics = ({ user }) => {
     }, [user]);
 
     const tabs = [
-        { id: 'overview', label: '📊 Overview', icon: '📊' },
-        { id: 'trends', label: '📈 Trends', icon: '📈' },
-        { id: 'predictions', label: '🔮 Predictions', icon: '🔮' },
-        { id: 'recommendations', label: '💡 Study Tips', icon: '💡' }
+        { id: 'overview', label: 'Overview', icon: '📊' },
+        { id: 'trends', label: 'Trends', icon: '📈' },
+        { id: 'predictions', label: 'Predictions', icon: '🔮' },
+        { id: 'recommendations', label: 'Study Tips', icon: '💡' }
     ];
 
     if (loading) {
