@@ -16,7 +16,8 @@
     position: relative;
     min-height: 100vh;
     perspective: 1000px;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 /* ✨ Floating Background Elements */

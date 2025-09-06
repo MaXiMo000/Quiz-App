@@ -7,7 +7,7 @@
     width: 95%;
     max-width: 1000px;
     min-height: calc(100vh - 100px);
-    overflow-y: auto;
+    overflow-y: visible;
     margin: var(--space-lg) auto;
     background: var(--card-bg-glass);
     backdrop-filter: blur(35px);
