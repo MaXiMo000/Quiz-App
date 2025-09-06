@@ -174,7 +174,7 @@ const IntelligenceDashboard = () => {
                 <h3>Quick Actions</h3>
                 <div className="action-buttons">
                     <motion.button 
-                        className="action-btn primary"
+                        className="action-btn secondary"
                         onClick={() => navigate("/user/test")}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}

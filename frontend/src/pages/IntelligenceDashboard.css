@@ -92,6 +92,13 @@
     margin-bottom: 1.5rem;
     position: relative;
     z-index: 1;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-text {
+    flex: 1;
+    min-width: 0;
 }
 
 .header-text h1 {
@@ -99,6 +106,9 @@
     font-size: 2.5rem;
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.2;
 }
 
 .header-text p {
@@ -119,6 +129,8 @@
     gap: 0.5rem;
     font-weight: 600;
     font-size: 0.9rem;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .badge-icon {
@@ -195,20 +207,27 @@
     padding: 2rem;
     margin-top: 2rem;
     border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
 }
 
 .quick-actions h3 {
     color: var(--text-primary);
-    margin: 0 0 1.5rem 0;
+    margin: 0;
     font-size: 1.3rem;
     font-weight: 600;
-    text-align: center;
+    flex-shrink: 0;
+    min-width: 120px;
 }
 
 .action-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
+    flex: 1;
+    justify-content: flex-end;
 }
 
 .action-btn {
@@ -264,6 +283,42 @@
     }
 }
 
+@media (max-width: 992px) {
+    .quick-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .quick-actions h3 {
+        text-align: left;
+        margin-bottom: 0;
+    }
+    
+    .action-buttons {
+        width: 100%;
+        justify-content: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        flex: 1;
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 769px) {
+    .header-text h1 {
+        font-size: 2.2rem;
+    }
+    
+    .premium-badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
 @media (max-width: 768px) {
     .intelligence-dashboard-container {
         padding: 1rem;
@@ -279,8 +334,18 @@
         align-items: flex-start;
     }
     
+    .header-text {
+        width: 100%;
+    }
+    
     .header-text h1 {
         font-size: 1.8rem;
+        line-height: 1.1;
+    }
+    
+    .premium-badge {
+        align-self: flex-end;
+        margin-top: 0.5rem;
     }
     
     .header-text p {
@@ -297,14 +362,28 @@
         font-size: 1.1rem;
     }
     
+    .quick-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .quick-actions h3 {
+        text-align: left;
+        margin-bottom: 0;
+    }
+    
     .action-buttons {
-        grid-template-columns: 1fr;
+        width: 100%;
+        justify-content: stretch;
+        flex-direction: column;
         gap: 0.75rem;
     }
     
     .action-btn {
         padding: 0.875rem 1rem;
         font-size: 0.95rem;
+        width: 100%;
     }
     
     .dashboard-content {

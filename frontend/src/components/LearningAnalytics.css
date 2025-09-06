@@ -15,6 +15,19 @@
     padding: 3rem;
 }
 
+.learning-analytics.empty h3 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.learning-analytics.empty p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0;
+}
+
 .learning-analytics.loading .loading-spinner {
     width: 40px;
     height: 40px;
@@ -519,10 +532,42 @@
     color: #e2e3e5;
 }
 
+/* Tablet Responsiveness */
+@media (max-width: 992px) and (min-width: 769px) {
+    .analytics-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-button {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+    .learning-analytics {
+        margin: 1rem 0;
+        border-radius: 16px;
+    }
+    
+    .analytics-header {
+        padding: 1.5rem 1rem;
+        border-radius: 16px 16px 0 0;
+    }
+    
+    .analytics-header h3 {
+        font-size: 1.8rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .analytics-header p {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+    
     .analytics-content {
-        padding: 1rem;
+        padding: 1.5rem 1rem;
     }
     
     .stats-grid {
@@ -567,12 +612,70 @@
         gap: 1.5rem;
     }
     
-    .tab-label {
-        display: none;
+    .analytics-tabs {
+        flex-direction: column;
+        overflow-x: visible;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
     }
     
     .tab-button {
-        padding: 1rem;
+        padding: 1rem 2rem;
+        justify-content: center;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        width: 100%;
+        max-width: 300px;
+        background: var(--card-background);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .tab-button:hover {
+        background: var(--hover-color);
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .tab-button.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .tab-button.active::after {
+        display: none;
+    }
+    
+    .tab-button:last-child {
+        border-bottom: 2px solid var(--border-color);
+    }
+    
+    .tab-label {
+        display: block;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    
+    .tab-icon {
+        font-size: 1.3rem;
+        margin-right: 0.75rem;
+    }
+    
+    .learning-analytics.empty {
+        padding: 2rem 1rem;
+    }
+    
+    .learning-analytics.empty h3 {
+        font-size: 1.3rem;
+    }
+    
+    .learning-analytics.empty p {
+        font-size: 0.95rem;
+        line-height: 1.4;
     }
 }
 
