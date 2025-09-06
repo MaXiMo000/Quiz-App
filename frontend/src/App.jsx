@@ -49,6 +49,7 @@ import Contact from "./pages/Contact";
 import UserAnalyticsDashboard from "./pages/UserAnalyticsDashboard";
 import XPLeaderboard from "./pages/XPLeaderboard";
 import ThemePage from "./pages/ThemePage";
+import HelpGuide from "./pages/HelpGuide";
 
 // ✨ Import new enhanced components
 import EnhancedDashboard from "./components/EnhancedDashboard";
@@ -208,6 +209,7 @@ const App = () => {
                             <Route path="/contactUs" element={<ContactUs />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/analytics" element={<UserAnalyticsDashboard />} />
+                            <Route path="/help-guide" element={<HelpGuide />} />
 
                             {/* Phase 2: Intelligence Dashboard - Premium Feature */}
                             <Route path="/intelligence-dashboard" element={<IntelligenceDashboard />} />

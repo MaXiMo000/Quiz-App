@@ -277,7 +277,6 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
                                 </motion.div>
-                                
                                 {/* Phase 3: Social & Gamification Links */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -358,6 +357,13 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.05, duration: 0.4 }}
+                                >
+                                    <Link to="/help-guide" onClick={handleLinkClick}>📚 Help Guide</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.6, duration: 0.4 }}
                                 >
                                     <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
@@ -397,7 +403,6 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/xp-leaderboard" onClick={handleLinkClick}>🏆 XP LeaderBoard</Link>
                                 </motion.div>
-                                
                                 {/* Phase 3: Social & Gamification Links */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
