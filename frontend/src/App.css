@@ -46,7 +46,7 @@
 @media (max-width: 1024px) {
   .main-content {
     /* margin-left: 260px; */
-    padding: var(--space-lg);
+    padding: var(--space-sm);
   }
 }
 
@@ -54,9 +54,9 @@
   .main-content {
     margin-left: 0;
     padding: var(--space-md);
-    padding-top: calc(70px + var(--space-md));
+    padding-top: calc(50px + var(--space-sm)); /* Reduced top padding */
     /* Add bottom padding for mobile navigation bar */
-    padding-bottom: calc(80px + var(--space-md) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(80px + var(--space-sm) + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -316,15 +316,15 @@
     margin-left: 0;
     margin-top: 0;
     padding: var(--space-sm);
-    padding-top: calc(70px + var(--space-lg)); /* Account for sidebar toggle button */
-    padding-bottom: calc(80px + var(--space-lg) + env(safe-area-inset-bottom, 0px)); /* Account for mobile nav bar */
-    min-height: calc(100vh - 70px);
+    padding-top: calc(50px + var(--space-sm)); /* Reduced top padding */
+    padding-bottom: calc(80px + var(--space-sm) + env(safe-area-inset-bottom, 0px)); /* Account for mobile nav bar */
+    min-height: calc(100vh - 60px);
   }
 
   .container {
     padding: var(--space-md);
-    margin: var(--space-sm) 0;
-    margin-top: var(--space-md);
+    margin: var(--space-xs) 0; /* Reduced margin */
+    margin-top: var(--space-xs); /* Reduced top margin */
     min-height: auto;
     border-radius: var(--radius-lg); /* Smaller radius on mobile */
   }
@@ -340,13 +340,14 @@
 @media (max-width: 480px) {
   .main-content {
     padding: var(--space-xs);
-    padding-top: calc(60px + var(--space-md));
-    padding-bottom: calc(75px + var(--space-md) + env(safe-area-inset-bottom, 0px));
+    padding-top: calc(40px + var(--space-xs)); /* Further reduced top padding */
+    padding-bottom: calc(75px + var(--space-xs) + env(safe-area-inset-bottom, 0px));
   }
 
   .container {
     padding: var(--space-sm);
     margin: var(--space-xs) 0;
+    margin-top: 0; /* Remove top margin completely */
     border-radius: var(--radius-md);
   }
 }
@@ -355,13 +356,14 @@
 @media (max-width: 320px) {
   .main-content {
     padding: var(--space-xs);
-    padding-top: calc(55px + var(--space-sm));
-    padding-bottom: calc(70px + var(--space-sm) + env(safe-area-inset-bottom, 0px));
+    padding-top: calc(40px + var(--space-xs)); /* Minimal top padding */
+    padding-bottom: calc(70px + var(--space-xs) + env(safe-area-inset-bottom, 0px));
   }
 
   .container {
     padding: var(--space-xs);
-    margin: var(--space-xs) 0;
+    margin: 0; /* Remove all margins */
+    margin-top: 0; /* No top margin */
   }
 }
 
