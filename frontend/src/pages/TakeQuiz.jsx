@@ -29,6 +29,7 @@ const TakeQuiz = () => {
     const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false);
     const [isQuizInitialized, setIsQuizInitialized] = useState(false);
     const [autoSubmitReason, setAutoSubmitReason] = useState(null);
+    const [isQuizCompleted, setIsQuizCompleted] = useState(false);
     const autoSubmitRef = useRef(false);
     const isSubmittingRef = useRef(false);
     const autoSubmitQuizRef = useRef(null);
@@ -68,10 +69,10 @@ const TakeQuiz = () => {
         try {
             // Check if document is still active before trying to exit fullscreen
             if (document.visibilityState === 'visible' && document.hasFocus()) {
-                if (document.exitFullscreen) document.exitFullscreen();
-                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-                else if (document.msExitFullscreen) document.msExitFullscreen();
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if (document.msExitFullscreen) document.msExitFullscreen();
             }
         } catch {
             // Silently handle fullscreen exit errors
@@ -306,7 +307,8 @@ const TakeQuiz = () => {
                 console.warn("Could not refresh user data:", userError.message);
             }
 
-            // Show result modal (exitFullScreen is already called by the trigger)
+            // Mark quiz as completed and show result modal
+            setIsQuizCompleted(true);
             setShowResultModal(true);
             
             
@@ -335,7 +337,8 @@ const TakeQuiz = () => {
                 localStorage.setItem('pendingQuizSubmissions', JSON.stringify(existingData));
                 
                 
-                // Still show result modal even if backend failed
+                // Mark quiz as completed and show result modal even if backend failed
+                setIsQuizCompleted(true);
                 setShowResultModal(true);
                 
             } catch (fallbackError) {
@@ -543,6 +546,8 @@ const TakeQuiz = () => {
                 console.warn("Could not refresh user data:", userError);
             }
 
+            // Mark quiz as completed and stop timer
+            setIsQuizCompleted(true);
             setShowResultModal(true);
             exitFullScreen();
         } catch (error) {
@@ -559,13 +564,18 @@ const TakeQuiz = () => {
             handleSubmit();
             return;
         }
+        
+        // Stop timer if quiz is completed, submitted, or result modal is showing
+        if (isQuizCompleted || hasAutoSubmitted || showResultModal || isSubmittingRef.current) {
+            return;
+        }
 
         const timer = setInterval(() => {
             setTimeLeft(prev => prev - 1);
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, handleSubmit]);
+    }, [timeLeft, handleSubmit, isQuizCompleted, hasAutoSubmitted, showResultModal]);
 
 
 
@@ -618,7 +628,9 @@ const TakeQuiz = () => {
             
             <div className="quiz-content">
             <h1>{quiz.title}</h1>
-            <div className="timer">Time Left: {formatTime(timeLeft)}</div>
+            {!isQuizCompleted && !showResultModal && (
+                <div className="timer">Time Left: {formatTime(timeLeft)}</div>
+            )}
 
             <div className="question-box">
                 <p className="question">{currentQ.question}</p>
