@@ -520,11 +520,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.8rem;
-    padding: 1.5rem 2rem;
+    gap: 0.6rem;
+    padding: 1rem 1.5rem;
     border: none;
     border-radius: 15px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -537,6 +537,8 @@
         0 8px 25px rgba(0, 0, 0, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     animation: buttonFloat 3s ease-in-out infinite;
+    min-height: 50px;
+    min-width: 200px;
 }
 
 @keyframes buttonFloat {
@@ -865,8 +867,8 @@
     color: white;
     border: none;
     border-radius: var(--radius-xl);
-    padding: var(--space-md) var(--space-xl);
-    font-size: 1rem;
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
     transition: all var(--transition-normal);
@@ -878,8 +880,8 @@
     letter-spacing: 0.1em;
     position: relative;
     overflow: hidden;
-    min-height: 50px;
-    min-width: 220px;
+    min-height: 45px;
+    min-width: 200px;
     font-family: var(--font-display);
     animation: buttonFloat 4s ease-in-out infinite;
     margin: 0 auto var(--space-lg) auto;
@@ -946,8 +948,8 @@
     color: white;
     border: none;
     border-radius: var(--radius-xl);
-    padding: var(--space-md) var(--space-xl);
-    font-size: 1rem;
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
     transition: all var(--transition-normal);
@@ -959,8 +961,8 @@
     letter-spacing: 0.1em;
     position: relative;
     overflow: hidden;
-    min-height: 50px;
-    min-width: 280px;
+    min-height: 45px;
+    min-width: 240px;
     font-family: var(--font-display);
     animation: premiumButtonFloat 4.5s ease-in-out infinite;
     margin: var(--space-md) auto var(--space-lg) auto;
@@ -1300,11 +1302,28 @@
     }
     
     .start-quiz-btn {
-        width: 90%;
-        max-width: 320px;
-        padding: var(--space-md) var(--space-lg);
-        font-size: 0.95rem;
-        margin-bottom: var(--space-md);
+        width: 85%;
+        max-width: 280px;
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.9rem;
+        margin-bottom: var(--space-sm);
+        min-height: 45px;
+    }
+    
+    .intelligence-dashboard-btn {
+        width: 85%;
+        max-width: 280px;
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.9rem;
+        margin-bottom: var(--space-sm);
+        min-height: 45px;
+    }
+    
+    .action-btn {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.9rem;
+        min-height: 45px;
+        min-width: 200px;
     }
     
     .badge-list {
@@ -1348,10 +1367,28 @@
     }
     
     .start-quiz-btn {
-        width: 95%;
-        padding: var(--space-sm) var(--space-md);
-        font-size: 0.9rem;
-        margin-bottom: var(--space-sm);
+        width: 90%;
+        max-width: 250px;
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.85rem;
+        margin-bottom: var(--space-xs);
+        min-height: 40px;
+    }
+    
+    .intelligence-dashboard-btn {
+        width: 90%;
+        max-width: 250px;
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.85rem;
+        margin-bottom: var(--space-xs);
+        min-height: 40px;
+    }
+    
+    .action-btn {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.85rem;
+        min-height: 40px;
+        min-width: 180px;
     }
     
     .badge-list {
@@ -1397,7 +1434,25 @@
     }
     
     .start-quiz-btn {
-        width: 100%;
-        font-size: 0.85rem;
+        width: 95%;
+        max-width: 220px;
+        padding: var(--space-xs);
+        font-size: 0.8rem;
+        min-height: 35px;
+    }
+    
+    .intelligence-dashboard-btn {
+        width: 95%;
+        max-width: 220px;
+        padding: var(--space-xs);
+        font-size: 0.8rem;
+        min-height: 35px;
+    }
+    
+    .action-btn {
+        padding: var(--space-xs);
+        font-size: 0.8rem;
+        min-height: 35px;
+        min-width: 160px;
     }
 }

@@ -1074,7 +1074,16 @@ body {
 /* collapse the extra padding on tablet/mobile so the sidebar slides over */
 @media (max-width: 768px) {
   body {
-    padding-left: var(--space-sm);
+    padding: var(--space-xs);
+    padding-left: var(--space-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: var(--space-xs);
+    padding-left: var(--space-xs);
+    padding-top: var(--space-xs);
   }
 }
 
