@@ -71,6 +71,7 @@ const UserReports = () => {
                 <p>No reports found.</p>
             ) : (
                 <div className="table-container">
+                    {/* Desktop Table */}
                     <table>
                         <thead>
                             <tr>
@@ -90,9 +91,9 @@ const UserReports = () => {
                                     <td>{report.total}</td>
                                     <td>{report.score >= report.total * 0.5 ? "✅" : "❌"}</td>
                                     <td>
-                                    <Link to={`/report/${report._id}`}>
-                                        <button className="view-btn">View Report</button>
-                                    </Link> 
+                                        <Link to={`/report/${report._id}`}>
+                                            <button className="view-btn">View Report</button>
+                                        </Link> 
                                     </td>
                                     <td>
                                         <button className="delete-btn" onClick={() => deleteReport(report._id)}>Delete</button>
@@ -101,6 +102,36 @@ const UserReports = () => {
                             ))}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card Layout */}
+                    {reports.map((report, index) => (
+                        <div key={`mobile-${index}`} className="report-card">
+                            <div className="report-header">
+                                <h3 className="report-title">{report.quizName}</h3>
+                                <div className={`report-status ${report.score >= report.total * 0.5 ? 'passed' : 'failed'}`}>
+                                    {report.score >= report.total * 0.5 ? "✅ Passed" : "❌ Failed"}
+                                </div>
+                            </div>
+                            
+                            <div className="report-details">
+                                <div className="report-detail">
+                                    <div className="report-detail-label">Score</div>
+                                    <div className="report-detail-value">{report.score.toFixed(1)}</div>
+                                </div>
+                                <div className="report-detail">
+                                    <div className="report-detail-label">Total Marks</div>
+                                    <div className="report-detail-value">{report.total}</div>
+                                </div>
+                            </div>
+                            
+                            <div className="report-actions">
+                                <Link to={`/report/${report._id}`}>
+                                    <button className="view-btn">📊 View Report</button>
+                                </Link>
+                                <button className="delete-btn" onClick={() => deleteReport(report._id)}>🗑️ Delete</button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
             
