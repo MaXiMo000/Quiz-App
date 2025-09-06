@@ -315,18 +315,18 @@
   .main-content {
     margin-left: 0;
     margin-top: 0;
-    padding: var(--space-sm);
-    padding-top: calc(50px + var(--space-sm)); /* Reduced top padding */
-    padding-bottom: calc(80px + var(--space-sm) + env(safe-area-inset-bottom, 0px)); /* Account for mobile nav bar */
-    min-height: calc(100vh - 60px);
+    padding: var(--space-xs);
+    padding-top: calc(40px + var(--space-xs)); /* Further reduced top padding */
+    padding-bottom: calc(70px + var(--space-xs) + env(safe-area-inset-bottom, 0px)); /* Account for mobile nav bar */
+    min-height: calc(100vh - 50px);
   }
 
   .container {
-    padding: var(--space-md);
-    margin: var(--space-xs) 0; /* Reduced margin */
-    margin-top: var(--space-xs); /* Reduced top margin */
+    padding: var(--space-sm);
+    margin: 0; /* Remove all margins */
+    margin-top: 0; /* No top margin */
     min-height: auto;
-    border-radius: var(--radius-lg); /* Smaller radius on mobile */
+    border-radius: var(--radius-md); /* Smaller radius on mobile */
   }
 
   .start-quiz-btn {
@@ -340,28 +340,28 @@
 @media (max-width: 480px) {
   .main-content {
     padding: var(--space-xs);
-    padding-top: calc(40px + var(--space-xs)); /* Further reduced top padding */
-    padding-bottom: calc(75px + var(--space-xs) + env(safe-area-inset-bottom, 0px));
+    padding-top: calc(35px + var(--space-xs)); /* Further reduced top padding */
+    padding-bottom: calc(65px + var(--space-xs) + env(safe-area-inset-bottom, 0px));
   }
 
   .container {
-    padding: var(--space-sm);
-    margin: var(--space-xs) 0;
+    padding: var(--space-xs);
+    margin: 0; /* Remove all margins */
     margin-top: 0; /* Remove top margin completely */
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
   }
 }
 
 /* ✨ Ultra Small Devices ✨ */
 @media (max-width: 320px) {
   .main-content {
-    padding: var(--space-xs);
-    padding-top: calc(40px + var(--space-xs)); /* Minimal top padding */
-    padding-bottom: calc(70px + var(--space-xs) + env(safe-area-inset-bottom, 0px));
+    padding: 0.2rem;
+    padding-top: calc(30px + 0.2rem); /* Minimal top padding */
+    padding-bottom: calc(60px + 0.2rem + env(safe-area-inset-bottom, 0px));
   }
 
   .container {
-    padding: var(--space-xs);
+    padding: 0.2rem;
     margin: 0; /* Remove all margins */
     margin-top: 0; /* No top margin */
   }

@@ -7,6 +7,7 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow: visible;
 }
 
 /* Welcome Screen */
@@ -162,10 +163,9 @@
 .ai-study-buddy.active {
     background: #f8fafc;
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    height: calc(100vh - 60px);
-    max-height: calc(100vh - 60px);
+    min-height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -319,19 +319,18 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    height: 0;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .messages-container {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     padding: 15px 20px;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    min-height: 0;
+    min-height: 200px;
     background: transparent;
 }
 
@@ -617,6 +616,7 @@
     display: flex;
     gap: 8px;
     padding: 12px 15px;
+    padding-bottom: calc(12px + 20px); /* Reduced space for mobile navbar */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid #e2e8f0;
@@ -653,6 +653,7 @@
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(15px);
     padding: 15px;
+    padding-bottom: calc(15px + 20px); /* Reduced space for mobile navbar */
     border-top: 1px solid #e2e8f0;
     flex-shrink: 0;
     box-sizing: border-box;
@@ -787,17 +788,13 @@
 @media (max-width: 768px) {
     .ai-study-buddy {
         padding: 8px;
-        height: calc(100vh - 60px);
         min-height: calc(100vh - 60px);
-        max-height: calc(100vh - 60px);
-        overflow: hidden;
+        overflow: visible;
     }
 
     .ai-study-buddy.active {
-        height: calc(100vh - 60px);
         min-height: calc(100vh - 60px);
-        max-height: calc(100vh - 60px);
-        overflow: hidden;
+        overflow: visible;
     }
 
     .ai-welcome {
@@ -880,17 +877,17 @@
     }
 
     .chat-area {
-        height: calc(100vh - 100px);
-        min-height: calc(100vh - 100px);
-        max-height: calc(100vh - 100px);
-        overflow: hidden;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: visible;
     }
 
     .messages-container {
-        height: calc(100vh - 180px);
-        min-height: calc(100vh - 180px);
-        max-height: calc(100vh - 180px);
-        overflow-y: auto;
+        flex: 1;
+        overflow-y: visible;
+        min-height: 200px;
     }
 
     /* Mobile Recommendations - Much more compact */
@@ -930,6 +927,7 @@
     /* Mobile Quick Actions - Horizontal scrolling */
     .quick-actions {
         padding: 8px 10px;
+        padding-bottom: calc(8px + 20px); /* Reduced space for mobile navbar */
         gap: 6px;
         overflow-x: auto;
         flex-direction: row;
@@ -946,6 +944,7 @@
     /* Mobile Messages */
     .messages-container {
         padding: 10px 12px;
+        padding-bottom: calc(10px + 10px); /* Reduced space for mobile navbar */
         gap: 10px;
     }
 
@@ -956,6 +955,7 @@
     /* Mobile Input Area */
     .input-area {
         padding: 8px 10px;
+        padding-bottom: calc(8px + 20px); /* Reduced space for mobile navbar */
     }
 
     .input-container {
@@ -968,18 +968,14 @@
     .ai-study-buddy {
         padding: 6px;
         width: 100%;
-        height: calc(100vh - 50px);
         min-height: calc(100vh - 50px);
-        max-height: calc(100vh - 50px);
-        overflow: hidden;
+        overflow: visible;
     }
 
     .ai-study-buddy.active {
-        height: calc(100vh - 50px);
         min-height: calc(100vh - 50px);
-        max-height: calc(100vh - 50px);
         border-radius: 15px;
-        overflow: hidden;
+        overflow: visible;
     }
 
     .ai-welcome {
@@ -1077,17 +1073,17 @@
     }
 
     .chat-area {
-        height: calc(100vh - 120px);
-        min-height: calc(100vh - 120px);
-        max-height: calc(100vh - 120px);
-        overflow: hidden;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: visible;
     }
 
     .messages-container {
-        height: calc(100vh - 200px);
-        min-height: calc(100vh - 200px);
-        max-height: calc(100vh - 200px);
-        overflow-y: auto;
+        flex: 1;
+        overflow-y: visible;
+        min-height: 200px;
     }
 
     .features-preview {
@@ -1112,6 +1108,7 @@
         padding: 12px 25px;
         font-size: 1rem;
         border-radius: 20px;
+        margin-bottom: 50px;
     }
 
     /* Ultra-compact mobile header */
@@ -1148,6 +1145,7 @@
     /* Compact messages */
     .messages-container {
         padding: 8px 10px;
+        padding-bottom: calc(8px + 10px); /* Reduced space for mobile navbar */
         gap: 8px;
     }
 
@@ -1159,6 +1157,7 @@
     /* Compact quick actions */
     .quick-actions {
         padding: 6px 8px;
+        padding-bottom: calc(6px + 20px); /* Reduced space for mobile navbar */
         gap: 4px;
     }
 
@@ -1172,6 +1171,7 @@
     /* Compact input area */
     .input-area {
         padding: 6px 8px;
+        padding-bottom: calc(6px + 40px); /* Reduced space for mobile navbar */
     }
 
     .input-container {

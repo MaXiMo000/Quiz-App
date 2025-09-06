@@ -488,14 +488,6 @@ const AIStudyBuddy = () => {
         <div className="quick-actions">
             <motion.button
                 className="quick-action-btn"
-                onClick={() => handleQuickAction('request_quiz', { topic: 'mathematics' })}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-            >
-                📊 Generate Math Quiz
-            </motion.button>
-            <motion.button
-                className="quick-action-btn"
                 onClick={() => openModal('quizCreator')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

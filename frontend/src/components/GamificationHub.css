@@ -2525,6 +2525,7 @@
 @media (max-width: 768px) {
     .gamification-hub {
         padding: 1rem;
+        padding-bottom: calc(1rem + 80px); /* Add space for mobile navbar */
         margin: 0.5rem;
         border-radius: 15px;
         overflow: visible !important;
@@ -2566,6 +2567,7 @@
         overflow: visible !important;
         max-height: none !important;
         min-height: auto !important;
+        padding-bottom: 20px; /* Add extra padding for mobile navbar */
     }
 
     /* Enhanced mobile scrolling for challenges - matching tournaments */
@@ -2576,7 +2578,7 @@
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch !important;
         scroll-behavior: smooth !important;
-        padding-bottom: 1rem !important;
+        padding-bottom: calc(1rem + 80px) !important; /* Add space for mobile navbar */
         padding-right: 0.5rem !important;
     }
 
@@ -2623,7 +2625,7 @@
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
         scroll-behavior: smooth !important;
-        padding-bottom: 1rem !important;
+        padding-bottom: calc(1rem + 80px) !important; /* Add space for mobile navbar */
     }
 
     .tournament-card {
@@ -2727,6 +2729,7 @@
 @media (max-width: 480px) {
     .gamification-hub {
         padding: 0.75rem;
+        padding-bottom: calc(0.75rem + 80px); /* Add space for mobile navbar */
         margin: 0.25rem;
         overflow: visible !important;
         /* Allow child elements to scroll */
@@ -2816,7 +2819,7 @@
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch !important;
         scroll-behavior: smooth !important;
-        padding-bottom: 1rem !important;
+        padding-bottom: calc(1rem + 80px) !important; /* Add space for mobile navbar */
     }
 }
 
