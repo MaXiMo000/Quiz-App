@@ -1093,13 +1093,40 @@ body {
   text-shadow: none;
 }
 
-/* Enhanced Focus Styles */
+/* Enhanced Focus Styles with Better Accessibility */
 *:focus {
   outline: none;
   box-shadow: 
     0 0 0 3px var(--accent-light),
     0 0 20px rgba(99, 102, 241, 0.3);
   border-color: var(--accent);
+}
+
+*:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 
+    0 0 0 3px var(--accent-light),
+    0 0 20px rgba(99, 102, 241, 0.3);
+  border-color: var(--accent);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  *:focus-visible {
+    outline: 4px solid var(--accent);
+    outline-offset: 4px;
+    box-shadow: 0 0 0 2px var(--bg-light);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Beautiful Button Enhancements */
@@ -1110,12 +1137,58 @@ button {
   border: none;
   position: relative;
   overflow: hidden;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-height: 44px; /* Better touch target */
+  padding: var(--space-sm) var(--space-md);
 }
 
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
+  background: var(--text-disabled) !important;
+  color: var(--text-muted) !important;
+}
+
+/* Button variants */
+button.primary {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+button.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+button.secondary {
+  background: var(--glass-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+button.danger {
+  background: var(--gradient-danger);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+button.danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Enhanced Input Styles */
@@ -1123,6 +1196,13 @@ input, textarea, select {
   font-family: var(--font-sans);
   transition: all var(--transition-normal);
   border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  color: var(--text-color);
+  min-height: 44px; /* Better touch target */
+  font-size: 1rem; /* Prevent zoom on iOS */
 }
 
 input:focus, textarea:focus, select:focus {
@@ -1131,6 +1211,24 @@ input:focus, textarea:focus, select:focus {
     var(--shadow-lg),
     0 0 0 3px var(--accent-light),
     0 0 20px rgba(99, 102, 241, 0.2);
+  border-color: var(--accent);
+  outline: none;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+/* Input variants */
+input.error, textarea.error, select.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-light);
+}
+
+input.success, textarea.success, select.success {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px var(--success-light);
 }
 
 /* Beautiful Link Enhancements */

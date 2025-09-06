@@ -135,7 +135,32 @@ const UserQuiz = () => {
                                     <div className="quiz-actions">
                                         <button 
                                             className="start-quiz-btn"
-                                            onClick={() => navigate(`/user/test/${quiz._id}`)}
+                                            onClick={() => {
+                                                // Enter fullscreen first, then navigate
+                                                const enterFullScreen = () => {
+                                                    const element = document.documentElement;
+                                                    if (element.requestFullscreen) {
+                                                        element.requestFullscreen().then(() => {
+                                                            navigate(`/user/test/${quiz._id}`);
+                                                        }).catch(err => {
+                                                            console.warn("Fullscreen failed:", err);
+                                                            navigate(`/user/test/${quiz._id}`);
+                                                        });
+                                                    } else if (element.mozRequestFullScreen) {
+                                                        element.mozRequestFullScreen();
+                                                        navigate(`/user/test/${quiz._id}`);
+                                                    } else if (element.webkitRequestFullscreen) {
+                                                        element.webkitRequestFullscreen();
+                                                        navigate(`/user/test/${quiz._id}`);
+                                                    } else if (element.msRequestFullscreen) {
+                                                        element.msRequestFullscreen();
+                                                        navigate(`/user/test/${quiz._id}`);
+                                                    } else {
+                                                        navigate(`/user/test/${quiz._id}`);
+                                                    }
+                                                };
+                                                enterFullScreen();
+                                            }}
                                         >
                                             <span>🚀</span>
                                             Start Quiz
