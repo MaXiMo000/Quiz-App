@@ -12,15 +12,11 @@ class PWAManager {
   }
 
   setupEventListeners() {
-    console.log('🔧 Setting up PWA event listeners...');
-    
     // Listen for beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('🎯 beforeinstallprompt event fired');
       e.preventDefault();
       this.installPrompt = e;
       this.isInstallable = true;
-      console.log('📱 PWA install prompt captured and ready');
       
       // Dispatch custom event to notify components
       window.dispatchEvent(new CustomEvent('pwa-installable', { 
@@ -50,7 +46,6 @@ class PWAManager {
       
       if (isStandalone) {
         this.isInstalled = true;
-        console.log('📱 PWA is running in standalone mode');
       }
       return isStandalone;
     };
@@ -61,7 +56,6 @@ class PWAManager {
     window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
       if (e.matches) {
         this.isInstalled = true;
-        console.log('📱 PWA switched to standalone mode');
         window.dispatchEvent(new CustomEvent('pwa-installed', { 
           detail: { isInstalled: true } 
         }));
@@ -70,20 +64,17 @@ class PWAManager {
 
     // Listen for PWA readiness from service worker
     window.addEventListener('pwa-ready', () => {
-      console.log('🚀 PWA is ready, checking installability...');
       setTimeout(() => this.checkInstallability(), 1000);
     });
 
     // Listen for manual installability check
     window.addEventListener('pwa-check-installability', () => {
-      console.log('🔍 Manual PWA installability check triggered');
       this.checkInstallability();
     });
 
     // Check for delayed installability (some browsers delay the event)
     setTimeout(() => {
       if (!this.isInstallable && !this.isInstalled) {
-        console.log('🔍 Checking delayed installability...');
         this.checkInstallability();
       }
     }, 5000);
@@ -100,7 +91,6 @@ class PWAManager {
 
   // Add method to check installability manually
   checkInstallability() {
-    console.log('🔍 Checking PWA installability criteria...');
     
     const criteria = {
       hasServiceWorker: 'serviceWorker' in navigator,
@@ -120,13 +110,11 @@ class PWAManager {
         .then(response => response.json())
         .then(manifest => {
           criteria.hasIcons = manifest.icons && manifest.icons.length > 0;
-          console.log('📋 PWA Installability Criteria:', criteria);
           
           const meetsCriteria = criteria.hasServiceWorker && criteria.hasManifest && 
                                criteria.isSecure && criteria.hasIcons && !criteria.isStandalone;
           
           if (meetsCriteria) {
-            console.log('✅ PWA meets all installability criteria');
             // Update the installable state even without beforeinstallprompt
             if (!this.isInstallable && !this.isInstalled) {
               this.isInstallable = true;
@@ -201,15 +189,11 @@ class PWAManager {
   }
 
   async promptInstall() {
-    console.log('🚀 promptInstall called');
-    console.log('Current state - installPrompt:', !!this.installPrompt, 'isInstallable:', this.isInstallable);
     
     // Check if we have native install prompt
     if (this.installPrompt && this.isInstallable) {
       try {
-        console.log('📱 Showing native PWA install prompt');
         const result = await this.installPrompt.prompt();
-        console.log('Install prompt result:', result.outcome);
         
         if (result.outcome === 'accepted') {
           console.log('✅ User accepted PWA installation');
@@ -228,8 +212,6 @@ class PWAManager {
     } else {
       // Check if PWA meets technical criteria even without native prompt
       if (this.isInstallable) {
-        console.log('📱 PWA meets criteria but no native prompt - attempting enhanced detection');
-        
         // Enhanced browser-specific installation trigger
         const userAgent = navigator.userAgent;
         let installTriggered = false;
@@ -237,7 +219,6 @@ class PWAManager {
         try {
           // Chrome/Edge specific: Try to trigger the install prompt
           if ((userAgent.includes('Chrome') || userAgent.includes('Edge')) && !userAgent.includes('Firefox')) {
-            console.log('🔧 Attempting Chrome/Edge install trigger');
             
             // Focus window and dispatch interaction events
             window.focus();
@@ -612,7 +593,6 @@ class PWAManager {
         const registration = await navigator.serviceWorker.getRegistration();
         if (registration) {
           await registration.update();
-          console.log('🔄 Checked for PWA updates');
         }
       } catch (error) {
         console.error('Update check failed:', error);
@@ -632,7 +612,6 @@ class PWAManager {
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-        console.log('📤 App shared successfully');
         return true;
       } catch (error) {
         console.log('Share cancelled or failed:', error);

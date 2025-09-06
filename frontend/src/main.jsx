@@ -6,35 +6,26 @@ import App from './App.jsx'
 // Enhanced Service Worker Registration with better PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
-    try {
-      console.log('🔧 Registering Service Worker with enhanced PWA support...');
-      
+    try {    
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
         updateViaCache: 'none'
       });
       
-      console.log('✅ Service Worker registered successfully:', registration.scope);
-      
       // Handle service worker updates with better UX
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (newWorker) {
-          console.log('🔄 New service worker found, installing...');
-          
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed') {
               if (navigator.serviceWorker.controller) {
                 // New content available, show update notification
-                console.log('🚀 New content available! Refreshing...');
                 if (confirm('🚀 New features available! Refresh to update?')) {
                   newWorker.postMessage({ type: 'SKIP_WAITING' });
                   window.location.reload();
                 }
               } else {
                 // First install
-                console.log('🎉 Service worker installed for first time');
-                
                 // Dispatch PWA ready event after a short delay
                 setTimeout(() => {
                   window.dispatchEvent(new CustomEvent('pwa-ready', {
@@ -49,9 +40,7 @@ if ('serviceWorker' in navigator) {
       
       // Trigger installation criteria check after SW is ready
       if (registration.ready) {
-        registration.ready.then(() => {
-          console.log('🎯 Service Worker is ready, triggering PWA installability check...');
-          
+        registration.ready.then(() => { 
           // Force a check for PWA installability
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('pwa-check-installability'));
