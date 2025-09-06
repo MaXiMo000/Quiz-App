@@ -1319,6 +1319,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
     /* Body class-based mobile fullscreen - Chrome mobile fixes */
     body.quiz-fullscreen .quiz-container {
         padding: 0.3rem !important;
+        padding-top: 1rem !important; /* Add top spacing for mobile */
         /* Mobile Chrome viewport fixes */
         width: 100% !important;
         max-width: 100% !important;
@@ -1337,6 +1338,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         width: 100% !important;
         gap: 1rem !important;
         padding: 0.8rem !important;
+        margin-top: 0.5rem !important; /* Add top margin for mobile */
         /* Mobile Chrome content fixes */
         box-sizing: border-box !important;
         /* Prevent content overflow on mobile Chrome */
@@ -1446,6 +1448,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
     /* Body class-based small mobile fullscreen - Chrome mobile fixes */
     body.quiz-fullscreen .quiz-container {
         padding: 0.2rem !important;
+        padding-top: 0.8rem !important; /* Add top spacing for small mobile */
         /* Mobile Chrome viewport fixes for small screens */
         width: 100% !important;
         max-width: 100% !important;
@@ -1472,12 +1475,14 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         width: 100% !important;
         gap: 0.8rem !important;
         padding: 0.6rem !important;
+        margin-top: 0.3rem !important; /* Add top margin for small mobile */
         /* Mobile Chrome content fixes */
         box-sizing: border-box !important;
         /* Prevent content overflow on mobile Chrome */
         overflow-x: hidden !important;
         /* Mobile Chrome specific content fixes */
-        margin: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
     }
@@ -1602,6 +1607,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         bottom: 0 !important;
         /* Mobile Chrome padding fixes */
         padding: 0.3rem !important;
+        padding-top: 1rem !important; /* Add top spacing for mobile Chrome */
     }
     
     body.quiz-fullscreen .quiz-content {
@@ -1614,6 +1620,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         /* Mobile Chrome margin fixes */
         margin-left: 0 !important;
         margin-right: 0 !important;
+        margin-top: 0.5rem !important; /* Add top margin for mobile Chrome */
         /* Mobile Chrome box-sizing fixes */
         box-sizing: border-box !important;
         /* Mobile Chrome overflow fixes */
