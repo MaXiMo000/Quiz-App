@@ -64,7 +64,7 @@ const UserQuiz = () => {
             className="user-quiz-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
         >
             <div className="quiz-header">
                 <h2>
@@ -89,7 +89,7 @@ const UserQuiz = () => {
                     className="quiz-grid"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                 >
                     <AnimatePresence>
                         {quizzes.map((quiz, index) => (
@@ -100,11 +100,10 @@ const UserQuiz = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ 
-                                    duration: 0.3, 
-                                    delay: index * 0.05
+                                    duration: 0.2, 
+                                    delay: index * 0.02
                                 }}
-                                whileHover={{ y: -8 }}
-                                layout
+                                whileHover={{ y: -4 }}
                             >
                                 <div className="quiz-card-content">
                                     <div className="quiz-icon">
@@ -186,48 +185,9 @@ const UserQuiz = () => {
                 </motion.div>
             )}
             
-            {/* Floating decorative elements */}
-            <motion.div
-                className="floating-element floating-quiz-1"
-                animate={{
-                    y: [0, -20, 0],
-                    x: [0, 10, 0],
-                    rotate: [0, 180, 360]
-                }}
-                transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                }}
-            />
-            <motion.div
-                className="floating-element floating-quiz-2"
-                animate={{
-                    y: [0, 15, 0],
-                    x: [0, -15, 0],
-                    rotate: [0, -180, -360]
-                }}
-                transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 2
-                }}
-            />
-            <motion.div
-                className="floating-element floating-quiz-3"
-                animate={{
-                    y: [0, -25, 0],
-                    x: [0, 20, 0],
-                    scale: [1, 1.2, 1]
-                }}
-                transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 4
-                }}
-            />
+            {/* Optimized floating decorative elements */}
+            <div className="floating-element floating-quiz-1" />
+            <div className="floating-element floating-quiz-2" />
         </motion.div>
         
         <ShareQuizModal 

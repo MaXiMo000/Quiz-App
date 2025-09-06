@@ -93,8 +93,17 @@ const TakeQuiz = () => {
             // Add/remove fullscreen class to body for better CSS targeting
             if (isCurrentlyFullscreen) {
                 document.body.classList.add('quiz-fullscreen');
+                // Mobile Chrome specific fixes
+                document.documentElement.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden';
+                // Prevent mobile Chrome zoom
+                document.documentElement.style.touchAction = 'manipulation';
             } else {
                 document.body.classList.remove('quiz-fullscreen');
+                // Reset mobile Chrome fixes
+                document.documentElement.style.overflow = '';
+                document.body.style.overflow = '';
+                document.documentElement.style.touchAction = '';
                 
                 // Check if this was caused by Escape key (auto-submit scenario)
                 // Small delay to ensure the fullscreen change is complete
@@ -169,6 +178,10 @@ const TakeQuiz = () => {
             document.removeEventListener('keydown', handleKeyDown);
             // Clean up class on unmount
             document.body.classList.remove('quiz-fullscreen');
+            // Reset mobile Chrome fixes
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+            document.documentElement.style.touchAction = '';
         };
     }, [exitFullScreen, hasAutoSubmitted]); // Add exitFullScreen and hasAutoSubmitted dependencies
 
