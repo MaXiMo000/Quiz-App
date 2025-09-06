@@ -252,13 +252,6 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.75, duration: 0.4 }}
-                                >
-                                    <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.8, duration: 0.4 }}
                                 >
                                     <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
@@ -269,6 +262,13 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 0.9, duration: 0.4 }}
                                 >
                                     <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.75, duration: 0.4 }}
+                                >
+                                    <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
                                 </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
