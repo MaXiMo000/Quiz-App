@@ -2,7 +2,7 @@
 .container {
     display: flex;
     flex-direction: column;
-    padding: var(--space-lg);
+    padding: var(--space-md);
     width: 100%;
     max-width: 1200px;
     min-height: calc(100vh - 120px);
@@ -74,8 +74,8 @@
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-sm);
     box-shadow: var(--shadow-md);
     transition: all var(--transition-normal);
     position: relative;
@@ -104,9 +104,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     flex-wrap: wrap;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
 }
 
 .report-title {
@@ -138,8 +138,8 @@
 .report-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
 }
 
 .report-detail {
@@ -163,9 +163,13 @@
 
 .report-actions {
     display: flex;
-    gap: var(--space-sm);
-    justify-content: center;
-    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: stretch;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+    align-content: stretch;
+    align-self: stretch;
 }
 
 /* ✨ Desktop Table Layout */
@@ -251,7 +255,7 @@
 /* ✨ Modern Button Styles */
 .view-btn,
 .delete-btn {
-    padding: var(--space-sm) var(--space-lg);
+    padding: 0;
     border: none;
     border-radius: var(--radius-md);
     font-weight: 600;
@@ -263,18 +267,25 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-xs);
-    min-height: 40px;
+    height: 44px;
     min-width: 100px;
+    box-sizing: border-box;
+    flex: 1;
+    vertical-align: top;
+    line-height: 1;
 }
 
 .view-btn {
     background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
     color: white;
     box-shadow: var(--shadow-md);
+    margin: 0;
+    border: 0;
+    outline: 0;
 }
 
 .view-btn:hover {
@@ -289,6 +300,9 @@
     background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
     color: white;
     box-shadow: var(--shadow-md);
+    margin: 0;
+    border: 0;
+    outline: 0;
 }
 
 .delete-btn:hover {
@@ -305,14 +319,36 @@
     transform: none;
 }
 
+/* ✨ Force Perfect Button Alignment ✨ */
+.report-actions .view-btn,
+.report-actions .delete-btn {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: auto;
+}
+
 /* ✨ Mobile Button Adjustments */
 @media (max-width: 767px) {
     .view-btn,
     .delete-btn {
         flex: 1;
-        min-width: 120px;
+        min-width: 0;
         font-size: 0.85rem;
-        padding: var(--space-sm) var(--space-md);
+        padding: 0;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        position: relative;
+        top: 0;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
     }
 }
 
@@ -385,85 +421,237 @@
 
 @media (max-width: 768px) {
     .container {
-        width: 100vw;
-        max-width: 100vw;
-        margin: 0;
-        padding: var(--space-sm);
-        border-radius: 0;
-        min-height: 100vh;
+        width: 95vw;
+        max-width: 95vw;
+        margin: 0 auto;
+        padding: 0.5rem;
+        border-radius: var(--radius-md);
+        min-height: calc(100vh - 80px);
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
     
     .container h1 {
-        font-size: 1.6rem;
-        margin-bottom: var(--space-lg);
+        font-size: 1.4rem;
+        margin-bottom: 0.75rem;
+        width: 100%;
+        text-align: center;
     }
     
     .table-container {
         width: 100%;
+        max-width: 100%;
         margin: 0;
         padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
     
     .report-card {
         width: 100%;
-        padding: var(--space-md);
-        margin: 0 0 var(--space-md) 0;
+        max-width: 100%;
+        padding: 0.75rem;
+        margin: 0 0 0.5rem 0;
         box-sizing: border-box;
-        border-radius: var(--radius-md);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+    }
+    
+    .report-header {
+        margin-bottom: 0.5rem;
+    }
+    
+    .report-details {
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
     }
     
     .report-detail-value {
-        font-size: 1.1rem;
+        font-size: 1rem;
+    }
+    
+    .report-actions {
+        gap: 0.5rem;
+        align-items: stretch;
+        justify-content: stretch;
+        flex-wrap: nowrap;
+    }
+    
+    .view-btn,
+    .delete-btn {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        flex: 1;
+        padding: 0;
+        position: relative;
+        top: 0;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: var(--space-xs);
-        margin: 0;
-        border-radius: 0;
-        width: 100vw;
-        max-width: 100vw;
-        min-height: 100vh;
+        padding: 0.25rem;
+        margin: 0 auto;
+        border-radius: var(--radius-sm);
+        width: 90vw;
+        max-width: 90vw;
+        min-height: calc(100vh - 60px);
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
     
     .container h1 {
-        font-size: 1.4rem;
-        margin-bottom: var(--space-md);
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        width: 100%;
+        text-align: center;
     }
     
     .table-container {
         width: 100%;
+        max-width: 100%;
         margin: 0;
         padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
     
     .report-card {
         width: 100%;
-        padding: var(--space-sm);
-        margin: 0 0 var(--space-sm) 0;
+        max-width: 100%;
+        padding: 0.5rem;
+        margin: 0 0 0.5rem 0;
         box-sizing: border-box;
+        overflow: hidden;
     }
     
     .report-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--space-sm);
+        gap: 0.25rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .report-title {
+        font-size: 1rem;
     }
     
     .report-details {
-        grid-template-columns: 1fr;
-        gap: var(--space-sm);
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .report-detail-label {
+        font-size: 0.7rem;
+    }
+    
+    .report-detail-value {
+        font-size: 0.9rem;
     }
     
     .report-actions {
-        flex-direction: column;
-        gap: var(--space-sm);
+        flex-direction: row;
+        gap: 0.5rem;
+        width: 100%;
+        align-items: stretch;
+        justify-content: stretch;
+        flex-wrap: nowrap;
     }
     
     .view-btn,
     .delete-btn {
-        width: 100%;
-        min-width: auto;
+        flex: 1;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 0;
+        font-size: 0.8rem;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        top: 0;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+}
+
+/* ✨ Mobile Chrome Specific Fixes ✨ */
+@media screen and (max-width: 768px) and (-webkit-min-device-pixel-ratio: 1) {
+    .container {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        margin: 0 auto !important;
+        padding: 0.5rem !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        border-radius: var(--radius-md) !important;
+        min-height: calc(100vh - 80px) !important;
+    }
+    
+    .table-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+    
+    .report-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 0.5rem 0 !important;
+        padding: 0.75rem !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+    
+    .report-header,
+    .report-details,
+    .report-actions {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .container h1 {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .report-detail-value {
+        font-size: 0.9rem !important;
+    }
+    
+    .view-btn,
+    .delete-btn {
+        padding: 0 !important;
+        font-size: 0.8rem !important;
+        height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        flex: 1 !important;
+        position: relative !important;
+        top: 0 !important;
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
+    }
+    
+    .report-actions {
+        align-items: stretch !important;
+        justify-content: stretch !important;
+        flex-wrap: nowrap !important;
+        gap: 0.5rem !important;
     }
 }
