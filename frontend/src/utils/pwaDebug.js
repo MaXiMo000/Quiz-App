@@ -126,7 +126,4 @@ window.pwaDebug = {
   }
 };
 
-// Auto-run status check when loaded
-console.log('🔧 PWA Debug utilities loaded. Use window.pwaDebug.checkStatus() to check PWA status');
-
 export default window.pwaDebug;

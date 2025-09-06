@@ -423,6 +423,45 @@
     background-clip: text;
 }
 
+.auto-submit-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    margin: var(--space-lg) 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.notice-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notice-content {
+    text-align: left;
+    flex: 1;
+}
+
+.notice-content strong {
+    display: block;
+    color: #ffc107;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.notice-content p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
 .score-display {
     background: var(--glass-bg);
     border-radius: var(--radius-xl);
