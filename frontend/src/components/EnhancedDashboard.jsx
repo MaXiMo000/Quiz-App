@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
@@ -61,30 +62,10 @@ const EnhancedDashboard = () => {
   useEffect(() => {
     const checkPWAStatus = () => {
       const pwaInfo = pwaManager.getInstallationInfo();
-      console.log('📱 PWA Status Check:', pwaInfo);
       
       setIsInstalled(pwaInfo.isInstalled);
       setCanInstall(pwaInfo.canInstall);
       setIsInstallable(pwaInfo.isInstallable);
-      
-      console.log('Dashboard PWA State:', {
-        isInstalled: pwaInfo.isInstalled,
-        canInstall: pwaInfo.canInstall,
-        isInstallable: pwaInfo.isInstallable,
-        hasPrompt: pwaInfo.hasPrompt,
-        displayMode: pwaInfo.displayMode
-      });
-
-      // Additional standalone detection logging
-      console.log('🔍 Standalone Detection:', {
-        mediaQuery: window.matchMedia('(display-mode: standalone)').matches,
-        navigatorStandalone: window.navigator.standalone,
-        fullscreen: window.matchMedia('(display-mode: fullscreen)').matches,
-        windowDimensions: {
-          outer: { width: window.outerWidth, height: window.outerHeight },
-          inner: { width: window.innerWidth, height: window.innerHeight }
-        }
-      });
     };
     
     checkPWAStatus();
@@ -116,20 +97,10 @@ const EnhancedDashboard = () => {
 
   // ✅ PWA Install Handler
   const handlePWAInstall = async () => {
-    console.log('🚀 PWA Install button clicked');
-    console.log('Current PWA state:', { 
-      canInstall, 
-      isInstalled, 
-      isInstallable,
-      hasPrompt: !!pwaManager.installPrompt 
-    });
     
     try {
       const success = await pwaManager.promptInstall();
-      console.log('📱 PWA Install result:', success);
-      
       if (success) {
-        console.log('🎉 PWA installation initiated successfully!');
         
         // Update state immediately
         setCanInstall(false);
@@ -159,8 +130,6 @@ const EnhancedDashboard = () => {
           }
         }, 3000);
       } else {
-        console.log('📱 PWA installation was cancelled or showing manual instructions');
-        
         // Show helpful message for manual installation
         const helpNotification = document.createElement('div');
         helpNotification.style.cssText = `
@@ -510,7 +479,7 @@ const EnhancedDashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1>📊 Premium Dashboard <span className="premium-badge">✨</span></h1>
+        <h1>📊 Premium Dashboard</h1>
         <div className="time-selector">
           {['week', 'month', 'year'].map(range => (
             <button
@@ -785,24 +754,6 @@ const EnhancedDashboard = () => {
               <div className="feature-arrow">→</div>
             </motion.div>
           </div>
-
-          {/* Connection Status Indicator - Only show in browser mode */}
-          {!isInstalled && (
-            <motion.div 
-              className={`connection-status ${isOnline ? 'online' : 'offline'}`}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="status-indicator">
-                <div className={`status-dot ${isOnline ? 'online' : 'offline'}`}></div>
-                <span className="status-text">
-                  {isOnline ? '🌐 Online' : '📱 Offline Mode'} 
-                  {!isOnline && ' - Cached content available'}
-                </span>
-              </div>
-            </motion.div>
-          )}
 
           {/* PWA Installed Status - Show when app is installed */}
           {isInstalled && (

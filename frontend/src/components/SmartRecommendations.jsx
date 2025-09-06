@@ -78,9 +78,6 @@ const SmartRecommendations = ({ user }) => {
             <div className="smart-recommendations empty">
                 <h3>🎯 Smart Recommendations</h3>
                 <p>Take a few more quizzes to get personalized recommendations!</p>
-                <p style={{fontSize: '0.8rem', color: '#666', marginTop: '1rem'}}>
-                    Debug: Recommendations array length = {recommendations.length}
-                </p>
             </div>
         );
     }
