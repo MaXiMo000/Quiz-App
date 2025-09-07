@@ -19,7 +19,7 @@ router.delete("/quizzes/:id/questions/:questionIndex", verifyToken, deleteQuesti
 router.post("/quizzes/:id/stats", verifyToken, updateQuizStats); // Phase 2: Update quiz statistics
 
 
-router.post("/quizzes/:id/generate-questions", generateQuizQuestions);
+router.post("/quizzes/:id/generate-questions", verifyToken, generateQuizQuestions);
 router.post("/adaptive", verifyToken, generateAdaptiveQuestions);
 
 // Report Routes

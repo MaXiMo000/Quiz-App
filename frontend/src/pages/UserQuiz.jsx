@@ -19,10 +19,34 @@ const UserQuiz = () => {
         const fetchQuizzes = async () => {
             try {
                 const response = await axios.get(`/api/quizzes`); // auto-token
-                setQuizzes(response.data);
+                // Handle both array and object formats (for cached data)
+                let quizzesData = response.data;
+                
+                if (Array.isArray(quizzesData)) {
+                    // Already an array
+                    setQuizzes(quizzesData);
+                } else if (quizzesData && typeof quizzesData === 'object') {
+                    // Check if it's an array-like object (has numeric keys)
+                    const keys = Object.keys(quizzesData);
+                    const isArrayLike = keys.length > 0 && keys.every(key => !isNaN(parseInt(key)));
+                    
+                    if (isArrayLike) {
+                        // Convert array-like object to array
+                        const arrayData = Object.values(quizzesData);
+                        setQuizzes(arrayData);
+                    } else {
+                        // Regular object, wrap in array
+                        setQuizzes([quizzesData]);
+                    }
+                } else {
+                    // Fallback to empty array
+                    setQuizzes([]);
+                }
             } catch (error) {
                 console.error("Error fetching quizzes:", error);
                 setError("Error fetching Quiz. Try again later.");
+                // Set empty array on error to prevent map error
+                setQuizzes([]);
             }
             finally{
                 setLoading(false);
@@ -92,7 +116,7 @@ const UserQuiz = () => {
                     transition={{ duration: 0.2 }}
                 >
                     <AnimatePresence>
-                        {quizzes.map((quiz, index) => (
+                        {Array.isArray(quizzes) && quizzes.map((quiz, index) => (
                             <motion.div
                                 key={quiz._id}
                                 className="quiz-card"

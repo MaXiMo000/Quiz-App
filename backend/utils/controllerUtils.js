@@ -77,13 +77,27 @@ export const withCachingAndLogging = (controllerFunction, options = {}) => {
           // Handle arrays properly - don't spread arrays as objects
           if (Array.isArray(cachedData)) {
             return res.json(cachedData);
+          } else if (cachedData && typeof cachedData === 'object') {
+            // Check if it's an array-like object (has numeric keys)
+            const keys = Object.keys(cachedData);
+            const isArrayLike = keys.length > 0 && keys.every(key => !isNaN(parseInt(key)));
+            
+            if (isArrayLike) {
+              // Convert array-like object back to array
+              const arrayData = Object.values(cachedData);
+              return res.json(arrayData);
+            } else {
+              // Regular object - add cache metadata
+              return res.json({
+                ...cachedData,
+                _cached: true,
+                _cacheKey: cacheKey,
+                _requestId: requestId
+              });
+            }
           } else {
-            return res.json({
-              ...cachedData,
-              _cached: true,
-              _cacheKey: cacheKey,
-              _requestId: requestId
-            });
+            // Primitive value
+            return res.json(cachedData);
           }
         }
       }
