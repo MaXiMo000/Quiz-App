@@ -3,11 +3,13 @@ import Tournament from "../models/Tournament.js";
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from "../utils/controllerUtils.js";
+import logger from "../utils/logger.js";
 
 // ===================== DAILY CHALLENGES =====================
 
 // Get current daily challenge
-export const getCurrentDailyChallenge = async (req, res) => {
+const _getCurrentDailyChallenge = async (req, res) => {
     try {
         const now = new Date();
         const userId = req.user.id;
@@ -104,13 +106,25 @@ export const getCurrentDailyChallenge = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting daily challenges:", error);
+        logger.error("Error getting daily challenges", { 
+            context: 'GamificationController', 
+            operation: 'Get Current Daily Challenge',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getCurrentDailyChallenge = withCachingAndLogging(_getCurrentDailyChallenge, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Current Daily Challenge',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `daily-challenges:${req.user?.id}`
+});
+
 // Join daily challenge
-export const joinDailyChallenge = async (req, res) => {
+const _joinDailyChallenge = async (req, res) => {
     try {
         const { challengeId } = req.params;
         const userId = req.user.id;
@@ -140,7 +154,12 @@ export const joinDailyChallenge = async (req, res) => {
             if (existingParticipant.completed && existingParticipant.completedAt && 
                 existingParticipant.completedAt < twentyFourHoursAgo) {
                 
-                console.log(`🔄 Resetting participation for user ${userId} in challenge "${challenge.title}"`);
+                logger.info("Resetting participation for user in challenge", {
+                    context: 'GamificationController',
+                    operation: 'Reset Daily Challenges',
+                    userId,
+                    challengeTitle: challenge.title
+                });
                 
                 // Preserve old results in historical completions
                 if (!challenge.historicalCompletions) {
@@ -212,13 +231,26 @@ export const joinDailyChallenge = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error joining daily challenge:", error);
+        logger.error("Error joining daily challenge", { 
+            context: 'GamificationController', 
+            operation: 'Join Daily Challenge',
+            challengeId: req.params.challengeId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const joinDailyChallenge = withCachingAndLogging(_joinDailyChallenge, {
+    ...controllerConfigs.gamification,
+    operation: 'Join Daily Challenge',
+    cacheTTL: 0, // No caching for join operations
+    logFields: ['params.challengeId']
+});
+
 // Update challenge progress
-export const updateChallengeProgress = async (req, res) => {
+const _updateChallengeProgress = async (req, res) => {
     try {
         const { challengeId } = req.params;
         const { progress, quizScore, timeSpent } = req.body;
@@ -320,13 +352,26 @@ export const updateChallengeProgress = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error updating challenge progress:", error);
+        logger.error("Error updating challenge progress", { 
+            context: 'GamificationController', 
+            operation: 'Update Challenge Progress',
+            challengeId: req.params.challengeId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const updateChallengeProgress = withCachingAndLogging(_updateChallengeProgress, {
+    ...controllerConfigs.gamification,
+    operation: 'Update Challenge Progress',
+    cacheTTL: 0, // No caching for update operations
+    logFields: ['params.challengeId', 'body.progress']
+});
+
 // Create daily challenge (admin only)
-export const createDailyChallenge = async (req, res) => {
+const _createDailyChallenge = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -375,13 +420,25 @@ export const createDailyChallenge = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error creating daily challenge:", error);
+        logger.error("Error creating daily challenge", { 
+            context: 'GamificationController', 
+            operation: 'Create Daily Challenge',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const createDailyChallenge = withCachingAndLogging(_createDailyChallenge, {
+    ...controllerConfigs.gamification,
+    operation: 'Create Daily Challenge',
+    cacheTTL: 0, // No caching for create operations
+    logFields: ['body.title', 'body.category']
+});
+
 // Create sample daily challenge for testing (admin only)
-export const createSampleDailyChallenge = async (req, res) => {
+const _createSampleDailyChallenge = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -461,15 +518,27 @@ export const createSampleDailyChallenge = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error creating sample daily challenge:", error);
+        logger.error("Error creating sample daily challenge", { 
+            context: 'GamificationController', 
+            operation: 'Create Sample Daily Challenge',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const createSampleDailyChallenge = withCachingAndLogging(_createSampleDailyChallenge, {
+    ...controllerConfigs.gamification,
+    operation: 'Create Sample Daily Challenge',
+    cacheTTL: 0, // No caching for create operations
+    logFields: []
+});
+
 // ===================== TOURNAMENTS =====================
 
 // Get available tournaments
-export const getAvailableTournaments = async (req, res) => {
+const _getAvailableTournaments = async (req, res) => {
     try {
         const now = new Date();
         const userId = req.user.id;
@@ -537,13 +606,25 @@ export const getAvailableTournaments = async (req, res) => {
         res.json({ tournaments: tournamentsWithProgress });
 
     } catch (error) {
-        console.error("Error getting tournaments:", error);
+        logger.error("Error getting tournaments", { 
+            context: 'GamificationController', 
+            operation: 'Get Available Tournaments',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getAvailableTournaments = withCachingAndLogging(_getAvailableTournaments, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Available Tournaments',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `available-tournaments:${req.user?.id}`
+});
+
 // Delete daily challenge (admin only)
-export const deleteDailyChallenge = async (req, res) => {
+const _deleteDailyChallenge = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -564,13 +645,26 @@ export const deleteDailyChallenge = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error deleting daily challenge:", error);
+        logger.error("Error deleting daily challenge", { 
+            context: 'GamificationController', 
+            operation: 'Delete Daily Challenge',
+            challengeId: req.params.challengeId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const deleteDailyChallenge = withCachingAndLogging(_deleteDailyChallenge, {
+    ...controllerConfigs.gamification,
+    operation: 'Delete Daily Challenge',
+    cacheTTL: 0, // No caching for delete operations
+    logFields: ['params.challengeId']
+});
+
 // Delete tournament (admin only)
-export const deleteTournament = async (req, res) => {
+const _deleteTournament = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -591,13 +685,26 @@ export const deleteTournament = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error deleting tournament:", error);
+        logger.error("Error deleting tournament", { 
+            context: 'GamificationController', 
+            operation: 'Delete Tournament',
+            tournamentId: req.params.tournamentId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const deleteTournament = withCachingAndLogging(_deleteTournament, {
+    ...controllerConfigs.gamification,
+    operation: 'Delete Tournament',
+    cacheTTL: 0, // No caching for delete operations
+    logFields: ['params.tournamentId']
+});
+
 // Get available quizzes for challenges/tournaments (admin only)
-export const getAvailableQuizzes = async (req, res) => {
+const _getAvailableQuizzes = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -614,13 +721,25 @@ export const getAvailableQuizzes = async (req, res) => {
         res.json({ quizzes });
 
     } catch (error) {
-        console.error("Error fetching quizzes:", error);
+        logger.error("Error fetching quizzes", { 
+            context: 'GamificationController', 
+            operation: 'Get Available Quizzes',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getAvailableQuizzes = withCachingAndLogging(_getAvailableQuizzes, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Available Quizzes',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `available-quizzes:${req.user?.id}`
+});
+
 // Register for tournament
-export const registerForTournament = async (req, res) => {
+const _registerForTournament = async (req, res) => {
     try {
         const { tournamentId } = req.params;
         const userId = req.user.id;
@@ -698,13 +817,26 @@ export const registerForTournament = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error registering for tournament:", error);
+        logger.error("Error registering for tournament", { 
+            context: 'GamificationController', 
+            operation: 'Register For Tournament',
+            tournamentId: req.params.tournamentId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const registerForTournament = withCachingAndLogging(_registerForTournament, {
+    ...controllerConfigs.gamification,
+    operation: 'Register For Tournament',
+    cacheTTL: 0, // No caching for register operations
+    logFields: ['params.tournamentId']
+});
+
 // Get tournament leaderboard
-export const getTournamentLeaderboard = async (req, res) => {
+const _getTournamentLeaderboard = async (req, res) => {
     try {
         const { tournamentId } = req.params;
         
@@ -742,13 +874,26 @@ export const getTournamentLeaderboard = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting tournament leaderboard:", error);
+        logger.error("Error getting tournament leaderboard", { 
+            context: 'GamificationController', 
+            operation: 'Get Tournament Leaderboard',
+            tournamentId: req.params.tournamentId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getTournamentLeaderboard = withCachingAndLogging(_getTournamentLeaderboard, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Tournament Leaderboard',
+    cacheTTL: 60, // 1 minute
+    cacheKeyGenerator: (req) => `tournament-leaderboard:${req.params.tournamentId}`
+});
+
 // Update tournament score
-export const updateTournamentScore = async (req, res) => {
+const _updateTournamentScore = async (req, res) => {
     try {
         const { tournamentId } = req.params;
         const { score, timeSpent } = req.body;
@@ -801,13 +946,26 @@ export const updateTournamentScore = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error updating tournament score:", error);
+        logger.error("Error updating tournament score", { 
+            context: 'GamificationController', 
+            operation: 'Update Tournament Score',
+            tournamentId: req.params.tournamentId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const updateTournamentScore = withCachingAndLogging(_updateTournamentScore, {
+    ...controllerConfigs.gamification,
+    operation: 'Update Tournament Score',
+    cacheTTL: 0, // No caching for update operations
+    logFields: ['params.tournamentId', 'body.score']
+});
+
 // Create tournament (admin only)
-export const createTournament = async (req, res) => {
+const _createTournament = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -857,13 +1015,25 @@ export const createTournament = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error creating tournament:", error);
+        logger.error("Error creating tournament", { 
+            context: 'GamificationController', 
+            operation: 'Create Tournament',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const createTournament = withCachingAndLogging(_createTournament, {
+    ...controllerConfigs.gamification,
+    operation: 'Create Tournament',
+    cacheTTL: 0, // No caching for create operations
+    logFields: ['body.title', 'body.category']
+});
+
 // Create sample tournament for testing (admin only)
-export const createSampleTournament = async (req, res) => {
+const _createSampleTournament = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -961,13 +1131,25 @@ export const createSampleTournament = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error creating sample tournament:", error);
+        logger.error("Error creating sample tournament", { 
+            context: 'GamificationController', 
+            operation: 'Create Sample Tournament',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const createSampleTournament = withCachingAndLogging(_createSampleTournament, {
+    ...controllerConfigs.gamification,
+    operation: 'Create Sample Tournament',
+    cacheTTL: 0, // No caching for create operations
+    logFields: []
+});
+
 // Start challenge quiz
-export const startChallengeQuiz = async (req, res) => {
+const _startChallengeQuiz = async (req, res) => {
     try {
         const { challengeId } = req.params;
         const userId = req.user.id;
@@ -1017,13 +1199,26 @@ export const startChallengeQuiz = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error starting challenge quiz:", error);
+        logger.error("Error starting challenge quiz", { 
+            context: 'GamificationController', 
+            operation: 'Start Challenge Quiz',
+            challengeId: req.params.challengeId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const startChallengeQuiz = withCachingAndLogging(_startChallengeQuiz, {
+    ...controllerConfigs.gamification,
+    operation: 'Start Challenge Quiz',
+    cacheTTL: 0, // No caching for start operations
+    logFields: ['params.challengeId']
+});
+
 // Submit challenge quiz
-export const submitChallengeQuiz = async (req, res) => {
+const _submitChallengeQuiz = async (req, res) => {
     try {
         const { challengeId } = req.params;
         const { quizId, answers, timeSpent, timeTaken, score } = req.body;
@@ -1162,13 +1357,27 @@ export const submitChallengeQuiz = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error submitting challenge quiz:", error);
+        logger.error("Error submitting challenge quiz", { 
+            context: 'GamificationController', 
+            operation: 'Submit Challenge Quiz',
+            challengeId: req.params.challengeId,
+            quizId: req.body.quizId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const submitChallengeQuiz = withCachingAndLogging(_submitChallengeQuiz, {
+    ...controllerConfigs.gamification,
+    operation: 'Submit Challenge Quiz',
+    cacheTTL: 0, // No caching for submit operations
+    logFields: ['params.challengeId', 'body.quizId', 'body.score']
+});
+
 // Start tournament quiz
-export const startTournamentQuiz = async (req, res) => {
+const _startTournamentQuiz = async (req, res) => {
     try {
         const { tournamentId } = req.params;
         const userId = req.user.id;
@@ -1221,13 +1430,26 @@ export const startTournamentQuiz = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error starting tournament quiz:", error);
+        logger.error("Error starting tournament quiz", { 
+            context: 'GamificationController', 
+            operation: 'Start Tournament Quiz',
+            tournamentId: req.params.tournamentId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const startTournamentQuiz = withCachingAndLogging(_startTournamentQuiz, {
+    ...controllerConfigs.gamification,
+    operation: 'Start Tournament Quiz',
+    cacheTTL: 0, // No caching for start operations
+    logFields: ['params.tournamentId']
+});
+
 // Submit tournament quiz
-export const submitTournamentQuiz = async (req, res) => {
+const _submitTournamentQuiz = async (req, res) => {
     try {
         const { tournamentId } = req.params;
         const { quizId, answers, timeSpent, timeTaken, score } = req.body;
@@ -1316,7 +1538,7 @@ export const submitTournamentQuiz = async (req, res) => {
 
         await tournament.save();
 
-        console.log('Debug - Tournament saved, final participant state:', {
+        logger.debug('Tournament saved, final participant state', {
             currentScore: participant.currentScore,
             totalTime: participant.totalTime,
             quizzesCompleted: participant.quizzesCompleted,
@@ -1349,15 +1571,29 @@ export const submitTournamentQuiz = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error submitting tournament quiz:", error);
+        logger.error("Error submitting tournament quiz", { 
+            context: 'GamificationController', 
+            operation: 'Submit Tournament Quiz',
+            tournamentId: req.params.tournamentId,
+            quizId: req.body.quizId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const submitTournamentQuiz = withCachingAndLogging(_submitTournamentQuiz, {
+    ...controllerConfigs.gamification,
+    operation: 'Submit Tournament Quiz',
+    cacheTTL: 0, // No caching for submit operations
+    logFields: ['params.tournamentId', 'body.quizId', 'body.score']
+});
+
 // ===================== HISTORY ENDPOINTS =====================
 
 // Get user's challenge history
-export const getUserCompletedChallenges = async (req, res) => {
+const _getUserCompletedChallenges = async (req, res) => {
     try {
         const userId = req.user.id;
         
@@ -1404,13 +1640,25 @@ export const getUserCompletedChallenges = async (req, res) => {
         res.json({ challenges: challengeHistory });
 
     } catch (error) {
-        console.error("Error getting challenge history:", error);
+        logger.error("Error getting challenge history", { 
+            context: 'GamificationController', 
+            operation: 'Get User Completed Challenges',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getUserCompletedChallenges = withCachingAndLogging(_getUserCompletedChallenges, {
+    ...controllerConfigs.gamification,
+    operation: 'Get User Completed Challenges',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `user-completed-challenges:${req.user?.id}`
+});
+
 // Get user's tournament history
-export const getTournamentHistory = async (req, res) => {
+const _getTournamentHistory = async (req, res) => {
     try {
         const userId = req.user.id;
         
@@ -1433,7 +1681,7 @@ export const getTournamentHistory = async (req, res) => {
                 p.user.toString() === userId
             );
             
-            console.log('Debug - User tournament participation:', {
+            logger.debug('User tournament participation', {
                 tournamentId: tournament._id,
                 currentScore: userParticipation?.currentScore,
                 quizzesCompleted: userParticipation?.quizzesCompleted,
@@ -1470,13 +1718,25 @@ export const getTournamentHistory = async (req, res) => {
         res.json({ tournaments: tournamentHistory });
 
     } catch (error) {
-        console.error("Error getting tournament history:", error);
+        logger.error("Error getting tournament history", { 
+            context: 'GamificationController', 
+            operation: 'Get Tournament History',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getTournamentHistory = withCachingAndLogging(_getTournamentHistory, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Tournament History',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `tournament-history:${req.user?.id}`
+});
+
 // Clean up challenges with no quizzes (admin only)
-export const cleanupEmptyChallenges = async (req, res) => {
+const _cleanupEmptyChallenges = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -1503,13 +1763,25 @@ export const cleanupEmptyChallenges = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error cleaning up challenges:", error);
+        logger.error("Error cleaning up challenges", { 
+            context: 'GamificationController', 
+            operation: 'Cleanup Empty Challenges',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const cleanupEmptyChallenges = withCachingAndLogging(_cleanupEmptyChallenges, {
+    ...controllerConfigs.gamification,
+    operation: 'Cleanup Empty Challenges',
+    cacheTTL: 0, // No caching for cleanup operations
+    logFields: []
+});
+
 // Clean up tournaments with no quizzes (admin only)
-export const cleanupEmptyTournaments = async (req, res) => {
+const _cleanupEmptyTournaments = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -1536,21 +1808,37 @@ export const cleanupEmptyTournaments = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error cleaning up tournaments:", error);
+        logger.error("Error cleaning up tournaments", { 
+            context: 'GamificationController', 
+            operation: 'Cleanup Empty Tournaments',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const cleanupEmptyTournaments = withCachingAndLogging(_cleanupEmptyTournaments, {
+    ...controllerConfigs.gamification,
+    operation: 'Cleanup Empty Tournaments',
+    cacheTTL: 0, // No caching for cleanup operations
+    logFields: []
+});
+
 // ===================== DAILY CHALLENGE RESET SYSTEM =====================
 
 // Reset daily challenges after 24 hours (automatic system)
-export const resetDailyChallenges = async () => {
+const _resetDailyChallenges = async () => {
     try {
         const now = new Date();
         const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
         
-        console.log(`🔄 Starting daily challenge reset at ${now.toISOString()}`);
-        console.log(`📅 Looking for challenges completed before ${twentyFourHoursAgo.toISOString()}`);
+        logger.info("Starting daily challenge reset", {
+            context: 'GamificationController',
+            operation: 'Reset Daily Challenges',
+            timestamp: now.toISOString(),
+            cutoffTime: twentyFourHoursAgo.toISOString()
+        });
 
         // Find challenges where users completed them more than 24 hours ago
         const challengesToReset = await DailyChallenge.find({
@@ -1559,7 +1847,11 @@ export const resetDailyChallenges = async () => {
             isActive: true // Only reset active challenges
         });
 
-        console.log(`🎯 Found ${challengesToReset.length} challenges with participants to reset`);
+        logger.info("Found challenges to reset", {
+            context: 'GamificationController',
+            operation: 'Reset Daily Challenges',
+            challengesFound: challengesToReset.length
+        });
 
         let totalUsersReset = 0;
         let challengesModified = 0;
@@ -1616,7 +1908,12 @@ export const resetDailyChallenges = async () => {
                         $set: { 'gamification.dailyChallenges.current': challenge._id }
                     });
                     
-                    console.log(`👤 Reset user ${participant.user} in challenge "${challenge.title}"`);
+                    logger.info("Reset user in challenge", {
+                        context: 'GamificationController',
+                        operation: 'Reset Daily Challenges',
+                        userId: participant.user,
+                        challengeTitle: challenge.title
+                    });
                 }
             }
 
@@ -1631,11 +1928,22 @@ export const resetDailyChallenges = async () => {
                 challengesModified++;
                 totalUsersReset += usersResetInChallenge;
                 
-                console.log(`✅ Reset ${usersResetInChallenge} users in challenge "${challenge.title}"`);
+                logger.info("Reset users in challenge", {
+                    context: 'GamificationController',
+                    operation: 'Reset Daily Challenges',
+                    usersReset: usersResetInChallenge,
+                    challengeTitle: challenge.title
+                });
             }
         }
 
-        console.log(`🎉 Daily reset completed: ${totalUsersReset} users reset across ${challengesModified} challenges`);
+        logger.info("Daily reset completed", {
+            context: 'GamificationController',
+            operation: 'Reset Daily Challenges',
+            totalUsersReset,
+            challengesModified,
+            timestamp: now.toISOString()
+        });
         
         return {
             success: true,
@@ -1645,7 +1953,11 @@ export const resetDailyChallenges = async () => {
         };
 
     } catch (error) {
-        console.error("❌ Error in daily challenge reset:", error);
+        logger.error("Error in daily challenge reset", { 
+            context: 'GamificationController', 
+            operation: 'Reset Daily Challenges',
+            error: error.message 
+        });
         return {
             success: false,
             error: error.message,
@@ -1654,8 +1966,18 @@ export const resetDailyChallenges = async () => {
     }
 };
 
+export const resetDailyChallenges = withCachingAndLogging(_resetDailyChallenges, {
+    ...controllerConfigs.gamification,
+    operation: 'Reset Daily Challenges',
+    cacheTTL: 0, // No caching for reset operations
+    logFields: []
+});
+
+// Export internal function for server startup
+export { _resetDailyChallenges };
+
 // Manual reset endpoint for testing (admin only)
-export const manualResetDailyChallenges = async (req, res) => {
+const _manualResetDailyChallenges = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -1680,13 +2002,25 @@ export const manualResetDailyChallenges = async (req, res) => {
         }
 
     } catch (error) {
-        console.error("Error in manual reset:", error);
+        logger.error("Error in manual reset", { 
+            context: 'GamificationController', 
+            operation: 'Manual Reset Daily Challenges',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const manualResetDailyChallenges = withCachingAndLogging(_manualResetDailyChallenges, {
+    ...controllerConfigs.gamification,
+    operation: 'Manual Reset Daily Challenges',
+    cacheTTL: 0, // No caching for reset operations
+    logFields: []
+});
+
 // Check if a challenge should be available for a user (considering reset logic)
-export const isChallengeAvailableForUser = async (challengeId, userId) => {
+const _isChallengeAvailableForUser = async (challengeId, userId) => {
     try {
         const challenge = await DailyChallenge.findById(challengeId);
         if (!challenge || !challenge.isActive) {
@@ -1723,13 +2057,26 @@ export const isChallengeAvailableForUser = async (challengeId, userId) => {
         return true;
 
     } catch (error) {
-        console.error("Error checking challenge availability:", error);
+        logger.error("Error checking challenge availability", { 
+            context: 'GamificationController', 
+            operation: 'Is Challenge Available For User',
+            challengeId,
+            userId,
+            error: error.message 
+        });
         return false;
     }
 };
 
+export const isChallengeAvailableForUser = withCachingAndLogging(_isChallengeAvailableForUser, {
+    ...controllerConfigs.gamification,
+    operation: 'Is Challenge Available For User',
+    cacheTTL: 60, // 1 minute
+    cacheKeyGenerator: (challengeId, userId) => `challenge-availability:${challengeId}:${userId}`
+});
+
 // Get historical challenge completions for a user
-export const getUserChallengeHistory = async (req, res) => {
+const _getUserChallengeHistory = async (req, res) => {
     try {
         const userId = req.user.id;
         const { challengeId } = req.params;
@@ -1758,13 +2105,26 @@ export const getUserChallengeHistory = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting user challenge history:", error);
+        logger.error("Error getting user challenge history", { 
+            context: 'GamificationController', 
+            operation: 'Get User Challenge History',
+            challengeId: req.params.challengeId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getUserChallengeHistory = withCachingAndLogging(_getUserChallengeHistory, {
+    ...controllerConfigs.gamification,
+    operation: 'Get User Challenge History',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `user-challenge-history:${req.params.challengeId}:${req.user?.id}`
+});
+
 // Get all historical completions for a challenge (admin only)
-export const getChallengeHistoryAdmin = async (req, res) => {
+const _getChallengeHistoryAdmin = async (req, res) => {
     try {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: "Admin access required" });
@@ -1792,13 +2152,26 @@ export const getChallengeHistoryAdmin = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting challenge history:", error);
+        logger.error("Error getting challenge history", { 
+            context: 'GamificationController', 
+            operation: 'Get Challenge History Admin',
+            challengeId: req.params.challengeId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getChallengeHistoryAdmin = withCachingAndLogging(_getChallengeHistoryAdmin, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Challenge History Admin',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `challenge-history-admin:${req.params.challengeId}`
+});
+
 // Get daily challenge status for a user (enhanced with reset logic)
-export const getDailyChallengeStatus = async (req, res) => {
+const _getDailyChallengeStatus = async (req, res) => {
     try {
         const userId = req.user.id;
         const now = new Date();
@@ -1879,13 +2252,25 @@ export const getDailyChallengeStatus = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting daily challenge status:", error);
+        logger.error("Error getting daily challenge status", { 
+            context: 'GamificationController', 
+            operation: 'Get Daily Challenge Status',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getDailyChallengeStatus = withCachingAndLogging(_getDailyChallengeStatus, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Daily Challenge Status',
+    cacheTTL: 60, // 1 minute
+    cacheKeyGenerator: (req) => `daily-challenge-status:${req.user?.id}`
+});
+
 // Clean up old completed challenge data (admin utility)
-export const cleanupOldChallengeData = async (req, res) => {
+const _cleanupOldChallengeData = async (req, res) => {
     try {
         const userRole = req.user.role;
         if (userRole !== 'admin') {
@@ -1931,15 +2316,27 @@ export const cleanupOldChallengeData = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error in cleanup:", error);
+        logger.error("Error in cleanup", { 
+            context: 'GamificationController', 
+            operation: 'Cleanup Old Challenge Data',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const cleanupOldChallengeData = withCachingAndLogging(_cleanupOldChallengeData, {
+    ...controllerConfigs.gamification,
+    operation: 'Cleanup Old Challenge Data',
+    cacheTTL: 0, // No caching for cleanup operations
+    logFields: []
+});
+
 // ===================== COMPLETED CHALLENGES & TOURNAMENTS =====================
 
 // Get user's completed daily challenges
-export const getCompletedChallenges = async (req, res) => {
+const _getCompletedChallenges = async (req, res) => {
     try {
         const userId = req.user.id;
         const now = new Date();
@@ -2017,13 +2414,25 @@ export const getCompletedChallenges = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting completed challenges:", error);
+        logger.error("Error getting completed challenges", { 
+            context: 'GamificationController', 
+            operation: 'Get Completed Challenges',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getCompletedChallenges = withCachingAndLogging(_getCompletedChallenges, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Completed Challenges',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `completed-challenges:${req.user?.id}`
+});
+
 // Get user's completed tournaments
-export const getCompletedTournaments = async (req, res) => {
+const _getCompletedTournaments = async (req, res) => {
     try {
         const userId = req.user.id;
         const now = new Date();
@@ -2097,7 +2506,19 @@ export const getCompletedTournaments = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting completed tournaments:", error);
+        logger.error("Error getting completed tournaments", { 
+            context: 'GamificationController', 
+            operation: 'Get Completed Tournaments',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
+
+export const getCompletedTournaments = withCachingAndLogging(_getCompletedTournaments, {
+    ...controllerConfigs.gamification,
+    operation: 'Get Completed Tournaments',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `completed-tournaments:${req.user?.id}`
+});

@@ -1,7 +1,9 @@
 // Phase 2: Migration script to update existing quizzes with difficulty distribution
 import Quiz from "../models/Quiz.js";
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from "../utils/controllerUtils.js";
+import logger from "../utils/logger.js";
 
-export const migrateQuizDifficultyDistribution = async () => {
+const _migrateQuizDifficultyDistribution = async () => {
     try {
         
         const quizzes = await Quiz.find({
@@ -51,32 +53,63 @@ export const migrateQuizDifficultyDistribution = async () => {
         return { success: true, updatedCount };
         
     } catch (error) {
-        console.error("❌ Migration failed:", error);
+        logger.error("Migration failed", { 
+            context: 'MigrationController', 
+            operation: 'Migrate Quiz Difficulty Distribution',
+            error: error.message 
+        });
         return { success: false, error: error.message };
     }
 };
 
+export const migrateQuizDifficultyDistribution = withCachingAndLogging(_migrateQuizDifficultyDistribution, {
+    ...controllerConfigs.migration,
+    operation: 'Migrate Quiz Difficulty Distribution',
+    cacheTTL: 0, // No caching for migration operations
+    logFields: []
+});
+
 // API endpoint to trigger migration
-export const runMigration = async (req, res) => {
-    try {
-        const result = await migrateQuizDifficultyDistribution();
+const _runMigration = async (req, res) => {
+    logger.info('Starting migration process', { 
+        context: 'MigrationController', 
+        operation: 'Run Migration',
+        userId: req.user?.id,
+        role: req.user?.role 
+    });
+    
+    const result = await migrateQuizDifficultyDistribution();
+    
+    if (result.success) {
+        logger.info('Migration completed successfully', { 
+            context: 'MigrationController', 
+            operation: 'Run Migration',
+            updatedCount: result.updatedCount,
+            userId: req.user?.id 
+        });
         
-        if (result.success) {
-            res.json({
-                message: "Migration completed successfully",
-                updatedCount: result.updatedCount
-            });
-        } else {
-            res.status(500).json({
-                message: "Migration failed",
-                error: result.error
-            });
-        }
-    } catch (error) {
-        console.error("Error running migration:", error);
+        res.json({
+            message: "Migration completed successfully",
+            updatedCount: result.updatedCount
+        });
+    } else {
+        logger.error('Migration failed', { 
+            context: 'MigrationController', 
+            operation: 'Run Migration',
+            error: result.error,
+            userId: req.user?.id 
+        });
+        
         res.status(500).json({
             message: "Migration failed",
-            error: error.message
+            error: result.error
         });
     }
 };
+
+export const runMigration = withCachingAndLogging(_runMigration, {
+    ...controllerConfigs.public,
+    operation: 'Run Migration',
+    cacheTTL: 0, // No caching for migration operations
+    requireAuth: true // Only admins should run migrations
+});

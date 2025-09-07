@@ -2,11 +2,13 @@ import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
 import { unlockThemesForLevel } from "./userController.js";
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from "../utils/controllerUtils.js";
+import logger from "../utils/logger.js";
 
 // Phase 2: Intelligence Layer Controller
 
 // 1. Smart Quiz Recommendation Engine
-export const getSmartRecommendations = async (req, res) => {
+const _getSmartRecommendations = async (req, res) => {
     try {
         const userId = req.user.id;
         const userRole = req.user.role;
@@ -58,10 +60,22 @@ export const getSmartRecommendations = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting smart recommendations:", error);
+        logger.error("Error getting smart recommendations", { 
+            context: 'IntelligenceController', 
+            operation: 'Get Smart Recommendations',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ error: "Server error" });
     }
 };
+
+export const getSmartRecommendations = withCachingAndLogging(_getSmartRecommendations, {
+    ...controllerConfigs.intelligence,
+    operation: 'Get Smart Recommendations',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `smart-recommendations:${req.user?.id}`
+});
 
 // Helper function: Get quiz filter based on user role
 function getQuizFilter(userId, userRole) {
@@ -285,7 +299,7 @@ function extractCategoryFromQuizName(quizName) {
 }
 
 // 2. Adaptive Difficulty System
-export const getAdaptiveDifficulty = async (req, res) => {
+const _getAdaptiveDifficulty = async (req, res) => {
     try {
         const userId = req.user.id;
         const { category } = req.query;
@@ -365,13 +379,26 @@ export const getAdaptiveDifficulty = async (req, res) => {
         res.json(response);
 
     } catch (error) {
-        console.error("Error calculating adaptive difficulty:", error);
+        logger.error("Error calculating adaptive difficulty", { 
+            context: 'IntelligenceController', 
+            operation: 'Get Adaptive Difficulty',
+            category: req.query.category,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ error: "Server error" });
     }
 };
 
+export const getAdaptiveDifficulty = withCachingAndLogging(_getAdaptiveDifficulty, {
+    ...controllerConfigs.intelligence,
+    operation: 'Get Adaptive Difficulty',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `adaptive-difficulty:${req.user?.id}:${req.query.category || 'general'}`
+});
+
 // 3. Learning Analytics & Performance Predictions
-export const getLearningAnalytics = async (req, res) => {
+const _getLearningAnalytics = async (req, res) => {
     try {
         const userId = req.user.id;
         const user = await UserQuiz.findById(userId);
@@ -398,10 +425,22 @@ export const getLearningAnalytics = async (req, res) => {
         res.json(analytics);
 
     } catch (error) {
-        console.error("Error getting learning analytics:", error);
+        logger.error("Error getting learning analytics", { 
+            context: 'IntelligenceController', 
+            operation: 'Get Learning Analytics',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ error: "Server error" });
     }
 };
+
+export const getLearningAnalytics = withCachingAndLogging(_getLearningAnalytics, {
+    ...controllerConfigs.intelligence,
+    operation: 'Get Learning Analytics',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `learning-analytics:${req.user?.id}`
+});
 
 // Helper functions for learning analytics
 function calculateOverviewStats(reports) {
@@ -648,7 +687,7 @@ function calculateTrend(reports) {
 }
 
 // 4. Update user preferences based on quiz activity
-export const updateUserPreferences = async (req, res) => {
+const _updateUserPreferences = async (req, res) => {
     try {
         const userId = req.user.id;
         const { quizId, score, totalQuestions, timeSpent, category, difficulty } = req.body;
@@ -722,7 +761,20 @@ export const updateUserPreferences = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error updating user preferences:", error);
+        logger.error("Error updating user preferences", { 
+            context: 'IntelligenceController', 
+            operation: 'Update User Preferences',
+            quizId: req.body.quizId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ error: "Server error" });
     }
 };
+
+export const updateUserPreferences = withCachingAndLogging(_updateUserPreferences, {
+    ...controllerConfigs.intelligence,
+    operation: 'Update User Preferences',
+    cacheTTL: 0, // No caching for update operations
+    logFields: ['body.quizId', 'body.score', 'body.category', 'body.difficulty']
+});

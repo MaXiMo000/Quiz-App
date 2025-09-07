@@ -1,9 +1,11 @@
 import Friend from "../models/Friend.js";
 import UserQuiz from "../models/User.js";
 import mongoose from "mongoose";
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from "../utils/controllerUtils.js";
+import logger from "../utils/logger.js";
 
 // Send friend request
-export const sendFriendRequest = async (req, res) => {
+const _sendFriendRequest = async (req, res) => {
     try {
         const { recipientId } = req.body;
         const requesterId = req.user.id;
@@ -70,13 +72,26 @@ export const sendFriendRequest = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error sending friend request:", error);
+        logger.error("Error sending friend request", { 
+            context: 'SocialController', 
+            operation: 'Send Friend Request',
+            recipientId: req.body.recipientId,
+            requesterId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const sendFriendRequest = withCachingAndLogging(_sendFriendRequest, {
+    ...controllerConfigs.social,
+    operation: 'Send Friend Request',
+    cacheTTL: 0, // No caching for friend requests
+    logFields: ['body.recipientId']
+});
+
 // Accept/decline friend request
-export const respondToFriendRequest = async (req, res) => {
+const _respondToFriendRequest = async (req, res) => {
     try {
         const { requestId, action } = req.body; // action: 'accept' or 'decline'
         const userId = req.user.id;
@@ -130,13 +145,27 @@ export const respondToFriendRequest = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error responding to friend request:", error);
+        logger.error("Error responding to friend request", { 
+            context: 'SocialController', 
+            operation: 'Respond To Friend Request',
+            requestId: req.body.requestId,
+            action: req.body.action,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const respondToFriendRequest = withCachingAndLogging(_respondToFriendRequest, {
+    ...controllerConfigs.social,
+    operation: 'Respond To Friend Request',
+    cacheTTL: 0, // No caching for friend request responses
+    logFields: ['body.requestId', 'body.action']
+});
+
 // Get user's friends
-export const getFriends = async (req, res) => {
+const _getFriends = async (req, res) => {
     try {
         const userId = req.user.id;
         
@@ -160,13 +189,25 @@ export const getFriends = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting friends:", error);
+        logger.error("Error getting friends", { 
+            context: 'SocialController', 
+            operation: 'Get Friends',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getFriends = withCachingAndLogging(_getFriends, {
+    ...controllerConfigs.social,
+    operation: 'Get Friends',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `friends:${req.user?.id}`
+});
+
 // Get pending friend requests
-export const getPendingRequests = async (req, res) => {
+const _getPendingRequests = async (req, res) => {
     try {
         const userId = req.user.id;
 
@@ -186,13 +227,25 @@ export const getPendingRequests = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting pending requests:", error);
+        logger.error("Error getting pending requests", { 
+            context: 'SocialController', 
+            operation: 'Get Pending Requests',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getPendingRequests = withCachingAndLogging(_getPendingRequests, {
+    ...controllerConfigs.social,
+    operation: 'Get Pending Requests',
+    cacheTTL: 60, // 1 minute
+    cacheKeyGenerator: (req) => `pending-requests:${req.user?.id}`
+});
+
 // Remove friend
-export const removeFriend = async (req, res) => {
+const _removeFriend = async (req, res) => {
     try {
         const { friendId } = req.params;
         const userId = req.user.id;
@@ -224,13 +277,26 @@ export const removeFriend = async (req, res) => {
         res.json({ message: "Friend removed successfully" });
 
     } catch (error) {
-        console.error("Error removing friend:", error);
+        logger.error("Error removing friend", { 
+            context: 'SocialController', 
+            operation: 'Remove Friend',
+            friendId: req.params.friendId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const removeFriend = withCachingAndLogging(_removeFriend, {
+    ...controllerConfigs.social,
+    operation: 'Remove Friend',
+    cacheTTL: 0, // No caching for remove operations
+    logFields: ['params.friendId']
+});
+
 // Search for users to add as friends
-export const searchUsers = async (req, res) => {
+const _searchUsers = async (req, res) => {
     try {
         const { query } = req.query;
         const userId = req.user.id;
@@ -273,13 +339,26 @@ export const searchUsers = async (req, res) => {
         res.json({ users });
 
     } catch (error) {
-        console.error("Error searching users:", error);
+        logger.error("Error searching users", { 
+            context: 'SocialController', 
+            operation: 'Search Users',
+            query: req.query.query,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const searchUsers = withCachingAndLogging(_searchUsers, {
+    ...controllerConfigs.social,
+    operation: 'Search Users',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `search-users:${req.query.query}:${req.user?.id}`
+});
+
 // Get friend's quiz progress (for comparison)
-export const getFriendProgress = async (req, res) => {
+const _getFriendProgress = async (req, res) => {
     try {
         const { friendId } = req.params;
         const userId = req.user.id;
@@ -321,13 +400,26 @@ export const getFriendProgress = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting friend progress:", error);
+        logger.error("Error getting friend progress", { 
+            context: 'SocialController', 
+            operation: 'Get Friend Progress',
+            friendId: req.params.friendId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getFriendProgress = withCachingAndLogging(_getFriendProgress, {
+    ...controllerConfigs.social,
+    operation: 'Get Friend Progress',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `friend-progress:${req.params.friendId}:${req.user?.id}`
+});
+
 // Block user
-export const blockUser = async (req, res) => {
+const _blockUser = async (req, res) => {
     try {
         const { userId: targetUserId } = req.params;
         const userId = req.user.id;
@@ -403,13 +495,26 @@ export const blockUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error blocking user:", error);
+        logger.error("Error blocking user", { 
+            context: 'SocialController', 
+            operation: 'Block User',
+            targetUserId: req.params.userId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const blockUser = withCachingAndLogging(_blockUser, {
+    ...controllerConfigs.social,
+    operation: 'Block User',
+    cacheTTL: 0, // No caching for block operations
+    logFields: ['params.userId']
+});
+
 // Unblock user
-export const unblockUser = async (req, res) => {
+const _unblockUser = async (req, res) => {
     try {
         const { userId: targetUserId } = req.params;
         const userId = req.user.id;
@@ -431,13 +536,26 @@ export const unblockUser = async (req, res) => {
         res.json({ message: "User unblocked successfully" });
 
     } catch (error) {
-        console.error("Error unblocking user:", error);
+        logger.error("Error unblocking user", { 
+            context: 'SocialController', 
+            operation: 'Unblock User',
+            targetUserId: req.params.userId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const unblockUser = withCachingAndLogging(_unblockUser, {
+    ...controllerConfigs.social,
+    operation: 'Unblock User',
+    cacheTTL: 0, // No caching for unblock operations
+    logFields: ['params.userId']
+});
+
 // Get blocked users
-export const getBlockedUsers = async (req, res) => {
+const _getBlockedUsers = async (req, res) => {
     try {
         const userId = req.user.id;
 
@@ -457,7 +575,19 @@ export const getBlockedUsers = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting blocked users:", error);
+        logger.error("Error getting blocked users", { 
+            context: 'SocialController', 
+            operation: 'Get Blocked Users',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
+
+export const getBlockedUsers = withCachingAndLogging(_getBlockedUsers, {
+    ...controllerConfigs.social,
+    operation: 'Get Blocked Users',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `blocked-users:${req.user?.id}`
+});

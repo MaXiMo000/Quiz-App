@@ -3,11 +3,20 @@ import moment from "moment";
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
 import mongoose from "mongoose";
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from "../utils/controllerUtils.js";
+import logger from "../utils/logger.js";
 
-export async function getReports(req, res) {
+const _getReports = async (req, res) => {
     const reports = await Report.find();
     res.json(reports);
-}
+};
+
+export const getReports = withCachingAndLogging(_getReports, {
+    ...controllerConfigs.report,
+    operation: 'Get Reports',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: cacheKeyGenerators.roleBased
+});
 
 export const unlockThemesForLevel = (user) => {
     const unlockThemeAtLevels = {
@@ -41,14 +50,13 @@ export const unlockThemesForLevel = (user) => {
     }
 };
 
-export async function createReport(req, res) {
-    try {
-        const { username, quizName, score, total, questions } = req.body;
-        const userId = req.user?.id; // Get user ID from JWT token
+const _createReport = async (req, res) => {
+    const { username, quizName, score, total, questions } = req.body;
+    const userId = req.user?.id; // Get user ID from JWT token
 
-        if (!username || !quizName || !questions || questions.length === 0) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
+    if (!username || !quizName || !questions || questions.length === 0) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
 
         const report = new Report({ username, quizName, score, total, questions });
         await report.save();
@@ -156,41 +164,50 @@ export async function createReport(req, res) {
 
         await user.save();
 
-        res.status(201).json({ message: "Report saved and bonuses applied!", report });
-    } catch (error) {
-        console.error("Error saving report:", error);
-        res.status(500).json({ message: "Error saving report", error: error.message });
-    }
-}
-
-
-
-export const getReportsUser = async (req, res) => {
-    try {
-        const username = req.query.username;
-        const reports = await Report.find(username ? { username } : {}).lean();
-        res.json(reports);
-    } catch (error) {
-        res.status(500).json({ message: "Error retrieving reports", error });
-    }
+    res.status(201).json({ message: "Report saved and bonuses applied!", report });
 };
 
-export const getReportsUserID = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const report = await Report.findById(id);
+export const createReport = withCachingAndLogging(_createReport, {
+    ...controllerConfigs.report,
+    operation: 'Create Report',
+    cacheTTL: 0, // No caching for create operations
+    logFields: ['body.username', 'body.quizName', 'body.score']
+});
 
-        if (!report) {
-            return res.status(404).json({ message: "Report not found" });
-        }
 
-        res.json(report);
-    } catch (error) {
-        res.status(500).json({ message: "Error retrieving report", error });
-    }
+
+const _getReportsUser = async (req, res) => {
+    const username = req.query.username;
+    const reports = await Report.find(username ? { username } : {}).lean();
+    res.json(reports);
 };
 
-export const deleteReport = async (req, res) => {
+export const getReportsUser = withCachingAndLogging(_getReportsUser, {
+    ...controllerConfigs.report,
+    operation: 'Get User Reports',
+    cacheTTL: 180, // 3 minutes
+    cacheKeyGenerator: (req) => `reports:user:${req.query.username || 'all'}`
+});
+
+const _getReportsUserID = async (req, res) => {
+    const { id } = req.params;
+    const report = await Report.findById(id);
+
+    if (!report) {
+        return res.status(404).json({ message: "Report not found" });
+    }
+
+    res.json(report);
+};
+
+export const getReportsUserID = withCachingAndLogging(_getReportsUserID, {
+    ...controllerConfigs.report,
+    operation: 'Get Report by ID',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `report:id:${req.params.id}`
+});
+
+const _deleteReport = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -208,13 +225,26 @@ export const deleteReport = async (req, res) => {
         return res.status(200).json({ message: "Report deleted successfully!" });
 
     } catch (error) {
-        console.error("Error deleting Report:", error);
+        logger.error("Error deleting Report", { 
+            context: 'ReportController', 
+            operation: 'Delete Report',
+            reportId: req.params.id,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Error deleting Report", error: error.message });
     }
 };
 
+export const deleteReport = withCachingAndLogging(_deleteReport, {
+    ...controllerConfigs.report,
+    operation: 'Delete Report',
+    cacheTTL: 0, // No caching for delete operations
+    logFields: ['params.id']
+});
+
 // ✅ Get Top Scorers of the Week
-export async function getTopScorers(req, res) {
+const _getTopScorers = async (req, res) => {
     try {
         const { period } = req.query;
         let startDate;
@@ -257,7 +287,20 @@ export async function getTopScorers(req, res) {
 
         res.json(topScorers);
     } catch (error) {
-        console.error("Error fetching top scorers:", error);
+        logger.error("Error fetching top scorers", { 
+            context: 'ReportController', 
+            operation: 'Get Top Scorers',
+            period: req.query.period,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Internal Server Error", error });
     }
-}
+};
+
+export const getTopScorers = withCachingAndLogging(_getTopScorers, {
+    ...controllerConfigs.report,
+    operation: 'Get Top Scorers',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `top-scorers:${req.query.period || 'week'}`
+});

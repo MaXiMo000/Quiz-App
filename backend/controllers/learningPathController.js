@@ -3,11 +3,13 @@ import User from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
 import { seedLearningPaths } from "../utils/seedLearningPaths.js";
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from "../utils/controllerUtils.js";
+import logger from "../utils/logger.js";
 
 // ===================== LEARNING PATHS =====================
 
 // Get all learning paths for user
-export const getLearningPaths = async (req, res) => {
+const _getLearningPaths = async (req, res) => {
     try {
         const userId = req.user.id;
         const { category, level, search } = req.query;
@@ -42,13 +44,25 @@ export const getLearningPaths = async (req, res) => {
         res.json({ paths: pathsWithProgress });
         
     } catch (error) {
-        console.error("Error getting learning paths:", error);
+        logger.error("Error getting learning paths", { 
+            context: 'LearningPathController', 
+            operation: 'Get Learning Paths',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getLearningPaths = withCachingAndLogging(_getLearningPaths, {
+    ...controllerConfigs.learningPath,
+    operation: 'Get Learning Paths',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `learning-paths:${req.user?.id}:${req.query.category || 'all'}:${req.query.level || 'all'}`
+});
+
 // Get specific learning path with detailed progress
-export const getLearningPath = async (req, res) => {
+const _getLearningPath = async (req, res) => {
     try {
         const userId = req.user.id;
         const { pathId } = req.params;
@@ -81,13 +95,26 @@ export const getLearningPath = async (req, res) => {
         });
         
     } catch (error) {
-        console.error("Error getting learning path:", error);
+        logger.error("Error getting learning path", { 
+            context: 'LearningPathController', 
+            operation: 'Get Learning Path',
+            pathId: req.params.pathId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getLearningPath = withCachingAndLogging(_getLearningPath, {
+    ...controllerConfigs.learningPath,
+    operation: 'Get Learning Path',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `learning-path:${req.params.pathId}:${req.user?.id}`
+});
+
 // Start learning path
-export const startLearningPath = async (req, res) => {
+const _startLearningPath = async (req, res) => {
     try {
         const userId = req.user.id;
         const { pathId } = req.params;
@@ -131,13 +158,26 @@ export const startLearningPath = async (req, res) => {
         });
         
     } catch (error) {
-        console.error("Error starting learning path:", error);
+        logger.error("Error starting learning path", { 
+            context: 'LearningPathController', 
+            operation: 'Start Learning Path',
+            pathId: req.params.pathId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const startLearningPath = withCachingAndLogging(_startLearningPath, {
+    ...controllerConfigs.learningPath,
+    operation: 'Start Learning Path',
+    cacheTTL: 0, // No caching for start operations
+    logFields: ['params.pathId']
+});
+
 // Update node progress
-export const updateNodeProgress = async (req, res) => {
+const _updateNodeProgress = async (req, res) => {
     try {
         const userId = req.user.id;
         const { pathId, nodeId } = req.params;
@@ -207,13 +247,27 @@ export const updateNodeProgress = async (req, res) => {
         });
         
     } catch (error) {
-        console.error("Error updating node progress:", error);
+        logger.error("Error updating node progress", { 
+            context: 'LearningPathController', 
+            operation: 'Update Node Progress',
+            pathId: req.params.pathId,
+            nodeId: req.params.nodeId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const updateNodeProgress = withCachingAndLogging(_updateNodeProgress, {
+    ...controllerConfigs.learningPath,
+    operation: 'Update Node Progress',
+    cacheTTL: 0, // No caching for update operations
+    logFields: ['params.pathId', 'params.nodeId', 'body.status', 'body.score']
+});
+
 // Get user's learning analytics
-export const getLearningAnalytics = async (req, res) => {
+const _getLearningAnalytics = async (req, res) => {
     try {
         const userId = req.user.id;
         
@@ -262,15 +316,27 @@ export const getLearningAnalytics = async (req, res) => {
         res.json({ analytics });
         
     } catch (error) {
-        console.error("Error getting learning analytics:", error);
+        logger.error("Error getting learning analytics", { 
+            context: 'LearningPathController', 
+            operation: 'Get Learning Analytics',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getLearningAnalytics = withCachingAndLogging(_getLearningAnalytics, {
+    ...controllerConfigs.learningPath,
+    operation: 'Get Learning Analytics',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `learning-analytics:${req.user?.id}`
+});
+
 // ===================== COMPETENCY MANAGEMENT =====================
 
 // Get user's competencies
-export const getUserCompetencies = async (req, res) => {
+const _getUserCompetencies = async (req, res) => {
     try {
         const userId = req.user.id;
         
@@ -281,13 +347,25 @@ export const getUserCompetencies = async (req, res) => {
         res.json({ competencies: userCompetencies });
         
     } catch (error) {
-        console.error("Error getting user competencies:", error);
+        logger.error("Error getting user competencies", { 
+            context: 'LearningPathController', 
+            operation: 'Get User Competencies',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getUserCompetencies = withCachingAndLogging(_getUserCompetencies, {
+    ...controllerConfigs.learningPath,
+    operation: 'Get User Competencies',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `user-competencies:${req.user?.id}`
+});
+
 // Update competency based on quiz performance
-export const updateCompetencyFromQuiz = async (req, res) => {
+const _updateCompetencyFromQuiz = async (req, res) => {
     try {
         const userId = req.user.id;
         const { quizId, score, competencies } = req.body;
@@ -342,10 +420,23 @@ export const updateCompetencyFromQuiz = async (req, res) => {
         res.json({ message: "Competencies updated successfully" });
         
     } catch (error) {
-        console.error("Error updating competency:", error);
+        logger.error("Error updating competency", { 
+            context: 'LearningPathController', 
+            operation: 'Update Competency From Quiz',
+            quizId: req.body.quizId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
+
+export const updateCompetencyFromQuiz = withCachingAndLogging(_updateCompetencyFromQuiz, {
+    ...controllerConfigs.learningPath,
+    operation: 'Update Competency From Quiz',
+    cacheTTL: 0, // No caching for update operations
+    logFields: ['body.quizId', 'body.score', 'body.competencies']
+});
 
 // ===================== HELPER FUNCTIONS =====================
 

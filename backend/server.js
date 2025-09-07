@@ -4,11 +4,19 @@ import cors from "cors";
 import mongoose from "mongoose";
 import passport from "passport";
 import session from "express-session";
+import { RedisStore } from "connect-redis";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import cron from "node-cron";
 import { createServer } from "http";
+
+// Phase 1: Infrastructure improvements
+import logger from "./utils/logger.js";
+import { testConnection as testRedisConnection, redis } from "./config/redis.js";
+import { requestLogger, errorLogger, securityLogger, rateLimitLogger } from "./middleware/requestLogger.js";
+import ErrorHandler from "./services/errorHandler.js";
+import { cache, invalidateCache } from "./middleware/cache.js";
 
 // ✅ Load environment variables before anything else
 dotenv.config();
@@ -39,9 +47,17 @@ import { initializeRealTimeQuiz } from "./controllers/realTimeQuizController.js"
 import learningPathRoutes from "./routes/learningPathRoutes.js";
 
 // Import the daily challenge reset function
-import { resetDailyChallenges } from "./controllers/gamificationController.js";
+import { resetDailyChallenges, _resetDailyChallenges } from "./controllers/gamificationController.js";
 
 const app = express();
+
+// Phase 1: Initialize error handling
+ErrorHandler.initialize();
+
+// Phase 1: Add logging middleware
+app.use(requestLogger);
+app.use(securityLogger);
+app.use(rateLimitLogger);
 
 // 🔒 SECURITY: Apply security headers
 app.use(helmet({
@@ -106,7 +122,10 @@ app.use((req, res, next) => {
 
     // Log all requests for debugging (remove in production)
     if (process.env.NODE_ENV !== 'production') {
-        console.log(`📝 ${req.method} ${req.path} - Origin: ${origin || 'none'} - Time: ${new Date().toISOString()}`);
+        logger.http(`${req.method} ${req.path}`, {
+            origin: origin || 'none',
+            timestamp: new Date().toISOString()
+        });
     }
 
     // Set CORS headers for all requests
@@ -148,8 +167,10 @@ const corsOptions = {
         if (isOriginAllowed) {
             callback(null, true);
         } else {
-            console.log(`CORS blocked origin: ${origin}`);
-            console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
+            logger.security('CORS blocked origin', {
+                blockedOrigin: origin,
+                allowedOrigins: allowedOrigins
+            });
             callback(new Error('Not allowed by CORS'));
         }
     },
@@ -183,8 +204,22 @@ app.options('*', (req, res) => {
 
 const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
 
-// Configure session with proper settings
+// Configure session with Redis store for production
+// Use the existing redis client from config/redis.js
+
+// Check if Redis is connected before using it for sessions
+let sessionStore;
+try {
+    sessionStore = new RedisStore({ client: redis });
+    logger.info('Redis session store initialized successfully');
+} catch (error) {
+    logger.error('Failed to initialize Redis session store', error);
+    // Fallback to memory store for development
+    sessionStore = undefined;
+}
+
 app.use(session({ 
+    store: sessionStore,
     secret: GOOGLE_SECRET, 
     resave: false, 
     saveUninitialized: false, // Don't create session until something stored
@@ -227,49 +262,47 @@ app.get("/debug/cors", (req, res) => {
     });
 }); 
 
-// Routes
-app.use("/api/users/login", authLimiter); // Apply auth rate limiting
-app.use("/api/users/register", authLimiter); // Apply auth rate limiting
+// Phase 1: Enhanced caching and logging for all routes
+// Routes with comprehensive caching strategy
+
+// Authentication routes (no caching, rate limited)
+app.use("/api/users/login", authLimiter);
+app.use("/api/users/register", authLimiter);
 app.use("/api/users", userRoutes);
-app.use("/api", apiRoutes);
-app.use("/api/written-tests", writtenTestRoutes);
-app.use("/api/analytics", analyticsRoutes);
-app.use("/api", dashboardRoutes);
-app.use("/api/intelligence", intelligenceRoutes); // Phase 2: Intelligence Layer
-app.use("/api/debug", debugRoutes); // Temporary debug routes - REMOVE IN PRODUCTION
 
-// Phase 3: Social & Gamification Routes
-app.use("/api/social", socialRoutes);
-app.use("/api/study-groups", studyGroupRoutes);
-app.use("/api/gamification", gamificationRoutes);
+// Core API routes (5-minute cache)
+app.use("/api", cache(300), apiRoutes);
 
-// Phase 4: Next-Gen Features
-app.use("/api/ai-study-buddy", aiStudyBuddyRoutes);
-app.use("/api/real-time-quiz", realTimeQuizRoutes);
+// Written tests (10-minute cache - less frequently updated)
+app.use("/api/written-tests", cache(600), writtenTestRoutes);
 
-// Phase 5: Advanced Learning Path Engine
-app.use("/api/learning-paths", learningPathRoutes);
+// Analytics (3-minute cache - needs fresh data but can be cached briefly)
+app.use("/api/analytics", cache(180), analyticsRoutes);
 
-// Global error handler for CORS and other issues
-app.use((error, req, res, next) => {
-    // Handle CORS errors specifically
-    if (error.message === 'Not allowed by CORS') {
-        console.log(`❌ CORS Error - Origin: ${req.headers.origin}, Method: ${req.method}, Path: ${req.path}`);
-        return res.status(403).json({
-            error: 'CORS Error',
-            message: 'Origin not allowed',
-            origin: req.headers.origin,
-            timestamp: new Date().toISOString()
-        });
-    }
-    
-    // Handle other errors
-    console.error('❌ Server Error:', error);
-    res.status(500).json({
-        error: 'Internal Server Error',
-        message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
-    });
-});
+// Dashboard (5-minute cache - user-specific data)
+app.use("/api/dashboard", cache(300), dashboardRoutes);
+
+// Intelligence Layer (5-minute cache)
+app.use("/api/intelligence", cache(300), intelligenceRoutes);
+
+// Debug routes (no caching - development only)
+app.use("/api/debug", debugRoutes);
+
+// Social & Gamification Routes (3-minute cache)
+app.use("/api/social", cache(180), socialRoutes);
+app.use("/api/study-groups", cache(180), studyGroupRoutes);
+app.use("/api/gamification", cache(180), gamificationRoutes);
+
+// Next-Gen Features (5-minute cache)
+app.use("/api/ai-study-buddy", cache(300), aiStudyBuddyRoutes);
+app.use("/api/real-time-quiz", cache(300), realTimeQuizRoutes);
+
+// Learning Paths (10-minute cache - stable content)
+app.use("/api/learning-paths", cache(600), learningPathRoutes);
+
+// Phase 1: Enhanced error handling
+app.use(errorLogger);
+app.use(ErrorHandler.expressErrorHandler);
 
 // 404 handler
 app.use((req, res) => {
@@ -286,8 +319,16 @@ mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => {
-    console.log("✅ Connected to MongoDB");
+.then(async () => {
+    logger.info("✅ Connected to MongoDB");
+    
+    // Phase 1: Test Redis connection
+    const redisConnected = await testRedisConnection();
+    if (redisConnected) {
+        logger.info("✅ Redis connection successful");
+    } else {
+        logger.warn("⚠️ Redis connection failed - caching disabled");
+    }
     
     // ===================== START HTTP SERVER WITH SOCKET.IO =====================
     const server = createServer(app);
@@ -296,39 +337,41 @@ mongoose.connect(process.env.MONGO_URI, {
     initializeRealTimeQuiz(server);
     
     server.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-        console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
-        console.log(`🔄 Real-time quiz rooms enabled with Socket.IO`);
-        console.log(`🤖 AI Study Buddy enabled with Gemini API`);
+        logger.info(`🚀 Server running on port ${PORT}`);
+        logger.info(`🔄 Real-time quiz rooms enabled with Socket.IO`);
+        logger.info(`🤖 AI Study Buddy enabled with Gemini API`);
+        logger.info(`📊 Phase 1 Infrastructure: Testing, Caching, Logging enabled`);
     });
     
     // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
     // Schedule daily challenge reset every hour (for more frequent checking)
     // This will check and reset challenges that were completed more than 24 hours ago
     cron.schedule('0 * * * *', async () => {
-        console.log('🔄 Running hourly daily challenge reset check...');
+        logger.info('🔄 Running hourly daily challenge reset check...');
         try {
-            const result = await resetDailyChallenges();
+            const result = await _resetDailyChallenges();
             if (result.success && result.usersReset > 0) {
-                console.log(`✅ Reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+                logger.info(`✅ Reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
             }
         } catch (error) {
-            console.error('❌ Error in scheduled reset:', error);
+            logger.error('❌ Error in scheduled reset:', error);
         }
     });
     
     // Also run once at server startup to catch any challenges that should have been reset
-    console.log('🚀 Running initial daily challenge reset check...');
-    resetDailyChallenges()
-        .then(result => {
+    // Wait a bit for MongoDB connection to be fully established
+    setTimeout(async () => {
+        logger.info('🚀 Running initial daily challenge reset check...');
+        try {
+            const result = await _resetDailyChallenges();
             if (result.success && result.usersReset > 0) {
-                console.log(`✅ Startup reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+                logger.info(`✅ Startup reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
             } else {
-                console.log('📝 No challenges needed reset at startup');
+                logger.info('📝 No challenges needed reset at startup');
             }
-        })
-        .catch(error => {
-            console.error('❌ Error in startup reset:', error);
-        });
+        } catch (error) {
+            logger.error('❌ Error in startup reset:', error);
+        }
+    }, 2000); // Wait 2 seconds for MongoDB to be fully ready
 })
-.catch((err) => console.error("❌ MongoDB Connection Error:", err));
+.catch((err) => logger.error("❌ MongoDB Connection Error:", err));

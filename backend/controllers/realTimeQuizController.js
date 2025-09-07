@@ -5,6 +5,8 @@ import cors from 'cors';
 import { verifyToken } from '../middleware/auth.js';
 import Quiz from '../models/Quiz.js';
 import UserQuiz from '../models/User.js';
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from '../utils/controllerUtils.js';
+import logger from '../utils/logger.js';
 
 // In-memory store for active quiz rooms
 const activeRooms = new Map();
@@ -571,7 +573,7 @@ export const initializeRealTimeQuiz = (server) => {
 };
 
 // REST API endpoints for room management
-export const getRoomStatus = async (req, res) => {
+const _getRoomStatus = async (req, res) => {
     try {
         const { roomId } = req.params;
         const room = activeRooms.get(roomId);
@@ -597,12 +599,25 @@ export const getRoomStatus = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error getting room status:', error);
+        logger.error('Error getting room status', { 
+            context: 'RealTimeQuizController', 
+            operation: 'Get Room Status',
+            roomId: req.params.roomId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: 'Server error' });
     }
 };
 
-export const getActiveRooms = async (req, res) => {
+export const getRoomStatus = withCachingAndLogging(_getRoomStatus, {
+    ...controllerConfigs.realTimeQuiz,
+    operation: 'Get Room Status',
+    cacheTTL: 30, // 30 seconds (room status changes frequently)
+    cacheKeyGenerator: (req) => `room-status:${req.params.roomId}`
+});
+
+const _getActiveRooms = async (req, res) => {
     try {
         const rooms = [];
         activeRooms.forEach((room, roomId) => {
@@ -620,7 +635,19 @@ export const getActiveRooms = async (req, res) => {
 
         res.json({ rooms });
     } catch (error) {
-        console.error('Error getting active rooms:', error);
+        logger.error('Error getting active rooms', { 
+            context: 'RealTimeQuizController', 
+            operation: 'Get Active Rooms',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+export const getActiveRooms = withCachingAndLogging(_getActiveRooms, {
+    ...controllerConfigs.realTimeQuiz,
+    operation: 'Get Active Rooms',
+    cacheTTL: 60, // 1 minute
+    cacheKeyGenerator: () => 'active-rooms'
+});

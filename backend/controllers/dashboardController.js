@@ -2,6 +2,8 @@ import UserQuiz from '../models/User.js';
 import Quiz from '../models/Quiz.js';
 import Report from '../models/Report.js';
 import XPLog from '../models/XPLog.js';
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from '../utils/controllerUtils.js';
+import logger from '../utils/logger.js';
 
 // Achievement system data
 const ACHIEVEMENTS = {
@@ -38,14 +40,26 @@ const ACHIEVEMENTS = {
 };
 
 // Get comprehensive dashboard data for a user
-export const getDashboardData = async (req, res) => {
+const _getDashboardData = async (req, res) => {
     try {
         const userId = req.params.userId;
         const { timeRange = 'week' } = req.query; // week, month, year
 
+        logger.info('Fetching dashboard data', {
+            context: 'DashboardController',
+            operation: 'Get Dashboard Data',
+            userId,
+            timeRange
+        });
+
         // Get user data
         const user = await UserQuiz.findById(userId);
         if (!user) {
+            logger.warn('User not found for dashboard', {
+                context: 'DashboardController',
+                operation: 'Get Dashboard Data',
+                userId
+            });
             return res.status(404).json({ message: "User not found" });
         }
 
@@ -95,7 +109,7 @@ export const getDashboardData = async (req, res) => {
         // Get learning streak data
         const streakData = await getStreakData(user.name);
 
-        res.json({
+        const dashboardData = {
             totalQuizzes,
             completedQuizzes,
             averageScore,
@@ -108,13 +122,37 @@ export const getDashboardData = async (req, res) => {
             streakData,
             userLevel: user.level || 1,
             userXP: Math.round(user.xp) || 0
+        };
+
+        logger.info('Dashboard data fetched successfully', {
+            context: 'DashboardController',
+            operation: 'Get Dashboard Data',
+            userId,
+            totalQuizzes,
+            completedQuizzes,
+            averageScore,
+            currentStreak
         });
 
+        res.json(dashboardData);
     } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        logger.error('Error fetching dashboard data', {
+            context: 'DashboardController',
+            operation: 'Get Dashboard Data',
+            userId: req.params.userId,
+            error: error.message,
+            stack: error.stack
+        });
         res.status(500).json({ message: 'Error fetching dashboard data', error: error.message });
     }
 };
+
+export const getDashboardData = withCachingAndLogging(_getDashboardData, {
+    ...controllerConfigs.dashboard,
+    operation: 'Get Dashboard Data',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `dashboard:${req.params.userId}:${req.query.timeRange || 'week'}`
+});
 
 // Calculate user's current streak
 const calculateStreak = async (username) => {
@@ -150,7 +188,13 @@ const calculateStreak = async (username) => {
 
         return streak;
     } catch (error) {
-        console.error('Error calculating streak:', error);
+        logger.error('Error calculating streak', {
+            context: 'DashboardController',
+            operation: 'Calculate Streak',
+            username,
+            error: error.message,
+            stack: error.stack
+        });
         return 0;
     }
 };
@@ -182,7 +226,14 @@ const getWeeklyProgress = async (username, timeRange) => {
 
         return progress;
     } catch (error) {
-        console.error('Error getting weekly progress:', error);
+        logger.error('Error getting weekly progress', {
+            context: 'DashboardController',
+            operation: 'Get Weekly Progress',
+            username,
+            timeRange,
+            error: error.message,
+            stack: error.stack
+        });
         return Array(7).fill(0);
     }
 };
@@ -297,7 +348,13 @@ const getCategoryPerformance = async (username) => {
 
         return categoryPerformance;
     } catch (error) {
-        console.error('Error getting category performance:', error);
+        logger.error('Error getting category performance', {
+            context: 'DashboardController',
+            operation: 'Get Category Performance',
+            username,
+            error: error.message,
+            stack: error.stack
+        });
         return {};
     }
 };
@@ -333,7 +390,14 @@ const getStudyTimeData = async (username, timeRange) => {
 
         return { labels, data };
     } catch (error) {
-        console.error('Error getting study time data:', error);
+        logger.error('Error getting study time data', {
+            context: 'DashboardController',
+            operation: 'Get Study Time Data',
+            username,
+            timeRange,
+            error: error.message,
+            stack: error.stack
+        });
         return { labels: [], data: [] };
     }
 };
@@ -358,7 +422,13 @@ const getDifficultyStats = async (username) => {
 
         return difficultyStats;
     } catch (error) {
-        console.error('Error getting difficulty stats:', error);
+        logger.error('Error getting difficulty stats', {
+            context: 'DashboardController',
+            operation: 'Get Difficulty Stats',
+            username,
+            error: error.message,
+            stack: error.stack
+        });
         return { Easy: 0, Medium: 0, Hard: 0 };
     }
 };
@@ -389,7 +459,13 @@ const getStreakData = async (username) => {
 
         return streakData;
     } catch (error) {
-        console.error('Error getting streak data:', error);
+        logger.error('Error getting streak data', {
+            context: 'DashboardController',
+            operation: 'Get Streak Data',
+            username,
+            error: error.message,
+            stack: error.stack
+        });
         return [];
     }
 };
@@ -409,7 +485,7 @@ const getBadgeDescription = (badge) => {
 };
 
 // Get leaderboard position for user
-export const getUserLeaderboardPosition = async (req, res) => {
+const _getUserLeaderboardPosition = async (req, res) => {
     try {
         const userId = req.params.userId;
         
@@ -428,10 +504,22 @@ export const getUserLeaderboardPosition = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error getting leaderboard position:', error);
+        logger.error('Error getting leaderboard position', { 
+            context: 'DashboardController', 
+            operation: 'Get User Leaderboard Position',
+            userId: req.params.userId,
+            error: error.message 
+        });
         res.status(500).json({ message: 'Error getting leaderboard position', error: error.message });
     }
 };
+
+export const getUserLeaderboardPosition = withCachingAndLogging(_getUserLeaderboardPosition, {
+    ...controllerConfigs.dashboard,
+    operation: 'Get User Leaderboard Position',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `leaderboard-position:${req.params.userId}`
+});
 
 // Get user achievements with comprehensive system
 const getUserAchievements = async (username, user, reports, currentStreak) => {
@@ -735,7 +823,7 @@ const getAchievementProgress = (achievementKey, stats) => {
 };
 
 // Get user achievements endpoint
-export const getUserAchievementsEndpoint = async (req, res) => {
+const _getUserAchievementsEndpoint = async (req, res) => {
     try {
         const userId = req.params.userId;
         const user = await UserQuiz.findById(userId);
@@ -750,7 +838,19 @@ export const getUserAchievementsEndpoint = async (req, res) => {
         
         res.json(achievements);
     } catch (error) {
-        console.error('Error fetching achievements:', error);
+        logger.error('Error fetching achievements', { 
+            context: 'DashboardController', 
+            operation: 'Get User Achievements',
+            userId: req.params.userId,
+            error: error.message 
+        });
         res.status(500).json({ message: 'Error fetching achievements', error: error.message });
     }
 };
+
+export const getUserAchievementsEndpoint = withCachingAndLogging(_getUserAchievementsEndpoint, {
+    ...controllerConfigs.dashboard,
+    operation: 'Get User Achievements',
+    cacheTTL: 600, // 10 minutes
+    cacheKeyGenerator: (req) => `user-achievements:${req.params.userId}`
+});

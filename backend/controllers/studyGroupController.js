@@ -1,9 +1,11 @@
 import StudyGroup from "../models/StudyGroup.js";
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
+import { withCachingAndLogging, controllerConfigs, cacheKeyGenerators } from "../utils/controllerUtils.js";
+import logger from "../utils/logger.js";
 
 // Create study group
-export const createStudyGroup = async (req, res) => {
+const _createStudyGroup = async (req, res) => {
     try {
         const { name, description, isPrivate, maxMembers, category, tags } = req.body;
         const creatorId = req.user.id;
@@ -67,13 +69,25 @@ export const createStudyGroup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error creating study group:", error);
+        logger.error("Error creating study group", { 
+            context: 'StudyGroupController', 
+            operation: 'Create Study Group',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const createStudyGroup = withCachingAndLogging(_createStudyGroup, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Create Study Group',
+    cacheTTL: 0, // No caching for create operations
+    logFields: ['body.name', 'body.category']
+});
+
 // Join study group
-export const joinStudyGroup = async (req, res) => {
+const _joinStudyGroup = async (req, res) => {
     try {
         const { groupId } = req.params;
         const userId = req.user.id;
@@ -129,13 +143,26 @@ export const joinStudyGroup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error joining study group:", error);
+        logger.error("Error joining study group", { 
+            context: 'StudyGroupController', 
+            operation: 'Join Study Group',
+            groupId: req.params.groupId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const joinStudyGroup = withCachingAndLogging(_joinStudyGroup, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Join Study Group',
+    cacheTTL: 0, // No caching for join operations
+    logFields: ['params.groupId']
+});
+
 // Leave study group
-export const leaveStudyGroup = async (req, res) => {
+const _leaveStudyGroup = async (req, res) => {
     try {
         const { groupId } = req.params;
         const userId = req.user.id;
@@ -194,13 +221,26 @@ export const leaveStudyGroup = async (req, res) => {
         res.json({ message: "Successfully left study group" });
 
     } catch (error) {
-        console.error("Error leaving study group:", error);
+        logger.error("Error leaving study group", { 
+            context: 'StudyGroupController', 
+            operation: 'Leave Study Group',
+            groupId: req.params.groupId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const leaveStudyGroup = withCachingAndLogging(_leaveStudyGroup, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Leave Study Group',
+    cacheTTL: 0, // No caching for leave operations
+    logFields: ['params.groupId']
+});
+
 // Get user's study groups
-export const getUserStudyGroups = async (req, res) => {
+const _getUserStudyGroups = async (req, res) => {
     try {
         const userId = req.user.id;
 
@@ -215,13 +255,25 @@ export const getUserStudyGroups = async (req, res) => {
         res.json({ studyGroups });
 
     } catch (error) {
-        console.error("Error getting user study groups:", error);
+        logger.error("Error getting user study groups", { 
+            context: 'StudyGroupController', 
+            operation: 'Get User Study Groups',
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getUserStudyGroups = withCachingAndLogging(_getUserStudyGroups, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Get User Study Groups',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `user-study-groups:${req.user?.id}`
+});
+
 // Search public study groups
-export const searchStudyGroups = async (req, res) => {
+const _searchStudyGroups = async (req, res) => {
     try {
         const { query, category, page = 1, limit = 10 } = req.query;
         const userId = req.user.id;
@@ -269,13 +321,27 @@ export const searchStudyGroups = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error searching study groups:", error);
+        logger.error("Error searching study groups", { 
+            context: 'StudyGroupController', 
+            operation: 'Search Study Groups',
+            query: req.query.query,
+            category: req.query.category,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const searchStudyGroups = withCachingAndLogging(_searchStudyGroups, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Search Study Groups',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `search-study-groups:${req.query.query}:${req.query.category}:${req.user?.id}`
+});
+
 // Get study group details
-export const getStudyGroupDetails = async (req, res) => {
+const _getStudyGroupDetails = async (req, res) => {
     try {
         const { groupId } = req.params;
         const userId = req.user.id;
@@ -314,13 +380,26 @@ export const getStudyGroupDetails = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting study group details:", error);
+        logger.error("Error getting study group details", { 
+            context: 'StudyGroupController', 
+            operation: 'Get Study Group Details',
+            groupId: req.params.groupId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const getStudyGroupDetails = withCachingAndLogging(_getStudyGroupDetails, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Get Study Group Details',
+    cacheTTL: 300, // 5 minutes
+    cacheKeyGenerator: (req) => `study-group-details:${req.params.groupId}:${req.user?.id}`
+});
+
 // Share quiz with study group
-export const shareQuizWithGroup = async (req, res) => {
+const _shareQuizWithGroup = async (req, res) => {
     try {
         const { groupId } = req.params;
         const { quizId, message } = req.body;
@@ -373,13 +452,27 @@ export const shareQuizWithGroup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error sharing quiz:", error);
+        logger.error("Error sharing quiz", { 
+            context: 'StudyGroupController', 
+            operation: 'Share Quiz With Group',
+            groupId: req.params.groupId,
+            quizId: req.body.quizId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
 
+export const shareQuizWithGroup = withCachingAndLogging(_shareQuizWithGroup, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Share Quiz With Group',
+    cacheTTL: 0, // No caching for share operations
+    logFields: ['params.groupId', 'body.quizId']
+});
+
 // Update study group settings (admin only)
-export const updateStudyGroup = async (req, res) => {
+const _updateStudyGroup = async (req, res) => {
     try {
         const { groupId } = req.params;
         const { name, description, maxMembers, category, tags } = req.body;
@@ -424,7 +517,20 @@ export const updateStudyGroup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error updating study group:", error);
+        logger.error("Error updating study group", { 
+            context: 'StudyGroupController', 
+            operation: 'Update Study Group',
+            groupId: req.params.groupId,
+            userId: req.user?.id,
+            error: error.message 
+        });
         res.status(500).json({ message: "Server error" });
     }
 };
+
+export const updateStudyGroup = withCachingAndLogging(_updateStudyGroup, {
+    ...controllerConfigs.studyGroup,
+    operation: 'Update Study Group',
+    cacheTTL: 0, // No caching for update operations
+    logFields: ['params.groupId', 'body.name']
+});
