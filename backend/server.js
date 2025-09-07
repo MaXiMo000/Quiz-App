@@ -280,7 +280,7 @@ app.use("/api/written-tests", cache(600), writtenTestRoutes);
 app.use("/api/analytics", cache(180), analyticsRoutes);
 
 // Dashboard (5-minute cache - user-specific data)
-app.use("/api/dashboard", cache(300), dashboardRoutes);
+app.use("/api", cache(300), dashboardRoutes);
 
 // Intelligence Layer (5-minute cache)
 app.use("/api/intelligence", cache(300), intelligenceRoutes);
