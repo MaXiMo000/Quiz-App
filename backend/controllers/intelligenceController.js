@@ -2,6 +2,12 @@ import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
 import { unlockThemesForLevel } from "./userController.js";
+import {
+    trackLearningAnalytics,
+    trackCognitiveMetrics,
+} from "../services/analyticsService.js";
+import LearningAnalytics from "../models/LearningAnalytics.js";
+import CognitiveMetrics from "../models/CognitiveMetrics.js";
 
 // Phase 2: Intelligence Layer Controller
 
@@ -384,6 +390,10 @@ export const getLearningAnalytics = async (req, res) => {
         const allReports = await Report.find({ username: user.name })
             .sort({ createdAt: -1 });
 
+        // Get advanced analytics data
+        const learningAnalytics = await LearningAnalytics.find({ user: userId });
+        const cognitiveMetrics = await CognitiveMetrics.find({ user: userId });
+
         // Calculate various analytics
         const analytics = {
             overview: calculateOverviewStats(allReports),
@@ -392,7 +402,11 @@ export const getLearningAnalytics = async (req, res) => {
             strengths: calculateStrengths(allReports),
             weaknesses: calculateWeaknesses(allReports),
             studyRecommendations: generateStudyRecommendations(allReports, user),
-            optimalStudyTime: calculateOptimalStudyTime(allReports)
+            optimalStudyTime: calculateOptimalStudyTime(allReports),
+            advanced: {
+                learningAnalytics,
+                cognitiveMetrics,
+            },
         };
 
         res.json(analytics);
@@ -402,6 +416,27 @@ export const getLearningAnalytics = async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 };
+
+export const trackUserPerformance = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { quizId, score, totalQuestions, timeSpent } = req.body;
+
+        await trackLearningAnalytics(userId, quizId, {
+            engagement: timeSpent,
+            comprehension: score / totalQuestions,
+        });
+
+        await trackCognitiveMetrics(userId, quizId, {
+            responseTime: timeSpent / totalQuestions,
+        });
+
+        res.json({ message: "Performance tracked successfully" });
+    } catch (error) {
+        console.error("Error tracking user performance:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+}
 
 // Helper functions for learning analytics
 function calculateOverviewStats(reports) {

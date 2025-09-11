@@ -324,6 +324,20 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/learning-paths" onClick={handleLinkClick}>🎯 Learning Paths</Link>
                                 </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.3, duration: 0.4 }}
+                                >
+                                    <Link to="/reviews" onClick={handleLinkClick}>🔁 Reviews</Link>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.3, duration: 0.4 }}
+                                >
+                                    <Link to="/advanced-analytics" onClick={handleLinkClick}>📈 Advanced Analytics</Link>
+                                </motion.div>
                                 
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}

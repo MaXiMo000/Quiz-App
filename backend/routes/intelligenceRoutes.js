@@ -3,7 +3,8 @@ import {
     getSmartRecommendations, 
     getAdaptiveDifficulty, 
     getLearningAnalytics,
-    updateUserPreferences
+    updateUserPreferences,
+    trackUserPerformance
 } from '../controllers/intelligenceController.js';
 import { verifyToken } from '../middleware/auth.js';
 
@@ -22,5 +23,7 @@ router.get('/analytics', verifyToken, getLearningAnalytics);
 
 // Update User Preferences (called after quiz completion)
 router.post('/preferences', verifyToken, updateUserPreferences);
+
+router.post('/track-performance', verifyToken, trackUserPerformance);
 
 export default router;
