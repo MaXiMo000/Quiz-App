@@ -7,6 +7,7 @@ import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUs
 import { getWeeklyXP, getMonthlyXP } from "../controllers/leaderboardController.js";
 import { runMigration } from "../controllers/migrationController.js"; // Phase 2: Migration
 import { cleanupEmptyChallenges, cleanupEmptyTournaments } from "../controllers/gamificationController.js";
+import reviewRoutes from "./reviewRoutes.js";
 import { verifyToken } from "../middleware/auth.js";
 
 // Quiz Routes
@@ -45,5 +46,8 @@ router.post("/migrate/quiz-difficulty", verifyToken, runMigration);
 // Gamification cleanup endpoints (admin only)
 router.delete("/challenges/cleanup-empty", verifyToken, cleanupEmptyChallenges);
 router.delete("/tournaments/cleanup-empty", verifyToken, cleanupEmptyTournaments);
+
+// Review Routes (Spaced Repetition)
+router.use("/reviews", reviewRoutes);
 
 export default router;

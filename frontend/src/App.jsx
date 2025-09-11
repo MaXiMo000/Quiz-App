@@ -66,6 +66,8 @@ import GamificationHub from "./components/GamificationHub";
 
 // Phase 5: Advanced Learning Path Engine
 import LearningPathHub from "./components/LearningPathHub";
+import SpacedRepetition from "./components/SpacedRepetition";
+import AdvancedAnalytics from "./components/AdvancedAnalytics";
 
 const TestPage = lazy(() => import("./pages/TestPage"));
 
@@ -213,6 +215,8 @@ const App = () => {
 
                             {/* Phase 2: Intelligence Dashboard - Premium Feature */}
                             <Route path="/intelligence-dashboard" element={<IntelligenceDashboard />} />
+                            <Route path="/reviews" element={<SpacedRepetition />} />
+                            <Route path="/advanced-analytics" element={<AdvancedAnalytics />} />
 
                             <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                             <Route path="/premium/quiz/:id" element={<PremiumQuizQuestions />} />

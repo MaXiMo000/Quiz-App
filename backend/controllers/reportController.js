@@ -3,6 +3,7 @@ import moment from "moment";
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
 import mongoose from "mongoose";
+import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
 
 export async function getReports(req, res) {
     const reports = await Report.find();
@@ -155,6 +156,20 @@ export async function createReport(req, res) {
         user.xp = currentLevelXP; // Set remaining XP for current level
 
         await user.save();
+
+        // 📚 Create review schedules for spaced repetition
+        try {
+            // Find the quiz to get the questions
+            const Quiz = (await import("../models/Quiz.js")).default;
+            const quiz = await Quiz.findOne({ title: quizName });
+            if (quiz && quiz.questions && quiz.questions.length > 0) {
+                await createInitialReviewSchedules(user._id, quiz._id, quiz.questions);
+                console.log(`Created review schedules for user ${user._id} and quiz ${quiz._id}`);
+            }
+        } catch (reviewError) {
+            console.error("Error creating review schedules:", reviewError);
+            // Don't fail the report creation if review schedule creation fails
+        }
 
         res.status(201).json({ message: "Report saved and bonuses applied!", report });
     } catch (error) {
