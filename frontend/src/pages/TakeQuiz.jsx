@@ -536,6 +536,13 @@ const TakeQuiz = () => {
                     difficulty: quiz.questions.length > 10 ? 'hard' : 
                                quiz.questions.length > 5 ? 'medium' : 'easy'
                 });
+
+                await axios.post('/api/intelligence/track-performance', {
+                    quizId: id,
+                    score: scoreAchieved,
+                    totalQuestions: quiz.questions.length,
+                    timeSpent: totalTimeSpent,
+                });
             }
 
             // ✅ Refresh user data to get updated XP and level
@@ -585,6 +592,18 @@ const TakeQuiz = () => {
             ...prev,
             [currentQuestion]: optionIndex
         }));
+
+        const question = quiz.questions[currentQuestion];
+        const correctOptionIndex = optionLetters.indexOf(question.correctAnswer);
+        const quality = optionIndex === correctOptionIndex ? 5 : 1; // 5 for correct, 1 for incorrect
+
+        axios.post('/api/reviews/update', {
+            quizId: id,
+            questionId: question._id,
+            quality: quality,
+        }).catch(error => {
+            console.error("Error updating review schedule:", error);
+        });
     };
 
     const handleClearAnswer = () => {

@@ -1,5 +1,6 @@
 import Quiz from "../models/Quiz.js";
 import UserQuiz from "../models/User.js";
+import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
 
 export const getQuizzes = async (req, res) => {
     try {
@@ -28,6 +29,7 @@ export const getQuizzes = async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 };
+
 
 // CREATE a quiz
 export const createQuiz = async (req, res) => {
@@ -123,6 +125,11 @@ export async function getQuizById(req, res) {
     try {
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        // Create initial review schedules for the user and quiz
+        if (req.user) {
+            await createInitialReviewSchedules(req.user.id, quiz._id, quiz.questions);
+        }
 
         res.json(quiz);
     } catch (error) {

@@ -37,6 +37,7 @@ import { initializeRealTimeQuiz } from "./controllers/realTimeQuizController.js"
 
 // Phase 5: Advanced Learning Path Engine
 import learningPathRoutes from "./routes/learningPathRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 // Import the daily challenge reset function
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
@@ -249,6 +250,7 @@ app.use("/api/real-time-quiz", realTimeQuizRoutes);
 
 // Phase 5: Advanced Learning Path Engine
 app.use("/api/learning-paths", learningPathRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Global error handler for CORS and other issues
 app.use((error, req, res, next) => {
