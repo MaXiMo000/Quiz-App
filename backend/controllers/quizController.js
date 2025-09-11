@@ -1,7 +1,6 @@
 import Quiz from "../models/Quiz.js";
 import UserQuiz from "../models/User.js";
-
-export const getQuizzes = async (req, res) => {
+import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
     try {
         const { role, id: userId } = req.user;
 
@@ -123,6 +122,11 @@ export async function getQuizById(req, res) {
     try {
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        // Create initial review schedules for the user and quiz
+        if (req.user) {
+            await createInitialReviewSchedules(req.user.id, quiz._id, quiz.questions);
+        }
 
         res.json(quiz);
     } catch (error) {
