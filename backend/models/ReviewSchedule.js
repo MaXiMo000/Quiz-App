@@ -15,6 +15,7 @@ const reviewScheduleSchema = new mongoose.Schema(
     question: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      // Note: This references a question within a quiz, not a separate Question model
     },
     // Spaced Repetition Fields
     easinessFactor: {
