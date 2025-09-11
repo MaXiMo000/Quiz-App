@@ -480,7 +480,17 @@
         padding: 0 1rem;
         box-sizing: border-box;
         overflow-x: hidden;
+        overflow-y: auto;
         background: transparent;
+        height: calc(100% - 80px);
+        min-height: calc(100vh - 160px);
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .table-container > * {
+        flex-shrink: 0;
     }
     
     .report-card {
@@ -497,6 +507,7 @@
         border: 1px solid rgba(255, 255, 255, 0.15);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
+        flex-shrink: 0;
     }
     
     .report-card:hover {
@@ -676,6 +687,11 @@
     
     .table-container {
         padding: 0 0.75rem;
+        height: calc(100% - 60px);
+        min-height: calc(100vh - 120px);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
     }
     
     .report-card {
@@ -769,7 +785,12 @@
         padding: 0 1rem !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
+        overflow-y: auto !important;
         background: transparent !important;
+        height: calc(100% - 80px) !important;
+        min-height: calc(100vh - 160px) !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
     
     .report-card {
