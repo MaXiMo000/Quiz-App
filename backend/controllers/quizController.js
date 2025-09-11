@@ -1,6 +1,8 @@
 import Quiz from "../models/Quiz.js";
 import UserQuiz from "../models/User.js";
 import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
+
+export const getQuizzes = async (req, res) => {
     try {
         const { role, id: userId } = req.user;
 
@@ -27,6 +29,7 @@ import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
         res.status(500).json({ error: "Server error" });
     }
 };
+
 
 // CREATE a quiz
 export const createQuiz = async (req, res) => {
