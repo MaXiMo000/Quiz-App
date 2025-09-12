@@ -166,7 +166,9 @@ return (
             <p>{themeDescriptions[themeName]}</p>
             <div className="theme-actions">
               {isCurrent ? (
-                <span className="current-badge">✨ Current</span>
+                <span className="current-badge">
+                  <span className="sparkle">✨</span> Current
+                </span>
               ) : isUnlocked ? (
                 <button
                   onClick={() => handleApply(themeName)}
