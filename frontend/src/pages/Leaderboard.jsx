@@ -10,10 +10,6 @@ const Leaderboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        fetchTopScorers();
-    }, [period]);
-
     const fetchTopScorers = async () => {
         setLoading(true);
         setError("");
@@ -29,6 +25,10 @@ const Leaderboard = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchTopScorers();
+    }, [period]);
 
     const quizzes = topScorers.map(item => item.quizName);
     const displayedScorers = filteredQuiz === "All"
