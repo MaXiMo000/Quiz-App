@@ -1,7 +1,7 @@
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
-import { unlockThemesForLevel } from "./userController.js";
+import { unlockThemesForLevel } from "../utils/themeUtils.js";
 
 // Phase 2: Intelligence Layer Controller
 

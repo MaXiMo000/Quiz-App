@@ -165,4 +165,9 @@ const userSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
+// Indexes for performance
+userSchema.index({ role: 1 }); // For filtering users by role
+userSchema.index({ level: -1, totalXP: -1 }); // For leaderboards
+userSchema.index({ lastSeen: -1 }); // For finding online users
+
 export default mongoose.model("UserQuiz", userSchema);

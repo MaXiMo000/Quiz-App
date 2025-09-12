@@ -2,6 +2,7 @@ import UserQuiz from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import XPLog from "../models/XPLog.js";
+import { unlockThemesForLevel } from "../utils/themeUtils.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -9,76 +10,14 @@ if (!JWT_SECRET) {
     throw new Error("🚫 JWT_SECRET is missing from environment variables! This is required for security.");
 }
 
-export const unlockThemesForLevel = (user) => {
-    const unlockThemeAtLevels = {
-        2: "Light",
-        3: "Dark",
-        5: "Galaxy",
-        7: "Forest",
-        10: "Sunset",
-        15: "Neon",
-        4: "material-light",    
-        6: "material-dark",
-        8: "dracula",
-        12: "nord",
-        14: "solarized-light",
-        16: "solarized-dark",
-        18: "monokai",
-        20: "one-dark",
-        22: "gruvbox-dark",
-        24: "gruvbox-light",
-        26: "oceanic",
-        28: "synthwave",
-        30: "night-owl",
-        32: "tokyo-night",
-        34: "ayu-light"
-    };
-
-    for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
-        if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
-            user.unlockedThemes.push(themeName);
-        }
-    }
-};
-
 // Register user
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
 
-        // 🔒 SECURITY: Enhanced input validation
-        if (!name || !email || !password) {
-            return res.status(400).json({ success: false, message: "All fields are required" });
-        }
-
-        // Validate name (letters, spaces, some special chars only)
-        const nameRegex = /^[a-zA-Z\s'-]{2,50}$/;
-        if (!nameRegex.test(name)) {
-            return res.status(400).json({ success: false, message: "Name must be 2-50 characters and contain only letters, spaces, hyphens, and apostrophes" });
-        }
-
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email) || email.length > 100) {
-            return res.status(400).json({ success: false, message: "Please provide a valid email address" });
-        }
-
-        // Validate password strength
-        if (password.length < 8) {
-            return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
-        }
-
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-        if (!passwordRegex.test(password)) {
-            return res.status(400).json({ 
-                success: false, 
-                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character" 
-            });
-        }
-
         const existingUser = await UserQuiz.findOne({ email: email.toLowerCase() });
         if (existingUser) {
-            return res.status(400).json({ success: false, message: "User already exists" });
+            return next(new AppError("User already exists", 400));
         }
 
         const salt = await bcrypt.genSalt(12); // Increased salt rounds for better security
@@ -93,20 +32,23 @@ export const registerUser = async (req, res) => {
 
         res.status(201).json({ success: true, message: "User registered successfully!" });
     } catch (error) {
-        console.error("❌ Registration Error:", error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
+        next(error);
     }
 };
 
 // Login user
-export const loginUser = async (req, res) => {
+export const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await UserQuiz.findOne({ email });
-        if (!user) return res.status(400).json({ error: "User not found" });
+        if (!user) {
+            return next(new AppError("User not found", 404));
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
+        if (!isMatch) {
+            return next(new AppError("Invalid credentials", 401));
+        }
 
         // ✅ Check daily login streak
         const today = new Date();
@@ -149,36 +91,8 @@ export const loginUser = async (req, res) => {
             user.xp = currentLevelXP; // Set remaining XP for current level
         }
 
-        // ≫≫ THEME UNLOCKING ≪≪
-        const unlockThemeAtLevels = {
-            2:  "Light",
-            3:  "Dark",
-            5:  "Galaxy",
-            7:  "Forest",
-            10: "Sunset",
-            15: "Neon",
-            4:  "material-light",
-            6:  "material-dark",
-            8:  "dracula",
-            12: "nord",
-            14: "solarized-light",
-            16: "solarized-dark",
-            18: "monokai",
-            20: "one-dark",
-            22: "gruvbox-dark",
-            24: "gruvbox-light",
-            26: "oceanic",
-            28: "synthwave",
-            30: "night-owl",
-            32: "tokyo-night",
-            34: "ayu-light"
-        };
-        
-        for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
-            if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
-                user.unlockedThemes.push(themeName);
-            }
-        }
+        // Ensure themes are unlocked for the current level one last time
+        unlockThemesForLevel(user);
 
         await user.save();
 
@@ -208,30 +122,28 @@ export const loginUser = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("Login Error:", error);
-        res.status(500).json({ error: "Server Error" });
+        next(error);
     }
 };
 
 
 // Get all users (admin-only)
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res, next) => {
     try {
         const users = await UserQuiz.find();
         res.json(users);
     } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ error: "Server Error" });
+        next(error);
     }
 };
 
-export const updateUserRole = async (req, res) => {
+export const updateUserRole = async (req, res, next) => {
     try {
         const { userId, role } = req.body;
         const user = await UserQuiz.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return next(new AppError("User not found", 404));
         }
         user.role = role;
         await user.save();
@@ -252,34 +164,32 @@ export const updateUserRole = async (req, res) => {
                 role: user.role,
             },
         });
-    }catch (error) {
-    console.error("Error updating role:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-}
+    } catch (error) {
+        next(error);
+    }
 };
 
 // ✅ Update selected theme
-export const updateUserTheme = async (req, res) => {
+export const updateUserTheme = async (req, res, next) => {
     try {
-    const { id } = req.params;
-    const { theme } = req.body;
+        const { id } = req.params;
+        const { theme } = req.body;
 
-    const user = await UserQuiz.findById(id);
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
+        const user = await UserQuiz.findById(id);
+        if (!user) {
+            return next(new AppError("User not found", 404));
+        }
 
-    // Allow "Default" theme without validation, validate others
-    if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
-        return res.status(400).json({ error: "Theme not unlocked yet" });
-    }
+        // Allow "Default" theme without validation, validate others
+        if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
+            return next(new AppError("Theme not unlocked yet", 400));
+        }
 
-    user.selectedTheme = theme;
-    await user.save();
+        user.selectedTheme = theme;
+        await user.save();
 
-    res.json({ message: "Theme updated", selectedTheme: user.selectedTheme });
+        res.json({ message: "Theme updated", selectedTheme: user.selectedTheme });
     } catch (err) {
-    console.error("Error updating theme:", err);
-    res.status(500).json({ error: "Error updating theme" });
+        next(err);
     }
 };

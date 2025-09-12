@@ -45,4 +45,10 @@ const quizSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+// Indexes for performance
+quizSchema.index({ category: 1 });
+quizSchema.index({ "createdBy._id": 1 });
+quizSchema.index({ popularityScore: -1 }); // For sorting by popularity
+quizSchema.index({ title: "text", category: "text" }); // For text search capabilities
+
 export default mongoose.model("Quiz", quizSchema);

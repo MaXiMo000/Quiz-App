@@ -1,5 +1,6 @@
 import { Router } from "express";
 const router = Router();
+import cache from "../middleware/cache.js";
 import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQuestion, updateQuizStats } from "../controllers/quizController.js";
 import { getReports, createReport, getReportsUser, deleteReport, getReportsUserID, getTopScorers } from "../controllers/reportController.js";
 import { generateQuizQuestions, generateAdaptiveQuestions } from "../controllers/aiQuestionController.js";
@@ -10,8 +11,8 @@ import { cleanupEmptyChallenges, cleanupEmptyTournaments } from "../controllers/
 import { verifyToken } from "../middleware/auth.js";
 
 // Quiz Routes
-router.get("/quizzes", verifyToken, getQuizzes);
-router.get("/quizzes/:id", verifyToken, getQuizById);
+router.get("/quizzes", verifyToken, cache(300), getQuizzes); // Cache for 5 minutes
+router.get("/quizzes/:id", verifyToken, cache(900), getQuizById); // Cache for 15 minutes
 router.post("/quizzes", verifyToken, createQuiz);
 router.post("/quizzes/:id/questions", verifyToken, addQuestion);
 router.delete("/quizzes/delete/quiz", verifyToken, deleteQuiz);

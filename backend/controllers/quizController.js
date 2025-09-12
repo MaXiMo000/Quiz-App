@@ -1,151 +1,130 @@
 import Quiz from "../models/Quiz.js";
 import UserQuiz from "../models/User.js";
+import cacheService from '../services/cacheService.js';
+import AppError from '../utils/AppError.js';
 
-export const getQuizzes = async (req, res) => {
+const clearQuizCache = async (quizId) => {
+    logger.info(`Clearing cache for quiz ${quizId} and quiz list`);
+    const quizKey = `__express__/api/quizzes/${quizId}`;
+    const listKey = `__express__/api/quizzes`;
+    await cacheService.del(quizKey);
+    await cacheService.del(listKey);
+};
+
+export const getQuizzes = async (req, res, next) => {
     try {
         const { role, id: userId } = req.user;
+        let query = {};
 
-        let quizzes;
-        if (role === "admin") {
-        // Admin sees all quizzes
-        quizzes = await Quiz.find();
-        } else if (role === "premium") {
-        // Premium sees their own quizzes and admin's quizzes
-        quizzes = await Quiz.find({
-            $or: [
-            { "createdBy._id": userId },
-            { "createdBy._id": null }
-            ]
-        });
-        } else {
-        // Regular users see only admin's quizzes
-        quizzes = await Quiz.find({ "createdBy._id": null });
+        if (role === "premium") {
+            query = { $or: [{ "createdBy._id": userId }, { "createdBy._id": null }] };
+        } else if (role !== "admin") {
+            query = { "createdBy._id": null };
         }
 
+        const quizzes = await Quiz.find(query);
         res.json(quizzes);
     } catch (error) {
-        console.error("Error getting quizzes:", error);
-        res.status(500).json({ error: "Server error" });
+        next(error);
     }
 };
 
-// CREATE a quiz
-export const createQuiz = async (req, res) => {
+export const createQuiz = async (req, res, next) => {
     try {
         const { role, id: userId } = req.user;
         const { title, category } = req.body;
 
         if (role !== "admin" && role !== "premium") {
-        return res.status(403).json({ message: "Only admins or premium users can create quizzes" });
+            return next(new AppError("Only admins or premium users can create quizzes", 403));
         }
 
         let createdBy = { _id: null, name: "Admin" };
-
         if (role === "premium") {
-        const user = await UserQuiz.findById(userId);
-        if (!user) return res.status(404).json({ message: "User not found" });
-        createdBy = { _id: user._id, name: user.name };
+            const user = await UserQuiz.findById(userId);
+            if (!user) return next(new AppError("User not found", 404));
+            createdBy = { _id: user._id, name: user.name };
         }
 
-        const newQuiz = new Quiz({
-        title,
-        category,
-        duration: 0,
-        totalMarks: 0,
-        passingMarks: 0,
-        questions: [],
-        createdBy
-        });
-
+        const newQuiz = new Quiz({ title, category, createdBy });
         const savedQuiz = await newQuiz.save();
+
+        await cacheService.del('__express__/api/quizzes');
+
         res.status(201).json(savedQuiz);
     } catch (error) {
-        console.error("Error creating quiz:", error);
-        res.status(500).json({ error: "Server error" });
+        next(error);
     }
 };
 
-export const deleteQuiz = async (req, res) => {
+export const deleteQuiz = async (req, res, next) => {
     try {
-        const { title } = req.query; // ✅ Get title from request body
-
+        const { title } = req.query;
         if (!title) {
-            return res.status(400).json({ message: "Quiz title is required" });
+            return next(new AppError("Quiz title is required", 400));
         }
 
-        // Find the quiz by title
         const quizItem = await Quiz.findOne({ title });
-
         if (!quizItem) {
-            return res.status(404).json({ message: "Quiz not found" });
+            return next(new AppError("Quiz not found", 404));
         }
 
-        // Delete the quiz
         await Quiz.deleteOne({ title });
-        return res.status(200).json({ message: "Quiz deleted successfully!" });
+        await clearQuizCache(quizItem._id);
 
+        res.status(200).json({ message: "Quiz deleted successfully!" });
     } catch (error) {
-        console.error("Error deleting quiz:", error);
-        res.status(500).json({ message: "Error deleting quiz", error: error.message });
+        next(error);
     }
 };
 
-export async function addQuestion(req, res) {
+export const addQuestion = async (req, res, next) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+        if (!quiz) return next(new AppError("Quiz not found", 404));
 
-        const questionData = {
-            ...req.body,
-            difficulty: req.body.difficulty || "medium", // Set difficulty if provided
-        };
-
+        const questionData = { ...req.body, difficulty: req.body.difficulty || "medium" };
         quiz.questions.push(questionData);
         quiz.totalMarks += 1;
         quiz.passingMarks = Math.floor(quiz.totalMarks / 2);
         quiz.duration = quiz.questions.length * 2;
 
-        // Phase 2: Update difficulty distribution
         if (!quiz.difficultyDistribution) {
             quiz.difficultyDistribution = { easy: 0, medium: 0, hard: 0 };
         }
-        quiz.difficultyDistribution[questionData.difficulty] += 1;
+        quiz.difficultyDistribution[questionData.difficulty] = (quiz.difficultyDistribution[questionData.difficulty] || 0) + 1;
 
         await quiz.save();
-        res.json(quiz);
-    } catch (error) {
-        console.error("Error adding question:", error);
-        res.status(500).json({ message: "Error adding question", error });
-    }
-}
-
-export async function getQuizById(req, res) {
-    try {
-        const quiz = await Quiz.findById(req.params.id);
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+        await clearQuizCache(req.params.id);
 
         res.json(quiz);
     } catch (error) {
-        console.error("Error fetching quiz:", error);
-        res.status(500).json({ message: "Error fetching quiz", error });
+        next(error);
     }
-}
+};
 
-export async function deleteQuestion(req, res) {
+export const getQuizById = async (req, res, next) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+        if (!quiz) return next(new AppError("Quiz not found", 404));
+        res.json(quiz);
+    } catch (error) {
+        next(error);
+    }
+};
 
-        const questionIndex = req.params.questionIndex;
-        if (questionIndex < 0 || questionIndex >= quiz.questions.length) {
-            return res.status(400).json({ message: "Invalid question index" });
+export const deleteQuestion = async (req, res, next) => {
+    try {
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) return next(new AppError("Quiz not found", 404));
+
+        const questionIndex = parseInt(req.params.questionIndex, 10);
+        if (isNaN(questionIndex) || questionIndex < 0 || questionIndex >= quiz.questions.length) {
+            return next(new AppError("Invalid question index", 400));
         }
 
-        // Phase 2: Update difficulty distribution before removing question
         const questionToRemove = quiz.questions[questionIndex];
         if (quiz.difficultyDistribution && questionToRemove.difficulty) {
-            quiz.difficultyDistribution[questionToRemove.difficulty] = Math.max(0, 
-                quiz.difficultyDistribution[questionToRemove.difficulty] - 1);
+            quiz.difficultyDistribution[questionToRemove.difficulty] = Math.max(0, (quiz.difficultyDistribution[questionToRemove.difficulty] || 0) - 1);
         }
 
         quiz.questions.splice(questionIndex, 1);
@@ -154,31 +133,30 @@ export async function deleteQuestion(req, res) {
         quiz.duration = quiz.questions.length * 2;
 
         await quiz.save();
+        await clearQuizCache(req.params.id);
+
         res.json({ message: "Question deleted successfully", quiz });
     } catch (error) {
-        console.error("Error deleting question:", error);
-        res.status(500).json({ message: "Error deleting question", error });
+        next(error);
     }
-}
+};
 
-// Phase 2: Function to update quiz statistics after each attempt
-export async function updateQuizStats(req, res) {
+export const updateQuizStats = async (req, res, next) => {
     try {
         const { quizId, score, totalQuestions, timeSpent } = req.body;
+        if (!quizId || score === undefined || !totalQuestions || timeSpent === undefined) {
+            return next(new AppError("Missing required fields for updating quiz stats", 400));
+        }
         
         const quiz = await Quiz.findById(quizId);
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+        if (!quiz) return next(new AppError("Quiz not found", 404));
 
-        // Update quiz statistics
         const newTotalAttempts = (quiz.totalAttempts || 0) + 1;
         const currentAverageScore = quiz.averageScore || 0;
         const currentAverageTime = quiz.averageTime || 0;
         
-        // Calculate new averages using incremental average formula
         const newAverageScore = ((currentAverageScore * (newTotalAttempts - 1)) + (score / totalQuestions)) / newTotalAttempts;
         const newAverageTime = ((currentAverageTime * (newTotalAttempts - 1)) + timeSpent) / newTotalAttempts;
-        
-        // Update popularity score (combination of attempts and average score)
         const popularityScore = newTotalAttempts * newAverageScore;
         
         quiz.totalAttempts = newTotalAttempts;
@@ -187,6 +165,7 @@ export async function updateQuizStats(req, res) {
         quiz.popularityScore = popularityScore;
         
         await quiz.save();
+        await clearQuizCache(quizId);
         
         res.json({ 
             message: "Quiz statistics updated successfully",
@@ -197,9 +176,7 @@ export async function updateQuizStats(req, res) {
                 popularityScore: Math.round(quiz.popularityScore * 100)
             }
         });
-        
     } catch (error) {
-        console.error("Error updating quiz stats:", error);
-        res.status(500).json({ message: "Error updating quiz stats", error });
+        next(error);
     }
-}
+};

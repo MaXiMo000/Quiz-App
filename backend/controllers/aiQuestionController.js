@@ -36,21 +36,23 @@ const parseAIResponse = (aiText) => {
 };
 
 // ✅ General MCQ Generator
-export const generateQuizQuestions = async (req, res) => {
+export const generateQuizQuestions = async (req, res, next) => {
     try {
         const { topic, numQuestions } = req.body;
         const { id } = req.params;
 
         if (!topic || !numQuestions) {
-            return res.status(400).json({ error: "Topic and number of questions are required" });
+            return next(new AppError("Topic and number of questions are required", 400));
         }
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ error: "Invalid quiz ID" });
+            return next(new AppError("Invalid quiz ID", 400));
         }
 
         const quiz = await Quiz.findById(id);
-        if (!quiz) return res.status(404).json({ error: "Quiz not found" });
+        if (!quiz) {
+            return next(new AppError("Quiz not found", 404));
+        }
 
         const existingQuestions = new Set(quiz.questions.map(q => q.question.trim().toLowerCase()));
         const finalQuestions = [];
@@ -90,7 +92,7 @@ export const generateQuizQuestions = async (req, res) => {
             try {
                 parsed = parseAIResponse(aiText);
             } catch (e) {
-                return res.status(500).json({ error: "AI returned invalid JSON", details: e.message });
+                return next(new AppError("AI returned invalid JSON: " + e.message, 500));
             }
 
             const newUnique = parsed.questions.filter(q => {
@@ -111,7 +113,7 @@ export const generateQuizQuestions = async (req, res) => {
         }
 
         if (finalQuestions.length === 0) {
-            return res.status(400).json({ error: "No new unique questions could be generated" });
+            return next(new AppError("No new unique questions could be generated", 400));
         }
 
         quiz.questions.push(...finalQuestions.slice(0, numQuestions));
@@ -125,18 +127,19 @@ export const generateQuizQuestions = async (req, res) => {
             questions: finalQuestions.slice(0, numQuestions)
         });
     } catch (err) {
-        console.error("🔥 AI Question Error:", err);
-        res.status(500).json({ error: "Internal server error", details: err.message });
+        next(err);
     }
 };
 
 // ✅ Adaptive MCQ Generator
-export const generateAdaptiveQuestions = async (req, res) => {
+export const generateAdaptiveQuestions = async (req, res, next) => {
     try {
         const { performance, quizId, numQuestions = 5 } = req.body;
 
         const quiz = await Quiz.findById(quizId);
-        if (!quiz) return res.status(404).json({ error: "Quiz not found" });
+        if (!quiz) {
+            return next(new AppError("Quiz not found", 404));
+        }
 
         const topic = quiz.category;
         const difficulty = performance === "low" ? "easy" : performance === "high" ? "hard" : "medium";
@@ -181,7 +184,7 @@ export const generateAdaptiveQuestions = async (req, res) => {
             try {
                 parsed = parseAIResponse(aiText);
             } catch (e) {
-                return res.status(500).json({ error: "AI returned invalid JSON", details: e.message });
+                return next(new AppError("AI returned invalid JSON: " + e.message, 500));
             }
 
             const newUnique = parsed.questions.filter(q => {
@@ -199,7 +202,7 @@ export const generateAdaptiveQuestions = async (req, res) => {
         }
 
         if (finalQuestions.length === 0) {
-            return res.status(400).json({ error: "No new unique adaptive questions could be generated" });
+            return next(new AppError("No new unique adaptive questions could be generated", 400));
         }
 
         quiz.questions.push(...finalQuestions.slice(0, numQuestions));
@@ -213,7 +216,6 @@ export const generateAdaptiveQuestions = async (req, res) => {
             questions: finalQuestions.slice(0, numQuestions)
         });
     } catch (err) {
-        console.error("🔥 Adaptive AI Error:", err);
-        res.status(500).json({ error: "Internal server error", details: err.message });
+        next(err);
     }
 };

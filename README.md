@@ -2,6 +2,8 @@
 
 ---
 
+**TODO**: The backend integration tests are currently disabled due to an environment-specific issue. See `BUG_TICKET_TESTS.md` for details.
+
 ## 🌐 Live Demo -->> [Click Here](https://quiz-app-cp2h.onrender.com/)
 
 * **Achievement System** ✅

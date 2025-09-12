@@ -4,6 +4,7 @@ import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { unlockThemesForLevel } from "../utils/themeUtils.js";
 
 // ✅ Load environment variables first
 dotenv.config();
@@ -13,39 +14,6 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
-
-// Theme unlocking function (same as in userController)
-const unlockThemesForLevel = (user) => {
-    const unlockThemeAtLevels = {
-        2: "Light",
-        3: "Dark",
-        5: "Galaxy",
-        7: "Forest",
-        10: "Sunset",
-        15: "Neon",
-        4: "material-light",    
-        6: "material-dark",
-        8: "dracula",
-        12: "nord",
-        14: "solarized-light",
-        16: "solarized-dark",
-        18: "monokai",
-        20: "one-dark",
-        22: "gruvbox-dark",
-        24: "gruvbox-light",
-        26: "oceanic",
-        28: "synthwave",
-        30: "night-owl",
-        32: "tokyo-night",
-        34: "ayu-light"
-    };
-
-    for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
-        if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
-            user.unlockedThemes.push(themeName);
-        }
-    }
-};
 
 // 🔒 SECURITY: Validate required environment variables
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL || !JWT_SECRET) {

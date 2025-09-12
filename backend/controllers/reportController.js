@@ -3,51 +3,25 @@ import moment from "moment";
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
 import mongoose from "mongoose";
+import { unlockThemesForLevel } from "../utils/themeUtils.js";
+import AppError from "../utils/AppError.js";
 
-export async function getReports(req, res) {
-    const reports = await Report.find();
-    res.json(reports);
+export async function getReports(req, res, next) {
+    try {
+        const reports = await Report.find();
+        res.json(reports);
+    } catch (error) {
+        next(error);
+    }
 }
 
-export const unlockThemesForLevel = (user) => {
-    const unlockThemeAtLevels = {
-        2: "Light",
-        3: "Dark",
-        5: "Galaxy",
-        7: "Forest",
-        10: "Sunset",
-        15: "Neon",
-        4: "material-light",
-        6: "material-dark",
-        8: "dracula",
-        12: "nord",
-        14: "solarized-light",
-        16: "solarized-dark",
-        18: "monokai",
-        20: "one-dark",
-        22: "gruvbox-dark",
-        24: "gruvbox-light",
-        26: "oceanic",
-        28: "synthwave",
-        30: "night-owl",
-        32: "tokyo-night",
-        34: "ayu-light"
-    };
-
-    for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
-        if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
-            user.unlockedThemes.push(themeName);
-        }
-    }
-};
-
-export async function createReport(req, res) {
+export async function createReport(req, res, next) {
     try {
         const { username, quizName, score, total, questions } = req.body;
         const userId = req.user?.id; // Get user ID from JWT token
 
         if (!username || !quizName || !questions || questions.length === 0) {
-            return res.status(400).json({ message: "Missing required fields" });
+            return next(new AppError("Missing required fields", 400));
         }
 
         const report = new Report({ username, quizName, score, total, questions });
@@ -84,8 +58,7 @@ export async function createReport(req, res) {
         }
         
         if (!user) {
-            console.error("User not found - userId:", userId, "username:", username);
-            return res.status(404).json({ message: "User not found" });
+            return next(new AppError(`User not found with identifier: ${userId || username}`, 404));
         }
 
         // ✅ Ensure totalXP field exists for all users (especially Google OAuth users)
@@ -158,63 +131,59 @@ export async function createReport(req, res) {
 
         res.status(201).json({ message: "Report saved and bonuses applied!", report });
     } catch (error) {
-        console.error("Error saving report:", error);
-        res.status(500).json({ message: "Error saving report", error: error.message });
+        next(error);
     }
 }
 
-
-
-export const getReportsUser = async (req, res) => {
+export const getReportsUser = async (req, res, next) => {
     try {
         const username = req.query.username;
         const reports = await Report.find(username ? { username } : {}).lean();
         res.json(reports);
     } catch (error) {
-        res.status(500).json({ message: "Error retrieving reports", error });
+        next(error);
     }
 };
 
-export const getReportsUserID = async (req, res) => {
+export const getReportsUserID = async (req, res, next) => {
     try {
         const { id } = req.params;
         const report = await Report.findById(id);
 
         if (!report) {
-            return res.status(404).json({ message: "Report not found" });
+            return next(new AppError("Report not found", 404));
         }
 
         res.json(report);
     } catch (error) {
-        res.status(500).json({ message: "Error retrieving report", error });
+        next(error);
     }
 };
 
-export const deleteReport = async (req, res) => {
+export const deleteReport = async (req, res, next) => {
     try {
         const { id } = req.params;
 
         if (!id) {
-            return res.status(400).json({ message: "Report ID is required" });
+            return next(new AppError("Report ID is required", 400));
         }
 
         const reportItem = await Report.findById(id);
 
         if (!reportItem) {
-            return res.status(404).json({ message: "Report not found" });
+            return next(new AppError("Report not found", 404));
         }
 
         await Report.findByIdAndDelete(id);
         return res.status(200).json({ message: "Report deleted successfully!" });
 
     } catch (error) {
-        console.error("Error deleting Report:", error);
-        res.status(500).json({ message: "Error deleting Report", error: error.message });
+        next(error);
     }
 };
 
 // ✅ Get Top Scorers of the Week
-export async function getTopScorers(req, res) {
+export async function getTopScorers(req, res, next) {
     try {
         const { period } = req.query;
         let startDate;
@@ -224,7 +193,7 @@ export async function getTopScorers(req, res) {
         } else if (period === "month") {
             startDate = moment().subtract(30, "days").startOf("day").toDate();
         } else {
-            return res.status(400).json({ message: "Invalid period. Use 'week' or 'month'." });
+            return next(new AppError("Invalid period. Use 'week' or 'month'.", 400));
         }
 
         const topScorers = await Report.aggregate([
@@ -257,7 +226,6 @@ export async function getTopScorers(req, res) {
 
         res.json(topScorers);
     } catch (error) {
-        console.error("Error fetching top scorers:", error);
-        res.status(500).json({ message: "Internal Server Error", error });
+        next(error);
     }
 }

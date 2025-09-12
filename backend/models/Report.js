@@ -17,4 +17,9 @@ const ReportSchema = new Schema({
     }]
 }, { timestamps: true });
 
+// Indexes for performance
+ReportSchema.index({ username: 1 });
+ReportSchema.index({ quizName: 1 });
+ReportSchema.index({ createdAt: -1 }); // For time-based queries
+
 export default model("Report", ReportSchema);

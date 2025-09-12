@@ -2,6 +2,8 @@ import express from "express";
 import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/auth.js";
 import mongoose from "mongoose";
+import validate from "../middleware/validation.js";
+import { registerSchema, loginSchema, updateUserRoleSchema, updateUserThemeSchema } from "../utils/validationSchemas.js";
 
 import passport from "passport";
 import "../config/passport.js";
@@ -9,8 +11,8 @@ import UserQuiz from "../models/User.js"; // Assuming you have a User model
 
 const router = express.Router();
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/register", validate(registerSchema), registerUser);
+router.post("/login", validate(loginSchema), loginUser);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
@@ -92,7 +94,7 @@ router.get("/:id", verifyToken, async (req, res) => {
     }
 });
 
-router.patch("/update-role", verifyToken, updateUserRole);
-router.post("/:id/theme", verifyToken, updateUserTheme);
+router.patch("/update-role", verifyToken, validate(updateUserRoleSchema), updateUserRole);
+router.post("/:id/theme", verifyToken, validate(updateUserThemeSchema), updateUserTheme);
 
 export default router;
