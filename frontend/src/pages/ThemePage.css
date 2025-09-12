@@ -7,21 +7,29 @@
     padding: var(--space-xl) var(--space-lg);
     position: relative;
     min-height: calc(100vh - 100px);
+    /* Ensure proper spacing for mobile navbar */
+    padding-bottom: calc(var(--space-xl) + 80px);
+    /* Ensure it doesn't interfere with modals */
+    z-index: 1;
+    overflow: visible;
 }
 
 .themes-container::before {
     content: '';
     position: absolute;
-    top: -20%;
-    left: -20%;
-    width: 140%;
-    height: 140%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: 
         radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.04) 0%, transparent 65%),
         radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.03) 0%, transparent 65%);
     pointer-events: none;
     z-index: -1;
     animation: float 25s ease-in-out infinite;
+    /* Ensure it doesn't interfere with modals or navbar */
+    overflow: hidden;
+    border-radius: inherit;
 }
 
 @keyframes float {
@@ -97,6 +105,56 @@
     overflow: hidden;
     height: 280px; /* Fixed height for consistency */
     width: 100%; /* Full width within grid cell */
+}
+
+/* Current theme indicator styling */
+.current-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 
+        0 4px 15px rgba(16, 185, 129, 0.3),
+        0 0 20px rgba(16, 185, 129, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.current-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent);
+    transition: left 0.6s ease;
+}
+
+.current-badge:hover::before {
+    left: 100%;
+}
+
+.current-badge .sparkle {
+    font-size: 1.1rem;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(180deg); }
 }
 
 .theme-card::before {
@@ -262,6 +320,8 @@
     .themes-container {
         padding: var(--space-lg) var(--space-sm);
         min-height: calc(100vh - 100px);
+        /* Add extra padding for mobile navbar */
+        padding-bottom: calc(var(--space-lg) + 100px);
     }
     
     .themes-container h2 {
@@ -271,14 +331,14 @@
     
     .themes-grid {
         grid-template-columns: 1fr;
-        gap: var(--space-lg);
-        max-width: 500px;
+        gap: var(--space-md);
+        max-width: 400px;
     }
     
     .theme-card {
         width: 100%;
-        height: 250px; /* Fixed height for mobile */
-        padding: var(--space-lg);
+        height: 200px; /* Smaller height for mobile */
+        padding: var(--space-md);
     }
     
     .theme-card h3 {
@@ -305,6 +365,8 @@
 @media (max-width: 480px) {
     .themes-container {
         padding: var(--space-md) var(--space-xs);
+        /* Ensure proper spacing for mobile navbar on small screens */
+        padding-bottom: calc(var(--space-md) + 90px);
     }
     
     .themes-container h2 {
@@ -313,14 +375,20 @@
     }
     
     .themes-grid {
-        gap: var(--space-md);
+        gap: var(--space-sm);
+        max-width: 350px;
     }
     
     .theme-card {
-        padding: var(--space-md);
-        height: 220px; /* Fixed height for small screens */
+        padding: var(--space-sm);
+        height: 180px; /* Smaller height for small screens */
         border-radius: var(--radius-xl);
         width: 100%;
+    }
+    
+    .current-badge {
+        padding: 6px 12px;
+        font-size: 0.8rem;
     }
     
     .theme-card h3 {
@@ -348,16 +416,27 @@
 @media (max-width: 320px) {
     .themes-container {
         padding: var(--space-sm) var(--space-xs);
+        /* Ensure proper spacing for mobile navbar on very small screens */
+        padding-bottom: calc(var(--space-sm) + 80px);
     }
     
     .themes-container h2 {
         font-size: 1.5rem;
     }
     
+    .themes-grid {
+        max-width: 300px;
+    }
+    
     .theme-card {
-        padding: var(--space-sm);
-        height: 200px; /* Fixed height for very small screens */
+        padding: var(--space-xs);
+        height: 160px; /* Even smaller height for very small screens */
         width: 100%;
+    }
+    
+    .current-badge {
+        padding: 4px 8px;
+        font-size: 0.75rem;
     }
     
     .theme-card h3 {
@@ -379,7 +458,121 @@
     }
 }
 
+/* ThemePage-specific modal fixes */
+.themes-container .notification-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: grid !important;
+    place-items: center !important;
+    place-content: center !important;
+    z-index: 10000 !important;
+    margin: 0 !important;
+    padding: var(--space-md) !important;
+    box-sizing: border-box !important;
+    /* Override any parent transforms or positioning */
+    transform: none !important;
+    will-change: auto !important;
+}
+
+.themes-container .notification-modal-content {
+    position: relative !important;
+    margin: 0 auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    max-width: 500px !important;
+    width: 100% !important;
+}
+
+/* ThemePage-specific mobile navbar fixes */
+.themes-container ~ .mobile-nav-bar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.themes-container ~ .mobile-nav-bar .nav-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+}
+
+.themes-container ~ .mobile-nav-bar .nav-item {
+    flex: 1 !important;
+    min-width: 50px !important;
+    max-width: 80px !important;
+    padding: 6px 4px !important;
+    margin: 0 !important;
+}
+
+/* ThemePage-specific responsive fixes */
+@media (max-width: 768px) {
+    .themes-container .notification-modal-overlay {
+        padding: var(--space-sm) !important;
+    }
+    
+    .themes-container .notification-modal-content {
+        max-width: 90vw !important;
+        padding: var(--space-lg) !important;
+    }
+    
+    .themes-container ~ .mobile-nav-bar .nav-item {
+        padding: 4px 2px !important;
+        min-width: 45px !important;
+        max-width: 70px !important;
+    }
+}
+
 @media (max-width: 480px) {
+    .themes-container .notification-modal-overlay {
+        padding: var(--space-xs) !important;
+    }
+    
+    .themes-container .notification-modal-content {
+        max-width: 95vw !important;
+        padding: var(--space-md) !important;
+    }
+    
+    .themes-container ~ .mobile-nav-bar .nav-item {
+        padding: 3px 1px !important;
+        min-width: 40px !important;
+        max-width: 60px !important;
+    }
+    
+    .themes-container ~ .mobile-nav-bar .nav-label {
+        font-size: 9px !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .themes-container ~ .mobile-nav-bar .nav-item {
+        padding: 2px 1px !important;
+        min-width: 35px !important;
+        max-width: 55px !important;
+    }
+    
+    .themes-container ~ .mobile-nav-bar .nav-label {
+        font-size: 8px !important;
+    }
+}
+
+/* Remove conflicting styles - this was causing issues */
+/* @media (max-width: 480px) {
     .themes-grid {
     flex-direction: column;
     gap: var(--space-sm);
@@ -388,4 +581,4 @@
     max-width: none;
     flex: 1 1 100%;
     }
-}
+} */

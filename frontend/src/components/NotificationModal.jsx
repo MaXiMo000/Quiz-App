@@ -75,7 +75,10 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                                 0 25px 50px rgba(0, 0, 0, 0.2),
                                 0 0 30px ${config.backgroundColor},
                                 inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                            `
+                            `,
+                            // Perfect centering - let CSS handle it
+                            margin: '0 auto',
+                            position: 'relative'
                         }}
                         initial={{ 
                             scale: 0.7, 

@@ -26,7 +26,10 @@
   align-items: center;
   max-width: 100%;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 8px;
+  /* Ensure all items fit properly */
+  min-width: 0;
+  flex-wrap: nowrap;
 }
 
 .nav-item {
@@ -35,15 +38,20 @@
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  padding: 8px 12px;
+  padding: 6px 8px;
   border-radius: 12px;
   transition: all 0.3s ease;
-  min-width: 60px;
+  min-width: 50px;
+  max-width: 80px;
+  flex: 1;
   position: relative;
   /* Enhanced touch interactions */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   user-select: none;
+  /* Prevent text overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Menu button specific styles */
@@ -73,12 +81,17 @@
 }
 
 .nav-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   transition: all 0.3s ease;
   text-align: center;
   line-height: 1.2;
   margin-top: 2px;
+  /* Prevent text wrapping and overflow */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .nav-item.active .nav-icon {
@@ -161,19 +174,43 @@
 /* Ultra-small screens */
 @media (max-width: 320px) {
   .nav-container {
-    padding: 0 8px;
+    padding: 0 4px;
+    gap: 2px;
   }
 
   .nav-item {
-    min-width: 50px;
-    padding: 6px 8px;
+    min-width: 45px;
+    max-width: 70px;
+    padding: 4px 6px;
   }
 
   .nav-icon {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .nav-label {
-    font-size: 10px;
+    font-size: 9px;
+  }
+}
+
+/* Extra small screens - prevent navbar cutoff */
+@media (max-width: 280px) {
+  .nav-container {
+    padding: 0 2px;
+    gap: 1px;
+  }
+
+  .nav-item {
+    min-width: 40px;
+    max-width: 60px;
+    padding: 3px 4px;
+  }
+
+  .nav-icon {
+    font-size: 12px;
+  }
+
+  .nav-label {
+    font-size: 8px;
   }
 }

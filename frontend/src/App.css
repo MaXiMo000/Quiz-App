@@ -376,11 +376,16 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Perfect centering with CSS Grid */
+  display: grid !important;
+  place-items: center !important;
+  place-content: center !important;
   z-index: 10000;
   padding: var(--space-md);
+  margin: 0;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
 }
 
 .notification-modal-content {
@@ -395,6 +400,14 @@
   overflow: hidden;
   transform-style: preserve-3d;
   perspective: 1000px;
+  /* Perfect centering */
+  margin: 0 auto;
+  box-sizing: border-box;
+  /* Remove any conflicting transforms */
+  position: relative;
+  left: auto;
+  right: auto;
+  transform: none;
 }
 
 .notification-header {
@@ -485,11 +498,21 @@
 @media (max-width: 768px) {
   .notification-modal-overlay {
     padding: var(--space-sm);
+    /* Perfect centering on mobile with CSS Grid */
+    display: grid !important;
+    place-items: center !important;
+    place-content: center !important;
   }
 
   .notification-modal-content {
     padding: var(--space-lg);
     max-width: 90vw;
+    /* Perfect centering */
+    left: auto;
+    right: auto;
+    transform: none;
+    margin: 0 auto;
+    position: relative;
   }
 
   .notification-icon {
@@ -511,8 +534,22 @@
 }
 
 @media (max-width: 480px) {
+  .notification-modal-overlay {
+    /* Perfect centering on small screens with CSS Grid */
+    display: grid !important;
+    place-items: center !important;
+    place-content: center !important;
+  }
+
   .notification-modal-content {
     padding: var(--space-md);
+    /* Perfect centering on small screens */
+    left: auto;
+    right: auto;
+    transform: none;
+    margin: 0 auto;
+    max-width: 95vw;
+    position: relative;
   }
 
   .notification-icon {
