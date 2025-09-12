@@ -227,13 +227,44 @@
     min-width: fit-content;
 }
 
-.leaderboard-table th:first-child {
-    border-top-left-radius: 1.5rem;
-}
+    .leaderboard-table th:first-child {
+        border-top-left-radius: 1.5rem;
+    }
 
-.leaderboard-table th:last-child {
-    border-top-right-radius: 1.5rem;
-}
+    .leaderboard-table th:last-child {
+        border-top-right-radius: 1.5rem;
+    }
+
+    /* Reduce table header corner radius on mobile */
+    @media (max-width: 768px) {
+        .leaderboard-table th:first-child {
+            border-top-left-radius: var(--radius-sm) !important;
+        }
+
+        .leaderboard-table th:last-child {
+            border-top-right-radius: var(--radius-sm) !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .leaderboard-table th:first-child {
+            border-top-left-radius: var(--radius-xs) !important;
+        }
+
+        .leaderboard-table th:last-child {
+            border-top-right-radius: var(--radius-xs) !important;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .leaderboard-table th:first-child {
+            border-top-left-radius: 4px !important;
+        }
+
+        .leaderboard-table th:last-child {
+            border-top-right-radius: 4px !important;
+        }
+    }
 
 /* ✨ Champion Row Styling ✨ */
 .leaderboard-table td, .leaderboard-table th {
@@ -589,6 +620,39 @@
     margin-top: var(--space-md);
 }
 
+/* Quiz section styling */
+.quiz-section {
+    margin-bottom: var(--space-xl);
+    background: var(--leaderboard-glass);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--leaderboard-border);
+    backdrop-filter: blur(20px);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.quiz-section h3 {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Disable hover effects on mobile to prevent overflow issues */
+@media (max-width: 768px) {
+    .leaderboard-table tr:hover td {
+        background: var(--leaderboard-glass) !important;
+        transform: none !important;
+        box-shadow: none !important;
+        transition: none !important;
+    }
+}
+
 /* ✅ Enhanced Mobile Responsiveness for Best Website Experience */
 @media (max-width: 1200px) {
     .leaderboard-container {
@@ -619,22 +683,86 @@
         margin: var(--space-md) auto;
         padding: var(--space-lg) var(--space-md);
         border-radius: var(--radius-xl);
+        /* Remove animations on mobile to prevent scrollbar issues */
+        animation: none !important;
     }
 
     .leaderboard-container h2 {
         font-size: 1.8rem;
         margin-bottom: var(--space-lg);
+        /* Remove animations on mobile */
+        animation: none !important;
+        /* Fix title centering on mobile */
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
     }
 
     .leaderboard-container h2::after {
         width: 60px;
         height: 2px;
+        /* Remove animations on mobile */
+        animation: none !important;
+    }
+
+    .leaderboard-container h2::before {
+        /* Remove animations on mobile */
+        animation: none !important;
+        /* Adjust trophy positioning for mobile */
+        position: static !important;
+        margin-right: 0.5rem !important;
+        order: -1 !important;
     }
 
     .leaderboard-table {
         margin-top: var(--space-lg);
         border-radius: var(--radius-lg);
         overflow-x: auto;
+        /* Remove animations on mobile to prevent scrollbar issues */
+        animation: none !important;
+        overflow-y: visible !important;
+        /* Reduce overly rounded corners on mobile */
+        border-radius: var(--radius-sm) !important;
+    }
+
+    .leaderboard-table::before {
+        /* Remove shimmer animation on mobile */
+        animation: none !important;
+        display: none !important;
+    }
+
+    .leaderboard-table table {
+        /* Ensure no overflow issues */
+        overflow: visible !important;
+        transform: none !important;
+    }
+
+    /* Fix quiz section styling on mobile */
+    .quiz-section {
+        border-radius: var(--radius-lg) !important;
+        padding: var(--space-md) !important;
+        margin-bottom: var(--space-lg) !important;
+        background: var(--leaderboard-glass) !important;
+        border: 1px solid var(--leaderboard-border) !important;
+        backdrop-filter: blur(20px) !important;
+        box-shadow: var(--shadow-lg) !important;
+    }
+
+    .quiz-section h3 {
+        text-align: center !important;
+        justify-content: center !important;
+        font-size: 1.3rem;
+        margin-bottom: var(--space-md);
+    }
+
+    /* Remove medal animations on mobile */
+    .leaderboard-table tbody tr:nth-child(1) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(2) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(3) td:first-child::before {
+        animation: none !important;
     }
 
     .leaderboard-table th,
@@ -698,20 +826,84 @@
         margin: var(--space-sm) auto;
         padding: var(--space-md) var(--space-sm);
         border-radius: var(--radius-lg);
+        /* Remove animations on small mobile */
+        animation: none !important;
     }
 
     .leaderboard-container h2 {
         font-size: 1.5rem;
         margin-bottom: var(--space-md);
+        /* Remove animations on small mobile */
+        animation: none !important;
+        /* Fix title centering on small mobile */
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
     }
 
     .leaderboard-container h2::after {
         width: 40px;
+        /* Remove animations on small mobile */
+        animation: none !important;
+    }
+
+    .leaderboard-container h2::before {
+        /* Remove animations on small mobile */
+        animation: none !important;
+        /* Adjust trophy positioning for small mobile */
+        position: static !important;
+        margin-right: 0.5rem !important;
+        order: -1 !important;
     }
 
     .leaderboard-table {
         margin-top: var(--space-md);
         border-radius: var(--radius-md);
+        /* Remove animations on small mobile */
+        animation: none !important;
+        overflow-y: visible !important;
+        /* Reduce overly rounded corners on small mobile */
+        border-radius: var(--radius-xs) !important;
+    }
+
+    .leaderboard-table::before {
+        /* Remove shimmer animation on small mobile */
+        animation: none !important;
+        display: none !important;
+    }
+
+    .leaderboard-table table {
+        /* Ensure no overflow issues */
+        overflow: visible !important;
+        transform: none !important;
+    }
+
+    /* Fix quiz section styling on small mobile */
+    .quiz-section {
+        border-radius: var(--radius-md) !important;
+        padding: var(--space-sm) !important;
+        margin-bottom: var(--space-md) !important;
+        background: var(--leaderboard-glass) !important;
+        border: 1px solid var(--leaderboard-border) !important;
+        backdrop-filter: blur(20px) !important;
+        box-shadow: var(--shadow-lg) !important;
+    }
+
+    .quiz-section h3 {
+        text-align: center !important;
+        justify-content: center !important;
+        font-size: 1.2rem;
+        margin-bottom: var(--space-sm);
+    }
+
+    /* Remove medal animations on small mobile */
+    .leaderboard-table tbody tr:nth-child(1) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(2) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(3) td:first-child::before {
+        animation: none !important;
     }
 
     .leaderboard-table th,
@@ -744,11 +936,79 @@
     .leaderboard-container {
         margin: var(--space-xs) auto;
         padding: var(--space-sm) var(--space-xs);
+        /* Remove animations on very small mobile */
+        animation: none !important;
     }
 
     .leaderboard-container h2 {
         font-size: 1.3rem;
         margin-bottom: var(--space-sm);
+        /* Remove animations on very small mobile */
+        animation: none !important;
+        /* Fix title centering on very small mobile */
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+
+    .leaderboard-container h2::after {
+        /* Remove animations on very small mobile */
+        animation: none !important;
+    }
+
+    .leaderboard-container h2::before {
+        /* Remove animations on very small mobile */
+        animation: none !important;
+        /* Adjust trophy positioning for very small mobile */
+        position: static !important;
+        margin-right: 0.5rem !important;
+        order: -1 !important;
+    }
+
+    .leaderboard-table {
+        /* Remove animations on very small mobile */
+        animation: none !important;
+        overflow-y: visible !important;
+    }
+
+    .leaderboard-table::before {
+        /* Remove shimmer animation on very small mobile */
+        animation: none !important;
+        display: none !important;
+    }
+
+    .leaderboard-table table {
+        /* Ensure no overflow issues */
+        overflow: visible !important;
+        transform: none !important;
+    }
+
+    /* Fix quiz section styling on very small mobile */
+    .quiz-section {
+        border-radius: var(--radius-sm) !important;
+        padding: var(--space-xs) !important;
+        margin-bottom: var(--space-sm) !important;
+        background: var(--leaderboard-glass) !important;
+        border: 1px solid var(--leaderboard-border) !important;
+        backdrop-filter: blur(20px) !important;
+        box-shadow: var(--shadow-lg) !important;
+    }
+
+    .quiz-section h3 {
+        text-align: center !important;
+        justify-content: center !important;
+        font-size: 1.1rem;
+        margin-bottom: var(--space-xs);
+    }
+
+    /* Remove medal animations on very small mobile */
+    .leaderboard-table tbody tr:nth-child(1) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(2) td:first-child::before,
+    .leaderboard-table tbody tr:nth-child(3) td:first-child::before {
+        animation: none !important;
     }
 
     .leaderboard-table th,
