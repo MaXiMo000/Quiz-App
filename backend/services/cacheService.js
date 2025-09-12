@@ -16,8 +16,8 @@ const getRedis = () => {
  */
 const get = async (key) => {
   const redisClient = getRedis();
-  if (!redisClient || redisClient.status !== 'ready') {
-    logger.warn('Redis not ready, skipping cache get.');
+  if (!redisClient) {
+    logger.warn('Redis client not available, skipping cache get.');
     return null;
   }
   try {
@@ -43,8 +43,8 @@ const get = async (key) => {
  */
 const set = async (key, value, expiration = DEFAULT_EXPIRATION) => {
     const redisClient = getRedis();
-    if (!redisClient || redisClient.status !== 'ready') {
-    logger.warn('Redis not ready, skipping cache set.');
+    if (!redisClient) {
+    logger.warn('Redis client not available, skipping cache set.');
     return false;
   }
   try {
@@ -64,8 +64,8 @@ const set = async (key, value, expiration = DEFAULT_EXPIRATION) => {
  */
 const del = async (key) => {
     const redisClient = getRedis();
-    if (!redisClient || redisClient.status !== 'ready') {
-    logger.warn('Redis not ready, skipping cache del.');
+    if (!redisClient) {
+    logger.warn('Redis client not available, skipping cache del.');
     return false;
   }
   try {
@@ -85,8 +85,8 @@ const del = async (key) => {
  */
 const flush = async () => {
     const redisClient = getRedis();
-    if (!redisClient || redisClient.status !== 'ready') {
-        logger.warn('Redis not ready, skipping cache flush.');
+    if (!redisClient) {
+        logger.warn('Redis client not available, skipping cache flush.');
         return false;
     }
     try {
