@@ -1,0 +1,64 @@
+name: TruffleHog Security Scan (Fixed)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  trufflehog-scan:
+    runs-on: ubuntu-latest
+    name: TruffleHog Security Scan
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check if BASE and HEAD are different
+      id: check-commits
+      run: |
+        if [ "${{ github.event_name }}" = "push" ]; then
+          if [ "${{ github.event.before }}" = "${{ github.sha }}" ]; then
+            echo "BASE and HEAD are the same, will scan entire repo"
+            echo "scan_entire_repo=true" >> $GITHUB_OUTPUT
+          else
+            echo "BASE and HEAD are different, will scan diff"
+            echo "scan_entire_repo=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "Not a push event, will scan entire repo"
+          echo "scan_entire_repo=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Run TruffleHog on diff (if commits are different)
+      if: steps.check-commits.outputs.scan_entire_repo == 'false'
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: ${{ github.event.before }}
+        head: ${{ github.sha }}
+        extra_args: --debug --only-verified
+        version: latest
+
+    - name: Run TruffleHog on entire repo (if commits are same or scheduled)
+      if: steps.check-commits.outputs.scan_entire_repo == 'true'
+      run: |
+        docker run --rm -v "$PWD:/tmp" -w /tmp \
+          ghcr.io/trufflesecurity/trufflehog:latest \
+          filesystem /tmp \
+          --debug --only-verified
+
+    - name: Upload scan results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: trufflehog-results
+        path: |
+          trufflehog-results.json
+          trufflehog-results.txt
