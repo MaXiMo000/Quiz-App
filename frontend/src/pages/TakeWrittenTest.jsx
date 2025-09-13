@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./TakeWrittenTest.css"; // ✅ Importing the new CSS file
@@ -54,7 +54,7 @@ const TakeWrittenTest = () => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft]);
+    }, [timeLeft, handleSubmit]);
 
     // ✅ Convert seconds to minutes:seconds format
     const formatTime = (seconds) => {
@@ -98,7 +98,7 @@ const TakeWrittenTest = () => {
 
     // ✅ Submit Written Test
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         let totalScore = 0;
         let totalMarks = test.totalMarks;
         let validResponses = 0;
@@ -165,7 +165,7 @@ const TakeWrittenTest = () => {
         }
 
         navigate("/user/written-reports");
-    };
+    }, [test, answers, showWarning, showError, showSuccess, navigate]);
 
 
     if (loading) return <Spinner message="Loading test..." />;

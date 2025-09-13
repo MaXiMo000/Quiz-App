@@ -698,6 +698,42 @@
     .sidebar-overlay {
         display: block;
     }
+
+    /* Disable interaction with page content when sidebar is open */
+    body.sidebar-open {
+        overflow: hidden;
+    }
+
+    body.sidebar-open .main-content,
+    body.sidebar-open .content,
+    body.sidebar-open main,
+    body.sidebar-open .page-content,
+    body.sidebar-open .mobile-nav-bar {
+        pointer-events: none;
+        user-select: none;
+    }
+
+    /* Disable all interactive elements when sidebar is open */
+    body.sidebar-open button,
+    body.sidebar-open a,
+    body.sidebar-open input,
+    body.sidebar-open select,
+    body.sidebar-open textarea,
+    body.sidebar-open [onclick],
+    body.sidebar-open [role="button"] {
+        pointer-events: none !important;
+        user-select: none !important;
+    }
+
+    /* Allow interaction with sidebar overlay for closing */
+    body.sidebar-open .sidebar-overlay {
+        pointer-events: auto;
+    }
+
+    /* Re-enable interaction for the sidebar itself */
+    .sidebar.open {
+        pointer-events: auto;
+    }
 }
 
 @media (max-width: 1024px) {

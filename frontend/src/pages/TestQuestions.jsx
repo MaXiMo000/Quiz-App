@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import "../App.css";
@@ -18,7 +18,7 @@ const TestQuestions = () => {
 
 
     // ✅ Fetch test details
-    const getTestDetails = async () => {
+    const getTestDetails = useCallback(async () => {
         try {
             const response = await axios.get(`/api/written-tests/${id}`);
             setTest(response.data);
@@ -29,11 +29,11 @@ const TestQuestions = () => {
         finally{
             setLoading(false);
         }
-    };
+    }, [id]);
 
     useEffect(() => {
         getTestDetails();
-    }, [id]);
+    }, [getTestDetails]);
 
     // ✅ Delete a question from the test
     const deleteQuestion = async (questionIndex) => {

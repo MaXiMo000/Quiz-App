@@ -32,34 +32,36 @@
   flex-wrap: nowrap;
 }
 
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  padding: 6px 8px;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  min-width: 50px;
-  max-width: 80px;
-  flex: 1;
-  position: relative;
+.mobile-nav-bar .nav-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+  padding: 6px 8px !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+  min-width: 50px !important;
+  max-width: 80px !important;
+  flex: 1 !important;
+  position: relative !important;
   /* Enhanced touch interactions */
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  user-select: none;
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation !important;
+  user-select: none !important;
   /* Prevent text overflow */
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 /* Menu button specific styles */
-.menu-button {
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
+.mobile-nav-bar .menu-button {
+  background: none !important;
+  border: none !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  flex: 0 0 auto !important;
+  max-width: 60px !important;
 }
 
 .nav-icon-container {
@@ -158,8 +160,8 @@
     padding: 4px 0 calc(4px + env(safe-area-inset-bottom, 0px));
   }
 
-  .nav-item {
-    padding: 6px 10px;
+  .mobile-nav-bar .nav-item {
+    padding: 6px 10px !important;
   }
 
   .nav-icon {
@@ -178,10 +180,10 @@
     gap: 2px;
   }
 
-  .nav-item {
-    min-width: 45px;
-    max-width: 70px;
-    padding: 4px 6px;
+  .mobile-nav-bar .nav-item {
+    min-width: 45px !important;
+    max-width: 70px !important;
+    padding: 4px 6px !important;
   }
 
   .nav-icon {
@@ -200,10 +202,10 @@
     gap: 1px;
   }
 
-  .nav-item {
-    min-width: 40px;
-    max-width: 60px;
-    padding: 3px 4px;
+  .mobile-nav-bar .nav-item {
+    min-width: 40px !important;
+    max-width: 60px !important;
+    padding: 3px 4px !important;
   }
 
   .nav-icon {
