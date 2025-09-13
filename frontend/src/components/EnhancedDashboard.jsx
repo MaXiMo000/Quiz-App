@@ -434,14 +434,19 @@ const EnhancedDashboard = () => {
   const categoryCount = categoryKeys.length || 5;
   const categoryColors = generateCategoryColors(categoryCount);
 
+  // Sort categories by performance for better display
+  const sortedCategories = Object.entries(dashboardData.categoryPerformance)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 8); // Show top 8 categories
+
   const categoryData = {
-    labels: categoryKeys.length > 0 
-      ? categoryKeys
+    labels: sortedCategories.length > 0 
+      ? sortedCategories.map(([category]) => category)
       : ['General', 'Science', 'Mathematics', 'History', 'Literature'],
     datasets: [
       {
-        data: categoryKeys.length > 0
-          ? Object.values(dashboardData.categoryPerformance)
+        data: sortedCategories.length > 0
+          ? sortedCategories.map(([, score]) => score)
           : [0, 0, 0, 0, 0],
         backgroundColor: categoryColors.backgroundColor,
         borderColor: categoryColors.borderColor,
@@ -551,7 +556,7 @@ const EnhancedDashboard = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <h3>📊 Subject Performance ({categoryCount} categories)</h3>
+          <h3>📊 Subject Performance ({sortedCategories.length} categories)</h3>
           <div className="chart-container">
             <Doughnut data={categoryData} options={doughnutOptions} />
           </div>

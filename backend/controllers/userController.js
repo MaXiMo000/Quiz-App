@@ -2,6 +2,8 @@ import UserQuiz from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import XPLog from "../models/XPLog.js";
+import { unlockThemesForLevel } from "../utils/themeUtils.js";
+import logger from "../utils/logger.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -9,75 +11,15 @@ if (!JWT_SECRET) {
     throw new Error("🚫 JWT_SECRET is missing from environment variables! This is required for security.");
 }
 
-export const unlockThemesForLevel = (user) => {
-    const unlockThemeAtLevels = {
-        2: "Light",
-        3: "Dark",
-        5: "Galaxy",
-        7: "Forest",
-        10: "Sunset",
-        15: "Neon",
-        4: "material-light",    
-        6: "material-dark",
-        8: "dracula",
-        12: "nord",
-        14: "solarized-light",
-        16: "solarized-dark",
-        18: "monokai",
-        20: "one-dark",
-        22: "gruvbox-dark",
-        24: "gruvbox-light",
-        26: "oceanic",
-        28: "synthwave",
-        30: "night-owl",
-        32: "tokyo-night",
-        34: "ayu-light"
-    };
-
-    for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
-        if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
-            user.unlockedThemes.push(themeName);
-        }
-    }
-};
-
 // Register user
 export const registerUser = async (req, res) => {
+    logger.info(`Attempting to register user with email: ${req.body.email}`);
     try {
         const { name, email, password } = req.body;
 
-        // 🔒 SECURITY: Enhanced input validation
-        if (!name || !email || !password) {
-            return res.status(400).json({ success: false, message: "All fields are required" });
-        }
-
-        // Validate name (letters, spaces, some special chars only)
-        const nameRegex = /^[a-zA-Z\s'-]{2,50}$/;
-        if (!nameRegex.test(name)) {
-            return res.status(400).json({ success: false, message: "Name must be 2-50 characters and contain only letters, spaces, hyphens, and apostrophes" });
-        }
-
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email) || email.length > 100) {
-            return res.status(400).json({ success: false, message: "Please provide a valid email address" });
-        }
-
-        // Validate password strength
-        if (password.length < 8) {
-            return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
-        }
-
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-        if (!passwordRegex.test(password)) {
-            return res.status(400).json({ 
-                success: false, 
-                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character" 
-            });
-        }
-
         const existingUser = await UserQuiz.findOne({ email: email.toLowerCase() });
         if (existingUser) {
+            logger.warn(`Registration failed: User already exists with email: ${email}`);
             return res.status(400).json({ success: false, message: "User already exists" });
         }
 
@@ -91,22 +33,30 @@ export const registerUser = async (req, res) => {
         });
         await newUser.save();
 
+        logger.info(`User registered successfully with email: ${email}`);
         res.status(201).json({ success: true, message: "User registered successfully!" });
     } catch (error) {
-        console.error("❌ Registration Error:", error);
+        logger.error({ message: "Error during user registration", error: error.message, stack: error.stack });
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
 
 // Login user
 export const loginUser = async (req, res) => {
+    logger.info(`Attempting to login user with email: ${req.body.email}`);
     try {
         const { email, password } = req.body;
         const user = await UserQuiz.findOne({ email });
-        if (!user) return res.status(400).json({ error: "User not found" });
+        if (!user) {
+            logger.warn(`Login failed: User not found with email: ${email}`);
+            return res.status(400).json({ error: "User not found" });
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
+        if (!isMatch) {
+            logger.warn(`Login failed: Invalid credentials for email: ${email}`);
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
 
         // ✅ Check daily login streak
         const today = new Date();
@@ -135,7 +85,7 @@ export const loginUser = async (req, res) => {
             const loginBonusXP = 50;
             user.xp += loginBonusXP;
             user.totalXP = (user.totalXP || 0) + loginBonusXP;
-            await new XPLog({ user: user._id, xp: loginBonusXP, source: 'login' }).save();
+            await new XPLog({ user: user._id, xp: loginBonusXP, source: "login" }).save();
 
             // ✅ Level-up logic (keep total XP, only subtract current level XP)
             let currentLevelXP = user.xp;
@@ -150,35 +100,7 @@ export const loginUser = async (req, res) => {
         }
 
         // ≫≫ THEME UNLOCKING ≪≪
-        const unlockThemeAtLevels = {
-            2:  "Light",
-            3:  "Dark",
-            5:  "Galaxy",
-            7:  "Forest",
-            10: "Sunset",
-            15: "Neon",
-            4:  "material-light",
-            6:  "material-dark",
-            8:  "dracula",
-            12: "nord",
-            14: "solarized-light",
-            16: "solarized-dark",
-            18: "monokai",
-            20: "one-dark",
-            22: "gruvbox-dark",
-            24: "gruvbox-light",
-            26: "oceanic",
-            28: "synthwave",
-            30: "night-owl",
-            32: "tokyo-night",
-            34: "ayu-light"
-        };
-        
-        for (const [threshold, themeName] of Object.entries(unlockThemeAtLevels)) {
-            if (user.level >= Number(threshold) && !user.unlockedThemes.includes(themeName)) {
-                user.unlockedThemes.push(themeName);
-            }
-        }
+        unlockThemesForLevel(user);
 
         await user.save();
 
@@ -189,6 +111,7 @@ export const loginUser = async (req, res) => {
             { expiresIn: "1h" }
         );
 
+        logger.info(`User logged in successfully: ${email}`);
         // ✅ Return user with XP, level, streak
         res.json({
             message: "Login successful",
@@ -208,7 +131,7 @@ export const loginUser = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("Login Error:", error);
+        logger.error({ message: "Error during user login", error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server Error" });
     }
 };
@@ -216,21 +139,25 @@ export const loginUser = async (req, res) => {
 
 // Get all users (admin-only)
 export const getAllUsers = async (req, res) => {
+    logger.info("Fetching all users");
     try {
         const users = await UserQuiz.find();
+        logger.info(`Successfully fetched ${users.length} users`);
         res.json(users);
     } catch (error) {
-        console.error("Error fetching users:", error);
+        logger.error({ message: "Error fetching all users", error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server Error" });
     }
 };
 
 export const updateUserRole = async (req, res) => {
+    logger.info(`Updating role for user ${req.body.userId} to ${req.body.role}`);
     try {
         const { userId, role } = req.body;
         const user = await UserQuiz.findById(userId);
 
         if (!user) {
+            logger.warn(`User not found: ${userId} when updating role`);
             return res.status(404).json({ message: "User not found" });
         }
         user.role = role;
@@ -242,6 +169,7 @@ export const updateUserRole = async (req, res) => {
             { expiresIn: "1h" }
         );
 
+        logger.info(`Successfully updated role for user ${userId} to ${role}`);
         res.json({
             message: `Role updated to ${role}`,
             token, // ✅ must be this
@@ -253,33 +181,37 @@ export const updateUserRole = async (req, res) => {
             },
         });
     }catch (error) {
-    console.error("Error updating role:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-}
+        logger.error({ message: `Error updating role for user ${req.body.userId}`, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 };
 
 // ✅ Update selected theme
 export const updateUserTheme = async (req, res) => {
+    logger.info(`Updating theme for user ${req.params.id} to ${req.body.theme}`);
     try {
-    const { id } = req.params;
-    const { theme } = req.body;
+        const { id } = req.params;
+        const { theme } = req.body;
 
-    const user = await UserQuiz.findById(id);
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
+        const user = await UserQuiz.findById(id);
+        if (!user) {
+            logger.warn(`User not found: ${id} when updating theme`);
+            return res.status(404).json({ error: "User not found" });
+        }
 
-    // Allow "Default" theme without validation, validate others
-    if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
-        return res.status(400).json({ error: "Theme not unlocked yet" });
-    }
+        // Allow "Default" theme without validation, validate others
+        if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
+            logger.warn(`User ${id} attempted to set theme to ${theme} which is not unlocked`);
+            return res.status(400).json({ error: "Theme not unlocked yet" });
+        }
 
-    user.selectedTheme = theme;
-    await user.save();
+        user.selectedTheme = theme;
+        await user.save();
 
-    res.json({ message: "Theme updated", selectedTheme: user.selectedTheme });
+        logger.info(`Successfully updated theme for user ${id} to ${theme}`);
+        res.json({ message: "Theme updated", selectedTheme: user.selectedTheme });
     } catch (err) {
-    console.error("Error updating theme:", err);
-    res.status(500).json({ error: "Error updating theme" });
+        logger.error({ message: `Error updating theme for user ${req.params.id}`, error: err.message, stack: err.stack });
+        res.status(500).json({ error: "Error updating theme" });
     }
 };

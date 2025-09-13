@@ -1,10 +1,7 @@
-import express from 'express';
-import { Server } from 'socket.io';
-import { createServer } from 'http';
-import cors from 'cors';
-import { verifyToken } from '../middleware/auth.js';
-import Quiz from '../models/Quiz.js';
-import UserQuiz from '../models/User.js';
+import { Server } from "socket.io";
+import Quiz from "../models/Quiz.js";
+import UserQuiz from "../models/User.js";
+import logger from "../utils/logger.js";
 
 // In-memory store for active quiz rooms
 const activeRooms = new Map();
@@ -17,7 +14,7 @@ class QuizRoom {
         this.hostId = hostId;
         this.settings = settings;
         this.players = new Map(); // userId -> player data
-        this.status = 'waiting'; // waiting, in_progress, finished
+        this.status = "waiting"; // waiting, in_progress, finished
         this.currentQuestion = 0;
         this.quiz = null;
         this.startTime = null;
@@ -55,7 +52,7 @@ class QuizRoom {
     }
 
     canStart() {
-        return this.players.size >= 2 && this.quiz && this.status === 'waiting';
+        return this.players.size >= 2 && this.quiz && this.status === "waiting";
     }
 }
 
@@ -70,19 +67,22 @@ export const initializeRealTimeQuiz = (server) => {
 
     // Socket.IO middleware for authentication
     io.use(async (socket, next) => {
+        logger.info(`Authenticating socket connection for user ${socket.handshake.auth.token ? "with token" : "without token"}`);
         try {
             const token = socket.handshake.auth.token;
             if (!token) {
-                return next(new Error('No token provided'));
+                logger.warn("Socket connection failed: No token provided");
+                return next(new Error("No token provided"));
             }
 
             // Verify JWT token (reuse your existing auth logic)
-            const jwt = await import('jsonwebtoken');
+            const jwt = await import("jsonwebtoken");
             const decoded = jwt.default.verify(token, process.env.JWT_SECRET);
             
             const user = await UserQuiz.findById(decoded.id);
             if (!user) {
-                return next(new Error('User not found'));
+                logger.warn(`Socket connection failed: User not found with ID ${decoded.id}`);
+                return next(new Error("User not found"));
             }
 
             socket.userId = user._id.toString();
@@ -95,26 +95,31 @@ export const initializeRealTimeQuiz = (server) => {
             };
 
             userSockets.set(socket.userId, socket.id);
+            logger.info(`Socket connection authenticated for user ${socket.userId}`);
             next();
         } catch (error) {
-            next(new Error('Authentication failed'));
+            logger.error({ message: "Socket authentication failed", error: error.message, stack: error.stack });
+            next(new Error("Authentication failed"));
         }
     });
 
-    io.on('connection', (socket) => {
+    io.on("connection", (socket) => {
+        logger.info(`User ${socket.userId} connected to real-time quiz service`);
         
         // Send user info to frontend
-        socket.emit('authenticated', socket.userInfo);
+        socket.emit("authenticated", socket.userInfo);
 
         // Create a new quiz room
-        socket.on('create_room', async (data) => {
+        socket.on("create_room", async (data) => {
+            logger.info(`User ${socket.userId} creating a new quiz room`);
             try {
                 const { quizId, settings } = data;
                 
                 // Validate quiz exists
                 const quiz = await Quiz.findById(quizId);
                 if (!quiz) {
-                    socket.emit('error', { message: 'Quiz not found' });
+                    logger.warn(`Quiz not found: ${quizId} when creating room`);
+                    socket.emit("error", { message: "Quiz not found" });
                     return;
                 }
 
@@ -137,7 +142,8 @@ export const initializeRealTimeQuiz = (server) => {
                 socket.join(roomId);
                 socket.currentRoom = roomId;
 
-                socket.emit('room_created', {
+                logger.info(`User ${socket.userId} created room ${roomId}`);
+                socket.emit("room_created", {
                     roomId,
                     room: {
                         id: roomId,
@@ -156,34 +162,39 @@ export const initializeRealTimeQuiz = (server) => {
                 });
 
             } catch (error) {
-                console.error('Error creating room:', error);
-                socket.emit('error', { message: 'Failed to create room' });
+                logger.error({ message: `Error creating room for user ${socket.userId}`, error: error.message, stack: error.stack });
+                socket.emit("error", { message: "Failed to create room" });
             }
         });
 
         // Join an existing room
-        socket.on('join_room', (data) => {
+        socket.on("join_room", (data) => {
+            logger.info(`User ${socket.userId} attempting to join room ${data.roomId}`);
             try {
                 const { roomId } = data;
                 const room = activeRooms.get(roomId);
 
                 if (!room) {
-                    socket.emit('error', { message: 'Room not found' });
+                    logger.warn(`Room not found: ${roomId} when user ${socket.userId} attempted to join`);
+                    socket.emit("error", { message: "Room not found" });
                     return;
                 }
 
-                if (room.status !== 'waiting') {
-                    socket.emit('error', { message: 'Room is not accepting new players' });
+                if (room.status !== "waiting") {
+                    logger.warn(`User ${socket.userId} attempted to join room ${roomId} which is not waiting for players`);
+                    socket.emit("error", { message: "Room is not accepting new players" });
                     return;
                 }
 
                 if (room.getPlayerCount() >= room.settings.maxPlayers) {
-                    socket.emit('error', { message: 'Room is full' });
+                    logger.warn(`User ${socket.userId} attempted to join full room ${roomId}`);
+                    socket.emit("error", { message: "Room is full" });
                     return;
                 }
 
                 if (room.players.has(socket.userId)) {
-                    socket.emit('error', { message: 'Already in this room' });
+                    logger.warn(`User ${socket.userId} attempted to join room ${roomId} they are already in`);
+                    socket.emit("error", { message: "Already in this room" });
                     return;
                 }
 
@@ -193,14 +204,15 @@ export const initializeRealTimeQuiz = (server) => {
                 socket.currentRoom = roomId;
 
                 // Notify all players
-                io.to(roomId).emit('player_joined', {
+                io.to(roomId).emit("player_joined", {
                     player: socket.userInfo,
                     players: room.getAllPlayers(),
                     playerCount: room.getPlayerCount()
                 });
 
                 // Send room data to joining player
-                socket.emit('room_joined', {
+                logger.info(`User ${socket.userId} successfully joined room ${roomId}`);
+                socket.emit("room_joined", {
                     room: {
                         id: roomId,
                         hostId: room.hostId,
@@ -218,40 +230,43 @@ export const initializeRealTimeQuiz = (server) => {
                 });
 
             } catch (error) {
-                console.error('Error joining room:', error);
-                socket.emit('error', { message: 'Failed to join room' });
+                logger.error({ message: `Error joining room for user ${socket.userId}`, error: error.message, stack: error.stack });
+                socket.emit("error", { message: "Failed to join room" });
             }
         });
 
         // Start the quiz (host only)
-        socket.on('start_quiz', () => {
+        socket.on("start_quiz", () => {
+            logger.info(`User ${socket.userId} attempting to start quiz in room ${socket.currentRoom}`);
             try {
                 const roomId = socket.currentRoom;
                 const room = activeRooms.get(roomId);
                 
                 if (!room) {
-                    socket.emit('error', { message: 'Room not found' });
+                    logger.warn(`Room not found: ${roomId} when user ${socket.userId} attempted to start quiz`);
+                    socket.emit("error", { message: "Room not found" });
                     return;
                 }
 
                 if (!room.isHost(socket.userId)) {
-                    socket.emit('error', { message: 'Only the host can start the quiz' });
+                    logger.warn(`Non-host user ${socket.userId} attempted to start quiz in room ${roomId}`);
+                    socket.emit("error", { message: "Only the host can start the quiz" });
                     return;
                 }
 
                 if (!room.canStart()) {
                     const reasons = [];
-                    if (room.players.size < 2) reasons.push('Need at least 2 players');
-                    if (!room.quiz) reasons.push('No quiz selected');
-                    if (room.status !== 'waiting') reasons.push(`Room status is ${room.status}, should be waiting`);
+                    if (room.players.size < 2) reasons.push("Need at least 2 players");
+                    if (!room.quiz) reasons.push("No quiz selected");
+                    if (room.status !== "waiting") reasons.push(`Room status is ${room.status}, should be waiting`);
                     
-                    
-                    socket.emit('error', { message: `Cannot start quiz: ${reasons.join(', ')}` });
+                    logger.warn(`Cannot start quiz in room ${roomId}: ${reasons.join(", ")}`);
+                    socket.emit("error", { message: `Cannot start quiz: ${reasons.join(", ")}` });
                     return;
                 }
 
                 // Initialize quiz state
-                room.status = 'in_progress';
+                room.status = "in_progress";
                 room.currentQuestion = 0;
                 room.startTime = new Date();
                 room.scores.clear();
@@ -263,23 +278,26 @@ export const initializeRealTimeQuiz = (server) => {
                 });
 
                 // Start first question
+                logger.info(`Quiz started in room ${roomId}`);
                 startQuestion(room, io);
 
             } catch (error) {
-                console.error('Error starting quiz:', error);
-                socket.emit('error', { message: 'Failed to start quiz' });
+                logger.error({ message: `Error starting quiz in room ${socket.currentRoom}`, error: error.message, stack: error.stack });
+                socket.emit("error", { message: "Failed to start quiz" });
             }
         });
 
         // Submit answer
-        socket.on('submit_answer', (data) => {
+        socket.on("submit_answer", (data) => {
+            logger.info(`User ${socket.userId} submitting answer in room ${socket.currentRoom}`);
             try {
                 const { answer, timeSpent } = data;
                 const roomId = socket.currentRoom;
                 const room = activeRooms.get(roomId);
 
-                if (!room || room.status !== 'in_progress') {
-                    socket.emit('error', { message: 'Invalid room or quiz not in progress' });
+                if (!room || room.status !== "in_progress") {
+                    logger.warn(`User ${socket.userId} attempted to submit answer in invalid room ${roomId} or quiz not in progress`);
+                    socket.emit("error", { message: "Invalid room or quiz not in progress" });
                     return;
                 }
 
@@ -305,7 +323,7 @@ export const initializeRealTimeQuiz = (server) => {
                 const playersAnswered = room.answers.get(questionIndex).size;
                 const totalPlayers = room.getPlayerCount();
 
-                io.to(roomId).emit('answer_submitted', {
+                io.to(roomId).emit("answer_submitted", {
                     playerId: socket.userId,
                     playerName: socket.userInfo.name,
                     answeredCount: playersAnswered,
@@ -314,28 +332,30 @@ export const initializeRealTimeQuiz = (server) => {
 
                 // If all answered or time is up, move to next question
                 if (playersAnswered === totalPlayers) {
+                    logger.info(`All players have answered in room ${roomId}, moving to next question`);
                     setTimeout(() => nextQuestion(room, io), 2000); // 2 second delay
                 }
 
             } catch (error) {
-                console.error('Error submitting answer:', error);
-                socket.emit('error', { message: 'Failed to submit answer' });
+                logger.error({ message: `Error submitting answer for user ${socket.userId} in room ${socket.currentRoom}`, error: error.message, stack: error.stack });
+                socket.emit("error", { message: "Failed to submit answer" });
             }
         });
 
         // Leave room
-        socket.on('leave_room', () => {
+        socket.on("leave_room", () => {
             leaveRoom(socket, io);
         });
 
         // Handle disconnect
-        socket.on('disconnect', () => {
+        socket.on("disconnect", () => {
+            logger.info(`User ${socket.userId} disconnected`);
             leaveRoom(socket, io);
             userSockets.delete(socket.userId);
         });
 
         // Chat message in room
-        socket.on('chat_message', (data) => {
+        socket.on("chat_message", (data) => {
             try {
                 const { message } = data;
                 const roomId = socket.currentRoom;
@@ -344,14 +364,14 @@ export const initializeRealTimeQuiz = (server) => {
                     return;
                 }
 
-                io.to(roomId).emit('chat_message', {
+                io.to(roomId).emit("chat_message", {
                     playerId: socket.userId,
                     playerName: socket.userInfo.name,
                     message,
                     timestamp: new Date()
                 });
             } catch (error) {
-                console.error('Error sending chat message:', error);
+                logger.error({ message: `Error sending chat message from user ${socket.userId} in room ${socket.currentRoom}`, error: error.message, stack: error.stack });
             }
         });
     });
@@ -369,7 +389,7 @@ export const initializeRealTimeQuiz = (server) => {
         room.questionStartTime = new Date();
 
         // Send question to all players (without correct answer)
-        io.to(room.id).emit('new_question', {
+        io.to(room.id).emit("new_question", {
             questionIndex,
             question: {
                 question: question.question,
@@ -382,7 +402,7 @@ export const initializeRealTimeQuiz = (server) => {
 
         // Auto-advance after time limit
         setTimeout(() => {
-            if (room.status === 'in_progress' && room.currentQuestion === questionIndex) {
+            if (room.status === "in_progress" && room.currentQuestion === questionIndex) {
                 nextQuestion(room, io);
             }
         }, room.settings.timePerQuestion * 1000);
@@ -402,13 +422,13 @@ export const initializeRealTimeQuiz = (server) => {
             // Handle both number and letter format answers
             let isCorrect = false;
             if (playerAnswer) {
-                if (typeof correctAnswer === 'string' && typeof playerAnswer.answer === 'number') {
+                if (typeof correctAnswer === "string" && typeof playerAnswer.answer === "number") {
                     // Convert letter answer (A, B, C, D) to number (0, 1, 2, 3)
-                    const letterToNumber = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+                    const letterToNumber = { "A": 0, "B": 1, "C": 2, "D": 3 };
                     isCorrect = playerAnswer.answer === letterToNumber[correctAnswer];
-                } else if (typeof correctAnswer === 'number' && typeof playerAnswer.answer === 'string') {
+                } else if (typeof correctAnswer === "number" && typeof playerAnswer.answer === "string") {
                     // Convert number answer to letter format
-                    const numberToLetter = { 0: 'A', 1: 'B', 2: 'C', 3: 'D' };
+                    const numberToLetter = { 0: "A", 1: "B", 2: "C", 3: "D" };
                     isCorrect = numberToLetter[playerAnswer.answer] === correctAnswer;
                 } else {
                     // Same type comparison
@@ -438,7 +458,7 @@ export const initializeRealTimeQuiz = (server) => {
         });
 
         // Send question results
-        io.to(room.id).emit('question_results', {
+        io.to(room.id).emit("question_results", {
             questionIndex,
             correctAnswer,
             explanation: question.explanation || null,
@@ -456,13 +476,13 @@ export const initializeRealTimeQuiz = (server) => {
     }
 
     function endQuiz(room, io) {
-        room.status = 'finished';
+        room.status = "finished";
         const finalLeaderboard = getLeaderboard(room);
 
         // Update user XP and stats
         updatePlayerStats(room);
 
-        io.to(room.id).emit('quiz_finished', {
+        io.to(room.id).emit("quiz_finished", {
             leaderboard: finalLeaderboard,
             totalQuestions: room.quiz.questions.length,
             duration: Math.round((new Date() - room.startTime) / 1000)
@@ -512,8 +532,11 @@ export const initializeRealTimeQuiz = (server) => {
 
                     if (i === 0) { // Winner
                         user.social.socialStats.multiplayerWins = (user.social.socialStats.multiplayerWins || 0) + 1;
-                        if (!user.badges.includes('Multiplayer Champion')) {
-                            user.badges.push('Multiplayer Champion');
+                        if (!user.badges) {
+                            user.badges = [];
+                        }
+                        if (!user.badges.includes("Multiplayer Champion")) {
+                            user.badges.push("Multiplayer Champion");
                         }
                     }
 
@@ -524,9 +547,10 @@ export const initializeRealTimeQuiz = (server) => {
                     }
 
                     await user.save();
+                    logger.info(`Updated stats for player ${player.playerId} in room ${room.id}`);
                 }
             } catch (error) {
-                console.error(`Error updating stats for player ${player.playerId}:`, error);
+                logger.error({ message: `Error updating stats for player ${player.playerId} in room ${room.id}`, error: error.message, stack: error.stack });
             }
         }
     }
@@ -542,8 +566,9 @@ export const initializeRealTimeQuiz = (server) => {
         socket.leave(roomId);
         socket.currentRoom = null;
 
+        logger.info(`User ${socket.userId} left room ${roomId}`);
         // Notify other players
-        io.to(roomId).emit('player_left', {
+        io.to(roomId).emit("player_left", {
             playerId: socket.userId,
             playerName: socket.userInfo?.name,
             players: room.getAllPlayers(),
@@ -555,12 +580,14 @@ export const initializeRealTimeQuiz = (server) => {
             if (room.getPlayerCount() > 0) {
                 const newHost = room.getAllPlayers()[0];
                 room.hostId = newHost.id;
-                io.to(roomId).emit('host_changed', {
+                logger.info(`Host of room ${roomId} changed to ${newHost.id}`);
+                io.to(roomId).emit("host_changed", {
                     newHostId: newHost.id,
                     newHostName: newHost.name
                 });
             } else {
                 // No players left, delete room
+                logger.info(`Room ${roomId} is empty, deleting`);
                 activeRooms.delete(roomId);
             }
         }
@@ -572,14 +599,17 @@ export const initializeRealTimeQuiz = (server) => {
 
 // REST API endpoints for room management
 export const getRoomStatus = async (req, res) => {
+    logger.info(`Getting status for room ${req.params.roomId}`);
     try {
         const { roomId } = req.params;
         const room = activeRooms.get(roomId);
 
         if (!room) {
-            return res.status(404).json({ message: 'Room not found' });
+            logger.warn(`Room not found: ${roomId} when getting status`);
+            return res.status(404).json({ message: "Room not found" });
         }
 
+        logger.info(`Successfully fetched status for room ${roomId}`);
         res.json({
             room: {
                 id: room.id,
@@ -597,30 +627,32 @@ export const getRoomStatus = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error getting room status:', error);
-        res.status(500).json({ message: 'Server error' });
+        logger.error({ message: `Error getting room status for room ${req.params.roomId}`, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
 export const getActiveRooms = async (req, res) => {
+    logger.info("Fetching active rooms");
     try {
         const rooms = [];
         activeRooms.forEach((room, roomId) => {
-            if (room.status === 'waiting') {
+            if (room.status === "waiting") {
                 rooms.push({
                     id: roomId,
-                    hostName: room.players.get(room.hostId)?.name || 'Unknown',
+                    hostName: room.players.get(room.hostId)?.name || "Unknown",
                     playerCount: room.getPlayerCount(),
                     maxPlayers: room.settings.maxPlayers,
-                    quizTitle: room.quiz?.title || 'Unknown Quiz',
+                    quizTitle: room.quiz?.title || "Unknown Quiz",
                     createdAt: room.createdAt
                 });
             }
         });
 
+        logger.info(`Successfully fetched ${rooms.length} active rooms`);
         res.json({ rooms });
     } catch (error) {
-        console.error('Error getting active rooms:', error);
-        res.status(500).json({ message: 'Server error' });
+        logger.error({ message: "Error getting active rooms", error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error" });
     }
 };

@@ -1,29 +1,29 @@
-import express from 'express';
+import express from "express";
 import { 
     getSmartRecommendations, 
     getAdaptiveDifficulty, 
     getLearningAnalytics,
     updateUserPreferences,
     trackUserPerformance
-} from '../controllers/intelligenceController.js';
-import { verifyToken } from '../middleware/auth.js';
+} from "../controllers/intelligenceController.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // Phase 2: Intelligence Layer Routes
 
 // Smart Quiz Recommendations
-router.get('/recommendations', verifyToken, getSmartRecommendations);
+router.get("/recommendations", verifyToken, getSmartRecommendations);
 
 // Adaptive Difficulty System
-router.get('/adaptive-difficulty', verifyToken, getAdaptiveDifficulty);
+router.get("/adaptive-difficulty", verifyToken, getAdaptiveDifficulty);
 
 // Learning Analytics & Performance Predictions
-router.get('/analytics', verifyToken, getLearningAnalytics);
+router.get("/analytics", verifyToken, getLearningAnalytics);
 
 // Update User Preferences (called after quiz completion)
-router.post('/preferences', verifyToken, updateUserPreferences);
+router.post("/preferences", verifyToken, updateUserPreferences);
 
-router.post('/track-performance', verifyToken, trackUserPerformance);
+router.post("/track-performance", verifyToken, trackUserPerformance);
 
 export default router;

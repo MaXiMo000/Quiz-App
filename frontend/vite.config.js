@@ -31,5 +31,10 @@ export default defineConfig({
     // Define PWA flags
     __PWA_VERSION__: JSON.stringify('2.0.0'),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-  }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/tests/setup.js',
+  },
 })

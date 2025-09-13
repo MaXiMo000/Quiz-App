@@ -5,47 +5,47 @@ import { getReports, createReport, getReportsUser, deleteReport, getReportsUserI
 import { generateQuizQuestions, generateAdaptiveQuestions } from "../controllers/aiQuestionController.js";
 import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport, getWrittenReportsUserID } from "../controllers/writtenTestReportController.js";
 import { getWeeklyXP, getMonthlyXP } from "../controllers/leaderboardController.js";
-import { runMigration } from "../controllers/migrationController.js"; // Phase 2: Migration
+import { runMigration } from "../controllers/migrationController.js";
 import { cleanupEmptyChallenges, cleanupEmptyTournaments } from "../controllers/gamificationController.js";
 import reviewRoutes from "./reviewRoutes.js";
 import { verifyToken } from "../middleware/auth.js";
+import cache, { clearCacheByPattern } from "../middleware/cache.js";
 
 // Quiz Routes
-router.get("/quizzes", verifyToken, getQuizzes);
-router.get("/quizzes/:id", verifyToken, getQuizById);
-router.post("/quizzes", verifyToken, createQuiz);
-router.post("/quizzes/:id/questions", verifyToken, addQuestion);
-router.delete("/quizzes/delete/quiz", verifyToken, deleteQuiz);
-router.delete("/quizzes/:id/questions/:questionIndex", verifyToken, deleteQuestion);
-router.post("/quizzes/:id/stats", verifyToken, updateQuizStats); // Phase 2: Update quiz statistics
-
+router.get("/quizzes", verifyToken, cache, getQuizzes);
+router.get("/quizzes/:id", verifyToken, cache, getQuizById);
+router.post("/quizzes", verifyToken, clearCacheByPattern("/api/quizzes"), createQuiz);
+router.post("/quizzes/:id/questions", verifyToken, clearCacheByPattern("/api/quizzes"), addQuestion);
+router.delete("/quizzes/delete/quiz", verifyToken, clearCacheByPattern("/api/quizzes"), deleteQuiz);
+router.delete("/quizzes/:id/questions/:questionIndex", verifyToken, clearCacheByPattern("/api/quizzes"), deleteQuestion);
+router.post("/quizzes/:id/stats", verifyToken, clearCacheByPattern("/api/quizzes"), updateQuizStats);
 
 router.post("/quizzes/:id/generate-questions", generateQuizQuestions);
 router.post("/adaptive", verifyToken, generateAdaptiveQuestions);
 
 // Report Routes
-router.get("/reports", verifyToken, getReports);
-router.post("/reports", verifyToken, createReport);
-router.get("/reports/user", verifyToken, getReportsUser);
-router.get("/reports/top-scorers", verifyToken, getTopScorers); 
-router.get("/reports/:id", verifyToken, getReportsUserID)
-router.delete("/reports/:id", verifyToken, deleteReport);
+router.get("/reports", verifyToken, cache, getReports);
+router.post("/reports", verifyToken, clearCacheByPattern("/api/reports"), createReport);
+router.get("/reports/user", verifyToken, cache, getReportsUser);
+router.get("/reports/top-scorers", verifyToken, cache, getTopScorers);
+router.get("/reports/:id", verifyToken, cache, getReportsUserID);
+router.delete("/reports/:id", verifyToken, clearCacheByPattern("/api/reports"), deleteReport);
 
-router.get("/written-test-reports", verifyToken, getWrittenTestReports);
-router.post("/written-test-reports", verifyToken, createWrittenTestReport);
-router.get("/written-test-reports/user", verifyToken, getWrittenTestReportsUser);
-router.delete("/written-test-reports/:id", verifyToken, deleteWrittenTestReport);
-router.get("/written-test-reports/:id", verifyToken, getWrittenReportsUserID);
+router.get("/written-test-reports", verifyToken, cache, getWrittenTestReports);
+router.post("/written-test-reports", verifyToken, clearCacheByPattern("/api/written-test-reports"), createWrittenTestReport);
+router.get("/written-test-reports/user", verifyToken, cache, getWrittenTestReportsUser);
+router.delete("/written-test-reports/:id", verifyToken, clearCacheByPattern("/api/written-test-reports"), deleteWrittenTestReport);
+router.get("/written-test-reports/:id", verifyToken, cache, getWrittenReportsUserID);
 
-router.get("/leaderboard/weekly", verifyToken, getWeeklyXP);
-router.get("/leaderboard/monthly", verifyToken, getMonthlyXP);
+router.get("/leaderboard/weekly", verifyToken, cache, getWeeklyXP);
+router.get("/leaderboard/monthly", verifyToken, cache, getMonthlyXP);
 
-// Phase 2: Migration endpoint (admin only)
-router.post("/migrate/quiz-difficulty", verifyToken, runMigration);
+// Migration endpoint (admin only)
+router.post("/migrate/quiz-difficulty", verifyToken, clearCacheByPattern("/api/quizzes"), runMigration);
 
 // Gamification cleanup endpoints (admin only)
-router.delete("/challenges/cleanup-empty", verifyToken, cleanupEmptyChallenges);
-router.delete("/tournaments/cleanup-empty", verifyToken, cleanupEmptyTournaments);
+router.delete("/challenges/cleanup-empty", verifyToken, clearCacheByPattern("/api/gamification"), cleanupEmptyChallenges);
+router.delete("/tournaments/cleanup-empty", verifyToken, clearCacheByPattern("/api/gamification"), cleanupEmptyTournaments);
 
 // Review Routes (Spaced Repetition)
 router.use("/reviews", reviewRoutes);

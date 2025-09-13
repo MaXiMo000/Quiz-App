@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const tournamentSchema = new mongoose.Schema({
     name: { type: String, required: true, maxlength: 100 },
     description: { type: String, maxlength: 1000 },
-    category: { type: String, default: 'General' }, // Tournament category
+    category: { type: String, default: "General" }, // Tournament category
     type: { 
         type: String, 
         enum: ["single_elimination", "round_robin", "time_based", "seasonal"],

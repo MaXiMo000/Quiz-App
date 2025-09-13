@@ -1,15 +1,17 @@
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
-import mongoose from "mongoose";
+import logger from "../utils/logger.js";
 
 // Debug endpoint to check user XP and recent XP logs
 export const debugUserXP = async (req, res) => {
+    logger.info(`Debugging XP for user ${req.params.userId}`);
     try {
         const { userId } = req.params;
         
         // Get user data
         const user = await UserQuiz.findById(userId);
         if (!user) {
+            logger.warn(`User not found with ID: ${userId} for XP debug`);
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -26,6 +28,7 @@ export const debugUserXP = async (req, res) => {
 
         const calculatedTotalXP = totalXPFromLogs[0]?.totalXP || 0;
 
+        logger.info(`Successfully debugged XP for user ${userId}`);
         res.json({
             user: {
                 _id: user._id,
@@ -48,18 +51,20 @@ export const debugUserXP = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("Debug XP error:", error);
+        logger.error({ message: `Error debugging XP for user ${req.params.userId}`, error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error", details: error.message });
     }
 };
 
 // Reset user XP (for testing purposes only - remove in production)
 export const resetUserXP = async (req, res) => {
+    logger.warn(`Attempting to reset XP for user ${req.params.userId}`);
     try {
         const { userId } = req.params;
         
         const user = await UserQuiz.findById(userId);
         if (!user) {
+            logger.error(`User not found with ID: ${userId} for XP reset`);
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -77,15 +82,17 @@ export const resetUserXP = async (req, res) => {
         // Optionally clear XP logs (uncomment if needed)
         // await XPLog.deleteMany({ user: userId });
 
+        logger.warn(`Successfully reset XP for user ${userId}`);
         res.json({ message: "User XP reset successfully", user });
     } catch (error) {
-        console.error("Reset XP error:", error);
+        logger.error({ message: `Error resetting XP for user ${req.params.userId}`, error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error", details: error.message });
     }
 };
 
 // Fix Google OAuth users missing fields
 export const fixGoogleOAuthUsers = async (req, res) => {
+    logger.info("Attempting to fix Google OAuth users with missing fields");
     try {
         // Find users that might be Google OAuth users (no password field or missing totalXP)
         const usersToFix = await UserQuiz.find({
@@ -102,12 +109,12 @@ export const fixGoogleOAuthUsers = async (req, res) => {
         for (const user of usersToFix) {
             let needsSave = false;
 
-            if (typeof user.totalXP === 'undefined' || user.totalXP === null) {
+            if (typeof user.totalXP === "undefined" || user.totalXP === null) {
                 user.totalXP = user.xp || 0;
                 needsSave = true;
             }
 
-            if (typeof user.quizStreak === 'undefined' || user.quizStreak === null) {
+            if (typeof user.quizStreak === "undefined" || user.quizStreak === null) {
                 user.quizStreak = 0;
                 needsSave = true;
             }
@@ -128,13 +135,14 @@ export const fixGoogleOAuthUsers = async (req, res) => {
             }
         }
 
+        logger.info(`Fixed ${fixedCount} Google OAuth users successfully`);
         res.json({ 
             message: `Fixed ${fixedCount} users successfully`,
             totalFound: usersToFix.length,
             fixedUsers: usersToFix.map(u => ({ name: u.name, email: u.email }))
         });
     } catch (error) {
-        console.error("Fix Google OAuth users error:", error);
+        logger.error({ message: "Error fixing Google OAuth users", error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error", details: error.message });
     }
 };

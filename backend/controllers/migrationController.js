@@ -1,7 +1,9 @@
 // Phase 2: Migration script to update existing quizzes with difficulty distribution
 import Quiz from "../models/Quiz.js";
+import logger from "../utils/logger.js";
 
 export const migrateQuizDifficultyDistribution = async () => {
+    logger.info("Starting quiz difficulty distribution migration");
     try {
         
         const quizzes = await Quiz.find({
@@ -11,6 +13,7 @@ export const migrateQuizDifficultyDistribution = async () => {
             ]
         });
 
+        logger.info(`Found ${quizzes.length} quizzes to migrate`);
         let updatedCount = 0;
 
         for (const quiz of quizzes) {
@@ -18,8 +21,8 @@ export const migrateQuizDifficultyDistribution = async () => {
             
             // Count difficulty distribution from existing questions
             quiz.questions.forEach(question => {
-                const difficulty = question.difficulty || 'medium';
-                if (distribution.hasOwnProperty(difficulty)) {
+                const difficulty = question.difficulty || "medium";
+                if (Object.prototype.hasOwnProperty.call(distribution, difficulty)) {
                     distribution[difficulty]++;
                 } else {
                     distribution.medium++; // Default to medium if unknown difficulty
@@ -48,32 +51,36 @@ export const migrateQuizDifficultyDistribution = async () => {
             updatedCount++;
         }
 
+        logger.info(`Successfully migrated ${updatedCount} quizzes`);
         return { success: true, updatedCount };
         
     } catch (error) {
-        console.error("❌ Migration failed:", error);
+        logger.error({ message: "Quiz difficulty distribution migration failed", error: error.message, stack: error.stack });
         return { success: false, error: error.message };
     }
 };
 
 // API endpoint to trigger migration
 export const runMigration = async (req, res) => {
+    logger.info("API endpoint to trigger migration called");
     try {
         const result = await migrateQuizDifficultyDistribution();
         
         if (result.success) {
+            logger.info(`Migration API endpoint completed successfully, updated ${result.updatedCount} quizzes`);
             res.json({
                 message: "Migration completed successfully",
                 updatedCount: result.updatedCount
             });
         } else {
+            logger.error({ message: "Migration API endpoint failed", error: result.error });
             res.status(500).json({
                 message: "Migration failed",
                 error: result.error
             });
         }
     } catch (error) {
-        console.error("Error running migration:", error);
+        logger.error({ message: "Error running migration API endpoint", error: error.message, stack: error.stack });
         res.status(500).json({
             message: "Migration failed",
             error: error.message
