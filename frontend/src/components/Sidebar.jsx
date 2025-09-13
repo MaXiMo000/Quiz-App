@@ -29,6 +29,52 @@ const Sidebar = ({ isOpen = false, onClose }) => {
         }
     }, []);
 
+    // Handle click outside to close sidebar on mobile
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isMobile && isOpen) {
+                const sidebar = document.querySelector('.sidebar');
+
+                if (sidebar && !sidebar.contains(event.target)) {
+                    setIsSidebarOpen(false);
+                    setCloseBtnSlide(false);
+                    setSidebarSlide(false);
+                    if (onClose) onClose();
+                }
+            }
+        };
+
+        if (isMobile && isOpen) {
+            // Add a small delay to prevent immediate closing
+            const timeoutId = setTimeout(() => {
+                document.addEventListener('mousedown', handleClickOutside);
+                document.addEventListener('touchstart', handleClickOutside);
+            }, 100);
+
+            return () => {
+                clearTimeout(timeoutId);
+                document.removeEventListener('mousedown', handleClickOutside);
+                document.removeEventListener('touchstart', handleClickOutside);
+            };
+        }
+    }, [isMobile, isOpen, onClose]);
+
+    // Toggle body class when sidebar opens/closes on mobile
+    useEffect(() => {
+        if (isMobile) {
+            if (isOpen) {
+                document.body.classList.add('sidebar-open');
+            } else {
+                document.body.classList.remove('sidebar-open');
+            }
+
+            // Cleanup on unmount
+            return () => {
+                document.body.classList.remove('sidebar-open');
+            };
+        }
+    }, [isMobile, isOpen]);
+
     const handleLogout = () => {
         localStorage.clear();
         navigate("/login");
@@ -105,15 +151,19 @@ const Sidebar = ({ isOpen = false, onClose }) => {
             </motion.button>
 
             <AnimatePresence>
-                {/* Mobile overlay */}
-                {((isMobile || breakpoints.mobile) ? isOpen : isSidebarOpen) && (isMobile || breakpoints.mobile) && (
+                {/* Mobile overlay - Show when sidebar is open on mobile */}
+                {isMobile && isOpen && (
                     <motion.div
                         className="sidebar-overlay"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             setIsSidebarOpen(false);
+                            setCloseBtnSlide(false);
+                            setSidebarSlide(false);
                             if (onClose) onClose();
                         }}
                         transition={{ duration: 0.3 }}
@@ -123,6 +173,9 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                 <aside
                     className={`sidebar ${((isMobile || breakpoints.mobile) ? isOpen : isSidebarOpen) ? "open" : ""} ${sidebarSlide ? "slide-left" : ""}`}
                     {...(isMobile ? swipeHandlers : {})}
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevent closing when clicking inside sidebar
+                    }}
                 >
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}

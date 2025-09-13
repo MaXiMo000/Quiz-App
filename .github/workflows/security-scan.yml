@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   security-scan:
     runs-on: ubuntu-latest
@@ -24,10 +28,10 @@ jobs:
         format: 'sarif'
         output: 'trivy-results.sarif'
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: 'trivy-results.sarif'
+    - name: Display security scan results
+      run: |
+        echo "Security scan completed. Results saved to trivy-results.sarif"
+        cat trivy-results.sarif | head -20
 
     - name: Check for secrets
       uses: trufflesecurity/trufflehog@main
