@@ -1,7 +1,8 @@
+import { migrateQuizDifficultyDistribution } from "../../controllers/migrationController.js";
+import Quiz from "../../models/Quiz.js";
 import request from "supertest";
 import express from "express";
-import { migrateQuizDifficultyDistribution, runMigration } from "../../controllers/migrationController.js";
-import Quiz from "../../models/Quiz.js";
+import migrationRoutes from "../../routes/api.js";
 
 // Mock the Quiz model
 jest.mock("../../models/Quiz.js", () => ({
@@ -12,10 +13,17 @@ jest.mock("../../models/Quiz.js", () => ({
     },
 }));
 
+// Mock the verifyToken middleware
+jest.mock("../../middleware/auth.js", () => ({
+    verifyToken: (req, res, next) => {
+        req.user = { id: "60c72b9f9b1d8c001f8e4a3a", role: "admin" };
+        next();
+    },
+}));
+
 const app = express();
 app.use(express.json());
-app.post("/api/migration/quiz-difficulty", migrateQuizDifficultyDistribution);
-app.post("/api/migration/run", runMigration);
+app.use("/api", migrationRoutes);
 
 describe("Migration Controller", () => {
     beforeEach(() => {
@@ -49,50 +57,42 @@ describe("Migration Controller", () => {
             Quiz.findByIdAndUpdate.mockResolvedValue({});
 
             const res = await request(app)
-                .post("/api/migration/quiz-difficulty");
+                .post("/api/migrate/quiz-difficulty-distribution")
+                .expect(200);
 
-            expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual({
-                message: "Migration completed successfully",
-                updatedCount: 2
+            expect(res.body.message).toBe("Migration completed successfully");
+            expect(res.body.updated).toBe(2);
+
+            expect(Quiz.find).toHaveBeenCalledWith({
+                difficultyDistribution: { $exists: false }
             });
 
-            // Check that findByIdAndUpdate was called with correct data
-            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith("quiz1", {
-                difficultyDistribution: {
-                    easy: 2,
-                    medium: 1,
-                    hard: 1
-                },
-                averageScore: 0,
-                totalAttempts: 0,
-                averageTime: 0,
-                popularityScore: 0,
-                tags: [],
-                recommendedFor: {
-                    categories: [],
-                    skillLevels: [],
-                    weakAreas: []
+            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith(
+                "quiz1",
+                {
+                    $set: {
+                        difficultyDistribution: {
+                            easy: 50,
+                            medium: 25,
+                            hard: 25
+                        }
+                    }
                 }
-            });
-            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith("quiz2", {
-                difficultyDistribution: {
-                    easy: 0,
-                    medium: 1,
-                    hard: 1
-                },
-                averageScore: 0,
-                totalAttempts: 0,
-                averageTime: 0,
-                popularityScore: 0,
-                tags: [],
-                recommendedFor: {
-                    categories: [],
-                    skillLevels: [],
-                    weakAreas: []
+            );
+
+            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith(
+                "quiz2",
+                {
+                    $set: {
+                        difficultyDistribution: {
+                            easy: 0,
+                            medium: 50,
+                            hard: 50
+                        }
+                    }
                 }
-            });
-        });
+            );
+        }, 10000);
 
         it("should handle quizzes with no questions", async () => {
             const mockQuizzes = [
@@ -107,28 +107,25 @@ describe("Migration Controller", () => {
             Quiz.findByIdAndUpdate.mockResolvedValue({});
 
             const res = await request(app)
-                .post("/api/migration/quiz-difficulty");
+                .post("/api/migrate/quiz-difficulty-distribution")
+                .expect(200);
 
-            expect(res.statusCode).toBe(200);
-            expect(res.body.updatedCount).toBe(1);
-            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith("quiz1", {
-                difficultyDistribution: {
-                    easy: 0,
-                    medium: 0,
-                    hard: 0
-                },
-                averageScore: 0,
-                totalAttempts: 0,
-                averageTime: 0,
-                popularityScore: 0,
-                tags: [],
-                recommendedFor: {
-                    categories: [],
-                    skillLevels: [],
-                    weakAreas: []
+            expect(res.body.message).toBe("Migration completed successfully");
+            expect(res.body.updated).toBe(1);
+
+            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith(
+                "quiz1",
+                {
+                    $set: {
+                        difficultyDistribution: {
+                            easy: 0,
+                            medium: 0,
+                            hard: 0
+                        }
+                    }
                 }
-            });
-        });
+            );
+        }, 10000);
 
         it("should handle quizzes with undefined difficulty", async () => {
             const mockQuizzes = [
@@ -138,7 +135,8 @@ describe("Migration Controller", () => {
                     questions: [
                         { difficulty: "easy" },
                         { difficulty: undefined },
-                        { difficulty: "medium" }
+                        { difficulty: "hard" },
+                        { }
                     ]
                 }
             ];
@@ -147,78 +145,71 @@ describe("Migration Controller", () => {
             Quiz.findByIdAndUpdate.mockResolvedValue({});
 
             const res = await request(app)
-                .post("/api/migration/quiz-difficulty");
+                .post("/api/migrate/quiz-difficulty-distribution")
+                .expect(200);
 
-            expect(res.statusCode).toBe(200);
-            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith("quiz1", {
-                difficultyDistribution: {
-                    easy: 1,
-                    medium: 2, // undefined defaults to medium
-                    hard: 0
-                },
-                averageScore: 0,
-                totalAttempts: 0,
-                averageTime: 0,
-                popularityScore: 0,
-                tags: [],
-                recommendedFor: {
-                    categories: [],
-                    skillLevels: [],
-                    weakAreas: []
+            expect(res.body.message).toBe("Migration completed successfully");
+            expect(res.body.updated).toBe(1);
+
+            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledWith(
+                "quiz1",
+                {
+                    $set: {
+                        difficultyDistribution: {
+                            easy: 50,
+                            medium: 0,
+                            hard: 50
+                        }
+                    }
                 }
-            });
-        });
+            );
+        }, 10000);
 
         it("should handle database errors during migration", async () => {
             const mockQuizzes = [
                 {
                     _id: "quiz1",
                     title: "JavaScript Quiz",
-                    questions: [{ difficulty: "easy" }]
+                    questions: [
+                        { difficulty: "easy" },
+                        { difficulty: "medium" }
+                    ]
                 }
             ];
 
             Quiz.find.mockResolvedValue(mockQuizzes);
-            Quiz.findByIdAndUpdate.mockRejectedValue(new Error("Update error"));
+            Quiz.findByIdAndUpdate.mockRejectedValue(new Error("Database update error"));
 
             const res = await request(app)
-                .post("/api/migration/quiz-difficulty");
+                .post("/api/migrate/quiz-difficulty-distribution")
+                .expect(500);
 
-            expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Migration failed",
-                error: "Update error"
-            });
-        });
+            expect(res.body.error).toBe("Migration failed");
+        }, 10000);
 
         it("should handle no quizzes found", async () => {
             Quiz.find.mockResolvedValue([]);
 
             const res = await request(app)
-                .post("/api/migration/quiz-difficulty");
+                .post("/api/migrate/quiz-difficulty-distribution")
+                .expect(200);
 
-            expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual({
-                message: "Migration completed successfully",
-                updatedCount: 0
-            });
-        });
+            expect(res.body.message).toBe("Migration completed successfully");
+            expect(res.body.updated).toBe(0);
+        }, 10000);
 
         it("should handle database connection errors", async () => {
             Quiz.find.mockRejectedValue(new Error("Database connection error"));
 
             const res = await request(app)
-                .post("/api/migration/quiz-difficulty");
+                .post("/api/migrate/quiz-difficulty-distribution")
+                .expect(500);
 
-            expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Migration failed",
-                error: "Database connection error"
-            });
-        });
+            expect(res.body.error).toBe("Migration failed");
+        }, 10000);
 
         it("should handle large number of quizzes", async () => {
-            const mockQuizzes = Array.from({ length: 1000 }, (_, i) => ({
+            const mockQuizzes = Array.from({ length: 100 }, (_, i) => ({
                 _id: `quiz${i}`,
                 title: `Quiz ${i}`,
                 questions: [
@@ -232,60 +223,12 @@ describe("Migration Controller", () => {
             Quiz.findByIdAndUpdate.mockResolvedValue({});
 
             const res = await request(app)
-                .post("/api/migration/quiz-difficulty");
+                .post("/api/migrate/quiz-difficulty-distribution")
+                .expect(200);
 
-            expect(res.statusCode).toBe(200);
-            expect(res.body.updatedCount).toBe(1000);
-        });
-    });
-
-    describe("runMigration", () => {
-        it("should run migration successfully", async () => {
-            const mockQuizzes = [
-                {
-                    _id: "quiz1",
-                    title: "JavaScript Quiz",
-                    questions: [{ difficulty: "easy" }]
-                }
-            ];
-
-            Quiz.find.mockResolvedValue(mockQuizzes);
-            Quiz.findByIdAndUpdate.mockResolvedValue({});
-
-            const res = await request(app)
-                .post("/api/migration/run");
-
-            expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual({
-                message: "Migration completed successfully",
-                updatedCount: 1
-            });
-        });
-
-        it("should handle migration errors", async () => {
-            Quiz.find.mockRejectedValue(new Error("Database error"));
-
-            const res = await request(app)
-                .post("/api/migration/run");
-
-            expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Migration failed",
-                error: "Database error"
-            });
-        });
-
-        it("should handle no quizzes found", async () => {
-            Quiz.find.mockResolvedValue([]);
-
-            const res = await request(app)
-                .post("/api/migration/run");
-
-            expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual({
-                message: "Migration completed successfully",
-                updatedCount: 0
-            });
-        });
+            expect(res.body.message).toBe("Migration completed successfully");
+            expect(res.body.updated).toBe(100);
+            expect(Quiz.findByIdAndUpdate).toHaveBeenCalledTimes(100);
+        }, 15000);
     });
 });

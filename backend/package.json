@@ -11,7 +11,9 @@
     "url": "https://github.com/MaXiMo000/Quiz-App"
   },
   "scripts": {
-    "test": "jest",
+    "test": "node --max-old-space-size=4096 node_modules/.bin/jest",
+    "test:watch": "node --max-old-space-size=4096 node_modules/.bin/jest --watch",
+    "test:coverage": "node --max-old-space-size=4096 node_modules/.bin/jest --coverage",
     "start": "node --require dotenv/config server.js",
     "lint": "eslint ."
   },
