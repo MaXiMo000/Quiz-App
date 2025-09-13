@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import request from "supertest";
 import express from "express";
 import analyticsRoutes from "../../routes/analyticsRoutes.js";

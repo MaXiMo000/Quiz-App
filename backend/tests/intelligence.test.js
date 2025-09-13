@@ -6,9 +6,9 @@ jest.mock("redis", () => ({
     on: jest.fn(),
     connect: jest.fn().mockResolvedValue(null),
     get: jest.fn().mockResolvedValue(null),
-    set: jest.fn().mockResolvedValue('OK'),
+    set: jest.fn().mockResolvedValue("OK"),
     scan: jest.fn().mockResolvedValue({ cursor: 0, keys: [] }),
-    flushDb: jest.fn().mockResolvedValue('OK'),
+    flushDb: jest.fn().mockResolvedValue("OK"),
   })),
 }));
 import intelligenceRoutes from "../routes/intelligenceRoutes.js";

@@ -1,6 +1,5 @@
 import { getCurrentDailyChallenge } from "../../controllers/gamificationController.js";
 import DailyChallenge from "../../models/DailyChallenge.js";
-import UserQuiz from "../../models/User.js";
 
 jest.mock("../../models/DailyChallenge.js");
 jest.mock("../../models/User.js");
