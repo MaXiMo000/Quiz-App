@@ -1,18 +1,19 @@
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
-import { unlockThemesForLevel } from "./userController.js";
 import {
     trackLearningAnalytics,
     trackCognitiveMetrics,
 } from "../services/analyticsService.js";
 import LearningAnalytics from "../models/LearningAnalytics.js";
 import CognitiveMetrics from "../models/CognitiveMetrics.js";
+import logger from "../utils/logger.js";
 
 // Phase 2: Intelligence Layer Controller
 
 // 1. Smart Quiz Recommendation Engine
 export const getSmartRecommendations = async (req, res) => {
+    logger.info(`Getting smart recommendations for user ${req.user.id}`);
     try {
         const userId = req.user.id;
         const userRole = req.user.role;
@@ -52,6 +53,7 @@ export const getSmartRecommendations = async (req, res) => {
             )
             .slice(0, 10);
 
+        logger.info(`Successfully generated ${uniqueRecommendations.length} smart recommendations for user ${userId}`);
         res.json({
             recommendations: uniqueRecommendations,
             userProfile: {
@@ -64,7 +66,7 @@ export const getSmartRecommendations = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting smart recommendations:", error);
+        logger.error({ message: `Error getting smart recommendations for user ${req.user.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error" });
     }
 };
@@ -106,8 +108,8 @@ async function getCategoryBasedRecommendations(user, recentReports, userId, user
 
     // Find categories where user performs well
     const goodCategories = Object.entries(categoryStats)
-        .filter(([_, stats]) => (stats.correct / stats.total) >= 0.7)
-        .map(([category, _]) => category);
+        .filter(([, stats]) => (stats.correct / stats.total) >= 0.7)
+        .map(([category]) => category);
 
     if (goodCategories.length > 0) {
         const baseFilter = getQuizFilter(userId, userRole);
@@ -271,27 +273,28 @@ async function getPopularQuizzesForLevel(user, userId, userRole) {
 function extractCategoryFromQuizName(quizName) {
     const lowercaseName = quizName.toLowerCase();
     
-    if (lowercaseName.includes('math') || lowercaseName.includes('algebra') || lowercaseName.includes('geometry') || lowercaseName.includes('calculus') || lowercaseName.includes('statistics')) {
-        return 'mathematics';
-    } else if (lowercaseName.includes('science') || lowercaseName.includes('physics') || lowercaseName.includes('chemistry') || lowercaseName.includes('biology')) {
-        return 'science';
-    } else if (lowercaseName.includes('history')) {
-        return 'history';
-    } else if (lowercaseName.includes('literature') || lowercaseName.includes('english')) {
-        return 'literature';
-    } else if (lowercaseName.includes('geography')) {
-        return 'geography';
-    } else if (lowercaseName.includes('programming') || lowercaseName.includes('coding') || lowercaseName.includes('computer') || lowercaseName.includes('java') || lowercaseName.includes('python') || lowercaseName.includes('javascript') || lowercaseName.includes('c++') || lowercaseName.includes('software')) {
-        return 'programming';
-    } else if (lowercaseName.includes('sports')) {
-        return 'sports';
+    if (lowercaseName.includes("math") || lowercaseName.includes("algebra") || lowercaseName.includes("geometry") || lowercaseName.includes("calculus") || lowercaseName.includes("statistics")) {
+        return "mathematics";
+    } else if (lowercaseName.includes("science") || lowercaseName.includes("physics") || lowercaseName.includes("chemistry") || lowercaseName.includes("biology")) {
+        return "science";
+    } else if (lowercaseName.includes("history")) {
+        return "history";
+    } else if (lowercaseName.includes("literature") || lowercaseName.includes("english")) {
+        return "literature";
+    } else if (lowercaseName.includes("geography")) {
+        return "geography";
+    } else if (lowercaseName.includes("programming") || lowercaseName.includes("coding") || lowercaseName.includes("computer") || lowercaseName.includes("java") || lowercaseName.includes("python") || lowercaseName.includes("javascript") || lowercaseName.includes("c++") || lowercaseName.includes("software")) {
+        return "programming";
+    } else if (lowercaseName.includes("sports")) {
+        return "sports";
     } else {
-        return 'general';
+        return "general";
     }
 }
 
 // 2. Adaptive Difficulty System
 export const getAdaptiveDifficulty = async (req, res) => {
+    logger.info(`Getting adaptive difficulty for user ${req.user.id} and category ${req.query.category}`);
     try {
         const userId = req.user.id;
         const { category } = req.query;
@@ -307,7 +310,7 @@ export const getAdaptiveDifficulty = async (req, res) => {
         }).sort({ createdAt: -1 });
 
         let categoryReports;
-        if (category && category.toLowerCase() !== 'general') {
+        if (category && category.toLowerCase() !== "general") {
             // Filter reports by category extracted from quiz names
             categoryReports = allReports.filter(report => {
                 const reportCategory = extractCategoryFromQuizName(report.quizName);
@@ -368,16 +371,18 @@ export const getAdaptiveDifficulty = async (req, res) => {
             category: category || "general"
         };
         
+        logger.info(`Successfully calculated adaptive difficulty for user ${userId}: ${response.recommendedDifficulty}`);
         res.json(response);
 
     } catch (error) {
-        console.error("Error calculating adaptive difficulty:", error);
+        logger.error({ message: `Error calculating adaptive difficulty for user ${req.user.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error" });
     }
 };
 
 // 3. Learning Analytics & Performance Predictions
 export const getLearningAnalytics = async (req, res) => {
+    logger.info(`Getting learning analytics for user ${req.user.id}`);
     try {
         const userId = req.user.id;
         const user = await UserQuiz.findById(userId);
@@ -409,15 +414,17 @@ export const getLearningAnalytics = async (req, res) => {
             },
         };
 
+        logger.info(`Successfully fetched learning analytics for user ${userId}`);
         res.json(analytics);
 
     } catch (error) {
-        console.error("Error getting learning analytics:", error);
+        logger.error({ message: `Error getting learning analytics for user ${req.user.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error" });
     }
 };
 
 export const trackUserPerformance = async (req, res) => {
+    logger.info(`Tracking performance for user ${req.user.id}`);
     try {
         const userId = req.user.id;
         const { quizId, score, totalQuestions, timeSpent } = req.body;
@@ -431,12 +438,13 @@ export const trackUserPerformance = async (req, res) => {
             responseTime: timeSpent / totalQuestions,
         });
 
+        logger.info(`Successfully tracked performance for user ${userId}`);
         res.json({ message: "Performance tracked successfully" });
     } catch (error) {
-        console.error("Error tracking user performance:", error);
+        logger.error({ message: `Error tracking user performance for user ${req.user.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error" });
     }
-}
+};
 
 // Helper functions for learning analytics
 function calculateOverviewStats(reports) {
@@ -488,14 +496,14 @@ function calculatePerformanceTrends(reports) {
                 week: i,
                 averageScore: Math.round((weekData.correct / weekData.total) * 100),
                 quizzesTaken: weekData.count,
-                label: i === 0 ? 'This Week' : i === 1 ? 'Last Week' : `${i} weeks ago`
+                label: i === 0 ? "This Week" : i === 1 ? "Last Week" : `${i} weeks ago`
             });
         } else {
             trends.push({
                 week: i,
                 averageScore: 0,
                 quizzesTaken: 0,
-                label: i === 0 ? 'This Week' : i === 1 ? 'Last Week' : `${i} weeks ago`
+                label: i === 0 ? "This Week" : i === 1 ? "Last Week" : `${i} weeks ago`
             });
         }
     }
@@ -684,6 +692,7 @@ function calculateTrend(reports) {
 
 // 4. Update user preferences based on quiz activity
 export const updateUserPreferences = async (req, res) => {
+    logger.info(`Updating user preferences for user ${req.user.id}`);
     try {
         const userId = req.user.id;
         const { quizId, score, totalQuestions, timeSpent, category, difficulty } = req.body;
@@ -751,13 +760,14 @@ export const updateUserPreferences = async (req, res) => {
 
         await user.save();
         
+        logger.info(`Successfully updated preferences for user ${userId}`);
         res.json({
             message: "User preferences updated successfully",
             preferences: user.preferences
         });
 
     } catch (error) {
-        console.error("Error updating user preferences:", error);
+        logger.error({ message: `Error updating user preferences for user ${req.user.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ error: "Server error" });
     }
 };

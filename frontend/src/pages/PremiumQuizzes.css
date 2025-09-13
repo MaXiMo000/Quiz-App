@@ -801,8 +801,36 @@
     }
 
     .premium-modal-box {
-        width: 95%;
-        padding: 2.5rem;
+        width: 85%;
+        max-width: 85vw;
+        max-height: 70vh;
+        padding: 1.2rem;
+    }
+    
+    .modal-title.premium-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .premium-modal-box input,
+    .premium-modal-box select {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.8rem;
+        margin: 0.5rem 0;
+    }
+    
+    .submit-btn.premium-submit {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        margin-top: 1rem;
+    }
+    
+    .close-btn.premium-close {
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
     }
 
     .floating-element {
@@ -870,13 +898,37 @@
     }
 
     .premium-modal-box {
-        padding: 2rem;
-        width: 95%;
-        margin: 1rem;
+        width: 90%;
+        max-width: 90vw;
+        max-height: 65vh;
+        padding: 1rem;
+        margin: 0.3rem;
     }
 
     .modal-title.premium-title {
-        font-size: 1.6rem;
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .premium-modal-box input,
+    .premium-modal-box select {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        margin: 0.4rem 0;
+    }
+    
+    .submit-btn.premium-submit {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+        margin-top: 0.8rem;
+    }
+    
+    .close-btn.premium-close {
+        top: 0.4rem;
+        right: 0.4rem;
+        width: 24px;
+        height: 24px;
+        font-size: 0.9rem;
     }
 }
 
@@ -888,6 +940,40 @@
 
     .premium-box {
         padding: 1.2rem;
+    }
+    
+    .premium-modal-box {
+        width: 95%;
+        max-width: 95vw;
+        max-height: 60vh;
+        padding: 0.8rem;
+        margin: 0.2rem;
+    }
+    
+    .modal-title.premium-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .premium-modal-box input,
+    .premium-modal-box select {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.7rem;
+        margin: 0.3rem 0;
+    }
+    
+    .submit-btn.premium-submit {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+        margin-top: 0.6rem;
+    }
+    
+    .close-btn.premium-close {
+        top: 0.3rem;
+        right: 0.3rem;
+        width: 20px;
+        height: 20px;
+        font-size: 0.8rem;
     }
 
     .premium-quiz-container .premium-box .quiz-info {

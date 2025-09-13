@@ -1,0 +1,1425 @@
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:39:35.014 AM"}
+{"level":"info","message":"Creating written test report for user undefined and test undefined","timestamp":"2025-09-12 11:39:35.000 AM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 11:39:35.102 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:39:35.149 AM"}
+{"level":"warn","message":"Missing required fields for written test report creation","timestamp":"2025-09-12 11:39:35.051 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:39:35.152 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:39:35.162 AM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 11:39:35.188 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:39:36.989 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:39:37.011 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:39:37.035 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:39:37.040 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:39:37.483 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:39:37.491 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:39:37.503 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:39:37.505 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:39:37.804 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:39:37.807 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:39:37.811 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:39:37.812 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:39:37.818 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:39:37.902 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:39:37.907 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:39:37.909 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:39:39.482 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:39:39.504 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4067b1865072e41a84e4f, question 68c4067b1865072e41a84e4e","timestamp":"2025-09-12 11:39:39.591 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4067b1865072e41a84e4f, question 68c4067b1865072e41a84e4e","timestamp":"2025-09-12 11:39:39.602 AM"}
+{"level":"info","message":"Creating written test report for user undefined and test undefined","timestamp":"2025-09-12 11:42:08.283 AM"}
+{"level":"warn","message":"Missing required fields for written test report creation","timestamp":"2025-09-12 11:42:08.292 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:42:08.304 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:42:08.305 AM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:42:08.332 AM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 11:42:08.364 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:42:08.383 AM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 11:42:08.390 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:42:09.747 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:42:09.753 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:42:09.759 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:42:09.760 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:42:09.761 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:42:09.767 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:42:09.773 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:42:09.774 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:42:09.959 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:42:09.968 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:42:09.971 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:42:09.973 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:42:09.980 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:42:10.015 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:42:10.021 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:42:10.022 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:42:11.308 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:42:11.341 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c407139a5f2ad255442639, question 68c407139a5f2ad255442638","timestamp":"2025-09-12 11:42:11.438 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c407139a5f2ad255442639, question 68c407139a5f2ad255442638","timestamp":"2025-09-12 11:42:11.449 AM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:44:21.171 AM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 11:44:21.199 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:44:21.217 AM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 11:44:21.223 AM"}
+{"level":"info","message":"Creating written test report for user undefined and test undefined","timestamp":"2025-09-12 11:44:21.248 AM"}
+{"level":"warn","message":"Missing required fields for written test report creation","timestamp":"2025-09-12 11:44:21.256 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:44:21.268 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:44:21.270 AM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 11:44:21.302 AM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 11:44:21.319 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:44:22.535 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:44:22.561 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4079600a4fb8343463e22, question 68c4079600a4fb8343463e21","timestamp":"2025-09-12 11:44:22.676 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:44:22.684 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4079600a4fb8343463e22, question 68c4079600a4fb8343463e21","timestamp":"2025-09-12 11:44:22.697 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:44:22.693 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:44:22.704 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:44:22.705 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:44:22.861 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:44:22.868 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:44:22.874 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:44:22.875 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:44:24.175 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:44:24.181 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:44:24.183 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:44:24.184 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:44:24.186 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:44:24.228 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:44:24.231 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:44:24.232 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:47:34.226 AM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:47:34.244 AM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 11:47:34.283 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:47:34.253 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:47:34.275 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:47:34.279 AM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:47:34.290 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:47:34.308 AM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 11:47:34.317 AM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:47:34.303 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:47:34.309 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:47:34.311 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:47:36.042 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:47:36.050 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:47:36.069 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:47:36.072 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:47:36.123 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:47:36.130 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:47:36.141 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:47:36.144 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:47:36.147 AM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 11:47:36.199 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:47:36.212 AM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 11:47:36.216 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:47:36.215 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:47:36.216 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:47:38.066 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:47:38.103 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4085a6b631884506e7253, question 68c4085a6b631884506e7252","timestamp":"2025-09-12 11:47:38.235 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4085a6b631884506e7253, question 68c4085a6b631884506e7252","timestamp":"2025-09-12 11:47:38.252 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:49:40.800 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:49:40.810 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:49:40.824 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:49:40.826 AM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 11:49:40.963 AM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 11:49:40.978 AM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:49:40.997 AM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 11:49:41.023 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:49:41.039 AM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 11:49:41.045 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:49:42.256 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:49:42.261 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:49:42.267 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:49:42.268 AM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:49:42.489 AM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:49:42.495 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:49:42.501 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:49:42.503 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:49:43.713 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:49:43.735 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c408d738448356276202e4, question 68c408d738448356276202e3","timestamp":"2025-09-12 11:49:43.816 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c408d738448356276202e4, question 68c408d738448356276202e3","timestamp":"2025-09-12 11:49:43.826 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:49:43.979 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:49:43.984 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:49:43.986 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:49:43.988 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:49:43.990 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:49:44.017 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:49:44.019 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:49:44.020 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:53:04.626 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:53:04.642 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:53:04.665 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:53:04.668 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:53:04.687 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:53:04.704 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:53:04.727 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:53:04.730 AM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:53:04.880 AM"}
+{"error":"Cannot read properties of undefined (reading 'includes')","level":"error","message":"Error fetching weekly XP leaderboard","stack":"TypeError: Cannot read properties of undefined (reading 'includes')\n    at includes (/app/backend/controllers/leaderboardController.js:24:45)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/leaderboardController.test.js:32:9)","timestamp":"2025-09-12 11:53:04.899 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:53:04.903 AM"}
+{"error":"Cannot read properties of undefined (reading 'includes')","level":"error","message":"Error fetching monthly XP leaderboard","stack":"TypeError: Cannot read properties of undefined (reading 'includes')\n    at includes (/app/backend/controllers/leaderboardController.js:56:45)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/leaderboardController.test.js:49:13)","timestamp":"2025-09-12 11:53:04.905 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:53:06.594 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:53:06.639 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c409a27c0af4114bdb44e9, question 68c409a27c0af4114bdb44e8","timestamp":"2025-09-12 11:53:06.758 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c409a27c0af4114bdb44e9, question 68c409a27c0af4114bdb44e8","timestamp":"2025-09-12 11:53:06.788 AM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 11:53:06.994 AM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 11:53:07.013 AM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:53:08.468 AM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:53:08.473 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:53:08.476 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:53:08.478 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:53:08.630 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:53:08.636 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:53:08.638 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:53:08.639 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:53:08.642 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:53:08.679 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:53:08.681 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:53:08.683 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:55:17.464 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:55:17.467 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:55:17.473 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:55:17.486 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:55:17.488 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:55:17.477 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:55:17.490 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:55:17.493 AM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:55:17.691 AM"}
+{"error":"Cannot read properties of undefined (reading 'includes')","level":"error","message":"Error fetching weekly XP leaderboard","stack":"TypeError: Cannot read properties of undefined (reading 'includes')\n    at includes (/app/backend/controllers/leaderboardController.js:24:45)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/leaderboardController.test.js:33:9)","timestamp":"2025-09-12 11:55:17.713 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:55:17.725 AM"}
+{"error":"Cannot read properties of undefined (reading 'includes')","level":"error","message":"Error fetching monthly XP leaderboard","stack":"TypeError: Cannot read properties of undefined (reading 'includes')\n    at includes (/app/backend/controllers/leaderboardController.js:56:45)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/leaderboardController.test.js:50:13)","timestamp":"2025-09-12 11:55:17.727 AM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 11:55:18.989 AM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 11:55:19.004 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:55:19.514 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:55:19.544 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40a27db507e2fb0500c42, question 68c40a27db507e2fb0500c41","timestamp":"2025-09-12 11:55:19.646 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40a27db507e2fb0500c42, question 68c40a27db507e2fb0500c41","timestamp":"2025-09-12 11:55:19.680 AM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:55:20.778 AM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:55:20.786 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:55:20.791 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:55:20.795 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:55:20.801 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:55:20.812 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:55:20.816 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:55:20.818 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:55:20.823 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:55:20.868 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:55:20.872 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:55:20.874 AM"}
+{"level":"info","message":"Creating report for user undefined","timestamp":"2025-09-12 11:57:44.485 AM"}
+{"level":"warn","message":"Missing required fields for report creation","timestamp":"2025-09-12 11:57:44.499 AM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 11:57:44.516 AM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 11:57:44.519 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 11:57:44.590 AM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 11:57:44.603 AM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 11:57:44.621 AM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 11:57:44.623 AM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 11:57:44.842 AM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 11:57:44.854 AM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 11:57:44.860 AM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 11:57:44.862 AM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:57:46.424 AM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 11:57:46.449 AM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:57:46.498 AM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 11:57:46.504 AM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 11:57:46.507 AM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 11:57:46.509 AM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40abaae1c49c033013955, question 68c40abaae1c49c033013954","timestamp":"2025-09-12 11:57:46.588 AM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40abaae1c49c033013955, question 68c40abaae1c49c033013954","timestamp":"2025-09-12 11:57:46.602 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:57:47.060 AM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 11:57:47.067 AM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 11:57:47.070 AM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 11:57:47.072 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:57:47.077 AM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 11:57:47.134 AM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 11:57:47.138 AM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 11:57:47.140 AM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 11:57:47.994 AM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 11:57:48.005 AM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:00:30.595 PM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 12:00:30.604 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:00:30.617 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:00:30.618 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:00:30.720 PM"}
+{"level":"error","message":"Invalid user ID format: userId","timestamp":"2025-09-12 12:00:30.730 PM"}
+{"level":"error","message":"User not found - userId: userId, username: testuser","timestamp":"2025-09-12 12:00:30.795 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:00:30.806 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:00:30.807 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:00:30.865 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:00:30.874 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:00:30.879 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:00:30.881 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:00:32.014 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:00:32.021 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:00:32.024 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:00:32.025 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:00:32.028 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:00:32.103 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:00:32.107 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:00:32.109 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:00:32.147 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:00:32.154 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:00:32.158 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:00:32.160 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:00:32.214 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:00:32.233 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40b6091779e3a5ce4f6bb, question 68c40b6091779e3a5ce4f6ba","timestamp":"2025-09-12 12:00:32.342 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40b6091779e3a5ce4f6bb, question 68c40b6091779e3a5ce4f6ba","timestamp":"2025-09-12 12:00:32.351 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:00:33.607 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:00:33.624 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:03:45.658 PM"}
+{"level":"warn","message":"User userId with role undefined attempted to create a quiz","timestamp":"2025-09-12 12:03:45.667 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:03:45.679 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:03:45.682 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:03:45.871 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:03:45.879 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:03:45.884 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:03:45.886 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:03:46.114 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:03:46.162 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:03:46.174 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:03:46.176 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:03:47.017 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:03:47.041 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40c2332780564127d0c99, question 68c40c2332780564127d0c98","timestamp":"2025-09-12 12:03:47.114 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40c2332780564127d0c99, question 68c40c2332780564127d0c98","timestamp":"2025-09-12 12:03:47.125 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:03:47.690 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:03:47.702 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:03:48.767 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:03:48.777 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:03:48.781 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:03:48.783 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:03:48.788 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:03:48.839 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:03:48.845 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:03:48.849 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:03:49.856 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:03:49.863 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:03:49.868 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:03:49.871 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:07:05.785 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:07:05.805 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:07:05.814 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:07:05.818 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:07:05.828 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:07:05.845 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:07:05.853 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:07:05.855 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:07:06.066 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:07:06.121 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:07:06.127 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:07:06.129 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:07:07.636 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:07:07.644 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:07:07.649 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:07:07.651 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:07:07.656 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:07:07.689 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:07:07.701 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:07:07.710 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:07:07.721 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:07:07.771 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:07:07.776 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:07:07.777 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:07:08.151 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:07:08.163 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:07:09.308 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:07:09.337 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40ced4375475bc5930a1a, question 68c40ced4375475bc5930a19","timestamp":"2025-09-12 12:07:09.423 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40ced4375475bc5930a1a, question 68c40ced4375475bc5930a19","timestamp":"2025-09-12 12:07:09.433 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:09:46.277 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:09:46.286 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:09:46.291 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:09:46.293 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:09:46.482 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:09:46.528 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:09:46.535 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:09:46.537 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:09:46.822 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:09:46.884 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:09:47.210 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:09:47.893 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:09:47.908 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:09:47.970 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:09:47.974 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:09:47.978 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:09:47.979 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:09:49.237 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:09:49.250 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:09:49.258 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:09:49.259 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:09:49.264 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:09:49.318 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:09:49.322 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:09:49.324 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:09:50.751 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:09:50.760 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:09:50.763 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:09:50.765 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:09:50.923 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:09:50.942 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40d8fa33e953edfa40b60, question 68c40d8fa33e953edfa40b5f","timestamp":"2025-09-12 12:09:51.023 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40d8fa33e953edfa40b60, question 68c40d8fa33e953edfa40b5f","timestamp":"2025-09-12 12:09:51.033 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:12:33.026 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:12:33.106 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:12:33.116 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:12:33.189 PM"}
+{"error":"_XPLog.default.find(...).sort is not a function","level":"error","message":"Error debugging XP for user userId","stack":"TypeError: _XPLog.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/debugController.js:20:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/debugController.test.js:46:13)","timestamp":"2025-09-12 12:12:33.172 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:12:33.197 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:12:33.201 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:12:33.177 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:12:33.231 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:12:35.194 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:12:35.207 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:12:35.214 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:12:35.216 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:12:35.219 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:12:35.234 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:12:35.373 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:12:35.380 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:12:35.385 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:12:35.387 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:12:36.838 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:12:36.847 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:12:36.852 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:12:36.855 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:12:36.859 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:12:36.933 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:12:36.938 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:12:36.940 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:12:37.196 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:12:37.201 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:12:37.212 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:12:37.213 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:12:38.318 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:12:38.333 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40e3689591483c4af8996, question 68c40e3689591483c4af8995","timestamp":"2025-09-12 12:12:38.407 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40e3689591483c4af8996, question 68c40e3689591483c4af8995","timestamp":"2025-09-12 12:12:38.417 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:14:43.219 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:14:43.229 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:14:43.413 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:14:43.423 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:14:43.460 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:14:43.465 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:14:43.467 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:14:43.478 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:14:43.513 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:14:44.979 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:14:44.992 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:14:45.114 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:14:45.131 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:14:45.134 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:14:45.144 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:14:46.500 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:14:46.508 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:14:46.511 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:14:46.513 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:14:46.609 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:14:46.624 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:14:46.623 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:14:46.627 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:14:46.629 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:14:46.631 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:14:46.633 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:14:46.635 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:14:46.642 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:14:46.700 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:14:46.703 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:14:46.705 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:14:48.110 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:14:48.133 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40eb8f7282cfd41e93d07, question 68c40eb8f7282cfd41e93d06","timestamp":"2025-09-12 12:14:48.223 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40eb8f7282cfd41e93d07, question 68c40eb8f7282cfd41e93d06","timestamp":"2025-09-12 12:14:48.243 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:17:35.865 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:17:35.917 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:17:35.926 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:17:35.957 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:17:35.986 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:17:35.993 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:17:35.995 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:17:36.597 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:17:36.605 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:17:37.593 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:17:37.598 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:17:37.601 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:17:37.602 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:17:37.605 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:17:37.609 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:17:38.027 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:17:38.081 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40f62c4758bedd74c5444, question 68c40f62c4758bedd74c5443","timestamp":"2025-09-12 12:17:38.223 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c40f62c4758bedd74c5444, question 68c40f62c4758bedd74c5443","timestamp":"2025-09-12 12:17:38.254 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:17:38.993 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:17:38.998 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:17:39.003 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:17:39.004 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:17:39.242 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:17:39.264 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:17:39.268 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:17:39.269 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:17:39.719 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:17:39.725 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:17:39.728 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:17:39.729 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:17:39.732 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:17:39.762 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:17:39.768 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:17:39.769 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:17:40.457 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:17:40.468 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:20:32.607 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:20:32.640 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:20:32.920 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:20:32.979 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:20:32.986 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:20:32.988 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:20:33.674 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:39:13)","timestamp":"2025-09-12 12:20:33.726 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:20:35.201 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:20:35.209 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:20:35.212 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:20:35.213 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:20:35.291 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:20:35.360 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:20:35.401 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:20:35.596 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:20:35.649 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c410138b9992531f22b4cb, question 68c410138b9992531f22b4ca","timestamp":"2025-09-12 12:20:35.749 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c410138b9992531f22b4cb, question 68c410138b9992531f22b4ca","timestamp":"2025-09-12 12:20:35.763 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:20:37.292 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:20:37.300 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:20:37.524 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:20:37.530 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:20:37.533 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:20:37.535 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:20:38.734 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:20:38.747 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:20:39.124 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:20:39.132 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:20:39.136 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:20:39.138 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:20:39.142 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:20:39.209 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:20:39.212 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:20:39.214 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:20:39.278 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:20:39.282 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:20:39.284 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:20:39.286 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:22:51.241 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:22:51.264 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:22:51.407 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:22:51.472 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:22:51.481 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:22:51.484 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:22:51.542 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:40:13)","timestamp":"2025-09-12 12:22:51.594 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:22:53.037 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:22:53.085 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:22:53.115 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:22:53.169 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:22:53.178 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:22:53.186 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:22:53.188 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:22:53.270 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:22:53.274 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:22:54.503 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:22:54.518 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4109e52a1fbeecb446a00, question 68c4109e52a1fbeecb4469ff","timestamp":"2025-09-12 12:22:54.635 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4109e52a1fbeecb446a00, question 68c4109e52a1fbeecb4469ff","timestamp":"2025-09-12 12:22:54.653 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:22:54.783 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:22:54.788 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:22:54.791 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:22:54.792 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:22:54.916 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:22:54.923 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:22:54.934 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:22:54.936 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:22:54.944 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:22:55.014 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:22:55.017 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:22:55.018 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:22:56.591 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:22:56.598 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:22:56.604 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:22:56.606 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:22:56.750 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:22:56.761 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:25:10.569 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:25:10.607 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:25:10.617 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:25:10.675 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:25:10.681 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:25:10.682 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:25:11.073 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:42:13)","timestamp":"2025-09-12 12:25:11.125 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:25:12.090 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:25:12.098 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:25:12.101 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:25:12.102 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:25:12.104 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:25:12.144 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:25:12.147 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:25:12.148 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:25:12.422 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:25:12.480 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:25:12.511 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:25:12.586 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:25:12.592 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:25:12.594 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:25:12.597 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:25:13.593 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:25:13.604 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:25:13.607 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:25:13.608 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:25:14.002 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:25:14.016 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:25:14.068 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:25:14.072 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:25:14.074 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:25:14.076 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:25:15.170 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:25:15.177 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:25:15.412 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:25:15.463 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4112b09688cef581aa490, question 68c4112b09688cef581aa48f","timestamp":"2025-09-12 12:25:15.540 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4112b09688cef581aa490, question 68c4112b09688cef581aa48f","timestamp":"2025-09-12 12:25:15.551 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:28:40.536 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:28:40.568 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:28:40.742 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:28:40.854 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:28:40.862 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:28:40.865 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:28:41.288 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:46:13)","timestamp":"2025-09-12 12:28:41.434 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:28:42.925 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:28:43.034 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:28:43.089 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:28:43.178 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:28:43.183 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:28:43.635 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:28:43.640 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:28:43.643 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:28:43.645 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:28:45.254 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:28:45.297 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:28:45.366 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:28:45.384 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c411fdbacef202b4dca7ba, question 68c411fdbacef202b4dca7b9","timestamp":"2025-09-12 12:28:45.416 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c411fdbacef202b4dca7ba, question 68c411fdbacef202b4dca7b9","timestamp":"2025-09-12 12:28:45.434 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:28:45.626 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:28:45.637 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:28:45.640 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:28:45.642 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:28:47.880 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:28:47.890 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:28:47.895 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:28:47.897 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:28:47.914 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:28:47.921 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:28:47.924 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:28:47.925 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:28:47.928 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:28:47.978 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:28:47.981 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:28:47.982 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:31:14.166 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:31:14.190 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:31:14.230 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:31:14.298 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:31:14.303 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:31:14.305 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:31:14.566 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:46:13)","timestamp":"2025-09-12 12:31:14.635 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:31:15.649 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:31:15.654 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:31:15.657 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:31:15.659 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:31:15.662 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:31:15.710 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:31:15.713 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:31:15.714 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:31:15.951 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:31:15.965 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:31:15.970 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:31:15.972 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:31:16.407 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:31:16.449 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:31:16.486 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:31:17.060 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:31:17.066 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:31:17.069 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:31:17.070 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:31:17.326 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:31:17.342 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c412952d3045ad3175e886, question 68c412952d3045ad3175e885","timestamp":"2025-09-12 12:31:17.447 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c412952d3045ad3175e886, question 68c412952d3045ad3175e885","timestamp":"2025-09-12 12:31:17.457 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:31:18.119 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:31:18.124 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:31:18.669 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:31:18.676 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:31:18.678 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:31:18.679 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:31:19.456 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:31:19.467 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:33:48.856 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:33:48.911 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:33:49.085 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:33:49.183 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:33:49.194 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:33:49.196 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:33:49.357 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:46:13)","timestamp":"2025-09-12 12:33:49.401 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:33:51.593 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:33:51.604 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:33:51.607 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:33:51.609 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:33:51.674 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:33:51.723 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:33:51.758 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:33:52.218 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:33:52.225 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:33:53.556 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:33:53.587 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41331e32bca147f673587, question 68c41331e32bca147f673586","timestamp":"2025-09-12 12:33:53.715 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:33:53.718 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41331e32bca147f673587, question 68c41331e32bca147f673586","timestamp":"2025-09-12 12:33:53.728 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:33:53.725 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:33:53.730 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:33:53.732 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:33:55.179 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:33:55.186 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:33:55.190 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:33:55.192 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:33:55.195 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:33:55.248 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:33:55.251 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:33:55.253 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:33:55.452 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:33:55.460 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:33:55.636 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:33:55.641 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:33:55.645 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:33:55.646 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:36:43.594 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:36:43.619 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:36:43.681 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:36:43.739 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:36:43.745 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:36:43.747 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:36:44.390 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:46:13)","timestamp":"2025-09-12 12:36:44.448 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:36:45.282 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:36:45.288 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:36:45.347 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:36:45.394 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:36:45.428 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:36:46.136 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:36:46.142 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:36:46.145 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:36:46.146 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:36:46.778 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:36:46.814 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:36:46.814 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:36:46.819 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:36:46.822 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:36:46.824 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c413dec613aef4b17d1bca, question 68c413dec613aef4b17d1bc9","timestamp":"2025-09-12 12:36:46.905 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c413dec613aef4b17d1bca, question 68c413dec613aef4b17d1bc9","timestamp":"2025-09-12 12:36:46.917 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:36:48.231 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:36:48.241 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:36:48.441 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:36:48.447 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:36:48.449 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:36:48.450 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:36:48.453 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:36:48.480 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:36:48.482 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:36:48.484 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:36:49.033 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:36:49.037 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:36:49.040 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:36:49.041 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:39:21.441 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:39:21.474 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:39:21.678 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:39:21.727 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:39:21.734 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:39:21.735 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:39:22.334 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:46:13)","timestamp":"2025-09-12 12:39:22.396 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:39:23.961 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:39:24.024 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:39:24.077 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:39:24.077 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:39:24.085 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:39:24.088 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:39:24.089 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:39:24.447 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:39:24.456 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:39:24.459 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:39:24.460 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:39:25.816 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:39:25.850 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4147d5ee6b4cfa80bea16, question 68c4147d5ee6b4cfa80bea15","timestamp":"2025-09-12 12:39:25.948 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4147d5ee6b4cfa80bea16, question 68c4147d5ee6b4cfa80bea15","timestamp":"2025-09-12 12:39:25.960 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:39:26.419 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:39:26.427 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:39:26.430 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:39:26.431 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:39:26.434 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:39:26.504 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:39:26.507 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:39:26.508 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:39:28.443 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:39:28.454 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:39:28.506 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:39:28.515 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:39:28.519 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:39:28.520 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:39:28.611 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:39:28.615 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:48:26.852 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:48:26.876 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:48:26.883 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:48:26.893 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:48:26.972 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:48:26.987 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:48:26.991 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:68:13)","timestamp":"2025-09-12 12:48:26.991 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:48:28.706 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:48:28.714 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:48:28.718 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:48:28.720 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:48:29.081 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:48:29.131 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:48:29.198 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:48:29.897 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:48:29.902 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:48:29.905 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:48:29.906 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:48:31.042 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:48:31.058 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4169f9b2ea9fe9d175425, question 68c4169f9b2ea9fe9d175424","timestamp":"2025-09-12 12:48:31.146 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4169f9b2ea9fe9d175425, question 68c4169f9b2ea9fe9d175424","timestamp":"2025-09-12 12:48:31.155 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:48:31.399 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:48:31.406 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:48:31.412 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:48:31.413 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:48:31.416 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:48:31.488 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:48:31.495 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:48:31.496 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:48:32.574 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:48:32.586 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:48:32.719 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:48:32.726 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:48:32.951 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:48:32.957 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:48:32.959 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:48:32.960 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:52:11.203 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:52:11.203 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:52:11.250 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:52:11.319 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:52:11.330 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:52:11.334 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:52:11.466 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:71:13)","timestamp":"2025-09-12 12:52:11.514 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:52:13.390 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:52:13.437 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4177d509e159979b6132f, question 68c4177d509e159979b6132e","timestamp":"2025-09-12 12:52:13.560 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4177d509e159979b6132f, question 68c4177d509e159979b6132e","timestamp":"2025-09-12 12:52:13.574 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:52:13.618 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:52:13.680 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:52:13.720 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:52:15.342 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:52:15.347 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:52:15.544 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:52:15.551 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:52:15.554 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:52:15.556 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:52:15.560 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:52:15.607 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:52:15.611 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:52:15.612 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:52:15.652 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:52:15.659 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:52:15.662 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:52:15.664 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:52:17.288 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:52:17.287 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:52:17.299 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:52:17.304 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:52:17.307 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:52:17.382 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:52:17.593 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:52:17.598 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:52:17.600 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:52:17.601 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 12:59:05.241 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 12:59:05.271 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 12:59:05.338 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 12:59:05.398 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 12:59:05.404 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 12:59:05.411 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 12:59:05.614 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:67:13)","timestamp":"2025-09-12 12:59:05.674 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 12:59:07.232 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:59:07.263 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 12:59:07.294 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 12:59:07.300 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 12:59:07.332 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4191ba4accdf9566bf34a, question 68c4191ba4accdf9566bf349","timestamp":"2025-09-12 12:59:07.418 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4191ba4accdf9566bf34a, question 68c4191ba4accdf9566bf349","timestamp":"2025-09-12 12:59:07.428 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 12:59:08.428 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 12:59:08.433 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 12:59:08.438 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 12:59:08.440 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:59:08.817 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 12:59:08.822 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 12:59:08.827 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 12:59:08.829 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 12:59:08.845 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 12:59:08.851 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 12:59:08.854 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 12:59:08.856 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 12:59:09.664 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 12:59:09.672 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:59:10.204 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 12:59:10.210 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 12:59:10.212 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 12:59:10.213 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:59:10.215 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 12:59:10.257 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 12:59:10.261 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 12:59:10.262 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 12:59:10.385 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 12:59:10.390 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 01:01:48.985 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 01:01:49.020 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 01:01:49.282 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 01:01:49.336 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 01:01:49.342 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 01:01:49.344 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 01:01:49.767 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:67:13)","timestamp":"2025-09-12 01:01:49.893 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:01:51.312 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:01:51.341 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c419bf1ab950ce55b4d40e, question 68c419bf1ab950ce55b4d40d","timestamp":"2025-09-12 01:01:51.464 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c419bf1ab950ce55b4d40e, question 68c419bf1ab950ce55b4d40d","timestamp":"2025-09-12 01:01:51.510 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 01:01:51.677 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 01:01:51.779 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 01:01:51.840 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 01:01:52.065 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 01:01:52.070 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 01:01:52.073 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 01:01:52.075 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 01:01:53.707 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 01:01:53.715 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 01:01:53.979 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 01:01:53.998 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 01:01:54.009 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 01:01:54.016 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:01:55.643 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 01:01:55.653 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:01:55.656 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 01:01:55.658 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:01:55.662 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 01:01:55.704 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:01:55.708 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 01:01:55.710 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 01:01:56.003 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 01:01:56.019 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:01:56.227 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:01:56.234 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 01:01:56.238 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 01:01:56.239 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 01:05:01.052 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 01:05:01.076 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 01:05:01.211 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 01:05:01.267 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 01:05:01.277 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 01:05:01.279 PM"}
+{"level":"info","message":"Getting learning paths for user userId","timestamp":"2025-09-12 01:05:01.642 PM"}
+{"error":"_LearningPath.LearningPath.find(...).populate is not a function","level":"error","message":"Error getting learning paths for user userId","stack":"TypeError: _LearningPath.LearningPath.find(...).populate is not a function\n    at populate (/app/backend/controllers/learningPathController.js:31:14)\n    at Object.<anonymous> (/app/backend/tests/unit/learningPathController.test.js:67:35)\n    at Promise.finally.completed (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:1556:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:1496:10)\n    at _callCircusTest (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:1006:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:946:3)\n    at _runTestsForDescribeBlock (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:839:13)\n    at _runTestsForDescribeBlock (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at _runTestsForDescribeBlock (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at run (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:757:3)\n    at runAndTransformResultsToJestFormat (/app/backend/node_modules/jest-circus/build/jestAdapterInit.js:1917:21)\n    at jestAdapter (/app/backend/node_modules/jest-circus/build/runner.js:101:19)\n    at runTestInternal (/app/backend/node_modules/jest-runner/build/testWorker.js:275:16)\n    at runTest (/app/backend/node_modules/jest-runner/build/testWorker.js:343:7)\n    at Object.worker (/app/backend/node_modules/jest-runner/build/testWorker.js:497:12)","timestamp":"2025-09-12 01:05:01.695 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 01:05:02.886 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 01:05:02.963 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 01:05:02.991 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 01:05:03.307 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 01:05:03.311 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:05:04.102 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:05:04.118 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41a8066ff3967b8cd20cb, question 68c41a8066ff3967b8cd20ca","timestamp":"2025-09-12 01:05:04.174 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41a8066ff3967b8cd20cb, question 68c41a8066ff3967b8cd20ca","timestamp":"2025-09-12 01:05:04.187 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 01:05:04.592 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 01:05:04.598 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 01:05:04.603 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 01:05:04.604 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:05:04.681 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:05:04.686 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 01:05:04.689 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 01:05:04.690 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 01:05:05.625 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 01:05:05.629 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 01:05:05.632 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 01:05:05.633 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 01:05:06.055 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 01:05:06.069 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:05:06.137 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 01:05:06.145 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:05:06.149 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 01:05:06.150 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:05:06.155 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 01:05:06.205 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:05:06.207 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 01:05:06.208 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 01:08:22.962 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 01:08:23.011 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 01:08:23.244 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 01:08:23.297 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 01:08:23.306 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 01:08:23.308 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:08:25.693 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 01:08:25.700 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:08:25.703 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 01:08:25.705 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:08:25.709 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 01:08:25.766 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:08:25.770 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 01:08:25.772 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 01:08:25.998 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 01:08:26.060 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 01:08:26.094 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 01:08:26.402 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 01:08:26.423 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 01:08:26.428 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 01:08:26.430 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 01:08:27.796 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 01:08:27.802 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:08:28.500 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:08:28.530 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41b4ce0a201b2ddf747d4, question 68c41b4ce0a201b2ddf747d3","timestamp":"2025-09-12 01:08:28.613 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41b4ce0a201b2ddf747d4, question 68c41b4ce0a201b2ddf747d3","timestamp":"2025-09-12 01:08:28.624 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 01:08:29.873 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 01:08:29.883 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:08:30.304 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:08:30.310 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 01:08:30.312 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 01:08:30.314 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 01:08:30.405 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 01:08:30.410 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 01:08:30.412 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 01:08:30.414 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 01:11:03.176 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 01:11:03.199 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 01:11:03.343 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 01:11:03.400 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 01:11:03.426 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 01:11:03.428 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 01:11:04.484 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 01:11:04.539 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 01:11:04.580 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:11:04.589 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 01:11:04.595 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:11:04.598 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 01:11:04.599 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:11:04.603 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 01:11:04.670 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:11:04.675 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 01:11:04.677 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:11:05.958 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:11:05.980 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41bea650eab11fad4d564, question 68c41bea650eab11fad4d563","timestamp":"2025-09-12 01:11:06.079 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41bea650eab11fad4d564, question 68c41bea650eab11fad4d563","timestamp":"2025-09-12 01:11:06.088 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 01:11:06.251 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 01:11:06.258 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 01:11:06.261 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 01:11:06.262 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 01:11:06.305 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 01:11:06.316 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 01:11:07.649 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 01:11:07.653 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:11:07.724 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:11:07.728 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 01:11:07.731 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 01:11:07.732 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 01:11:07.818 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 01:11:07.822 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 01:11:07.824 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 01:11:07.826 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 01:11:52.688 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 01:11:52.754 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 01:11:52.946 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 01:11:53.003 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 01:11:53.012 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 01:11:53.014 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 01:11:54.494 PM"}
+{"error":"_Report.default.find(...).sort is not a function","level":"error","message":"Error calculating streak for user testuser","stack":"TypeError: _Report.default.find(...).sort is not a function\n    at sort (/app/backend/controllers/dashboardController.js:126:14)\n    at calculateStreak (/app/backend/controllers/dashboardController.js:80:37)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (/app/backend/tests/unit/dashboardController.test.js:49:13)","timestamp":"2025-09-12 01:11:54.549 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 01:11:54.578 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 01:11:54.996 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 01:11:55.004 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 01:11:55.012 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 01:11:55.014 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 01:11:56.812 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 01:11:56.819 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 01:11:56.824 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 01:11:56.825 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 01:11:57.026 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 01:11:57.030 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:11:57.163 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:11:57.188 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41c1d6a298476c692ad8e, question 68c41c1d6a298476c692ad8d","timestamp":"2025-09-12 01:11:57.254 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41c1d6a298476c692ad8e, question 68c41c1d6a298476c692ad8d","timestamp":"2025-09-12 01:11:57.262 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:11:58.795 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 01:11:58.803 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:11:58.808 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 01:11:58.810 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:11:58.814 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 01:11:58.894 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:11:58.898 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 01:11:58.900 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:11:59.122 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:11:59.128 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 01:11:59.130 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 01:11:59.131 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 01:11:59.204 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 01:11:59.215 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 01:22:36.216 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 01:22:36.247 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 01:22:36.512 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 01:22:36.572 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 01:22:36.577 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 01:22:36.582 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 01:22:37.034 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 01:22:37.075 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 01:22:38.204 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 01:22:38.209 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 01:22:38.211 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 01:22:38.212 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 01:22:38.692 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 01:22:38.698 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 01:22:38.701 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 01:22:38.703 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 01:22:39.082 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 01:22:39.092 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:22:39.512 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 01:22:39.518 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:22:39.520 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 01:22:39.521 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:22:39.524 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 01:22:39.561 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:22:39.564 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 01:22:39.565 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 01:22:40.121 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 01:22:40.126 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:22:40.303 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:22:40.334 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41ea0949584b6fbbcc120, question 68c41ea0949584b6fbbcc11f","timestamp":"2025-09-12 01:22:40.392 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c41ea0949584b6fbbcc120, question 68c41ea0949584b6fbbcc11f","timestamp":"2025-09-12 01:22:40.400 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:22:40.920 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:22:40.925 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 01:22:40.927 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 01:22:40.928 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 01:47:15.072 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 01:47:15.104 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 01:47:15.333 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 01:47:15.382 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 01:47:15.390 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 01:47:15.392 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 01:47:16.536 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 01:47:16.548 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 01:47:16.552 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 01:47:16.554 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 01:47:17.355 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 01:47:17.361 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 01:47:17.366 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 01:47:17.368 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 01:47:18.890 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 01:47:18.895 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:47:19.124 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 01:47:19.129 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 01:47:19.132 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 01:47:19.133 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:47:19.136 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 01:47:19.178 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 01:47:19.181 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 01:47:19.182 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:47:19.512 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 01:47:19.516 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 01:47:19.519 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 01:47:19.520 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 01:47:20.250 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 01:47:20.289 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 01:47:20.707 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 01:47:20.724 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:47:20.848 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 01:47:20.863 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c424682b0ea9388683b4bb, question 68c424682b0ea9388683b4ba","timestamp":"2025-09-12 01:47:20.932 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c424682b0ea9388683b4bb, question 68c424682b0ea9388683b4ba","timestamp":"2025-09-12 01:47:20.940 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 03:03:52.816 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 03:03:52.859 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 03:03:53.049 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 03:03:53.099 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 03:03:53.104 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 03:03:53.106 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 03:03:54.961 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 03:03:54.975 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 03:03:56.080 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 03:03:56.114 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 03:03:56.126 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 03:03:56.128 PM"}
+{"level":"info","message":"Getting learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:03:56.261 PM"}
+{"level":"info","message":"Successfully fetched learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:03:56.320 PM"}
+{"level":"info","message":"Tracking performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:03:56.385 PM"}
+{"level":"info","message":"Successfully tracked performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:03:56.402 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:03:58.228 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 03:03:58.241 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:03:58.246 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 03:03:58.249 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:03:58.260 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 03:03:58.279 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 03:03:58.292 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 03:03:58.298 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 03:03:58.300 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 03:03:58.331 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:03:58.335 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 03:03:58.336 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:03:58.413 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:03:58.419 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 03:03:58.422 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 03:03:58.423 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 03:03:59.674 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 03:03:59.762 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 03:03:59.961 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 03:03:59.974 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 03:17:34.726 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 03:17:34.754 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 03:17:35.093 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 03:17:35.171 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 03:17:35.178 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 03:17:35.180 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 03:17:36.775 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 03:17:36.791 PM"}
+{"level":"info","message":"Getting learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:17:37.493 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 03:17:37.508 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 03:17:37.519 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 03:17:37.528 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 03:17:37.530 PM"}
+{"level":"info","message":"Successfully fetched learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:17:37.550 PM"}
+{"level":"info","message":"Tracking performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:17:37.611 PM"}
+{"level":"info","message":"Successfully tracked performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:17:37.630 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 03:17:38.650 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 03:17:38.663 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 03:17:39.587 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 03:17:39.594 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 03:17:39.597 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 03:17:39.599 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:17:40.002 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:17:40.011 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 03:17:40.015 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 03:17:40.017 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:17:40.481 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 03:17:40.490 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:17:40.493 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 03:17:40.495 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:17:40.498 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 03:17:40.537 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:17:40.540 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 03:17:40.541 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 03:17:41.010 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 03:17:41.071 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 03:27:12.994 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 03:27:13.022 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 03:27:13.513 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 03:27:13.631 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 03:27:13.642 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 03:27:13.646 PM"}
+{"level":"info","message":"Getting learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:27:15.131 PM"}
+{"level":"info","message":"Successfully fetched learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:27:15.178 PM"}
+{"level":"info","message":"Tracking performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:27:15.217 PM"}
+{"level":"info","message":"Successfully tracked performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:27:15.240 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 03:27:15.696 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 03:27:15.700 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 03:27:16.126 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 03:27:16.151 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 03:27:16.168 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 03:27:16.170 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:27:17.276 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:27:17.282 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 03:27:17.285 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 03:27:17.286 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 03:27:17.925 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 03:27:17.931 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 03:27:17.938 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 03:27:17.941 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 03:27:18.236 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 03:27:18.252 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:27:18.890 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 03:27:18.897 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:27:18.900 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 03:27:18.901 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:27:18.903 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 03:27:18.953 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:27:18.955 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 03:27:18.957 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 03:27:19.239 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 03:27:19.279 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 03:31:37.038 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 03:31:37.072 PM"}
+{"error":"_redis.redisClient.setEx is not a function","level":"error","message":"Error getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","stack":"TypeError: _redis.redisClient.setEx is not a function\n    at Object.setEx [as set] (/app/backend/services/cacheService.js:9:22)\n    at ServerResponse.set [as json] (/app/backend/middleware/cache.js:17:18)\n    at json (/app/backend/controllers/reviewController.js:10:13)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-09-12 03:31:37.086 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 03:31:37.365 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 03:31:37.445 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 03:31:37.460 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 03:31:37.463 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 03:31:37.606 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 03:31:37.643 PM"}
+{"level":"info","message":"Getting learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:31:39.747 PM"}
+{"level":"info","message":"Successfully fetched learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:31:39.807 PM"}
+{"level":"info","message":"Tracking performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:31:39.858 PM"}
+{"level":"info","message":"Successfully tracked performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:31:39.879 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 03:31:40.652 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 03:31:40.661 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 03:31:41.601 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 03:31:41.608 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 03:31:41.611 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 03:31:41.612 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 03:31:42.184 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 03:31:42.190 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 03:31:42.192 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 03:31:42.195 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 03:31:42.800 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 03:31:42.809 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:31:43.460 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:31:43.466 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 03:31:43.469 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 03:31:43.471 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:31:44.738 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 03:31:44.750 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:31:44.753 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 03:31:44.756 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:31:44.760 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 03:31:44.789 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 03:31:44.839 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:31:44.843 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 03:31:44.845 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 03:31:44.848 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c43cf724cd5e91430fc5a7, question 68c43cf724cd5e91430fc5a6","timestamp":"2025-09-12 03:32:07.118 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c43cf724cd5e91430fc5a7, question 68c43cf724cd5e91430fc5a6","timestamp":"2025-09-12 03:32:07.140 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 03:35:16.478 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 03:35:16.500 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 03:35:16.550 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 03:35:16.551 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c43db4168545152a79c8cf, question 68c43db4168545152a79c8ce","timestamp":"2025-09-12 03:35:16.717 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c43db4168545152a79c8cf, question 68c43db4168545152a79c8ce","timestamp":"2025-09-12 03:35:16.728 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 03:35:16.868 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 03:35:16.918 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 03:35:16.925 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 03:35:16.927 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:35:19.066 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 03:35:19.080 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 03:35:19.086 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 03:35:19.088 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:35:19.092 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 03:35:19.160 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 03:35:19.165 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 03:35:19.167 PM"}
+{"level":"info","message":"Getting learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:35:19.360 PM"}
+{"level":"info","message":"Successfully fetched learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:35:19.418 PM"}
+{"level":"info","message":"Tracking performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:35:19.502 PM"}
+{"level":"info","message":"Successfully tracked performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 03:35:19.528 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 03:35:19.696 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 03:35:19.709 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 03:35:20.989 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 03:35:21.064 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 03:35:21.235 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 03:35:21.247 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 03:35:21.251 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 03:35:21.254 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 03:35:21.364 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 03:35:21.369 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 03:35:21.372 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 03:35:21.373 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 03:35:23.056 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 03:35:23.077 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:35:23.725 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 03:35:23.730 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 03:35:23.733 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 03:35:23.735 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 04:50:20.820 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 04:50:20.854 PM"}
+{"error":"_redis.redisClient.set is not a function","level":"error","message":"Error getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","stack":"TypeError: _redis.redisClient.set is not a function\n    at Object.set (/app/backend/services/cacheService.js:9:22)\n    at ServerResponse.set [as json] (/app/backend/middleware/cache.js:17:18)\n    at json (/app/backend/controllers/reviewController.js:10:13)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-09-12 04:50:20.865 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 04:50:21.394 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 04:50:21.468 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 04:50:21.475 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 04:50:21.477 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 04:50:21.473 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 04:50:21.510 PM"}
+{"level":"info","message":"Getting learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:50:23.371 PM"}
+{"level":"info","message":"Successfully fetched learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:50:23.422 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 04:50:23.457 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 04:50:23.464 PM"}
+{"level":"info","message":"Tracking performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:50:23.478 PM"}
+{"level":"info","message":"Successfully tracked performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:50:23.508 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 04:50:24.719 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 04:50:24.723 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 04:50:24.727 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 04:50:24.728 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 04:50:24.996 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 04:50:25.003 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 04:50:25.005 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 04:50:25.006 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 04:50:25.008 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 04:50:25.086 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 04:50:25.091 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 04:50:25.094 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 04:50:26.627 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 04:50:26.634 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 04:50:26.637 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 04:50:26.638 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 04:50:27.385 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 04:50:27.388 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 04:50:27.391 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 04:50:27.392 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 04:50:28.020 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 04:50:28.030 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 04:50:28.588 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 04:50:28.631 PM"}
+{"level":"info","message":"Getting review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 04:54:57.573 PM"}
+{"level":"info","message":"Successfully fetched review schedule for user 60c72b9f9b1d8c001f8e4a3b","timestamp":"2025-09-12 04:54:57.630 PM"}
+{"level":"info","message":"Updating review for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4506119a4210fb3b33429, question 68c4506119a4210fb3b33428","timestamp":"2025-09-12 04:54:57.810 PM"}
+{"level":"info","message":"Successfully updated review schedule for user 60c72b9f9b1d8c001f8e4a3b, quiz 68c4506119a4210fb3b33429, question 68c4506119a4210fb3b33428","timestamp":"2025-09-12 04:54:57.824 PM"}
+{"level":"info","message":"Getting current daily challenge for user userId","timestamp":"2025-09-12 04:54:57.844 PM"}
+{"level":"info","message":"Successfully fetched 1 daily challenges for user userId","timestamp":"2025-09-12 04:54:57.881 PM"}
+{"level":"info","message":"Creating report for user testuser","timestamp":"2025-09-12 04:54:58.020 PM"}
+{"level":"info","message":"Report saved and bonuses applied for user testuser","timestamp":"2025-09-12 04:54:58.072 PM"}
+{"level":"info","message":"Fetching all reports","timestamp":"2025-09-12 04:54:58.078 PM"}
+{"level":"info","message":"Successfully fetched 2 reports","timestamp":"2025-09-12 04:54:58.080 PM"}
+{"level":"info","message":"Getting learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:54:59.661 PM"}
+{"level":"info","message":"Successfully fetched learning analytics for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:54:59.700 PM"}
+{"level":"info","message":"Tracking performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:54:59.720 PM"}
+{"level":"info","message":"Successfully tracked performance for user 60c72b9f9b1d8c001f8e4a3a","timestamp":"2025-09-12 04:54:59.737 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 04:55:00.162 PM"}
+{"level":"info","message":"User registered successfully with email: test@example.com","timestamp":"2025-09-12 04:55:00.173 PM"}
+{"level":"info","message":"Attempting to register user with email: test@example.com","timestamp":"2025-09-12 04:55:00.178 PM"}
+{"level":"warn","message":"Registration failed: User already exists with email: test@example.com","timestamp":"2025-09-12 04:55:00.180 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 04:55:00.184 PM"}
+{"level":"info","message":"Debugging XP for user userId","timestamp":"2025-09-12 04:55:00.214 PM"}
+{"level":"info","message":"Successfully debugged XP for user userId","timestamp":"2025-09-12 04:55:00.222 PM"}
+{"level":"info","message":"User logged in successfully: test@example.com","timestamp":"2025-09-12 04:55:00.297 PM"}
+{"level":"info","message":"Attempting to login user with email: test@example.com","timestamp":"2025-09-12 04:55:00.302 PM"}
+{"level":"warn","message":"Login failed: Invalid credentials for email: test@example.com","timestamp":"2025-09-12 04:55:00.304 PM"}
+{"level":"info","message":"User userId attempting to create a quiz","timestamp":"2025-09-12 04:55:02.463 PM"}
+{"level":"info","message":"Quiz undefined created successfully by user userId","timestamp":"2025-09-12 04:55:02.487 PM"}
+{"level":"info","message":"Getting quizzes for user userId with role undefined","timestamp":"2025-09-12 04:55:02.500 PM"}
+{"level":"info","message":"Successfully fetched 2 quizzes for user userId","timestamp":"2025-09-12 04:55:02.503 PM"}
+{"level":"info","message":"Fetching weekly XP leaderboard","timestamp":"2025-09-12 04:55:02.645 PM"}
+{"level":"info","message":"Fetching question stats","timestamp":"2025-09-12 04:55:02.648 PM"}
+{"level":"info","message":"Successfully fetched question stats for 2 questions","timestamp":"2025-09-12 04:55:02.658 PM"}
+{"level":"info","message":"Successfully fetched weekly XP leaderboard","timestamp":"2025-09-12 04:55:02.651 PM"}
+{"level":"info","message":"Fetching monthly XP leaderboard","timestamp":"2025-09-12 04:55:02.654 PM"}
+{"level":"info","message":"Successfully fetched monthly XP leaderboard","timestamp":"2025-09-12 04:55:02.656 PM"}
+{"level":"info","message":"Fetching dashboard data for user userId","timestamp":"2025-09-12 04:55:04.628 PM"}
+{"level":"info","message":"Successfully fetched dashboard data for user userId","timestamp":"2025-09-12 04:55:04.674 PM"}
+{"level":"info","message":"Creating written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 04:55:04.759 PM"}
+{"level":"info","message":"Successfully created written test report for user testuser and test Test Written Test","timestamp":"2025-09-12 04:55:04.765 PM"}
+{"level":"info","message":"Fetching all written test reports","timestamp":"2025-09-12 04:55:04.767 PM"}
+{"level":"info","message":"Successfully fetched 2 written test reports","timestamp":"2025-09-12 04:55:04.768 PM"}

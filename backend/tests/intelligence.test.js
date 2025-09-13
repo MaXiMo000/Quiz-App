@@ -1,8 +1,17 @@
-import mongoose from "mongoose";
 import request from "supertest";
 import express from "express";
+
+jest.mock('redis', () => ({
+  createClient: jest.fn(() => ({
+    on: jest.fn(),
+    connect: jest.fn().mockResolvedValue(null),
+    get: jest.fn().mockResolvedValue(null),
+    set: jest.fn().mockResolvedValue('OK'),
+    scan: jest.fn().mockResolvedValue({ cursor: 0, keys: [] }),
+    flushDb: jest.fn().mockResolvedValue('OK'),
+  })),
+}));
 import intelligenceRoutes from "../routes/intelligenceRoutes.js";
-import { verifyToken } from "../middleware/auth.js";
 import User from "../models/User.js";
 import Report from "../models/Report.js";
 import LearningAnalytics from "../models/LearningAnalytics.js";
@@ -21,17 +30,11 @@ app.use(express.json());
 app.use("/api/intelligence", intelligenceRoutes);
 
 describe("Intelligence Routes", () => {
-  beforeAll(async () => {
-    const MONGO_URI = "mongodb://127.0.0.1:27017/testdb_intelligence";
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.db.dropDatabase();
-    await mongoose.connection.close();
+  afterEach(async () => {
+    await User.deleteMany({});
+    await Report.deleteMany({});
+    await LearningAnalytics.deleteMany({});
+    await CognitiveMetrics.deleteMany({});
   });
 
   describe("GET /api/intelligence/analytics", () => {

@@ -330,9 +330,9 @@ const AIStudyBuddy = () => {
                 break;
             }
             case 'take_quiz': {
-                // Navigate to quiz if ID is provided
+                // Navigate to quiz in fullscreen mode
                 if (data.quizId) {
-                    window.open(`/user/test/${data.quizId}`, '_blank');
+                    window.location.href = `/user/test/${data.quizId}`;
                 }
                 break;
             }
@@ -591,7 +591,7 @@ const AIStudyBuddy = () => {
 
                             return (
                                 <motion.button
-                                    key={index}
+                                    key={`${message.id}-action-${action}-${index}`}
                                     className="action-btn"
                                     data-action={action}
                                     onClick={() => handleQuickAction(action, {})}
@@ -719,7 +719,7 @@ const AIStudyBuddy = () => {
                     <div className="recommendations-list">
                         {recommendations.slice(0, 3).map((rec, index) => (
                             <motion.div
-                                key={index}
+                                key={`recommendation-${rec.title}-${index}`}
                                 className={`recommendation ${rec.priority}`}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}

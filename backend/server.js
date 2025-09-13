@@ -19,6 +19,8 @@ import "./config/passport.js";
 // Route Imports
 import userRoutes from "./routes/userRoutes.js";
 import apiRoutes from "./routes/api.js";
+import requestLogger from "./middleware/requestLogger.js";
+import errorHandler from "./services/errorHandler.js";
 import writtenTestRoutes from "./routes/writtenTestRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
@@ -41,10 +43,13 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 
 // Import the daily challenge reset function
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
+import { connectRedis, redisClient } from "./config/redis.js";
+import { RedisStore } from "connect-redis";
 
 const app = express();
 
 // 🔒 SECURITY: Apply security headers
+app.use(requestLogger);
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -70,7 +75,7 @@ const limiter = rateLimit({
     legacyHeaders: false,
     skip: (req) => {
         // Skip rate limiting for preflight requests
-        return req.method === 'OPTIONS';
+        return req.method === "OPTIONS";
     }
 });
 
@@ -86,12 +91,12 @@ const authLimiter = rateLimit({
     },
     skip: (req) => {
         // Skip rate limiting for preflight requests
-        return req.method === 'OPTIONS';
+        return req.method === "OPTIONS";
     }
 });
 
 // Middlewares
-app.use(express.json({ limit: '10mb' })); // Limit payload size
+app.use(express.json({ limit: "10mb" })); // Limit payload size
 app.use(mongoSanitize()); // 🔒 SECURITY: Sanitize user input against NoSQL injection
 
 // Additional CORS middleware to handle edge cases
@@ -106,19 +111,19 @@ app.use((req, res, next) => {
     ].filter(Boolean);
 
     // Log all requests for debugging (remove in production)
-    if (process.env.NODE_ENV !== 'production') {
-        console.log(`📝 ${req.method} ${req.path} - Origin: ${origin || 'none'} - Time: ${new Date().toISOString()}`);
+    if (process.env.NODE_ENV !== "production") {
+        console.log(`📝 ${req.method} ${req.path} - Origin: ${origin || "none"} - Time: ${new Date().toISOString()}`);
     }
 
     // Set CORS headers for all requests
     if (origin && allowedOrigins.some(allowed => 
-        allowed === origin || allowed.replace(/\/$/, '') === origin.replace(/\/$/, '')
+        allowed === origin || allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")
     )) {
-        res.header('Access-Control-Allow-Origin', origin);
+        res.header("Access-Control-Allow-Origin", origin);
     }
     
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Vary', 'Origin'); // Important for caching
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Vary", "Origin"); // Important for caching
     
     next();
 });
@@ -142,7 +147,7 @@ const corsOptions = {
             // Exact match
             if (allowedOrigin === origin) return true;
             // Handle cases where origin might have trailing slash
-            if (allowedOrigin.replace(/\/$/, '') === origin.replace(/\/$/, '')) return true;
+            if (allowedOrigin.replace(/\/$/, "") === origin.replace(/\/$/, "")) return true;
             return false;
         });
         
@@ -150,19 +155,19 @@ const corsOptions = {
             callback(null, true);
         } else {
             console.log(`CORS blocked origin: ${origin}`);
-            console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
-            callback(new Error('Not allowed by CORS'));
+            console.log(`Allowed origins: ${allowedOrigins.join(", ")}`);
+            callback(new Error("Not allowed by CORS"));
         }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
-        'Content-Type', 
-        'Authorization', 
-        'X-Requested-With',
-        'Accept',
-        'Origin',
-        'Cache-Control',
-        'X-File-Name'
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "Accept",
+        "Origin",
+        "Cache-Control",
+        "X-File-Name"
     ],
     credentials: true,
     optionsSuccessStatus: 200,
@@ -173,30 +178,44 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly for all routes
-app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With,Accept,Origin,Cache-Control,X-File-Name');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', '86400'); // Cache preflight for 24 hours
+app.options("*", (req, res) => {
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Requested-With,Accept,Origin,Cache-Control,X-File-Name");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Max-Age", "86400"); // Cache preflight for 24 hours
     res.sendStatus(200);
 });
 
 const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
 
-// Configure session with proper settings
-app.use(session({ 
+// Configure session with Redis store for production
+const sessionConfig = {
     secret: GOOGLE_SECRET, 
     resave: false, 
     saveUninitialized: false, // Don't create session until something stored
-    name: 'quiz-app-session', // Custom session name
+    name: "quiz-app-session", // Custom session name
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
         httpOnly: true, // Prevent XSS attacks
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Allow cross-site requests in prod
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax" // Allow cross-site requests in prod
     }
-}));
+};
+
+// Use Redis store in production, MemoryStore in development
+if (process.env.NODE_ENV === "production" || process.env.RENDER) {
+    sessionConfig.store = new RedisStore({
+        client: redisClient,
+        prefix: "quiz-app:session:",
+        ttl: 24 * 60 * 60 // 24 hours in seconds
+    });
+    console.log("🔒 Using Redis session store for production");
+} else {
+    console.log("🔧 Using MemoryStore for development");
+}
+
+app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -221,7 +240,7 @@ app.get("/debug/cors", (req, res) => {
         origin: origin,
         allowedOrigins: allowedOrigins,
         isOriginAllowed: allowedOrigins.some(allowed => 
-            allowed === origin || allowed.replace(/\/$/, '') === origin.replace(/\/$/, '')
+            allowed === origin || allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")
         ),
         headers: req.headers,
         method: req.method
@@ -252,31 +271,13 @@ app.use("/api/real-time-quiz", realTimeQuizRoutes);
 app.use("/api/learning-paths", learningPathRoutes);
 app.use("/api/reviews", reviewRoutes);
 
-// Global error handler for CORS and other issues
-app.use((error, req, res, next) => {
-    // Handle CORS errors specifically
-    if (error.message === 'Not allowed by CORS') {
-        console.log(`❌ CORS Error - Origin: ${req.headers.origin}, Method: ${req.method}, Path: ${req.path}`);
-        return res.status(403).json({
-            error: 'CORS Error',
-            message: 'Origin not allowed',
-            origin: req.headers.origin,
-            timestamp: new Date().toISOString()
-        });
-    }
-    
-    // Handle other errors
-    console.error('❌ Server Error:', error);
-    res.status(500).json({
-        error: 'Internal Server Error',
-        message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
-    });
-});
+// Global error handler
+app.use(errorHandler);
 
 // 404 handler
 app.use((req, res) => {
     res.status(404).json({
-        error: 'Not Found',
+        error: "Not Found",
         message: `Route ${req.method} ${req.path} not found`,
         timestamp: new Date().toISOString()
     });
@@ -284,53 +285,62 @@ app.use((req, res) => {
 
 // MongoDB Connection
 const PORT = process.env.PORT || 4000;
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => {
-    console.log("✅ Connected to MongoDB");
-    
-    // ===================== START HTTP SERVER WITH SOCKET.IO =====================
-    const server = createServer(app);
-    
-    // Initialize real-time quiz functionality
-    initializeRealTimeQuiz(server);
-    
-    server.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-        console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
-        console.log(`🔄 Real-time quiz rooms enabled with Socket.IO`);
-        console.log(`🤖 AI Study Buddy enabled with Gemini API`);
-    });
-    
-    // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
-    // Schedule daily challenge reset every hour (for more frequent checking)
-    // This will check and reset challenges that were completed more than 24 hours ago
-    cron.schedule('0 * * * *', async () => {
-        console.log('🔄 Running hourly daily challenge reset check...');
-        try {
-            const result = await resetDailyChallenges();
-            if (result.success && result.usersReset > 0) {
-                console.log(`✅ Reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
-            }
-        } catch (error) {
-            console.error('❌ Error in scheduled reset:', error);
-        }
-    });
-    
-    // Also run once at server startup to catch any challenges that should have been reset
-    console.log('🚀 Running initial daily challenge reset check...');
-    resetDailyChallenges()
-        .then(result => {
-            if (result.success && result.usersReset > 0) {
-                console.log(`✅ Startup reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
-            } else {
-                console.log('📝 No challenges needed reset at startup');
-            }
-        })
-        .catch(error => {
-            console.error('❌ Error in startup reset:', error);
+
+const startServer = async () => {
+    try {
+        await connectRedis();
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
         });
-})
-.catch((err) => console.error("❌ MongoDB Connection Error:", err));
+
+        console.log("✅ Connected to MongoDB");
+
+        // ===================== START HTTP SERVER WITH SOCKET.IO =====================
+        const server = createServer(app);
+
+        // Initialize real-time quiz functionality
+        initializeRealTimeQuiz(server);
+
+        server.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`);
+            console.log("🔄 Real-time quiz rooms enabled with Socket.IO");
+            console.log("🤖 AI Study Buddy enabled with Gemini API");
+        });
+
+        // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
+        // Schedule daily challenge reset every hour (for more frequent checking)
+        // This will check and reset challenges that were completed more than 24 hours ago
+        cron.schedule("0 * * * *", async () => {
+            console.log("🔄 Running hourly daily challenge reset check...");
+            try {
+                const result = await resetDailyChallenges();
+                if (result.success && result.usersReset > 0) {
+                    console.log(`✅ Reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+                }
+            } catch (error) {
+                console.error("❌ Error in scheduled reset:", error);
+            }
+        });
+
+        // Also run once at server startup to catch any challenges that should have been reset
+        console.log("🚀 Running initial daily challenge reset check...");
+        resetDailyChallenges()
+            .then(result => {
+                if (result.success && result.usersReset > 0) {
+                    console.log(`✅ Startup reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+                } else {
+                    console.log("📝 No challenges needed reset at startup");
+                }
+            })
+            .catch(error => {
+                console.error("❌ Error in startup reset:", error);
+            });
+    } catch (err) {
+        console.error("❌ Server Startup Error:", err);
+        process.exit(1);
+    }
+};
+
+startServer();
