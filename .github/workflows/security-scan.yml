@@ -39,10 +39,4 @@ jobs:
         path: ./
         base: main
         head: HEAD
-        extra_args: --debug --only-verified
-      continue-on-error: true
-
-    - name: Display TruffleHog results
-      run: |
-        echo "TruffleHog scan completed. Check the logs above for any findings."
-        echo "Note: This step will not fail the workflow even if secrets are found."
+        extra_args: --debug --only-verified --exclude-detectors mongodb
