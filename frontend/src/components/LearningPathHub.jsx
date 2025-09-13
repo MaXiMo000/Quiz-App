@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
 import './LearningPathHub.css';
@@ -24,7 +24,7 @@ const LearningPathHub = () => {
 
     useEffect(() => {
         loadInitialData();
-    }, []); // Safe to remove dependency as this is initialization function
+    }, [loadInitialData]);
 
     useEffect(() => {
         if (activeTab === 'explore') {
@@ -36,9 +36,9 @@ const LearningPathHub = () => {
         } else if (activeTab === 'competencies') {
             loadCompetencies();
         }
-    }, [activeTab, filters]); // Dependencies are stable - activeTab and filters are state variables
+    }, [activeTab, filters, loadLearningPaths]); // Dependencies are stable - activeTab and filters are state variables
 
-    const loadInitialData = async () => {
+    const loadInitialData = useCallback(async () => {
         try {
             setLoading(true);
             await Promise.all([
@@ -50,9 +50,9 @@ const LearningPathHub = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [loadLearningPaths]);
 
-    const loadLearningPaths = async () => {
+    const loadLearningPaths = useCallback(async () => {
         try {
             const params = new URLSearchParams();
             if (filters.category) params.append('category', filters.category);
@@ -64,7 +64,7 @@ const LearningPathHub = () => {
         } catch (error) {
             console.error('Error loading learning paths:', error);
         }
-    };
+    }, [filters]);
 
     const loadMyPaths = async () => {
         try {
