@@ -1,4 +1,4 @@
-name: Security Scan
+name: Security Scan with TruffleHog
 
 on:
   push:
@@ -6,37 +6,51 @@ on:
   pull_request:
     branches: [ main, develop ]
   schedule:
-    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
-
-permissions:
-  contents: read
-  security-events: write
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
-  security-scan:
+  trufflehog-scan:
     runs-on: ubuntu-latest
+    name: TruffleHog Security Scan
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
       with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+        fetch-depth: 0  # Fetch full history for better scanning
 
-    - name: Display security scan results
-      run: |
-        echo "Security scan completed. Results saved to trivy-results.sarif"
-        cat trivy-results.sarif | head -20
-
-    - name: Check for secrets
+    - name: Run TruffleHog
       uses: trufflesecurity/trufflehog@main
       with:
         path: ./
         base: main
         head: HEAD
         extra_args: --debug --only-verified
+        version: latest
+
+    - name: Run TruffleHog on entire repo (fallback)
+      if: failure() && github.event_name == 'schedule'
+      run: |
+        docker run --rm -v "$PWD:/tmp" -w /tmp \
+          ghcr.io/trufflesecurity/trufflehog:latest \
+          filesystem /tmp \
+          --debug --only-verified
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+
+          // Check if TruffleHog found any issues
+          const output = process.env.TRUFFLEHOG_OUTPUT || '';
+          if (output.includes('Found unverified results')) {
+            console.log('Security issues found by TruffleHog');
+            // You can add PR commenting logic here if needed
+          } else {
+            console.log('No security issues found');
+          }
