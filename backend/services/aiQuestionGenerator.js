@@ -10,23 +10,19 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const generateFromGemini = async (prompt) => {
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
-        const result = await model.generateContent({
-            contents: [{ parts: [{ text: prompt }] }]
-        });
+    const result = await model.generateContent({
+        contents: [{ parts: [{ text: prompt }] }]
+    });
 
-        const raw = result.response.text();
-        return raw;
-    } catch (error) {
-        throw error;
-    }
+    const raw = result.response.text();
+    return raw;
 };
 
 export const parseAIResponse = (aiText) => {
     try {
-        const cleanText = aiText.replace(/```(?:json)?\s*([\s\S]*?)\s*```/, '$1').trim();
+        const cleanText = aiText.replace(/```(?:json)?\s*([\s\S]*?)\s*```/, "$1").trim();
         return JSON.parse(cleanText);
     } catch (e) {
         throw new Error("AI returned invalid JSON: " + e.message);
@@ -94,4 +90,4 @@ export const generateTrueFalse = async (topic, numQuestions) => {
 
     const aiText = await generateFromGemini(prompt);
     return parseAIResponse(aiText);
-}
+};

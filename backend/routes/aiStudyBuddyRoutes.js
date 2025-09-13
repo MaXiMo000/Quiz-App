@@ -1,8 +1,8 @@
-import express from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { verifyToken } from '../middleware/auth.js';
-import User from '../models/User.js';
-import Quiz from '../models/Quiz.js';
+import express from "express";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { verifyToken } from "../middleware/auth.js";
+import User from "../models/User.js";
+import Quiz from "../models/Quiz.js";
 
 const router = express.Router();
 
@@ -19,8 +19,8 @@ class StudySession {
         this.startTime = new Date();
         this.messages = [];
         this.topics = preferences.topics || [];
-        this.difficulty = preferences.difficulty || 'intermediate';
-        this.learningStyle = preferences.learningStyle || 'visual';
+        this.difficulty = preferences.difficulty || "intermediate";
+        this.learningStyle = preferences.learningStyle || "visual";
         this.weakAreas = preferences.weakAreas || [];
         this.context = {
             currentTopic: null,
@@ -49,7 +49,7 @@ class StudySession {
 }
 
 // AI Study Buddy - Start session
-router.post('/start-session', verifyToken, async (req, res) => {
+router.post("/start-session", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const { preferences = {} } = req.body;
@@ -57,7 +57,7 @@ router.post('/start-session', verifyToken, async (req, res) => {
         // Get user data for personalization
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Create new study session
@@ -79,8 +79,8 @@ User Profile:
 - Name: ${user.name}
 - Level: ${user.level}
 - XP: ${user.xp}
-- Weak Areas: ${session.weakAreas.join(', ') || 'None identified yet'}
-- Preferred Topics: ${session.topics.join(', ') || 'Not specified'}
+- Weak Areas: ${session.weakAreas.join(", ") || "None identified yet"}
+- Preferred Topics: ${session.topics.join(", ") || "Not specified"}
 - Learning Style: ${session.learningStyle}
 - Difficulty Preference: ${session.difficulty}
 
@@ -96,7 +96,7 @@ Keep it conversational, supportive, and under 200 words.`;
         const result = await model.generateContent(prompt);
         const welcomeMessage = result.response.text();
 
-        session.addMessage('assistant', welcomeMessage, { type: 'welcome' });
+        session.addMessage("assistant", welcomeMessage, { type: "welcome" });
 
         res.json({
             sessionId: session.sessionId,
@@ -110,24 +110,24 @@ Keep it conversational, supportive, and under 200 words.`;
         });
 
     } catch (error) {
-        console.error('Error starting AI study session:', error);
-        res.status(500).json({ message: 'Failed to start study session' });
+        console.error("Error starting AI study session:", error);
+        res.status(500).json({ message: "Failed to start study session" });
     }
 });
 
 // AI Study Buddy - Chat
-router.post('/chat', verifyToken, async (req, res) => {
+router.post("/chat", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const { message, requestType = 'general' } = req.body;
+        const { message, requestType = "general" } = req.body;
 
         let session = studySessions.get(userId);
         if (!session) {
-            return res.status(400).json({ message: 'No active study session. Please start a session first.' });
+            return res.status(400).json({ message: "No active study session. Please start a session first." });
         }
 
         // Add user message to session
-        session.addMessage('user', message, { requestType });
+        session.addMessage("user", message, { requestType });
 
         // Get user data for context
         const user = await User.findById(userId);
@@ -137,23 +137,23 @@ router.post('/chat', verifyToken, async (req, res) => {
         
         let response;
         switch (requestType) {
-            case 'quiz_request':
+            case "quiz_request":
                 response = await generateQuizResponse(model, session, user, message);
                 break;
-            case 'explanation':
+            case "explanation":
                 response = await generateExplanationResponse(model, session, user, message);
                 break;
-            case 'study_plan':
+            case "study_plan":
                 response = await generateStudyPlanResponse(model, session, user, message);
                 break;
-            case 'weak_areas':
+            case "weak_areas":
                 response = await generateWeakAreasResponse(model, session, user, message);
                 break;
             default:
                 response = await generateGeneralResponse(model, session, user, message);
         }
 
-        session.addMessage('assistant', response.content, { 
+        session.addMessage("assistant", response.content, {
             type: requestType,
             actions: response.actions || []
         });
@@ -169,13 +169,13 @@ router.post('/chat', verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error in AI chat:', error);
-        res.status(500).json({ message: 'Failed to process chat message' });
+        console.error("Error in AI chat:", error);
+        res.status(500).json({ message: "Failed to process chat message" });
     }
 });
 
 // Generate personalized quiz
-router.post('/generate-quiz', verifyToken, async (req, res) => {
+router.post("/generate-quiz", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const { topic, difficulty, questionCount = 5, focusAreas = [] } = req.body;
@@ -194,8 +194,8 @@ router.post('/generate-quiz', verifyToken, async (req, res) => {
 
 User Profile:
 - Level: ${user.level}
-- Weak Areas: ${user.intelligence?.weakAreas?.join(', ') || 'None'}
-- Focus Areas: ${focusAreas.join(', ') || 'General'}
+- Weak Areas: ${user.intelligence?.weakAreas?.join(", ") || "None"}
+- Focus Areas: ${focusAreas.join(", ") || "General"}
 
 Quiz Requirements:
 - Topic: ${topic}
@@ -234,42 +234,42 @@ Return ONLY a valid JSON object with this structure:
         try {
             // Clean the response to ensure valid JSON
             let responseText = result.response.text().trim();
-            responseText = responseText.replace(/```json\n?/, '').replace(/\n?```/, '');
+            responseText = responseText.replace(/```json\n?/, "").replace(/\n?```/, "");
             quizData = JSON.parse(responseText);
         } catch (parseError) {
-            console.error('Error parsing AI response:', parseError);
-            return res.status(500).json({ message: 'Failed to generate quiz format' });
+            console.error("Error parsing AI response:", parseError);
+            return res.status(500).json({ message: "Failed to generate quiz format" });
         }
 
         // Save quiz to database with proper validation
         const processedQuestions = quizData.questions.map(q => {
             // Ensure correctAnswer is a letter format (A, B, C, D)
             let correctAnswer = q.correctAnswer;
-            if (typeof correctAnswer === 'number') {
-                correctAnswer = ['A', 'B', 'C', 'D'][correctAnswer];
+            if (typeof correctAnswer === "number") {
+                correctAnswer = ["A", "B", "C", "D"][correctAnswer];
             }
             
             // Validate that correctAnswer is a valid letter
-            if (!['A', 'B', 'C', 'D'].includes(correctAnswer)) {
+            if (!["A", "B", "C", "D"].includes(correctAnswer)) {
                 console.warn(`Invalid correctAnswer: ${correctAnswer}, defaulting to A`);
-                correctAnswer = 'A';
+                correctAnswer = "A";
             }
             
             // Map difficulty to valid enum values
             let questionDifficulty = q.difficulty || difficulty;
             const difficultyMapping = {
-                'beginner': 'easy',
-                'easy': 'easy',
-                'intermediate': 'medium',
-                'medium': 'medium',
-                'advanced': 'hard',
-                'hard': 'hard',
-                'expert': 'hard'
+                "beginner": "easy",
+                "easy": "easy",
+                "intermediate": "medium",
+                "medium": "medium",
+                "advanced": "hard",
+                "hard": "hard",
+                "expert": "hard"
             };
             
             // Normalize to lowercase and map to valid enum
             const normalizedDifficulty = questionDifficulty.toLowerCase();
-            questionDifficulty = difficultyMapping[normalizedDifficulty] || 'medium';
+            questionDifficulty = difficultyMapping[normalizedDifficulty] || "medium";
             
             return {
                 question: q.question,
@@ -293,7 +293,7 @@ Return ONLY a valid JSON object with this structure:
                 _id: userId,
                 name: user.name
             },
-            tags: ['ai-generated', topic.toLowerCase(), difficulty],
+            tags: ["ai-generated", topic.toLowerCase(), difficulty],
             aiMetadata: {
                 userLevel: user.level,
                 weakAreas: user.intelligence?.weakAreas || [],
@@ -302,9 +302,9 @@ Return ONLY a valid JSON object with this structure:
             },
             // Initialize difficulty distribution
             difficultyDistribution: {
-                easy: processedQuestions.filter(q => q.difficulty === 'easy').length,
-                medium: processedQuestions.filter(q => q.difficulty === 'medium').length,
-                hard: processedQuestions.filter(q => q.difficulty === 'hard').length
+                easy: processedQuestions.filter(q => q.difficulty === "easy").length,
+                medium: processedQuestions.filter(q => q.difficulty === "medium").length,
+                hard: processedQuestions.filter(q => q.difficulty === "hard").length
             }
         });
 
@@ -316,8 +316,8 @@ Return ONLY a valid JSON object with this structure:
             lastGeneratedQuiz: quiz._id
         });
 
-        session.addMessage('assistant', `I've created a personalized ${questionCount}-question quiz on ${topic} at ${difficulty} level, focusing on your learning needs!`, {
-            type: 'quiz_generated',
+        session.addMessage("assistant", `I've created a personalized ${questionCount}-question quiz on ${topic} at ${difficulty} level, focusing on your learning needs!`, {
+            type: "quiz_generated",
             quizId: quiz._id.toString()
         });
 
@@ -334,28 +334,28 @@ Return ONLY a valid JSON object with this structure:
         });
 
     } catch (error) {
-        console.error('Error generating AI quiz:', error);
-        res.status(500).json({ message: 'Failed to generate quiz' });
+        console.error("Error generating AI quiz:", error);
+        res.status(500).json({ message: "Failed to generate quiz" });
     }
 });
 
 // Get study recommendations
-router.get('/recommendations', verifyToken, async (req, res) => {
+router.get("/recommendations", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const user = await User.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Get user's recent quiz performance
         const recentQuizzes = await Quiz.find({
-            'results.userId': userId
+            "results.userId": userId
         })
         .sort({ createdAt: -1 })
         .limit(10)
-        .populate('results');
+        .populate("results");
 
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
@@ -365,9 +365,9 @@ Student Profile:
 - Name: ${user.name}
 - Level: ${user.level}
 - Total XP: ${user.xp}
-- Weak Areas: ${user.intelligence?.weakAreas?.join(', ') || 'None identified'}
-- Strong Areas: ${user.intelligence?.strongAreas?.join(', ') || 'None identified'}
-- Recent Quiz Topics: ${recentQuizzes.map(q => q.category).join(', ') || 'None'}
+- Weak Areas: ${user.intelligence?.weakAreas?.join(", ") || "None identified"}
+- Strong Areas: ${user.intelligence?.strongAreas?.join(", ") || "None identified"}
+- Recent Quiz Topics: ${recentQuizzes.map(q => q.category).join(", ") || "None"}
 
 Provide 5-7 actionable study recommendations including:
 1. Specific topics to focus on
@@ -393,10 +393,10 @@ Format as a JSON array of recommendation objects:
         
         try {
             let responseText = result.response.text().trim();
-            responseText = responseText.replace(/```json\n?/, '').replace(/\n?```/, '');
+            responseText = responseText.replace(/```json\n?/, "").replace(/\n?```/, "");
             recommendations = JSON.parse(responseText);
         } catch (parseError) {
-            console.error('Error parsing recommendations:', parseError);
+            console.error("Error parsing recommendations:", parseError);
             // Fallback recommendations
             recommendations = [
                 {
@@ -429,8 +429,8 @@ Format as a JSON array of recommendation objects:
         });
 
     } catch (error) {
-        console.error('Error getting study recommendations:', error);
-        res.status(500).json({ message: 'Failed to get recommendations' });
+        console.error("Error getting study recommendations:", error);
+        res.status(500).json({ message: "Failed to get recommendations" });
     }
 });
 
@@ -440,8 +440,8 @@ async function generateQuizResponse(model, session, user, message) {
 
 Student Context:
 - Level: ${user.level}
-- Weak Areas: ${session.weakAreas.join(', ') || 'None'}
-- Current Topic: ${session.context.currentTopic || 'None'}
+- Weak Areas: ${session.weakAreas.join(", ") || "None"}
+- Current Topic: ${session.context.currentTopic || "None"}
 
 Respond encouragingly and ask for specific details:
 1. What topic/subject
@@ -455,7 +455,7 @@ Keep it conversational and helpful. Offer suggestions based on their weak areas.
     
     return {
         content: result.response.text(),
-        actions: ['generate_quiz']
+        actions: ["generate_quiz"]
     };
 }
 
@@ -478,7 +478,7 @@ Adapt the explanation style to their learning preference (${session.learningStyl
     
     return {
         content: result.response.text(),
-        actions: ['offer_practice', 'suggest_related_topics']
+        actions: ["offer_practice", "suggest_related_topics"]
     };
 }
 
@@ -488,7 +488,7 @@ async function generateStudyPlanResponse(model, session, user, message) {
 Student Profile:
 - Level: ${user.level}
 - XP: ${user.xp}
-- Weak Areas: ${session.weakAreas.join(', ') || 'None'}
+- Weak Areas: ${session.weakAreas.join(", ") || "None"}
 - Available Time: Extract from their message
 
 Create a structured study plan with:
@@ -504,14 +504,14 @@ Make it realistic and achievable for their level.`;
     
     return {
         content: result.response.text(),
-        actions: ['save_study_plan', 'set_reminders']
+        actions: ["save_study_plan", "set_reminders"]
     };
 }
 
 async function generateWeakAreasResponse(model, session, user, message) {
     const prompt = `Help the student with their weak areas. Message: "${message}"
 
-Current Weak Areas: ${session.weakAreas.join(', ') || 'None identified yet'}
+Current Weak Areas: ${session.weakAreas.join(", ") || "None identified yet"}
 Student Level: ${user.level}
 
 Provide:
@@ -527,7 +527,7 @@ Be encouraging and specific about how to improve.`;
     
     return {
         content: result.response.text(),
-        actions: ['practice_weak_areas', 'track_improvement']
+        actions: ["practice_weak_areas", "track_improvement"]
     };
 }
 
@@ -535,7 +535,7 @@ async function generateGeneralResponse(model, session, user, message) {
     const recentMessages = session.getRecentContext(5);
     const conversationContext = recentMessages
         .map(msg => `${msg.role}: ${msg.content}`)
-        .join('\n');
+        .join("\n");
 
     const prompt = `You are a supportive AI Study Buddy for QuizNest. Respond to: "${message}"
 
@@ -543,8 +543,8 @@ Student Profile:
 - Name: ${user.name}
 - Level: ${user.level}
 - XP: ${user.xp}
-- Current Topic: ${session.context.currentTopic || 'None'}
-- Weak Areas: ${session.weakAreas.join(', ') || 'None identified'}
+- Current Topic: ${session.context.currentTopic || "None"}
+- Weak Areas: ${session.weakAreas.join(", ") || "None identified"}
 
 Recent Conversation:
 ${conversationContext}
@@ -566,33 +566,33 @@ If they mention struggling with something, offer targeted help and practice sugg
     const responseText = result.response.text().toLowerCase();
     const actions = [];
     
-    if (responseText.includes('quiz') || responseText.includes('practice')) {
-        actions.push('generate_quiz');
+    if (responseText.includes("quiz") || responseText.includes("practice")) {
+        actions.push("generate_quiz");
     }
-    if (responseText.includes('explain') || responseText.includes('concept')) {
-        actions.push('explain_concept');
+    if (responseText.includes("explain") || responseText.includes("concept")) {
+        actions.push("explain_concept");
     }
-    if (responseText.includes('study plan') || responseText.includes('schedule')) {
-        actions.push('create_study_plan');
+    if (responseText.includes("study plan") || responseText.includes("schedule")) {
+        actions.push("create_study_plan");
     }
-    if (responseText.includes('weak') || responseText.includes('improve')) {
-        actions.push('analyze_weak_areas');
+    if (responseText.includes("weak") || responseText.includes("improve")) {
+        actions.push("analyze_weak_areas");
     }
     
     return {
         content: result.response.text(),
-        actions: actions.length > 0 ? actions : ['generate_quiz', 'explain_concept']
+        actions: actions.length > 0 ? actions : ["generate_quiz", "explain_concept"]
     };
 }
 
 // End study session
-router.post('/end-session', verifyToken, async (req, res) => {
+router.post("/end-session", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const session = studySessions.get(userId);
 
         if (!session) {
-            return res.status(404).json({ message: 'No active session found' });
+            return res.status(404).json({ message: "No active session found" });
         }
 
         // Calculate session summary
@@ -613,25 +613,25 @@ router.post('/end-session', verifyToken, async (req, res) => {
         studySessions.delete(userId);
 
         res.json({
-            message: 'Study session ended successfully',
+            message: "Study session ended successfully",
             summary: sessionSummary
         });
 
     } catch (error) {
-        console.error('Error ending study session:', error);
-        res.status(500).json({ message: 'Failed to end session' });
+        console.error("Error ending study session:", error);
+        res.status(500).json({ message: "Failed to end session" });
     }
 });
 
 // Save study plan
-router.post('/save-study-plan', verifyToken, async (req, res) => {
+router.post("/save-study-plan", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const { studyPlanContent, timestamp } = req.body;
 
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Initialize study plans array if it doesn't exist
@@ -644,7 +644,7 @@ router.post('/save-study-plan', verifyToken, async (req, res) => {
             content: studyPlanContent,
             createdAt: timestamp || new Date(),
             isActive: true,
-            source: 'ai_generated'
+            source: "ai_generated"
         });
 
         // Keep only the last 5 study plans
@@ -655,25 +655,25 @@ router.post('/save-study-plan', verifyToken, async (req, res) => {
         await user.save();
 
         res.json({
-            message: 'Study plan saved successfully! You can view it in your dashboard under "My Study Plans".',
+            message: "Study plan saved successfully! You can view it in your dashboard under \"My Study Plans\".",
             studyPlanId: user.studyPlans[user.studyPlans.length - 1]._id
         });
 
     } catch (error) {
-        console.error('Error saving study plan:', error);
-        res.status(500).json({ message: 'Failed to save study plan' });
+        console.error("Error saving study plan:", error);
+        res.status(500).json({ message: "Failed to save study plan" });
     }
 });
 
 // Set reminder
-router.post('/set-reminder', verifyToken, async (req, res) => {
+router.post("/set-reminder", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const { reminderText, context } = req.body;
 
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Initialize reminders array if it doesn't exist
@@ -684,10 +684,10 @@ router.post('/set-reminder', verifyToken, async (req, res) => {
         // Add new reminder
         user.reminders.push({
             text: reminderText,
-            context: context || 'general',
+            context: context || "general",
             createdAt: new Date(),
             isActive: true,
-            source: 'ai_study_buddy'
+            source: "ai_study_buddy"
         });
 
         await user.save();
@@ -698,28 +698,28 @@ router.post('/set-reminder', verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error setting reminder:', error);
-        res.status(500).json({ message: 'Failed to set reminder' });
+        console.error("Error setting reminder:", error);
+        res.status(500).json({ message: "Failed to set reminder" });
     }
 });
 
 // Track progress
-router.get('/track-progress', verifyToken, async (req, res) => {
+router.get("/track-progress", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const user = await User.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Get recent quiz performance
         const recentQuizzes = await Quiz.find({
-            'results.userId': userId
+            "results.userId": userId
         })
         .sort({ createdAt: -1 })
         .limit(10)
-        .populate('results');
+        .populate("results");
 
         // Calculate progress metrics
         const totalQuizzesTaken = recentQuizzes.length;
@@ -731,7 +731,7 @@ router.get('/track-progress', verifyToken, async (req, res) => {
             : 0;
 
         // Get improvement trend (compare first half vs second half of recent quizzes)
-        let improvementTrend = 'stable';
+        let improvementTrend = "stable";
         if (totalQuizzesTaken >= 4) {
             const firstHalf = recentQuizzes.slice(Math.ceil(totalQuizzesTaken / 2));
             const secondHalf = recentQuizzes.slice(0, Math.floor(totalQuizzesTaken / 2));
@@ -747,9 +747,9 @@ router.get('/track-progress', verifyToken, async (req, res) => {
             }, 0) / secondHalf.length;
             
             if (secondHalfAvg > firstHalfAvg + 5) {
-                improvementTrend = 'improving';
+                improvementTrend = "improving";
             } else if (secondHalfAvg < firstHalfAvg - 5) {
-                improvementTrend = 'declining';
+                improvementTrend = "declining";
             }
         }
 
@@ -765,8 +765,8 @@ Student Profile:
 - Quizzes Taken Recently: ${totalQuizzesTaken}
 - Average Score: ${averageScore.toFixed(1)}%
 - Trend: ${improvementTrend}
-- Weak Areas: ${user.intelligence?.weakAreas?.join(', ') || 'None identified'}
-- Strong Areas: ${user.intelligence?.strongAreas?.join(', ') || 'None identified'}
+- Weak Areas: ${user.intelligence?.weakAreas?.join(", ") || "None identified"}
+- Strong Areas: ${user.intelligence?.strongAreas?.join(", ") || "None identified"}
 
 Create an encouraging progress report that:
 1. Acknowledges their efforts and achievements
@@ -794,8 +794,8 @@ Keep it positive, specific, and under 200 words.`;
         });
 
     } catch (error) {
-        console.error('Error tracking progress:', error);
-        res.status(500).json({ message: 'Failed to track progress' });
+        console.error("Error tracking progress:", error);
+        res.status(500).json({ message: "Failed to track progress" });
     }
 });
 

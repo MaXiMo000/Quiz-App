@@ -4,10 +4,18 @@ import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
 import mongoose from "mongoose";
 import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
+import logger from "../utils/logger.js";
 
 export async function getReports(req, res) {
-    const reports = await Report.find();
-    res.json(reports);
+    logger.info("Fetching all reports");
+    try {
+        const reports = await Report.find();
+        logger.info(`Successfully fetched ${reports.length} reports`);
+        res.json(reports);
+    } catch (error) {
+        logger.error({ message: "Error fetching reports", error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Error fetching reports", error });
+    }
 }
 
 export const unlockThemesForLevel = (user) => {
@@ -43,11 +51,13 @@ export const unlockThemesForLevel = (user) => {
 };
 
 export async function createReport(req, res) {
+    logger.info(`Creating report for user ${req.body.username}`);
     try {
         const { username, quizName, score, total, questions } = req.body;
         const userId = req.user?.id; // Get user ID from JWT token
 
         if (!username || !quizName || !questions || questions.length === 0) {
+            logger.warn("Missing required fields for report creation");
             return res.status(400).json({ message: "Missing required fields" });
         }
 
@@ -61,7 +71,7 @@ export async function createReport(req, res) {
             if (mongoose.Types.ObjectId.isValid(userId)) {
                 user = await UserQuiz.findById(userId);
             } else {
-                console.error("Invalid user ID format:", userId);
+                logger.error(`Invalid user ID format: ${userId}`);
             }
         }
         
@@ -73,7 +83,7 @@ export async function createReport(req, res) {
             if (!user) {
                 // Try case-insensitive search
                 user = await UserQuiz.findOne({ 
-                    name: { $regex: new RegExp(`^${username}$`, 'i') } 
+                    name: { $regex: new RegExp(`^${username}$`, "i") }
                 });
             }
             
@@ -85,16 +95,19 @@ export async function createReport(req, res) {
         }
         
         if (!user) {
-            console.error("User not found - userId:", userId, "username:", username);
+            logger.error(`User not found - userId: ${userId}, username: ${username}`);
             return res.status(404).json({ message: "User not found" });
         }
 
         // ✅ Ensure totalXP field exists for all users (especially Google OAuth users)
-        if (typeof user.totalXP === 'undefined' || user.totalXP === null) {
+        if (typeof user.totalXP === "undefined" || user.totalXP === null) {
             user.totalXP = user.xp || 0;
         }
 
         // 🏅 Award badges
+        if (!user.badges) {
+            user.badges = [];
+        }
         if (score === total && !user.badges.includes("Perfect Score")) {
             user.badges.push("Perfect Score");
         }
@@ -111,7 +124,7 @@ export async function createReport(req, res) {
         const xpGained = score * 10;
         let totalXPGained = xpGained;
 
-        await new XPLog({ user: user._id, xp: xpGained, source: 'quiz' }).save();
+        await new XPLog({ user: user._id, xp: xpGained, source: "quiz" }).save();
 
         // 🔥 Daily quiz streak bonus
         const today = new Date();
@@ -137,7 +150,7 @@ export async function createReport(req, res) {
             const quizBonusXP = 20;
             totalXPGained += quizBonusXP;
 
-            await new XPLog({ user: user._id, xp: quizBonusXP, source: 'streak' }).save();
+            await new XPLog({ user: user._id, xp: quizBonusXP, source: "streak" }).save();
         }
 
         // 🎓 Update XP and level using proper totalXP method
@@ -164,16 +177,17 @@ export async function createReport(req, res) {
             const quiz = await Quiz.findOne({ title: quizName });
             if (quiz && quiz.questions && quiz.questions.length > 0) {
                 await createInitialReviewSchedules(user._id, quiz._id, quiz.questions);
-                console.log(`Created review schedules for user ${user._id} and quiz ${quiz._id}`);
+                logger.info(`Created review schedules for user ${user._id} and quiz ${quiz._id}`);
             }
         } catch (reviewError) {
-            console.error("Error creating review schedules:", reviewError);
+            logger.error({ message: "Error creating review schedules", error: reviewError.message, stack: reviewError.stack });
             // Don't fail the report creation if review schedule creation fails
         }
 
+        logger.info(`Report saved and bonuses applied for user ${username}`);
         res.status(201).json({ message: "Report saved and bonuses applied!", report });
     } catch (error) {
-        console.error("Error saving report:", error);
+        logger.error({ message: "Error saving report", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Error saving report", error: error.message });
     }
 }
@@ -181,55 +195,67 @@ export async function createReport(req, res) {
 
 
 export const getReportsUser = async (req, res) => {
+    logger.info(`Fetching reports for user ${req.query.username || "all users"}`);
     try {
         const username = req.query.username;
         const reports = await Report.find(username ? { username } : {}).lean();
+        logger.info(`Successfully fetched ${reports.length} reports for user ${username || "all users"}`);
         res.json(reports);
     } catch (error) {
+        logger.error({ message: `Error retrieving reports for user ${req.query.username || "all users"}`, error: error.message, stack: error.stack });
         res.status(500).json({ message: "Error retrieving reports", error });
     }
 };
 
 export const getReportsUserID = async (req, res) => {
+    logger.info(`Fetching report by ID: ${req.params.id}`);
     try {
         const { id } = req.params;
         const report = await Report.findById(id);
 
         if (!report) {
+            logger.warn(`Report not found: ${id}`);
             return res.status(404).json({ message: "Report not found" });
         }
 
+        logger.info(`Successfully fetched report ${id}`);
         res.json(report);
     } catch (error) {
+        logger.error({ message: `Error retrieving report ${req.params.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ message: "Error retrieving report", error });
     }
 };
 
 export const deleteReport = async (req, res) => {
+    logger.info(`Attempting to delete report with ID: ${req.params.id}`);
     try {
         const { id } = req.params;
 
         if (!id) {
+            logger.warn("Report ID is required for deletion");
             return res.status(400).json({ message: "Report ID is required" });
         }
 
         const reportItem = await Report.findById(id);
 
         if (!reportItem) {
+            logger.warn(`Report not found for deletion with ID: ${id}`);
             return res.status(404).json({ message: "Report not found" });
         }
 
         await Report.findByIdAndDelete(id);
+        logger.info(`Report with ID ${id} deleted successfully`);
         return res.status(200).json({ message: "Report deleted successfully!" });
 
     } catch (error) {
-        console.error("Error deleting Report:", error);
+        logger.error({ message: `Error deleting report with ID: ${req.params.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ message: "Error deleting Report", error: error.message });
     }
 };
 
 // ✅ Get Top Scorers of the Week
 export async function getTopScorers(req, res) {
+    logger.info(`Fetching top scorers for period: ${req.query.period}`);
     try {
         const { period } = req.query;
         let startDate;
@@ -239,6 +265,7 @@ export async function getTopScorers(req, res) {
         } else if (period === "month") {
             startDate = moment().subtract(30, "days").startOf("day").toDate();
         } else {
+            logger.warn(`Invalid period for top scorers: ${period}`);
             return res.status(400).json({ message: "Invalid period. Use 'week' or 'month'." });
         }
 
@@ -270,9 +297,10 @@ export async function getTopScorers(req, res) {
             }
         ]);
 
+        logger.info(`Successfully fetched top scorers for period: ${period}`);
         res.json(topScorers);
     } catch (error) {
-        console.error("Error fetching top scorers:", error);
+        logger.error({ message: `Error fetching top scorers for period: ${req.query.period}`, error: error.message, stack: error.stack });
         res.status(500).json({ message: "Internal Server Error", error });
     }
 }
