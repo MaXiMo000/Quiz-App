@@ -31,27 +31,7 @@ const GamificationHub = () => {
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
-    useEffect(() => {
-        // Get user data from localStorage
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            setUser(JSON.parse(userData));
-        }
-
-        if (activeTab === 'challenges') {
-            fetchDailyChallenge();
-        } else if (activeTab === 'tournaments') {
-            fetchTournaments();
-        } else if (activeTab === 'completed-challenges') {
-            fetchCompletedChallenges();
-        } else if (activeTab === 'completed-tournaments') {
-            fetchCompletedTournaments();
-        } else if (activeTab === 'history') {
-            fetchHistory();
-        }
-    }, [activeTab]);
-
-    const fetchDailyChallenge = async () => {
+    const fetchDailyChallenge = useCallback(async () => {
         setLoading(true);
         try {
             // Use the enhanced status endpoint that includes reset logic
@@ -99,9 +79,9 @@ const GamificationHub = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [showError]);
 
-    const fetchTournaments = async () => {
+    const fetchTournaments = useCallback(async () => {
         setLoading(true);
         try {
             const response = await axios.get('/api/gamification/tournaments');
@@ -112,9 +92,9 @@ const GamificationHub = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [showError]);
 
-    const fetchCompletedChallenges = async () => {
+    const fetchCompletedChallenges = useCallback(async () => {
         setLoading(true);
         try {
             // Use the dedicated completed challenges endpoint
@@ -131,9 +111,9 @@ const GamificationHub = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [showError]);
 
-    const fetchCompletedTournaments = async () => {
+    const fetchCompletedTournaments = useCallback(async () => {
         setLoading(true);
         try {
             const response = await axios.get('/api/gamification/tournaments/completed');
@@ -144,7 +124,7 @@ const GamificationHub = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [showError]);
 
     const joinDailyChallenge = async (challengeId) => {
         try {
@@ -221,7 +201,7 @@ const GamificationHub = () => {
         return `${hours}h ${minutes}m remaining`;
     };
 
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         setLoading(true);
         try {
             const [challengeRes, tournamentRes] = await Promise.all([
@@ -239,7 +219,27 @@ const GamificationHub = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [showError]);
+
+    useEffect(() => {
+        // Get user data from localStorage
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+
+        if (activeTab === 'challenges') {
+            fetchDailyChallenge();
+        } else if (activeTab === 'tournaments') {
+            fetchTournaments();
+        } else if (activeTab === 'completed-challenges') {
+            fetchCompletedChallenges();
+        } else if (activeTab === 'completed-tournaments') {
+            fetchCompletedTournaments();
+        } else if (activeTab === 'history') {
+            fetchHistory();
+        }
+    }, [activeTab, fetchDailyChallenge, fetchTournaments, fetchCompletedChallenges, fetchCompletedTournaments, fetchHistory]);
 
     const createDailyChallenge = async (challengeData) => {
         try {

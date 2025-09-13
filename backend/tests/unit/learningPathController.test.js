@@ -2,7 +2,6 @@ import { getLearningPaths } from "../../controllers/learningPathController.js";
 import { LearningPath, UserPathProgress } from "../../models/LearningPath.js";
 import User from "../../models/User.js";
 import Report from "../../models/Report.js";
-import { seedLearningPaths } from "../../utils/seedLearningPaths.js";
 
 jest.mock("../../models/LearningPath.js", () => ({
     __esModule: true,
@@ -50,22 +49,22 @@ describe("Learning Path Controller", () => {
         it("should return learning paths", async () => {
             const mockPaths = [
                 {
-                    _id: 'lp1',
-                    title: 'LP 1',
-                    subject: 'JavaScript',
-                    quizzes: [{ _id: 'quiz1' }],
-                    toObject: () => ({ _id: 'lp1', title: 'LP 1', subject: 'JavaScript', quizzes: [{ _id: 'quiz1' }] })
+                    _id: "lp1",
+                    title: "LP 1",
+                    subject: "JavaScript",
+                    quizzes: [{ _id: "quiz1" }],
+                    toObject: () => ({ _id: "lp1", title: "LP 1", subject: "JavaScript", quizzes: [{ _id: "quiz1" }] })
                 }
             ];
             const mockReports = [
                 {
-                    _id: 'r1',
-                    username: 'testuser',
-                    quizName: 'JavaScript Basics',
+                    _id: "r1",
+                    username: "testuser",
+                    quizName: "JavaScript Basics",
                     score: 8,
                     total: 10,
                     createdAt: new Date(),
-                    toObject: () => ({ _id: 'r1', username: 'testuser', quizName: 'JavaScript Basics', score: 8, total: 10, createdAt: new Date() })
+                    toObject: () => ({ _id: "r1", username: "testuser", quizName: "JavaScript Basics", score: 8, total: 10, createdAt: new Date() })
                 }
             ];
 

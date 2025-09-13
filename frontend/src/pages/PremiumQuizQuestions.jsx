@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import "../App.css";
@@ -15,7 +15,7 @@ const PremiumQuizQuestions = () => {
     const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     // Fetch the quiz data with questions
-    const getQuizDetails = async () => {
+    const getQuizDetails = useCallback(async () => {
         try {
             const response = await axios.get(`/api/quizzes/${id}`);
             setQuiz(response.data);
@@ -23,11 +23,11 @@ const PremiumQuizQuestions = () => {
             console.error("Error fetching quiz details:", error);
             showError("Failed to fetch quiz details.");
         }
-    };
+    }, [id, showError]);
 
     useEffect(() => {
         getQuizDetails();
-    }, [id]);
+    }, [getQuizDetails]);
 
     // ✅ Delete a question from the quiz
     const deleteQuestion = async (questionIndex) => {
