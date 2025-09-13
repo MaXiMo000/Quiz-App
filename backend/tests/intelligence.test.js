@@ -1,7 +1,7 @@
 import request from "supertest";
 import express from "express";
 
-jest.mock('redis', () => ({
+jest.mock("redis", () => ({
   createClient: jest.fn(() => ({
     on: jest.fn(),
     connect: jest.fn().mockResolvedValue(null),

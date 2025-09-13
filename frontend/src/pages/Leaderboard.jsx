@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import "./Leaderboard.css";
@@ -10,7 +10,7 @@ const Leaderboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const fetchTopScorers = async () => {
+    const fetchTopScorers = useCallback(async () => {
         setLoading(true);
         setError("");
         try {
@@ -24,11 +24,11 @@ const Leaderboard = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [period]);
 
     useEffect(() => {
         fetchTopScorers();
-    }, [period]);
+    }, [fetchTopScorers]);
 
     const quizzes = topScorers.map(item => item.quizName);
     const displayedScorers = filteredQuiz === "All"
