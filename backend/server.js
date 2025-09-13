@@ -43,7 +43,8 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 
 // Import the daily challenge reset function
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
-import { connectRedis } from "./config/redis.js";
+import { connectRedis, redisClient } from "./config/redis.js";
+import { RedisStore } from "connect-redis";
 
 const app = express();
 
@@ -188,8 +189,8 @@ app.options("*", (req, res) => {
 
 const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
 
-// Configure session with proper settings
-app.use(session({ 
+// Configure session with Redis store for production
+const sessionConfig = {
     secret: GOOGLE_SECRET, 
     resave: false, 
     saveUninitialized: false, // Don't create session until something stored
@@ -200,7 +201,21 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax" // Allow cross-site requests in prod
     }
-}));
+};
+
+// Use Redis store in production, MemoryStore in development
+if (process.env.NODE_ENV === "production" || process.env.RENDER) {
+    sessionConfig.store = new RedisStore({
+        client: redisClient,
+        prefix: "quiz-app:session:",
+        ttl: 24 * 60 * 60 // 24 hours in seconds
+    });
+    console.log("🔒 Using Redis session store for production");
+} else {
+    console.log("🔧 Using MemoryStore for development");
+}
+
+app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 
