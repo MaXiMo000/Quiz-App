@@ -5,3 +5,4 @@ logs/
 logs/*
 *.audit.json
 **/*.audit.json
+.env_prod

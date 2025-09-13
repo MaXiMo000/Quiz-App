@@ -247,7 +247,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.7, duration: 0.4 }}
                                 >
-                                    <Link to="/premium/quizzes" className="premium-dashboard" onClick={handleLinkClick}>🧠 My Quizzes</Link>
+                                    <Link to="/premium/quizzes" className="premium-dashboard" onClick={handleLinkClick}>🧠 Add Quizzes</Link>
                                 </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
