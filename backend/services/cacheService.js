@@ -6,7 +6,7 @@ const get = async (key) => {
 };
 
 const set = (key, value, expiration = 3600) => {
-  return redisClient.set(key, JSON.stringify(value), { EX: expiration });
+  return redisClient.set(key, JSON.stringify(value), { EX: expiration.toString() });
 };
 
 const del = (key) => {
@@ -22,17 +22,17 @@ const flushAll = () => {
 };
 
 const delByPattern = async (pattern) => {
-    let cursor = 0;
+    let cursor = "0";
     do {
         const reply = await redisClient.scan(cursor, {
             MATCH: pattern,
-            COUNT: 100,
+            COUNT: "100",
         });
         cursor = reply.cursor;
         if (reply.keys.length > 0) {
             await redisClient.del(reply.keys);
         }
-    } while (cursor !== 0);
+    } while (cursor !== "0");
 };
 
 export default {

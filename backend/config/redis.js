@@ -9,7 +9,7 @@ const redisClient = redis.createClient({
   password: process.env.REDIS_PASSWORD,
   socket: {
     host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
+    port: parseInt(process.env.REDIS_PORT) || 6379
   }
 });
 
@@ -18,7 +18,7 @@ redisClient.on("error", (err) => logger.error("Redis Client Error", err));
 const ioredisClient = new ioredis({
     password: process.env.REDIS_PASSWORD,
     host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
+    port: parseInt(process.env.REDIS_PORT) || 6379,
     db: 0,
 });
 

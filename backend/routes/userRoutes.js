@@ -1,6 +1,7 @@
 import express from "express";
 import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/auth.js";
+import { roleUpdateLimiter } from "../middleware/rateLimiting.js";
 import mongoose from "mongoose";
 import { validate, registerSchema, loginSchema } from "../middleware/validation.js";
 
@@ -93,7 +94,7 @@ router.get("/:id", verifyToken, async (req, res) => {
     }
 });
 
-router.patch("/update-role", verifyToken, updateUserRole);
+router.patch("/update-role", roleUpdateLimiter, verifyToken, updateUserRole);
 router.post("/:id/theme", verifyToken, updateUserTheme);
 
 export default router;
