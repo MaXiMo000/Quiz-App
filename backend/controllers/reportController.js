@@ -74,26 +74,26 @@ export async function createReport(req, res) {
                 logger.error(`Invalid user ID format: ${userId}`);
             }
         }
-        
+
         // Fallback to username lookup if user not found by ID
         if (!user) {
             // Try different name matching strategies for Google OAuth users
             user = await UserQuiz.findOne({ name: username });
-            
+
             if (!user) {
                 // Try case-insensitive search
-                user = await UserQuiz.findOne({ 
+                user = await UserQuiz.findOne({
                     name: { $regex: new RegExp(`^${username}$`, "i") }
                 });
             }
-            
+
             if (!user) {
                 // Try trimmed version
                 user = await UserQuiz.findOne({ name: username.trim() });
             }
-            
+
         }
-        
+
         if (!user) {
             logger.error(`User not found - userId: ${userId}, username: ${username}`);
             return res.status(404).json({ message: "User not found" });
@@ -138,7 +138,7 @@ export async function createReport(req, res) {
         if (isNewQuizDay) {
             // Check if it's consecutive day for streak
             const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
-            
+
             if (lastQuizMidnight && lastQuizMidnight.getTime() === oneDayAgo.getTime()) {
                 user.quizStreak += 1;
             } else {

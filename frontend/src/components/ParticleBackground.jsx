@@ -23,7 +23,7 @@ const ParticleBackground = () => {
         baseOpacity = [0.02, 0.08, 0.02];
         colors = {
           primary: '#2563eb',
-          secondary: '#7c3aed', 
+          secondary: '#7c3aed',
           success: '#059669',
           info: '#0284c7',
           warning: '#d97706'
@@ -33,7 +33,7 @@ const ParticleBackground = () => {
           movement: { x: 15, y: 50 }
         };
         break;
-      
+
       case 'Ocean':
         particleCount = 45;
         baseOpacity = [0.2, 0.6, 0.2];
@@ -49,7 +49,7 @@ const ParticleBackground = () => {
           movement: { x: 40, y: 80 }
         };
         break;
-      
+
       case 'Forest':
         particleCount = 40;
         baseOpacity = [0.15, 0.4, 0.15];
@@ -65,7 +65,7 @@ const ParticleBackground = () => {
           movement: { x: 30, y: 70 }
         };
         break;
-      
+
       case 'Sunset':
         particleCount = 35;
         baseOpacity = [0.1, 0.35, 0.1];
@@ -81,7 +81,7 @@ const ParticleBackground = () => {
           movement: { x: 35, y: 75 }
         };
         break;
-      
+
       case 'Lavender':
         particleCount = 30;
         baseOpacity = [0.08, 0.25, 0.08];
@@ -97,7 +97,7 @@ const ParticleBackground = () => {
           movement: { x: 25, y: 65 }
         };
         break;
-      
+
       case 'synthwave':
         particleCount = 50;
         baseOpacity = [0.3, 0.8, 0.3];
@@ -114,7 +114,7 @@ const ParticleBackground = () => {
           special: 'glow'
         };
         break;
-      
+
       case 'tokyo-night':
         particleCount = 38;
         baseOpacity = [0.15, 0.45, 0.15];
@@ -130,7 +130,7 @@ const ParticleBackground = () => {
           movement: { x: 32, y: 72 }
         };
         break;
-      
+
       case 'gruvbox-dark':
         particleCount = 35;
         baseOpacity = [0.12, 0.4, 0.12];
@@ -146,7 +146,7 @@ const ParticleBackground = () => {
           movement: { x: 28, y: 68 }
         };
         break;
-      
+
       case 'material-dark':
         particleCount = 32;
         baseOpacity = [0.1, 0.35, 0.1];
@@ -162,7 +162,7 @@ const ParticleBackground = () => {
           movement: { x: 26, y: 66 }
         };
         break;
-      
+
       case 'nord':
         particleCount = 30;
         baseOpacity = [0.08, 0.3, 0.08];
@@ -178,7 +178,7 @@ const ParticleBackground = () => {
           movement: { x: 22, y: 62 }
         };
         break;
-      
+
       case 'Dark':
         particleCount = 35;
         baseOpacity = [0.1, 0.3, 0.1];
@@ -194,7 +194,7 @@ const ParticleBackground = () => {
           movement: { x: 30, y: 75 }
         };
         break;
-      
+
       case 'Default':
         particleCount = 25;
         baseOpacity = [0.05, 0.15, 0.05];
@@ -210,7 +210,7 @@ const ParticleBackground = () => {
           movement: { x: 25, y: 70 }
         };
         break;
-      
+
       default:
         particleCount = 35;
         baseOpacity = [0.05, 0.15, 0.05];

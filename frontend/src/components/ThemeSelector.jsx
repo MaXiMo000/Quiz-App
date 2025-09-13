@@ -6,10 +6,10 @@ const ThemeSelector = () => {
 const navigate = useNavigate();
 return (
     <div className="theme-selector">
-    <motion.button 
-        className="choose-theme-btn" 
+    <motion.button
+        className="choose-theme-btn"
         onClick={() => navigate("/themes")}
-        whileHover={{ 
+        whileHover={{
             scale: 1.05,
             y: -2,
             transition: { duration: 0.3 }

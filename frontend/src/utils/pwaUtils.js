@@ -17,10 +17,10 @@ class PWAManager {
       e.preventDefault();
       this.installPrompt = e;
       this.isInstallable = true;
-      
+
       // Dispatch custom event to notify components
-      window.dispatchEvent(new CustomEvent('pwa-installable', { 
-        detail: { canInstall: true } 
+      window.dispatchEvent(new CustomEvent('pwa-installable', {
+        detail: { canInstall: true }
       }));
     });
 
@@ -31,19 +31,19 @@ class PWAManager {
       this.isInstallable = false;
       this.installPrompt = null;
       this.trackInstallation();
-      
+
       // Dispatch custom event to notify components
-      window.dispatchEvent(new CustomEvent('pwa-installed', { 
-        detail: { isInstalled: true } 
+      window.dispatchEvent(new CustomEvent('pwa-installed', {
+        detail: { isInstalled: true }
       }));
     });
 
     // Enhanced standalone mode detection
     const checkStandaloneMode = () => {
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
                           window.navigator.standalone === true ||
                           document.referrer.includes('android-app://');
-      
+
       if (isStandalone) {
         this.isInstalled = true;
       }
@@ -56,8 +56,8 @@ class PWAManager {
     window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
       if (e.matches) {
         this.isInstalled = true;
-        window.dispatchEvent(new CustomEvent('pwa-installed', { 
-          detail: { isInstalled: true } 
+        window.dispatchEvent(new CustomEvent('pwa-installed', {
+          detail: { isInstalled: true }
         }));
       }
     });
@@ -91,7 +91,7 @@ class PWAManager {
 
   // Add method to check installability manually
   checkInstallability() {
-    
+
     const criteria = {
       hasServiceWorker: 'serviceWorker' in navigator,
       hasManifest: false,
@@ -104,27 +104,27 @@ class PWAManager {
     const manifestLink = document.querySelector('link[rel="manifest"]');
     if (manifestLink) {
       criteria.hasManifest = true;
-      
+
       // Try to fetch and validate manifest
       fetch(manifestLink.href)
         .then(response => response.json())
         .then(manifest => {
           criteria.hasIcons = manifest.icons && manifest.icons.length > 0;
-          
-          const meetsCriteria = criteria.hasServiceWorker && criteria.hasManifest && 
+
+          const meetsCriteria = criteria.hasServiceWorker && criteria.hasManifest &&
                                criteria.isSecure && criteria.hasIcons && !criteria.isStandalone;
-          
+
           if (meetsCriteria) {
             // Update the installable state even without beforeinstallprompt
             if (!this.isInstallable && !this.isInstalled) {
               this.isInstallable = true;
               // Dispatch event to update UI
-              window.dispatchEvent(new CustomEvent('pwa-installable', { 
-                detail: { canInstall: true } 
+              window.dispatchEvent(new CustomEvent('pwa-installable', {
+                detail: { canInstall: true }
               }));
             }
           } else {
-            console.log('❌ PWA missing some installability criteria:', 
+            console.log('❌ PWA missing some installability criteria:',
               Object.keys(criteria).filter(key => !criteria[key]));
           }
         })
@@ -189,12 +189,12 @@ class PWAManager {
   }
 
   async promptInstall() {
-    
+
     // Check if we have native install prompt
     if (this.installPrompt && this.isInstallable) {
       try {
         const result = await this.installPrompt.prompt();
-        
+
         if (result.outcome === 'accepted') {
           console.log('✅ User accepted PWA installation');
           this.isInstallable = false;
@@ -215,31 +215,31 @@ class PWAManager {
         // Enhanced browser-specific installation trigger
         const userAgent = navigator.userAgent;
         let installTriggered = false;
-        
+
         try {
           // Chrome/Edge specific: Try to trigger the install prompt
           if ((userAgent.includes('Chrome') || userAgent.includes('Edge')) && !userAgent.includes('Firefox')) {
-            
+
             // Focus window and dispatch interaction events
             window.focus();
             document.body.click(); // Some browsers require user interaction
-            
+
             // Try dispatching a beforeinstallprompt event manually
             const mockPromptEvent = new Event('beforeinstallprompt');
             mockPromptEvent.prompt = () => Promise.resolve({ outcome: 'dismissed' });
             mockPromptEvent.userChoice = Promise.resolve({ outcome: 'dismissed' });
-            
+
             window.dispatchEvent(mockPromptEvent);
-            
+
             // Wait for potential prompt
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
+
             if (this.installPrompt) {
               installTriggered = true;
               return await this.promptInstall(); // Recursively call with prompt
             }
           }
-          
+
           // If no native trigger worked, show enhanced instructions
           if (!installTriggered) {
             console.log('🔧 No native prompt available, showing enhanced browser instructions');
@@ -260,7 +260,7 @@ class PWAManager {
 
   showEnhancedInstallInstructions() {
     const userAgent = navigator.userAgent;
-    
+
     // Create a more prominent install guide
     const modal = document.createElement('div');
     modal.style.cssText = `
@@ -276,7 +276,7 @@ class PWAManager {
       z-index: 10000;
       backdrop-filter: blur(10px);
     `;
-    
+
     let instructions = '';
     if (userAgent.includes('Chrome') && !userAgent.includes('Edge')) {
       instructions = `
@@ -312,7 +312,7 @@ class PWAManager {
         </div>
       `;
     }
-    
+
     modal.innerHTML = `
       <div style="
         background: white;
@@ -336,9 +336,9 @@ class PWAManager {
         ">Got it!</button>
       </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // Auto-remove after 10 seconds
     setTimeout(() => {
       if (modal.parentNode) {
@@ -350,7 +350,7 @@ class PWAManager {
   showBrowserSpecificInstructions() {
     const userAgent = navigator.userAgent;
     let title, content;
-    
+
     if (userAgent.includes('Chrome') && !userAgent.includes('Edge')) {
       title = '🟢 Install in Chrome';
       content = `
@@ -358,12 +358,12 @@ class PWAManager {
           <h3>Method 1: Address Bar</h3>
           <p>1. Look for the <strong>📱 Install</strong> icon in the address bar</p>
           <p>2. Click it and select <strong>Install</strong></p>
-          
+
           <h3>Method 2: Browser Menu</h3>
           <p>1. Click the <strong>⋮</strong> menu (three dots)</p>
           <p>2. Find <strong>Install Quiz Master...</strong></p>
           <p>3. Click <strong>Install</strong></p>
-          
+
           <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 15px 0; color: #333;">
             <strong>💡 Tip:</strong> The install option appears after browsing the site for a few minutes.
           </div>
@@ -376,7 +376,7 @@ class PWAManager {
           <h3>Method 1: Address Bar</h3>
           <p>1. Look for the <strong>📱 Install app</strong> icon in the address bar</p>
           <p>2. Click it and select <strong>Install</strong></p>
-          
+
           <h3>Method 2: Browser Menu</h3>
           <p>1. Click the <strong>⋯</strong> menu (three dots)</p>
           <p>2. Go to <strong>Apps</strong></p>
@@ -392,7 +392,7 @@ class PWAManager {
           <p>1. Tap the <strong>Share</strong> button (□↗)</p>
           <p>2. Scroll down and tap <strong>Add to Home Screen</strong></p>
           <p>3. Tap <strong>Add</strong></p>
-          
+
           <h3>For Mac:</h3>
           <p>1. Click <strong>File</strong> in menu bar</p>
           <p>2. Select <strong>Add to Dock</strong></p>
@@ -427,9 +427,9 @@ class PWAManager {
   showManualInstallInstructions() {
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
+
     let instructions = '';
-    
+
     if (isIOS) {
       instructions = `📱 Install QuizNest on iOS:\n\n` +
                     `1. Tap the Share button (⬆️) at the bottom\n` +
@@ -446,7 +446,7 @@ class PWAManager {
                     `2. Click it and select "Install"\n` +
                     `3. Or use browser menu → "Install QuizNest"`;
     }
-    
+
     // Create a better modal instead of alert
     this.showInstallModal(instructions);
   }
@@ -532,37 +532,37 @@ class PWAManager {
   }
 
   isPWAInstalled() {
-    return this.isInstalled || 
+    return this.isInstalled ||
            window.matchMedia('(display-mode: standalone)').matches ||
            window.navigator.standalone === true;
   }
 
   getInstallationInfo() {
     // Enhanced standalone detection
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
                         window.navigator.standalone === true ||
                         document.referrer.includes('android-app://') ||
                         window.matchMedia('(display-mode: fullscreen)').matches ||
                         (window.outerHeight === window.innerHeight && window.outerWidth === window.innerWidth);
-    
+
     // Update internal state if we detect standalone mode
     if (isStandalone && !this.isInstalled) {
       this.isInstalled = true;
       console.log('📱 PWA standalone mode detected - app is installed');
-      
+
       // Store installation timestamp if not already stored
       if (!localStorage.getItem('pwa_installed_at')) {
         localStorage.setItem('pwa_installed_at', new Date().toISOString());
       }
-      
+
       // Dispatch installed event
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('pwa-installed', { 
-          detail: { isInstalled: true } 
+        window.dispatchEvent(new CustomEvent('pwa-installed', {
+          detail: { isInstalled: true }
         }));
       }, 100);
     }
-    
+
     return {
       isInstalled: isStandalone || this.isInstalled,
       hasPrompt: !!this.installPrompt,

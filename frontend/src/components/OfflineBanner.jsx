@@ -21,14 +21,14 @@ const OfflineBanner = () => {
                         {isOnline ? 'Slow Connection' : 'You\'re Offline'}
                     </span>
                     <span className="offline-message">
-                        {isOnline 
+                        {isOnline
                             ? `Connection: ${connectionType}. Some features may be slower.`
                             : 'Limited features available. Data will sync when connection is restored.'
                         }
                     </span>
                 </div>
                 {!isOnline && (
-                    <button 
+                    <button
                         className="retry-connection-btn"
                         onClick={() => window.location.reload()}
                         title="Retry connection"

@@ -15,7 +15,7 @@
     color: var(--text-color);
     border-radius: var(--radius-2xl);
     border: 1px solid var(--card-border);
-    box-shadow: 
+    box-shadow:
         var(--shadow-2xl),
         0 0 50px rgba(99, 102, 241, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -71,7 +71,7 @@
 
 .back-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 10px 40px rgba(99, 102, 241, 0.4);
     background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
@@ -114,9 +114,9 @@
     gap: var(--space-lg);
     margin-bottom: var(--space-2xl);
     padding: var(--space-xl);
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05) 0%, 
-        rgba(139, 92, 246, 0.05) 50%, 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05) 0%,
+        rgba(139, 92, 246, 0.05) 50%,
         rgba(217, 70, 239, 0.05) 100%);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(99, 102, 241, 0.2);
@@ -159,16 +159,16 @@
 
 /* ✅ Enhanced Question Boxes */
 .question-box {
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05) 0%, 
-        rgba(139, 92, 246, 0.05) 50%, 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05) 0%,
+        rgba(139, 92, 246, 0.05) 50%,
         rgba(217, 70, 239, 0.05) 100%);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(99, 102, 241, 0.2);
     border-radius: var(--radius-xl);
     padding: var(--space-2xl);
-    box-shadow: 
+    box-shadow:
         var(--shadow-lg),
         0 0 30px rgba(99, 102, 241, 0.08);
     transition: all var(--transition-smooth);
@@ -195,7 +195,7 @@
 
 .question-box:hover {
     transform: translateY(-8px);
-    box-shadow: 
+    box-shadow:
         var(--shadow-2xl),
         0 20px 60px rgba(99, 102, 241, 0.15),
         0 0 40px rgba(139, 92, 246, 0.1);
@@ -337,7 +337,7 @@
 
 .delete-btn:hover {
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 10px 30px rgba(220, 38, 38, 0.4);
     background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
@@ -359,8 +359,8 @@
     min-height: 50vh;
     text-align: center;
     padding: var(--space-2xl);
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05),
         rgba(139, 92, 246, 0.05));
     backdrop-filter: blur(15px);
     border: 1px solid rgba(99, 102, 241, 0.1);
@@ -384,8 +384,8 @@
 .no-questions {
     text-align: center;
     padding: var(--space-2xl);
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05),
         rgba(139, 92, 246, 0.05));
     backdrop-filter: blur(15px);
     border: 1px solid rgba(99, 102, 241, 0.1);
@@ -577,7 +577,7 @@
     padding: var(--space-xl);
     border-radius: var(--radius-xl);
     margin-bottom: var(--space-xl);
-    box-shadow: 
+    box-shadow:
         var(--shadow-lg),
         0 0 30px rgba(99, 102, 241, 0.05);
     text-align: left;
@@ -599,7 +599,7 @@
 
 .question-box:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 0 40px rgba(99, 102, 241, 0.15);
     border-color: var(--accent);
@@ -657,5 +657,3 @@
     background: var(--accent2);
     transform: scale(1.03);
 }
-
-

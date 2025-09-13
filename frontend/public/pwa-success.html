@@ -119,14 +119,14 @@
 </head>
 <body>
     <div class="celebration" id="celebration"></div>
-    
+
     <div class="success-container">
         <div class="success-icon">🎉</div>
         <h1>PWA Installation Successful!</h1>
         <p style="font-size: 1.2em; margin-bottom: 30px;">
             Congratulations! Your QuizNest Progressive Web App is now installed and running perfectly!
         </p>
-        
+
         <div class="success-details">
             <h3>✅ What's Working Now:</h3>
             <div class="success-item">
@@ -182,7 +182,7 @@
         function createConfetti() {
             const celebration = document.getElementById('celebration');
             const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffa726'];
-            
+
             for (let i = 0; i < 50; i++) {
                 setTimeout(() => {
                     const confetti = document.createElement('div');
@@ -192,7 +192,7 @@
                     confetti.style.animationDelay = Math.random() * 3 + 's';
                     confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
                     celebration.appendChild(confetti);
-                    
+
                     // Remove confetti after animation
                     setTimeout(() => {
                         if (confetti.parentNode) {
@@ -208,15 +208,15 @@
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
             const hasServiceWorker = 'serviceWorker' in navigator;
             const hasManifest = !!document.querySelector('link[rel="manifest"]');
-            
+
             const status = {
                 displayMode: isStandalone ? 'standalone' : 'browser',
                 isInstalled: isStandalone,
                 hasServiceWorker,
                 hasManifest,
                 isSecureContext: window.isSecureContext,
-                userAgent: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
-                          navigator.userAgent.includes('Edge') ? 'Edge' : 
+                userAgent: navigator.userAgent.includes('Chrome') ? 'Chrome' :
+                          navigator.userAgent.includes('Edge') ? 'Edge' :
                           navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
                 timestamp: new Date().toLocaleString()
             };
@@ -238,23 +238,23 @@
         function testFeatures() {
             // Test PWA features
             const tests = [];
-            
+
             if ('serviceWorker' in navigator) {
                 tests.push('✅ Service Worker API available');
             }
-            
+
             if ('caches' in window) {
                 tests.push('✅ Cache API available');
             }
-            
+
             if ('Notification' in window) {
                 tests.push('✅ Notifications API available');
             }
-            
+
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 tests.push('✅ Running in standalone mode');
             }
-            
+
             alert('PWA Feature Test Results:\n\n' + tests.join('\n'));
         }
 
@@ -262,7 +262,7 @@
         window.addEventListener('load', () => {
             createConfetti();
             displayStatus();
-            
+
             // Register service worker if not already done
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {

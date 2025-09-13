@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 const dailyChallengeSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    type: { 
-        type: String, 
+    type: {
+        type: String,
         enum: ["quiz_completion", "score_target", "streak_maintenance", "category_focus", "speed_challenge"],
-        required: true 
+        required: true
     },
-    
+
     // Challenge parameters
     parameters: {
         targetScore: { type: Number }, // For score_target
@@ -17,23 +17,23 @@ const dailyChallengeSchema = new mongoose.Schema({
         streakDays: { type: Number }, // For streak_maintenance
         quizCount: { type: Number } // For quiz_completion
     },
-    
+
     // Quiz references for the challenge
     quizzes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }],
     timeLimit: { type: Number, default: 300 }, // Time limit per quiz in seconds
-    
+
     // Rewards
     rewards: {
         xp: { type: Number, default: 100 },
         badge: { type: String }, // Optional badge reward
         theme: { type: String } // Optional theme unlock
     },
-    
+
     // Challenge period
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     isActive: { type: Boolean, default: true },
-    
+
     // Participants and completions
     participants: [{
         user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" },
@@ -50,7 +50,7 @@ const dailyChallengeSchema = new mongoose.Schema({
             completedAt: { type: Date, default: Date.now }
         }]
     }],
-    
+
     // Historical completions (preserves old results when challenges reset)
     historicalCompletions: [{
         user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" },
@@ -67,7 +67,7 @@ const dailyChallengeSchema = new mongoose.Schema({
         }],
         resetAt: { type: Date, default: Date.now } // When this completion was moved to history
     }],
-    
+
     // Challenge statistics
     stats: {
         totalParticipants: { type: Number, default: 0 },

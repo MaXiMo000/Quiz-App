@@ -4,23 +4,23 @@ import { LearningPath, Competency } from "../models/LearningPath.js";
 async function seedLearningPaths() {
     try {
         console.log("🌱 Starting learning path seeding...");
-        
+
         // Clear existing data
         await LearningPath.deleteMany({});
         await Competency.deleteMany({});
         console.log("🧹 Cleared existing learning paths and competencies");
-        
+
         // Create competencies first
         const competencies = await createCompetencies();
         console.log(`✅ Created ${competencies.length} competencies`);
-        
+
         // Create learning paths
         const learningPaths = await createLearningPaths(competencies);
         console.log(`✅ Created ${learningPaths.length} learning paths`);
-        
+
         console.log("🎉 Learning path seeding completed successfully!");
         return { competencies, learningPaths };
-        
+
     } catch (error) {
         console.error("❌ Error seeding learning paths:", error);
         throw error;
@@ -31,106 +31,106 @@ async function seedLearningPaths() {
 async function createCompetencies() {
     const competencyData = [
         // JavaScript Competencies
-        { 
+        {
             name: "JavaScript Fundamentals",
             category: "JavaScript",
             description: "Basic JavaScript syntax, variables, and data types",
             level: "foundational",
             prerequisites: []
         },
-        { 
+        {
             name: "DOM Manipulation",
             category: "JavaScript",
             description: "Interacting with HTML elements using JavaScript",
             level: "intermediate",
             prerequisites: ["JavaScript Fundamentals"]
         },
-        { 
+        {
             name: "Asynchronous JavaScript",
             category: "JavaScript",
             description: "Promises, async/await, and API interactions",
             level: "advanced",
             prerequisites: ["JavaScript Fundamentals", "DOM Manipulation"]
         },
-        
+
         // React Competencies
-        { 
+        {
             name: "React Components",
             category: "React",
             description: "Building and managing React components",
             level: "foundational",
             prerequisites: ["JavaScript Fundamentals"]
         },
-        { 
+        {
             name: "State Management",
             category: "React",
             description: "Managing application state in React",
             level: "intermediate",
             prerequisites: ["React Components"]
         },
-        { 
+        {
             name: "Advanced React",
             category: "React",
             description: "Advanced React patterns and optimization",
             level: "advanced",
             prerequisites: ["State Management"]
         },
-        
+
         // Python Competencies
-        { 
+        {
             name: "Python Basics",
             category: "Python",
             description: "Python syntax and basic programming concepts",
             level: "foundational",
             prerequisites: []
         },
-        { 
+        {
             name: "Object-Oriented Python",
             category: "Python",
             description: "Classes, inheritance, and OOP principles",
             level: "intermediate",
             prerequisites: ["Python Basics"]
         },
-        { 
+        {
             name: "Python Libraries",
             category: "Python",
             description: "Working with popular Python libraries",
             level: "advanced",
             prerequisites: ["Python Basics", "Object-Oriented Python"]
         },
-        
+
         // Web Development Competencies
-        { 
+        {
             name: "HTML & CSS",
             category: "Web Development",
             description: "Structuring and styling web pages",
             level: "foundational",
             prerequisites: []
         },
-        { 
+        {
             name: "Advanced CSS",
             category: "Web Development",
             description: "Advanced CSS techniques and frameworks",
             level: "intermediate",
             prerequisites: ["HTML & CSS"]
         },
-        
+
         // Algorithms Competencies
-        { 
+        {
             name: "Basic Algorithms",
             category: "Algorithms",
             description: "Fundamental algorithms and problem-solving",
             level: "foundational",
             prerequisites: []
         },
-        { 
+        {
             name: "Data Structures",
             category: "Algorithms",
             description: "Common data structures and their applications",
             level: "intermediate",
             prerequisites: ["Basic Algorithms"]
         },
-        { 
+        {
             name: "Advanced Algorithms",
             category: "Algorithms",
             description: "Complex algorithms and optimization techniques",
@@ -138,7 +138,7 @@ async function createCompetencies() {
             prerequisites: ["Data Structures"]
         }
     ];
-    
+
     const competencies = await Competency.insertMany(competencyData);
     return competencies;
 }
@@ -277,7 +277,7 @@ async function createLearningPaths(competencies) {
             },
             isActive: true
         },
-        
+
         // React Learning Path
         {
             title: "React Fundamentals",
@@ -397,7 +397,7 @@ async function createLearningPaths(competencies) {
             },
             isActive: true
         },
-        
+
         // Python Learning Path
         {
             title: "Python Programming Basics",
@@ -499,7 +499,7 @@ async function createLearningPaths(competencies) {
             },
             isActive: true
         },
-        
+
         // Web Development Path
         {
             title: "Web Development Fundamentals",
@@ -587,7 +587,7 @@ async function createLearningPaths(competencies) {
             },
             isActive: true
         },
-        
+
         // Algorithms Path
         {
             title: "Algorithm Fundamentals",
@@ -1119,7 +1119,7 @@ async function createLearningPaths(competencies) {
             isActive: true
         }
     ];
-    
+
     const learningPaths = await LearningPath.insertMany(learningPathsData);
     return learningPaths;
 }

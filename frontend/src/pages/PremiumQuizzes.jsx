@@ -34,7 +34,7 @@ const PremiumQuizzes = () => {
 
     useEffect(() => {
         getQuiz();
-        
+
         // Ensure all modals are closed on page load
         const modals = ['ai_question_modal', 'create_quiz_modal', 'add_question_modal'];
         modals.forEach(modalId => {
@@ -73,7 +73,7 @@ const PremiumQuizzes = () => {
                     topic: aiTopic,
                     numQuestions: Number(aiNumQuestions)
                 },
-                { headers: { "Content-Type": "application/json" } } 
+                { headers: { "Content-Type": "application/json" } }
             );
 
             if (response.status !== 200) {
@@ -152,21 +152,21 @@ const PremiumQuizzes = () => {
     };
 
     if (loading) return (
-        <motion.div 
+        <motion.div
             className="premium-quiz-container main-content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
             <div className="loading-container">
-                <motion.div 
+                <motion.div
                     className="loading-spinner"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 >
                     <div className="spinner-ring"></div>
                 </motion.div>
-                <motion.p 
+                <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
@@ -177,15 +177,15 @@ const PremiumQuizzes = () => {
             </div>
         </motion.div>
     );
-    
+
     if (error) return (
-        <motion.div 
+        <motion.div
             className="premium-quiz-container main-content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <motion.div 
+            <motion.div
                 className="error-container"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -197,13 +197,13 @@ const PremiumQuizzes = () => {
     );
 
     return (
-        <motion.div 
+        <motion.div
             className="premium-quiz-container main-content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
         >
-            <motion.div 
+            <motion.div
                 className="quiz-header"
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -219,8 +219,8 @@ const PremiumQuizzes = () => {
                     </span>
                     Premium Quizzes
                 </motion.h2>
-                <button 
-                    className="create-btn" 
+                <button
+                    className="create-btn"
                     onClick={() => document.getElementById("create_quiz_modal").showModal()}
                 >
                     <span>
@@ -230,7 +230,7 @@ const PremiumQuizzes = () => {
                 </button>
             </motion.div>
 
-            <motion.div 
+            <motion.div
                 className="quiz-list"
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -238,8 +238,8 @@ const PremiumQuizzes = () => {
             >
                 <AnimatePresence>
                     {quizzes.map((quiz, _index) => (
-                        <div 
-                            key={quiz._id} 
+                        <div
+                            key={quiz._id}
                             className="quiz-box premium-box"
                         >
                             <div className="premium-badge">
@@ -248,13 +248,13 @@ const PremiumQuizzes = () => {
                                 </span>
                                 PREMIUM
                             </div>
-                            
+
                             <div className="quiz-content">
                                 <h3>
                                     {quiz.title}
                                 </h3>
-                                
-                                <div 
+
+                                <div
                                     className="quiz-info"
                                 >
                                     <p>
@@ -275,18 +275,18 @@ const PremiumQuizzes = () => {
                                     </p>
                                 </div>
 
-                                <div 
+                                <div
                                     className="quiz-actions"
                                 >
-                                    <button 
-                                        className="delete-btn premium-delete-btn" 
+                                    <button
+                                        className="delete-btn premium-delete-btn"
                                         onClick={() => deleteQuiz(quiz.title)}
                                     >
                                         🗑️ Delete
                                     </button>
-                                    
-                                    <button 
-                                        className="add-ai-btn premium-ai-btn" 
+
+                                    <button
+                                        className="add-ai-btn premium-ai-btn"
                                         onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
                                     >
                                         <span>
@@ -294,27 +294,27 @@ const PremiumQuizzes = () => {
                                         </span>
                                         AI Premium
                                     </button>
-                                    
-                                    <button 
-                                        className="add-question-btn premium-add-btn" 
+
+                                    <button
+                                        className="add-question-btn premium-add-btn"
                                         onClick={() => openAddQuestionModal(quiz._id)}
                                     >
                                         ➕ Add Question
                                     </button>
-                                    
-                                    <button 
-                                        className="view-questions-btn premium-view-btn" 
+
+                                    <button
+                                        className="view-questions-btn premium-view-btn"
                                         onClick={() => navigate(`/premium/quiz/${quiz._id}`)}
                                     >
                                         📜 View Questions
                                     </button>
                                 </div>
 
-                                <ul 
+                                <ul
                                     className="display-ans premium-questions"
                                 >
                                     {quiz.questions.map((q, i) => (
-                                        <li 
+                                        <li
                                             key={i}
                                         >
                                             <div className="question-text">
@@ -327,7 +327,7 @@ const PremiumQuizzes = () => {
                                     ))}
                                 </ul>
                             </div>
-                            
+
                             <div className="premium-bg-effect"></div>
                         </div>
                     ))}
@@ -335,8 +335,8 @@ const PremiumQuizzes = () => {
             </motion.div>
 
             {/* AI Question Generation Modal */}
-            <dialog 
-                id="ai_question_modal" 
+            <dialog
+                id="ai_question_modal"
                 className="modal premium-modal"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) {
@@ -344,11 +344,11 @@ const PremiumQuizzes = () => {
                     }
                 }}
             >
-                <div 
+                <div
                     className="modal-box premium-modal-box"
                 >
                     <form onSubmit={handleAiSubmit}>
-                        <button 
+                        <button
                             type="button"
                             className="close-btn premium-close"
                             onClick={(e) => {
@@ -360,7 +360,7 @@ const PremiumQuizzes = () => {
                             ✕
                         </button>
 
-                        <h3 
+                        <h3
                             className="modal-title premium-title"
                         >
                             <span>
@@ -368,26 +368,26 @@ const PremiumQuizzes = () => {
                             </span>
                             Premium AI Generation
                         </h3>
-                        
-                        <input 
-                            type="text" 
-                            name="aiTopic" 
-                            placeholder="Enter Premium Topic" 
-                            value={aiTopic} 
-                            onChange={(e) => setAiTopic(e.target.value)} 
-                            required 
+
+                        <input
+                            type="text"
+                            name="aiTopic"
+                            placeholder="Enter Premium Topic"
+                            value={aiTopic}
+                            onChange={(e) => setAiTopic(e.target.value)}
+                            required
                         />
-                        
-                        <input 
-                            type="number" 
-                            name="aiNumQuestions" 
-                            placeholder="Number of Premium Questions" 
-                            value={aiNumQuestions} 
-                            onChange={(e) => setAiNumQuestions(e.target.value)} 
-                            required 
+
+                        <input
+                            type="number"
+                            name="aiNumQuestions"
+                            placeholder="Number of Premium Questions"
+                            value={aiNumQuestions}
+                            onChange={(e) => setAiNumQuestions(e.target.value)}
+                            required
                         />
-                        
-                        <button 
+
+                        <button
                             className="submit-btn premium-submit"
                             disabled={isGeneratingAI}
                         >
@@ -398,8 +398,8 @@ const PremiumQuizzes = () => {
             </dialog>
 
             {/* Create Quiz Modal */}
-            <dialog 
-                id="create_quiz_modal" 
+            <dialog
+                id="create_quiz_modal"
                 className="modal premium-modal"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) {
@@ -407,11 +407,11 @@ const PremiumQuizzes = () => {
                     }
                 }}
             >
-                <div 
+                <div
                     className="modal-box premium-modal-box"
                 >
                     <form onSubmit={createQuiz}>
-                        <button 
+                        <button
                             type="button"
                             className="close-btn premium-close"
                             onClick={(e) => {
@@ -422,8 +422,8 @@ const PremiumQuizzes = () => {
                         >
                             ✕
                         </button>
-                        
-                        <h3 
+
+                        <h3
                             className="modal-title premium-title"
                         >
                             <span>
@@ -431,22 +431,22 @@ const PremiumQuizzes = () => {
                             </span>
                             Create Premium Quiz
                         </h3>
-                        
-                        <input 
-                            type="text" 
-                            name="title" 
-                            placeholder="Enter Premium Quiz Title" 
-                            required 
+
+                        <input
+                            type="text"
+                            name="title"
+                            placeholder="Enter Premium Quiz Title"
+                            required
                         />
-                        
-                        <input 
-                            type="text" 
-                            name="category" 
-                            placeholder="Enter Premium Category" 
-                            required 
+
+                        <input
+                            type="text"
+                            name="category"
+                            placeholder="Enter Premium Category"
+                            required
                         />
-                        
-                        <button 
+
+                        <button
                             className="submit-btn premium-submit"
                         >
                             ✨ Create Premium Quiz
@@ -456,8 +456,8 @@ const PremiumQuizzes = () => {
             </dialog>
 
             {/* Add Question Modal */}
-            <dialog 
-                id="add_question_modal" 
+            <dialog
+                id="add_question_modal"
                 className="modal premium-modal"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) {
@@ -465,14 +465,14 @@ const PremiumQuizzes = () => {
                     }
                 }}
             >
-                <motion.div 
+                <motion.div
                     className="modal-box premium-modal-box"
                     initial={{ scale: 0.8, opacity: 0, rotateX: -10 }}
                     animate={{ scale: 1, opacity: 1, rotateX: 0 }}
                     transition={{ duration: 0.3, type: "spring" }}
                 >
                     <form onSubmit={addQuestion} className="question-form">
-                        <button 
+                        <button
                             type="button"
                             className="close-btn premium-close"
                             onClick={(e) => {
@@ -484,7 +484,7 @@ const PremiumQuizzes = () => {
                             ✕
                         </button>
 
-                        <motion.h3 
+                        <motion.h3
                             className="modal-title premium-title"
                             initial={{ y: -20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
@@ -493,70 +493,70 @@ const PremiumQuizzes = () => {
                             ➕ Add Premium Question
                         </motion.h3>
 
-                        <motion.input 
-                            type="text" 
-                            name="question" 
-                            placeholder="💎 Enter premium question" 
-                            className="form-input" 
-                            required 
+                        <motion.input
+                            type="text"
+                            name="question"
+                            placeholder="💎 Enter premium question"
+                            className="form-input"
+                            required
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.2 }}
                             whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(251, 191, 36, 0.3)" }}
                         />
 
-                        <motion.div 
+                        <motion.div
                             className="option-pair"
                             initial={{ x: -20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: 0.3 }}
                         >
-                            <motion.input 
-                                type="text" 
-                                name="optionA" 
-                                placeholder="Option A" 
-                                className="form-input" 
-                                required 
+                            <motion.input
+                                type="text"
+                                name="optionA"
+                                placeholder="Option A"
+                                className="form-input"
+                                required
                                 whileFocus={{ scale: 1.02 }}
                             />
-                            <motion.input 
-                                type="text" 
-                                name="optionB" 
-                                placeholder="Option B" 
-                                className="form-input" 
-                                required 
+                            <motion.input
+                                type="text"
+                                name="optionB"
+                                placeholder="Option B"
+                                className="form-input"
+                                required
                                 whileFocus={{ scale: 1.02 }}
                             />
                         </motion.div>
-                        
-                        <motion.div 
+
+                        <motion.div
                             className="option-pair"
                             initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: 0.4 }}
                         >
-                            <motion.input 
-                                type="text" 
-                                name="optionC" 
-                                placeholder="Option C" 
-                                className="form-input" 
-                                required 
+                            <motion.input
+                                type="text"
+                                name="optionC"
+                                placeholder="Option C"
+                                className="form-input"
+                                required
                                 whileFocus={{ scale: 1.02 }}
                             />
-                            <motion.input 
-                                type="text" 
-                                name="optionD" 
-                                placeholder="Option D" 
-                                className="form-input" 
-                                required 
+                            <motion.input
+                                type="text"
+                                name="optionD"
+                                placeholder="Option D"
+                                className="form-input"
+                                required
                                 whileFocus={{ scale: 1.02 }}
                             />
                         </motion.div>
 
-                        <motion.select 
-                            name="difficulty" 
-                            defaultValue="medium" 
-                            className="form-select" 
+                        <motion.select
+                            name="difficulty"
+                            defaultValue="medium"
+                            className="form-select"
                             required
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
@@ -568,19 +568,19 @@ const PremiumQuizzes = () => {
                             <option value="hard">🔥 Premium Hard</option>
                         </motion.select>
 
-                        <motion.input 
-                            type="text" 
-                            name="correctAnswer" 
-                            placeholder="✨ Correct Answer (A/B/C/D)" 
-                            className="form-input" 
-                            required 
+                        <motion.input
+                            type="text"
+                            name="correctAnswer"
+                            placeholder="✨ Correct Answer (A/B/C/D)"
+                            className="form-input"
+                            required
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.6 }}
                             whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(251, 191, 36, 0.3)" }}
                         />
 
-                        <motion.button 
+                        <motion.button
                             className="submit-btn premium-submit"
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
@@ -593,7 +593,7 @@ const PremiumQuizzes = () => {
                     </form>
                 </motion.div>
             </dialog>
-            
+
             {/* Floating decorative elements */}
             <motion.div
                 className="floating-element floating-premium-1"
@@ -636,7 +636,7 @@ const PremiumQuizzes = () => {
                     delay: 5
                 }}
             />
-            
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}

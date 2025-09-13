@@ -69,7 +69,7 @@ const PWAInstallTest = () => {
   return (
     <div style={{ padding: '20px', fontFamily: 'monospace' }}>
       <h1>🔧 PWA Installation Test Page</h1>
-      
+
       <div style={{ marginBottom: '20px' }}>
         <h2>📱 Current PWA Status</h2>
         <pre style={{ background: '#f5f5f5', padding: '10px', borderRadius: '5px' }}>
@@ -99,12 +99,12 @@ const PWAInstallTest = () => {
           <button onClick={forceInstallCheck}>
             🔄 Force Install Check
           </button>
-          <button 
+          <button
             onClick={() => window.pwaDebug?.simulateInstallPrompt()}
           >
             🎯 Simulate Install Prompt
           </button>
-          <button 
+          <button
             onClick={async () => {
               await window.pwaDebug?.getManifest();
             }}
@@ -119,12 +119,12 @@ const PWAInstallTest = () => {
 
       <div style={{ marginBottom: '20px' }}>
         <h2>📝 Test Logs</h2>
-        <div style={{ 
-          background: '#000', 
-          color: '#00ff00', 
-          padding: '10px', 
-          borderRadius: '5px', 
-          height: '200px', 
+        <div style={{
+          background: '#000',
+          color: '#00ff00',
+          padding: '10px',
+          borderRadius: '5px',
+          height: '200px',
           overflow: 'auto',
           fontSize: '12px'
         }}>

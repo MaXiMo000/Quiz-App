@@ -11,7 +11,7 @@ export const useNetworkStatus = () => {
         const handleOnline = () => {
             setIsOnline(true);
             console.log('🌐 Network connection restored');
-            
+
             // Show notification
             if ('serviceWorker' in navigator && 'Notification' in window) {
                 new Notification('Connection Restored', {
@@ -25,7 +25,7 @@ export const useNetworkStatus = () => {
         const handleOffline = () => {
             setIsOnline(false);
             console.log('📴 Network connection lost');
-            
+
             // Show notification
             if ('serviceWorker' in navigator && 'Notification' in window) {
                 new Notification('Connection Lost', {
@@ -45,7 +45,7 @@ export const useNetworkStatus = () => {
         // Add event listeners
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
-        
+
         if (navigator.connection) {
             navigator.connection.addEventListener('change', handleConnectionChange);
         }
@@ -54,7 +54,7 @@ export const useNetworkStatus = () => {
         return () => {
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
-            
+
             if (navigator.connection) {
                 navigator.connection.removeEventListener('change', handleConnectionChange);
             }

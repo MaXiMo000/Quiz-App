@@ -5,18 +5,18 @@ window.pwaDebug = {
   // Check current PWA status
   checkStatus() {
     console.group('🔍 PWA Debug Status');
-    
+
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const hasPrompt = !!window.pwaManager?.installPrompt;
     const isInstallable = !!window.pwaManager?.isInstallable;
-    
+
     console.log('📱 Display Mode:', window.matchMedia('(display-mode: standalone)').matches ? 'Standalone' : 'Browser');
     console.log('🌐 User Agent:', navigator.userAgent);
     console.log('📦 Service Worker:', 'serviceWorker' in navigator ? 'Supported' : 'Not Supported');
     console.log('🔧 Install Prompt:', hasPrompt ? 'Available' : 'Not Available');
     console.log('✅ Is Installable:', isInstallable ? 'Yes' : 'No');
     console.log('📱 Is Installed:', isStandalone ? 'Yes' : 'No');
-    
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistration().then(reg => {
         console.log('🔧 SW Registration:', reg ? 'Active' : 'None');
@@ -26,7 +26,7 @@ window.pwaDebug = {
         }
       });
     }
-    
+
     console.groupEnd();
   },
 
@@ -44,35 +44,35 @@ window.pwaDebug = {
   // Check PWA criteria
   checkCriteria() {
     console.group('📋 PWA Installation Criteria');
-    
+
     // Check manifest
     const manifestLink = document.querySelector('link[rel="manifest"]');
     console.log('📄 Manifest:', manifestLink ? '✅ Found' : '❌ Missing');
-    
+
     // Check service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistration().then(reg => {
         console.log('🔧 Service Worker:', reg ? '✅ Registered' : '❌ Not Registered');
       });
     }
-    
+
     // Check HTTPS
     const isHTTPS = location.protocol === 'https:' || location.hostname === 'localhost';
     console.log('🔒 HTTPS:', isHTTPS ? '✅ Secure' : '❌ Not Secure');
-    
+
     // Check if visited enough times
     console.log('📊 Visit Count: Check your browser for site engagement metrics');
-    
+
     console.groupEnd();
   },
 
   // Clear PWA data
   clearPWAData() {
     console.log('🧹 Clearing PWA data...');
-    
+
     // Clear localStorage PWA data
     localStorage.removeItem('pwa_installed_at');
-    
+
     // Clear service worker cache
     if ('caches' in window) {
       caches.keys().then(names => {
@@ -84,7 +84,7 @@ window.pwaDebug = {
         });
       });
     }
-    
+
     // Unregister service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(registrations => {
@@ -94,7 +94,7 @@ window.pwaDebug = {
         });
       });
     }
-    
+
     console.log('✅ PWA data cleared. Refresh the page to start fresh.');
   },
 
@@ -102,9 +102,9 @@ window.pwaDebug = {
   getInstructions() {
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
+
     console.group('📖 Installation Instructions');
-    
+
     if (isIOS) {
       console.log('📱 iOS Safari:');
       console.log('1. Tap the Share button (⬆️)');
@@ -121,7 +121,7 @@ window.pwaDebug = {
       console.log('2. Click it and select "Install"');
       console.log('3. Or use browser menu → "Install QuizNest"');
     }
-    
+
     console.groupEnd();
   }
 };

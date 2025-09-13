@@ -51,7 +51,7 @@ const EnhancedDashboard = () => {
   const [canInstall, setCanInstall] = useState(false);
   const [isInstalled, setIsInstalled] = useState(() => {
     // Check immediately on component mount
-    const immediate = window.matchMedia('(display-mode: standalone)').matches || 
+    const immediate = window.matchMedia('(display-mode: standalone)').matches ||
                      window.navigator.standalone === true ||
                      window.matchMedia('(display-mode: fullscreen)').matches;
     return immediate;
@@ -62,32 +62,32 @@ const EnhancedDashboard = () => {
   useEffect(() => {
     const checkPWAStatus = () => {
       const pwaInfo = pwaManager.getInstallationInfo();
-      
+
       setIsInstalled(pwaInfo.isInstalled);
       setCanInstall(pwaInfo.canInstall);
       setIsInstallable(pwaInfo.isInstallable);
     };
-    
+
     checkPWAStatus();
-    
+
     // Listen for PWA events
     const handlePWAInstallable = () => {
       checkPWAStatus();
     };
-    
+
     const handlePWAInstalled = () => {
       console.log('🎉 PWA installed event received');
       checkPWAStatus();
     };
-    
+
     window.addEventListener('pwa-installable', handlePWAInstallable);
     window.addEventListener('pwa-installed', handlePWAInstalled);
-    
+
     // Check periodically for changes (less frequent when installed)
     const initialPWAInfo = pwaManager.getInstallationInfo();
     const checkInterval = initialPWAInfo.isInstalled ? 30000 : 5000; // 30s if installed, 5s if not
     const interval = setInterval(checkPWAStatus, checkInterval);
-    
+
     return () => {
       clearInterval(interval);
       window.removeEventListener('pwa-installable', handlePWAInstallable);
@@ -97,15 +97,15 @@ const EnhancedDashboard = () => {
 
   // ✅ PWA Install Handler
   const handlePWAInstall = async () => {
-    
+
     try {
       const success = await pwaManager.promptInstall();
       if (success) {
-        
+
         // Update state immediately
         setCanInstall(false);
         setIsInstallable(false);
-        
+
         // Show success notification
         const notification = document.createElement('div');
         notification.style.cssText = `
@@ -123,7 +123,7 @@ const EnhancedDashboard = () => {
         `;
         notification.innerHTML = '🎉 QuizNest installation started!';
         document.body.appendChild(notification);
-        
+
         setTimeout(() => {
           if (notification.parentNode) {
             notification.remove();
@@ -156,7 +156,7 @@ const EnhancedDashboard = () => {
           </div>
         `;
         document.body.appendChild(helpNotification);
-        
+
         setTimeout(() => {
           if (helpNotification.parentNode) {
             helpNotification.remove();
@@ -173,17 +173,17 @@ const EnhancedDashboard = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Get user data from localStorage or context
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
       const userId = userData._id;
-      
+
       if (!userId) {
         throw new Error('User not found. Please log in again.');
       }
 
       const response = await axios.get(`/api/dashboard/${userId}?timeRange=${timeRange}`);
-      
+
       if (response.data && response.status === 200) {
         // Process and validate the data
         const processedData = {
@@ -203,7 +203,7 @@ const EnhancedDashboard = () => {
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       setError(error.response?.data?.message || error.message);
-      
+
       // Fallback to mock data with better structure
       const fallbackData = {
         totalQuizzes: 13,
@@ -221,21 +221,21 @@ const EnhancedDashboard = () => {
           'General': 76
         },
         recentAchievements: [
-          { 
-            id: 1, 
-            title: '🔥 First Steps', 
+          {
+            id: 1,
+            title: '🔥 First Steps',
             description: 'Completed your first quiz successfully',
             rarity: 'common'
           },
-          { 
-            id: 2, 
-            title: '📚 Learning Journey', 
+          {
+            id: 2,
+            title: '📚 Learning Journey',
             description: 'Completed 5 quizzes in different categories',
             rarity: 'rare'
           },
-          { 
-            id: 3, 
-            title: '🎯 Consistent Learner', 
+          {
+            id: 3,
+            title: '🎯 Consistent Learner',
             description: 'Maintained good performance across quizzes',
             rarity: 'epic'
           }
@@ -343,7 +343,7 @@ const EnhancedDashboard = () => {
   };
 
   const progressData = {
-    labels: timeRange === 'week' 
+    labels: timeRange === 'week'
       ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       : dashboardData.weeklyProgress.map((_, index) => {
           if (timeRange === 'month') {
@@ -355,8 +355,8 @@ const EnhancedDashboard = () => {
     datasets: [
       {
         label: 'Quiz Scores (%)',
-        data: dashboardData.weeklyProgress.length > 0 
-          ? dashboardData.weeklyProgress 
+        data: dashboardData.weeklyProgress.length > 0
+          ? dashboardData.weeklyProgress
           : [0, 0, 0, 0, 0, 0, 0],
         borderColor: 'rgb(99, 102, 241)',
         backgroundColor: 'rgba(99, 102, 241, 0.1)',
@@ -408,7 +408,7 @@ const EnhancedDashboard = () => {
       'rgba(251, 146, 60, 0.8)',   // Amber
       'rgba(156, 163, 175, 0.8)',  // Gray
     ];
-    
+
     const borderColors = [
       'rgb(99, 102, 241)',   // Blue
       'rgb(139, 92, 246)',   // Purple
@@ -423,7 +423,7 @@ const EnhancedDashboard = () => {
       'rgb(251, 146, 60)',   // Amber
       'rgb(156, 163, 175)',  // Gray
     ];
-    
+
     return {
       backgroundColor: baseColors.slice(0, categoryCount),
       borderColor: borderColors.slice(0, categoryCount)
@@ -440,7 +440,7 @@ const EnhancedDashboard = () => {
     .slice(0, 8); // Show top 8 categories
 
   const categoryData = {
-    labels: sortedCategories.length > 0 
+    labels: sortedCategories.length > 0
       ? sortedCategories.map(([category]) => category)
       : ['General', 'Science', 'Mathematics', 'History', 'Literature'],
     datasets: [
@@ -477,8 +477,8 @@ const EnhancedDashboard = () => {
           <p>⚠️ {error} - Showing cached data</p>
         </div>
       )}
-      
-      <motion.div 
+
+      <motion.div
         className="dashboard-header"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -500,7 +500,7 @@ const EnhancedDashboard = () => {
 
       <div className="dashboard-grid">
         {/* Quick Stats */}
-        <motion.div 
+        <motion.div
           className="stats-row"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -537,7 +537,7 @@ const EnhancedDashboard = () => {
         </motion.div>
 
         {/* Progress Chart */}
-        <motion.div 
+        <motion.div
           className="chart-card progress-chart"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -550,7 +550,7 @@ const EnhancedDashboard = () => {
         </motion.div>
 
         {/* Category Performance */}
-        <motion.div 
+        <motion.div
           className="chart-card category-chart"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -563,7 +563,7 @@ const EnhancedDashboard = () => {
         </motion.div>
 
         {/* Recent Achievements */}
-        <motion.div 
+        <motion.div
           className="achievements-card"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -598,7 +598,7 @@ const EnhancedDashboard = () => {
         </motion.div>
 
         {/* Study Recommendations */}
-        <motion.div 
+        <motion.div
           className="recommendations-card"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -616,7 +616,7 @@ const EnhancedDashboard = () => {
                 </div>
               </div>
             )}
-            
+
             {dashboardData.currentStreak === 0 && (
               <div className="recommendation-item">
                 <span className="rec-icon">🔥</span>
@@ -626,7 +626,7 @@ const EnhancedDashboard = () => {
                 </div>
               </div>
             )}
-            
+
             {dashboardData.currentStreak > 0 && (
               <div className="recommendation-item">
                 <span className="rec-icon">⏰</span>
@@ -636,13 +636,13 @@ const EnhancedDashboard = () => {
                 </div>
               </div>
             )}
-            
+
             {(() => {
               // Find weakest category
               const categories = dashboardData.categoryPerformance;
               const categoryEntries = Object.entries(categories);
               if (categoryEntries.length > 0) {
-                const weakestCategory = categoryEntries.reduce((min, curr) => 
+                const weakestCategory = categoryEntries.reduce((min, curr) =>
                   curr[1] < min[1] ? curr : min
                 );
                 return (
@@ -665,7 +665,7 @@ const EnhancedDashboard = () => {
                 </div>
               );
             })()}
-            
+
             {dashboardData.completedQuizzes < 5 && (
               <div className="recommendation-item">
                 <span className="rec-icon">🚀</span>
@@ -679,7 +679,7 @@ const EnhancedDashboard = () => {
         </motion.div>
 
         {/* Next-Gen Features Showcase */}
-        <motion.div 
+        <motion.div
           className="features-showcase-card"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -687,7 +687,7 @@ const EnhancedDashboard = () => {
         >
           <h3>🚀 Next-Gen Features</h3>
           <div className="features-grid">
-            <motion.div 
+            <motion.div
               className="feature-card ai-feature"
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
@@ -705,7 +705,7 @@ const EnhancedDashboard = () => {
               <div className="feature-arrow">→</div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card realtime-feature"
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
@@ -723,7 +723,7 @@ const EnhancedDashboard = () => {
               <div className="feature-arrow">→</div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card social-feature"
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
@@ -741,7 +741,7 @@ const EnhancedDashboard = () => {
               <div className="feature-arrow">→</div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card gamification-feature"
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
@@ -762,7 +762,7 @@ const EnhancedDashboard = () => {
 
           {/* PWA Installed Status - Show when app is installed */}
           {isInstalled && (
-            <motion.div 
+            <motion.div
               className="pwa-installed-status"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -780,7 +780,7 @@ const EnhancedDashboard = () => {
 
           {/* PWA Installation Banner - Only show when not installed */}
           {!isInstalled && (
-            <motion.div 
+            <motion.div
               className="pwa-install-banner"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -790,19 +790,19 @@ const EnhancedDashboard = () => {
                 <div className="pwa-icon">📱</div>
                 <div className="pwa-text">
                   <h4>Install QuizNest App</h4>
-                  <p>{canInstall 
+                  <p>{canInstall
                     ? (pwaManager.installPrompt ? 'Ready to install! Click below for native installation.' : 'App is installable! Click below to install.')
                     : 'All requirements met! Click below for installation instructions.'
                   }</p>
                 </div>
               </div>
-              <motion.button 
+              <motion.button
                 className="pwa-install-btn"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handlePWAInstall}
                 disabled={isInstalled}
-                style={{ 
+                style={{
                   cursor: isInstalled ? 'not-allowed' : 'pointer'
                 }}
               >

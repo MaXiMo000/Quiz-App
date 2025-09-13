@@ -27,7 +27,7 @@
     color: var(--text-color);
     border-radius: 2.5rem;
     border: 2px solid var(--leaderboard-border);
-    box-shadow: 
+    box-shadow:
         var(--leaderboard-shadow-xl),
         0 0 80px rgba(102, 126, 234, 0.2),
         inset 0 2px 0 rgba(255, 255, 255, 0.15);
@@ -39,13 +39,13 @@
 }
 
 @keyframes containerSlideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(50px) scale(0.95); 
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -62,17 +62,17 @@
 }
 
 @keyframes championGlow {
-    0%, 100% { 
-        background: var(--leaderboard-gradient-gold); 
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); 
+    0%, 100% {
+        background: var(--leaderboard-gradient-gold);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
     }
-    33% { 
-        background: var(--leaderboard-gradient-silver); 
-        box-shadow: 0 0 30px rgba(192, 192, 192, 0.6); 
+    33% {
+        background: var(--leaderboard-gradient-silver);
+        box-shadow: 0 0 30px rgba(192, 192, 192, 0.6);
     }
-    66% { 
-        background: var(--leaderboard-gradient-bronze); 
-        box-shadow: 0 0 30px rgba(205, 127, 50, 0.6); 
+    66% {
+        background: var(--leaderboard-gradient-bronze);
+        box-shadow: 0 0 30px rgba(205, 127, 50, 0.6);
     }
 }
 
@@ -104,13 +104,13 @@
 }
 
 @keyframes titleFloat {
-    from { 
-        opacity: 0; 
-        transform: translateY(-30px) scale(0.9); 
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.9);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -140,15 +140,15 @@
 }
 
 @keyframes underlineGlow {
-    0%, 100% { 
-        width: 120px; 
-        background: var(--leaderboard-gradient-gold); 
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); 
+    0%, 100% {
+        width: 120px;
+        background: var(--leaderboard-gradient-gold);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
     }
-    50% { 
-        width: 150px; 
-        background: var(--leaderboard-gradient-2); 
-        box-shadow: 0 0 25px rgba(240, 147, 251, 0.8); 
+    50% {
+        width: 150px;
+        background: var(--leaderboard-gradient-2);
+        box-shadow: 0 0 25px rgba(240, 147, 251, 0.8);
     }
 }
 
@@ -168,13 +168,13 @@
 }
 
 @keyframes tableSlideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(30px); 
+    from {
+        opacity: 0;
+        transform: translateY(30px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 

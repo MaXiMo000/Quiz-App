@@ -78,7 +78,7 @@ export const initializeRealTimeQuiz = (server) => {
             // Verify JWT token (reuse your existing auth logic)
             const jwt = await import("jsonwebtoken");
             const decoded = jwt.default.verify(token, process.env.JWT_SECRET);
-            
+
             const user = await UserQuiz.findById(decoded.id);
             if (!user) {
                 logger.warn(`Socket connection failed: User not found with ID ${decoded.id}`);
@@ -105,7 +105,7 @@ export const initializeRealTimeQuiz = (server) => {
 
     io.on("connection", (socket) => {
         logger.info(`User ${socket.userId} connected to real-time quiz service`);
-        
+
         // Send user info to frontend
         socket.emit("authenticated", socket.userInfo);
 
@@ -114,7 +114,7 @@ export const initializeRealTimeQuiz = (server) => {
             logger.info(`User ${socket.userId} creating a new quiz room`);
             try {
                 const { quizId, settings } = data;
-                
+
                 // Validate quiz exists
                 const quiz = await Quiz.findById(quizId);
                 if (!quiz) {
@@ -125,7 +125,7 @@ export const initializeRealTimeQuiz = (server) => {
 
                 // Generate unique room ID
                 const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
-                
+
                 // Create room
                 const room = new QuizRoom(roomId, socket.userId, {
                     maxPlayers: settings.maxPlayers || 6,
@@ -241,7 +241,7 @@ export const initializeRealTimeQuiz = (server) => {
             try {
                 const roomId = socket.currentRoom;
                 const room = activeRooms.get(roomId);
-                
+
                 if (!room) {
                     logger.warn(`Room not found: ${roomId} when user ${socket.userId} attempted to start quiz`);
                     socket.emit("error", { message: "Room not found" });
@@ -259,7 +259,7 @@ export const initializeRealTimeQuiz = (server) => {
                     if (room.players.size < 2) reasons.push("Need at least 2 players");
                     if (!room.quiz) reasons.push("No quiz selected");
                     if (room.status !== "waiting") reasons.push(`Room status is ${room.status}, should be waiting`);
-                    
+
                     logger.warn(`Cannot start quiz in room ${roomId}: ${reasons.join(", ")}`);
                     socket.emit("error", { message: `Cannot start quiz: ${reasons.join(", ")}` });
                     return;
@@ -359,7 +359,7 @@ export const initializeRealTimeQuiz = (server) => {
             try {
                 const { message } = data;
                 const roomId = socket.currentRoom;
-                
+
                 if (!roomId || !activeRooms.has(roomId)) {
                     return;
                 }
@@ -418,7 +418,7 @@ export const initializeRealTimeQuiz = (server) => {
         const results = [];
         room.players.forEach((player, userId) => {
             const playerAnswer = questionAnswers.get(userId);
-            
+
             // Handle both number and letter format answers
             let isCorrect = false;
             if (playerAnswer) {
@@ -442,7 +442,7 @@ export const initializeRealTimeQuiz = (server) => {
                 const maxPoints = 1000;
                 const timeBonus = Math.max(0, (room.settings.timePerQuestion - (playerAnswer?.timeSpent || room.settings.timePerQuestion)) / room.settings.timePerQuestion);
                 points = Math.round(maxPoints * (0.5 + 0.5 * timeBonus));
-                
+
                 const currentScore = room.scores.get(userId) || 0;
                 room.scores.set(userId, currentScore + points);
             }
@@ -512,7 +512,7 @@ export const initializeRealTimeQuiz = (server) => {
 
     async function updatePlayerStats(room) {
         const leaderboard = getLeaderboard(room);
-        
+
         for (let i = 0; i < leaderboard.length; i++) {
             const player = leaderboard[i];
             try {
@@ -526,7 +526,7 @@ export const initializeRealTimeQuiz = (server) => {
                     // Update social stats - ensure structure exists
                     if (!user.social) user.social = {};
                     if (!user.social.socialStats) user.social.socialStats = {};
-                    
+
                     // Add multiplayer game stats (add missing fields to existing structure)
                     user.social.socialStats.multiplayerGames = (user.social.socialStats.multiplayerGames || 0) + 1;
 

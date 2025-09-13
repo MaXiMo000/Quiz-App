@@ -443,7 +443,7 @@ const FriendsSystem = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-            
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}

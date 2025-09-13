@@ -136,13 +136,13 @@
 }
 
 @keyframes containerSlideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px) scale(0.98); 
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -158,13 +158,13 @@
 }
 
 @keyframes headerGlow {
-    0%, 100% { 
-        background: var(--quiz-gradient-1); 
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); 
+    0%, 100% {
+        background: var(--quiz-gradient-1);
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
     }
-    50% { 
-        background: var(--quiz-gradient-2); 
-        box-shadow: 0 0 30px rgba(240, 147, 251, 0.7); 
+    50% {
+        background: var(--quiz-gradient-2);
+        box-shadow: 0 0 30px rgba(240, 147, 251, 0.7);
     }
 }
 
@@ -224,13 +224,13 @@
 }
 
 @keyframes questionSlide {
-    from { 
-        opacity: 0; 
-        transform: translateX(-15px); 
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateX(0); 
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
@@ -313,13 +313,13 @@
 }
 
 @keyframes checkmarkPop {
-    from { 
-        transform: translateY(-50%) scale(0); 
-        opacity: 0; 
+    from {
+        transform: translateY(-50%) scale(0);
+        opacity: 0;
     }
-    to { 
-        transform: translateY(-50%) scale(1); 
-        opacity: 1; 
+    to {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
     }
 }
 
@@ -398,11 +398,11 @@
 }
 
 @keyframes pulse-critical {
-    0%, 100% { 
+    0%, 100% {
         transform: scale(1);
         box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
     }
-    50% { 
+    50% {
         transform: scale(1.05);
         box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
     }
@@ -467,7 +467,7 @@
     background: var(--quiz-glass);
     backdrop-filter: blur(35px);
     border: 1px solid var(--quiz-border);
-    box-shadow: 
+    box-shadow:
         var(--quiz-shadow-xl),
         0 0 50px rgba(99, 102, 241, 0.2);
     position: relative;
@@ -687,7 +687,7 @@
 .generate-btn:hover {
     background: var(--accent);
     color: white;
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 10px 30px rgba(99, 102, 241, 0.4);
 }
@@ -695,7 +695,7 @@
 .reports-btn:hover {
     background: var(--purple);
     color: white;
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 10px 30px rgba(139, 92, 246, 0.4);
 }
@@ -1413,7 +1413,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         height: 45px;
         font-size: 1.2rem;
     }
-    
+
     /* Body class-based mobile fullscreen - Chrome mobile fixes */
     body.quiz-fullscreen .quiz-container {
         padding: 0.3rem !important;
@@ -1430,7 +1430,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         -webkit-transform: translateZ(0) !important;
         transform: translateZ(0) !important;
     }
-    
+
     body.quiz-fullscreen .quiz-content {
         max-width: 100% !important;
         width: 100% !important;
@@ -1442,12 +1442,12 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         /* Prevent content overflow on mobile Chrome */
         overflow-x: hidden !important;
     }
-    
+
     body.quiz-fullscreen .quiz-container h1 {
         font-size: 1.4rem !important;
         margin-bottom: 0.8rem !important;
     }
-    
+
     body.quiz-fullscreen .timer {
         font-size: 0.9rem !important;
         margin-bottom: 1rem !important;
@@ -1461,7 +1461,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         margin-right: auto !important;
         min-width: 120px !important;
     }
-    
+
     body.quiz-fullscreen .question {
         font-size: 1rem !important;
         padding: 1rem !important;
@@ -1478,47 +1478,47 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         scrollbar-color: rgba(99, 102, 241, 0.6) rgba(255, 255, 255, 0.1) !important;
         scrollbar-gutter: stable !important;
     }
-    
+
     body.quiz-fullscreen .question::-webkit-scrollbar {
         width: 5px !important;
     }
-    
+
     body.quiz-fullscreen .question::-webkit-scrollbar-track {
         background: rgba(255, 255, 255, 0.1) !important;
         border-radius: 2px !important;
         margin: 0.3rem 0 !important;
     }
-    
+
     body.quiz-fullscreen .question::-webkit-scrollbar-thumb {
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8)) !important;
         border-radius: 2px !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
-    
+
     body.quiz-fullscreen .options {
         gap: 0.6rem !important;
         max-width: 100% !important;
     }
-    
+
     body.quiz-fullscreen .options button {
         padding: 0.8rem 1rem !important;
         font-size: 0.9rem !important;
         min-height: 45px !important;
     }
-    
+
     body.quiz-fullscreen .navigation-buttons {
         margin-top: 1.2rem !important;
         gap: 0.6rem !important;
         flex-direction: column !important;
     }
-    
+
     body.quiz-fullscreen .navigation-buttons button {
         padding: 0.8rem 1rem !important;
         font-size: 0.85rem !important;
         min-height: 40px !important;
         width: 100% !important;
     }
-    
+
     /* CRITICAL: Override navigation buttons for mobile fullscreen */
     body.quiz-fullscreen .navigation-buttons {
         margin-top: 0.8rem !important;
@@ -1542,7 +1542,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         height: 40px;
         font-size: 1rem;
     }
-    
+
     /* Body class-based small mobile fullscreen - Chrome mobile fixes */
     body.quiz-fullscreen .quiz-container {
         padding: 0.2rem !important;
@@ -1567,7 +1567,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         height: 100vh !important;
         height: 100dvh !important; /* Dynamic viewport height for mobile Chrome */
     }
-    
+
     body.quiz-fullscreen .quiz-content {
         max-width: 100% !important;
         width: 100% !important;
@@ -1584,12 +1584,12 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
     }
-    
+
     body.quiz-fullscreen .quiz-container h1 {
         font-size: 1.2rem !important;
         margin-bottom: 0.6rem !important;
     }
-    
+
     body.quiz-fullscreen .timer {
         font-size: 0.8rem !important;
         padding: 0.5rem 0.8rem !important;
@@ -1603,7 +1603,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         margin-right: auto !important;
         min-width: 100px !important;
     }
-    
+
     body.quiz-fullscreen .question {
         font-size: 0.9rem !important;
         padding: 0.8rem !important;
@@ -1620,46 +1620,46 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         scrollbar-color: rgba(99, 102, 241, 0.6) rgba(255, 255, 255, 0.1) !important;
         scrollbar-gutter: stable !important;
     }
-    
+
     body.quiz-fullscreen .question::-webkit-scrollbar {
         width: 4px !important;
     }
-    
+
     body.quiz-fullscreen .question::-webkit-scrollbar-track {
         background: rgba(255, 255, 255, 0.1) !important;
         border-radius: 2px !important;
         margin: 0.2rem 0 !important;
     }
-    
+
     body.quiz-fullscreen .question::-webkit-scrollbar-thumb {
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8)) !important;
         border-radius: 2px !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
-    
+
     body.quiz-fullscreen .options {
         gap: 0.5rem !important;
     }
-    
+
     body.quiz-fullscreen .options button {
         padding: 0.6rem 0.8rem !important;
         font-size: 0.8rem !important;
         min-height: 40px !important;
     }
-    
+
     body.quiz-fullscreen .navigation-buttons {
         flex-direction: column !important;
         gap: 0.5rem !important;
         margin-top: 1rem !important;
     }
-    
+
     body.quiz-fullscreen .navigation-buttons button {
         width: 100% !important;
         padding: 0.6rem 0.8rem !important;
         font-size: 0.75rem !important;
         min-height: 35px !important;
     }
-    
+
     /* CRITICAL: Override navigation buttons for small mobile fullscreen */
     body.quiz-fullscreen .navigation-buttons {
         margin-top: 0.6rem !important;
@@ -1707,7 +1707,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         padding: 0.3rem !important;
         padding-top: 1rem !important; /* Add top spacing for mobile Chrome */
     }
-    
+
     body.quiz-fullscreen .quiz-content {
         /* Mobile Chrome content fixes */
         width: 100% !important;
@@ -1724,7 +1724,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         /* Mobile Chrome overflow fixes */
         overflow-x: hidden !important;
     }
-    
+
     /* Mobile Chrome button fixes */
     body.quiz-fullscreen .options button,
     body.quiz-fullscreen .navigation-buttons button {
@@ -1741,14 +1741,14 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         width: 100% !important;
         box-sizing: border-box !important;
     }
-    
+
     /* Mobile Chrome options container fixes */
     body.quiz-fullscreen .options {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
-    
+
     /* Mobile Chrome navigation buttons container fixes */
     body.quiz-fullscreen .navigation-buttons {
         width: 100% !important;
@@ -1775,7 +1775,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         /* Mobile Chrome touch feedback */
         -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2) !important;
     }
-    
+
     body.quiz-fullscreen .quiz-container {
         /* Mobile Chrome touch scrolling */
         -webkit-overflow-scrolling: touch !important;

@@ -14,9 +14,9 @@ const useResponsive = () => {
     const handleResize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       setScreenSize({ width, height });
-      
+
       // Determine device type
       if (width <= 480) {
         setDeviceType('mobile');
@@ -27,14 +27,14 @@ const useResponsive = () => {
       } else {
         setDeviceType('desktop');
       }
-      
+
       // Determine orientation
       setOrientation(width > height ? 'landscape' : 'portrait');
     };
 
     // Add resize listener
     window.addEventListener('resize', handleResize);
-    
+
     // Handle orientation change
     window.addEventListener('orientationchange', () => {
       setTimeout(handleResize, 100); // Small delay for orientation change

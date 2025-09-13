@@ -21,7 +21,7 @@ const emailjs = require('@emailjs/nodejs');
 router.post('/contact', async (req, res) => {
   try {
     const { name, email, message } = req.body;
-    
+
     // Server-side EmailJS call with secure credentials
     await emailjs.send(
       process.env.EMAILJS_SERVICE_ID,
@@ -32,7 +32,7 @@ router.post('/contact', async (req, res) => {
         privateKey: process.env.EMAILJS_PRIVATE_KEY, // Only available server-side
       }
     );
-    
+
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: 'Failed to send message' });
@@ -61,7 +61,7 @@ export const contactConfig = {
   SERVICE_ID: import.meta.env.VITE_CONTACT_SERVICE,
   TEMPLATE_ID: import.meta.env.VITE_CONTACT_TEMPLATE,
   PUBLIC_KEY: import.meta.env.VITE_CONTACT_KEY,
-  
+
   // Recommend immediate backend migration
   MIGRATION_NEEDED: true
 };

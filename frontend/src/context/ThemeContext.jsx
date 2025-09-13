@@ -26,7 +26,7 @@ export const ThemeProvider = ({ children }) => {
 
         // Listen for storage events and manual checks
         window.addEventListener('storage', handleStorageChange);
-        
+
         // Also check periodically for user changes (like after login)
         const intervalId = setInterval(() => {
             const storedUser = JSON.parse(localStorage.getItem("user"));

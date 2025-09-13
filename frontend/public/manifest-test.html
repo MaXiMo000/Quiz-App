@@ -59,9 +59,9 @@
     <div class="test-card">
         <h1>🔧 PWA Manifest Test</h1>
         <p>This page tests if the manifest.json is properly linked and accessible.</p>
-        
+
         <div id="test-results"></div>
-        
+
         <button class="btn" onclick="testManifest()">🧪 Test Manifest</button>
         <button class="btn" onclick="testPWACriteria()">✅ Check PWA Criteria</button>
         <button class="btn" onclick="clearResults()">🗑️ Clear Results</button>
@@ -93,7 +93,7 @@
         async function testManifest() {
             const results = document.getElementById('test-results');
             results.innerHTML += '<div class="status warning">🔍 Testing manifest...</div>';
-            
+
             try {
                 const manifestLink = document.querySelector('link[rel="manifest"]');
                 if (!manifestLink) {
@@ -165,7 +165,7 @@
                 isInstalled: window.matchMedia('(display-mode: standalone)').matches,
                 hasBeforeInstallPrompt: window.beforeInstallPromptEvent !== undefined,
                 displayMode: window.matchMedia('(display-mode: standalone)').matches ? 'standalone' : 'browser',
-                userAgent: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+                userAgent: navigator.userAgent.includes('Chrome') ? 'Chrome' :
                           navigator.userAgent.includes('Firefox') ? 'Firefox' :
                           navigator.userAgent.includes('Safari') ? 'Safari' :
                           navigator.userAgent.includes('Edge') ? 'Edge' : 'Other'
@@ -181,7 +181,7 @@
 
         // Initialize page
         displayPageStatus();
-        
+
         // Auto-run tests after 1 second
         setTimeout(() => {
             testManifest();

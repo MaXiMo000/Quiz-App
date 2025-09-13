@@ -12,7 +12,7 @@ const LearningAnalytics = ({ user }) => {
     useEffect(() => {
         const fetchAnalytics = async () => {
             if (!user?._id) return;
-            
+
             try {
                 setLoading(true);
                 const response = await axios.get('/api/intelligence/analytics');
@@ -68,7 +68,7 @@ const LearningAnalytics = ({ user }) => {
         return (
             <div className="overview-section">
                 <div className="stats-grid">
-                    <motion.div 
+                    <motion.div
                         className="stat-card"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -81,7 +81,7 @@ const LearningAnalytics = ({ user }) => {
                         </div>
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="stat-card"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -94,7 +94,7 @@ const LearningAnalytics = ({ user }) => {
                         </div>
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="stat-card"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -107,7 +107,7 @@ const LearningAnalytics = ({ user }) => {
                         </div>
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="stat-card"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -137,9 +137,9 @@ const LearningAnalytics = ({ user }) => {
                     {trends.map((trend, index) => {
                         const hasData = trend.quizzesTaken > 0;
                         const barHeight = hasData ? Math.max(trend.averageScore, 10) : 8;
-                        
+
                         return (
-                            <motion.div 
+                            <motion.div
                                 key={`trend-${trend.day}-${index}`}
                                 className={`trend-bar ${!hasData ? 'no-data' : ''}`}
                                 initial={{ height: 0 }}
@@ -178,7 +178,7 @@ const LearningAnalytics = ({ user }) => {
 
         return (
             <div className="predictions-section">
-                <motion.div 
+                <motion.div
                     className="prediction-card"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -189,18 +189,18 @@ const LearningAnalytics = ({ user }) => {
                             {predictions.confidenceLevel} confidence
                         </span>
                     </div>
-                    
+
                     {predictions.nextQuizPrediction !== null ? (
                         <>
                             <div className="prediction-score">
                                 <span className="predicted-score">{predictions.nextQuizPrediction}%</span>
                                 <span className="prediction-label">Expected Score</span>
                             </div>
-                            
+
                             <div className="trend-indicator">
                                 <span className={`trend-badge ${predictions.trend}`}>
                                     {predictions.trend === 'improving' && '📈 Improving'}
-                                    {predictions.trend === 'declining' && '📉 Declining'} 
+                                    {predictions.trend === 'declining' && '📉 Declining'}
                                     {predictions.trend === 'stable' && '➖ Stable'}
                                 </span>
                             </div>
@@ -219,7 +219,7 @@ const LearningAnalytics = ({ user }) => {
         return (
             <div className="recommendations-section">
                 {optimalStudyTime && (
-                    <motion.div 
+                    <motion.div
                         className="recommendation-card optimal-time"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -236,7 +236,7 @@ const LearningAnalytics = ({ user }) => {
                     <div className="study-tips">
                         <h4>💡 Personalized Study Tips</h4>
                         {studyRecommendations.map((rec, index) => (
-                            <motion.div 
+                            <motion.div
                                 key={`study-tip-${rec.title}-${index}`}
                                 className="tip-card"
                                 initial={{ opacity: 0, y: 10 }}
@@ -259,7 +259,7 @@ const LearningAnalytics = ({ user }) => {
                                     <span className="category-name">{strength.category}</span>
                                     <span className="category-score">{strength.averageScore}%</span>
                                     <div className="category-bar">
-                                        <div 
+                                        <div
                                             className="category-fill strength"
                                             style={{ width: `${strength.averageScore}%` }}
                                         ></div>
@@ -278,7 +278,7 @@ const LearningAnalytics = ({ user }) => {
                                     <span className="category-score">{weakness.averageScore}%</span>
                                     <span className="improvement-needed">+{weakness.improvementNeeded}% needed</span>
                                     <div className="category-bar">
-                                        <div 
+                                        <div
                                             className="category-fill weakness"
                                             style={{ width: `${weakness.averageScore}%` }}
                                         ></div>

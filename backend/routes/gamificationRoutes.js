@@ -8,14 +8,14 @@ import {
     createSampleDailyChallenge,
     deleteDailyChallenge,
     cleanupEmptyChallenges,
-    
+
     // Daily Challenge Reset System
     manualResetDailyChallenges,
     getDailyChallengeStatus,
     cleanupOldChallengeData,
     getUserChallengeHistory,
     getChallengeHistoryAdmin,
-    
+
     // Tournaments
     getAvailableTournaments,
     registerForTournament,
@@ -24,14 +24,14 @@ import {
     createTournament,
     createSampleTournament,
     deleteTournament,
-    
+
     // Quiz Integration
     getAvailableQuizzes,
     startChallengeQuiz,
     submitChallengeQuiz,
     startTournamentQuiz,
     submitTournamentQuiz,
-    
+
     // History & Completed
     getUserCompletedChallenges,
     getTournamentHistory,

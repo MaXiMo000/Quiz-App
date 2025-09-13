@@ -37,7 +37,7 @@ router.get("/", verifyToken, getAllUsers); // Protected route
 // IMPORTANT: This must come BEFORE /:id route to avoid "me" being treated as an ID
 router.get("/me", verifyToken, async (req, res) => {
     try {
-        
+
         if (!req.user?.id) {
             logger.info("❌ No user ID in token");
             return res.status(401).json({ error: "Invalid token - no user ID" });
@@ -48,10 +48,10 @@ router.get("/me", verifyToken, async (req, res) => {
             logger.info("❌ Invalid ObjectId format:", req.user.id);
             return res.status(400).json({ error: "Invalid user ID format" });
         }
-        
+
         // First try to find user WITH password to see if user exists at all
         const userWithPassword = await UserQuiz.findById(req.user.id);
-        
+
         if (!userWithPassword) {
             logger.info("❌ User not found in database:", req.user.id);
             return res.status(404).json({ error: "User not found" });
@@ -60,7 +60,7 @@ router.get("/me", verifyToken, async (req, res) => {
         // Now get user without password
         const user = await UserQuiz.findById(req.user.id).select("-password");
         logger.info("✅ User found (without password):", user?.email);
-        
+
         res.json({
             _id: user._id,
             name: user.name,

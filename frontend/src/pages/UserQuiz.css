@@ -195,13 +195,13 @@
 }
 
 @keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(-20px); 
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -263,13 +263,13 @@
 }
 
 @keyframes subtitleSlide {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -295,13 +295,13 @@
 }
 
 @keyframes emptyStateFloat {
-    from { 
-        opacity: 0; 
-        transform: translateY(50px) scale(0.9); 
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -396,19 +396,19 @@
 }
 
 @keyframes cardFadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(30px); 
+    from {
+        opacity: 0;
+        transform: translateY(30px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
 .quiz-card:hover {
     transform: translateY(-8px);
-    box-shadow: 
+    box-shadow:
         0 20px 40px rgba(0, 0, 0, 0.2),
         0 0 30px rgba(102, 126, 234, 0.3);
     border-color: rgba(102, 126, 234, 0.4);
@@ -548,7 +548,7 @@
     gap: 0.5rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(46, 213, 115, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
@@ -573,7 +573,7 @@
 
 .share-quiz-btn:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 15px 35px rgba(46, 213, 115, 0.4),
         0 0 30px rgba(46, 213, 115, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -601,7 +601,7 @@
     gap: 0.75rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    box-shadow: 
+    box-shadow:
         0 15px 35px rgba(102, 126, 234, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
@@ -625,7 +625,7 @@
 
 .start-quiz-btn:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 25px 50px rgba(102, 126, 234, 0.4),
         0 0 40px rgba(240, 147, 251, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -694,7 +694,7 @@
         box-sizing: border-box !important;
         overflow-x: hidden !important;
     }
-    
+
     .quiz-header {
         text-align: center !important;
         width: 100% !important;
@@ -704,7 +704,7 @@
         padding: 0 0.3rem !important;
         box-sizing: border-box !important;
     }
-    
+
     .quiz-header h2 {
         width: 100% !important;
         text-align: center !important;
@@ -713,7 +713,7 @@
         margin-left: auto !important;
         margin-right: auto !important;
     }
-    
+
     .quiz-subtitle {
         text-align: center !important;
         width: 100% !important;
@@ -757,7 +757,7 @@
         padding: 0.1rem !important;
         padding-bottom: 0.4rem !important;
     }
-    
+
     .quiz-header {
         text-align: center !important;
         width: 100% !important;
@@ -767,7 +767,7 @@
         padding: 0 0.5rem !important;
         box-sizing: border-box !important;
     }
-    
+
     .quiz-header h2 {
         font-size: 2rem;
         flex-direction: column;
@@ -779,7 +779,7 @@
         margin-left: auto !important;
         margin-right: auto !important;
     }
-    
+
     .quiz-subtitle {
         text-align: center !important;
         width: 100% !important;
@@ -808,16 +808,16 @@
     .empty-icon {
         font-size: 3rem;
     }
-    
+
     .quiz-actions {
         flex-direction: column;
         gap: 0.75rem;
     }
-    
+
     .quiz-actions .start-quiz-btn {
         flex: none;
     }
-    
+
     .share-quiz-btn {
         flex: none;
         font-size: 0.9rem;
@@ -840,7 +840,7 @@
         box-sizing: border-box !important;
         overflow-x: hidden !important;
     }
-    
+
     .quiz-header {
         width: 100% !important;
         max-width: 100% !important;
@@ -849,7 +849,7 @@
         text-align: center !important;
         box-sizing: border-box !important;
     }
-    
+
     .quiz-header h2 {
         width: 100% !important;
         max-width: 100% !important;
@@ -859,7 +859,7 @@
         align-items: center !important;
         box-sizing: border-box !important;
     }
-    
+
     .quiz-subtitle {
         width: 100% !important;
         max-width: 100% !important;

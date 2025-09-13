@@ -28,14 +28,14 @@ class OfflineStorage {
                 offline: true
             };
             localStorage.setItem('cached-quizzes', JSON.stringify(cached));
-            
+
             // Also cache individual quiz questions for offline taking
             if (quizData.questions && quizData.questions.length > 0) {
                 const questionsCache = this.getCachedQuestions();
                 questionsCache[quizId] = quizData.questions;
                 localStorage.setItem('cached-questions', JSON.stringify(questionsCache));
             }
-            
+
             // Cache in service worker
             if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                 navigator.serviceWorker.controller.postMessage({
@@ -116,12 +116,12 @@ class OfflineStorage {
             };
             submissions.push(submissionWithId);
             localStorage.setItem('pending-quiz-submissions', JSON.stringify(submissions));
-            
+
             // If online, try to sync immediately
             if (this.isOnline) {
                 this.syncPendingSubmissions();
             }
-            
+
             return submissionWithId;
         } catch (error) {
             console.error('Failed to store quiz submission:', error);
@@ -179,7 +179,7 @@ class OfflineStorage {
     async syncPendingSubmissions() {
         const submissions = this.getPendingSubmissions();
         const unsynced = submissions.filter(sub => !sub.synced);
-        
+
         for (const submission of unsynced) {
             try {
                 // This would normally make an API call
@@ -189,7 +189,7 @@ class OfflineStorage {
                 console.error('Failed to sync submission:', submission.id, error);
             }
         }
-        
+
         // Update storage
         localStorage.setItem('pending-quiz-submissions', JSON.stringify(submissions));
     }
@@ -198,7 +198,7 @@ class OfflineStorage {
         // Similar implementation for chat messages
         const messages = this.getPendingChatMessages();
         const unsynced = messages.filter(msg => !msg.synced);
-        
+
         for (const message of unsynced) {
             try {
                 message.synced = true;
@@ -206,7 +206,7 @@ class OfflineStorage {
                 console.error('Failed to sync chat message:', message.id, error);
             }
         }
-        
+
         localStorage.setItem('pending-chat-messages', JSON.stringify(messages));
     }
 
@@ -231,7 +231,7 @@ class OfflineStorage {
         try {
             const maxAge = maxAgeHours * 60 * 60 * 1000;
             const now = Date.now();
-            
+
             // Clear old quiz cache
             const quizzes = this.getCachedQuizzes();
             Object.keys(quizzes).forEach(quizId => {
@@ -240,7 +240,7 @@ class OfflineStorage {
                 }
             });
             localStorage.setItem('cached-quizzes', JSON.stringify(quizzes));
-            
+
             console.log('🧹 Old cache data cleared');
         } catch (error) {
             console.error('Failed to clear old cache:', error);

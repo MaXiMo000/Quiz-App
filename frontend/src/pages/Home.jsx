@@ -63,15 +63,15 @@ const Home = () => {
         const xpForNext = level * 100;
         const percent = Math.min(100, Math.round((xp / xpForNext) * 100));
         return (
-        <motion.div 
+        <motion.div
             className="xp-bar-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
         >
-            <motion.div 
-                className="xp-bar-fill" 
-                style={{ width: `${percent}%` }} 
+            <motion.div
+                className="xp-bar-fill"
+                style={{ width: `${percent}%` }}
                 initial={{ width: 0 }}
                 animate={{ width: `${percent}%` }}
                 transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
@@ -82,21 +82,21 @@ const Home = () => {
     };
 
     if (loading) return (
-        <motion.div 
+        <motion.div
             className="home-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
             <div className="loading-container">
-                <motion.div 
+                <motion.div
                     className="loading-spinner"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 >
                     <div className="spinner-ring"></div>
                 </motion.div>
-                <motion.p 
+                <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
@@ -107,15 +107,15 @@ const Home = () => {
             </div>
         </motion.div>
     );
-    
+
     if (error) return (
-        <motion.div 
+        <motion.div
             className="home-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <motion.div 
+            <motion.div
                 className="error-container"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -127,7 +127,7 @@ const Home = () => {
     );
 
     return (
-        <motion.div 
+        <motion.div
             className="home-container"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -140,9 +140,9 @@ const Home = () => {
         >
             Welcome, {user?.name}!
         </motion.h1>
-        
+
         <XPBar xp={xp} level={level} />
-        
+
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -161,7 +161,7 @@ const Home = () => {
             className="theme-selectors"
         >
             <ThemeSelector />
-            <AdvancedThemeSelector 
+            <AdvancedThemeSelector
                 currentTheme={document.documentElement.getAttribute('data-theme') || 'Default'}
                 onThemeChange={(themeName) => {
                     document.documentElement.setAttribute('data-theme', themeName);
@@ -178,15 +178,15 @@ const Home = () => {
         >
             Ready to take a quiz?
         </motion.p>
-        
-        <motion.button 
-            className="start-quiz-btn" 
+
+        <motion.button
+            className="start-quiz-btn"
             onClick={() => navigate("/user/test")}
             initial={{ opacity: 0, y: 30, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.8, duration: 0.6, type: "spring", stiffness: 120 }}
-            whileHover={{ 
-                scale: 1.05, 
+            whileHover={{
+                scale: 1.05,
                 y: -5,
                 transition: { duration: 0.3 }
             }}
@@ -197,14 +197,14 @@ const Home = () => {
 
         {/* Premium Intelligence Dashboard Link */}
         {(user?.role === "premium") && (
-            <motion.button 
+            <motion.button
                 className="intelligence-dashboard-btn"
                 onClick={() => navigate("/intelligence-dashboard")}
                 initial={{ opacity: 0, y: 30, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.9, duration: 0.6, type: "spring", stiffness: 120 }}
-                whileHover={{ 
-                    scale: 1.05, 
+                whileHover={{
+                    scale: 1.05,
                     y: -5,
                     transition: { duration: 0.3 }
                 }}
@@ -213,8 +213,8 @@ const Home = () => {
                 🧠 Intelligence Dashboard
             </motion.button>
         )}
-        
-        <motion.div 
+
+        <motion.div
             className="badge-list"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -223,14 +223,14 @@ const Home = () => {
             <h3>Your Badges:</h3>
             <ul>
             {badges.map((badge, i) => (
-                <motion.li 
-                    key={i} 
+                <motion.li
+                    key={i}
                     className="badge-item"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 1.2 + (i * 0.1), duration: 0.5 }}
-                    whileHover={{ 
-                        scale: 1.05, 
+                    whileHover={{
+                        scale: 1.05,
                         rotateY: 10,
                         transition: { duration: 0.3 }
                     }}
@@ -240,14 +240,14 @@ const Home = () => {
             ))}
             </ul>
         </motion.div>
-        
-        <motion.button 
-            onClick={fetchUserData} 
+
+        <motion.button
+            onClick={fetchUserData}
             className="start-quiz-btn"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 0.5 }}
-            whileHover={{ 
+            whileHover={{
                 scale: 1.05,
                 transition: { duration: 0.3 }
             }}

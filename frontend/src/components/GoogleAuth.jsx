@@ -7,7 +7,7 @@ import axios from "../utils/axios";
 const GoogleAuth = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    
+
     // Notification system
     const { notification, showError, hideNotification } = useNotification();
 
@@ -16,7 +16,7 @@ const GoogleAuth = () => {
             try {
                 const response = await axios.get('/api/users/me');
                 const user = response.data;
-                
+
                 localStorage.setItem("user", JSON.stringify(user));
                 navigate(user.role === "admin" ? "/admin" : "/");
             } catch (error) {
@@ -41,9 +41,9 @@ const GoogleAuth = () => {
     return (
         <div>
             Logging you in...
-            <NotificationModal 
-                notification={notification} 
-                onClose={hideNotification} 
+            <NotificationModal
+                notification={notification}
+                onClose={hideNotification}
             />
         </div>
     );

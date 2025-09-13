@@ -80,27 +80,27 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                             margin: '0 auto',
                             position: 'relative'
                         }}
-                        initial={{ 
-                            scale: 0.7, 
-                            opacity: 0, 
+                        initial={{
+                            scale: 0.7,
+                            opacity: 0,
                             y: -50,
-                            rotateX: -15 
+                            rotateX: -15
                         }}
-                        animate={{ 
-                            scale: 1, 
-                            opacity: 1, 
+                        animate={{
+                            scale: 1,
+                            opacity: 1,
                             y: 0,
-                            rotateX: 0 
+                            rotateX: 0
                         }}
-                        exit={{ 
-                            scale: 0.8, 
-                            opacity: 0, 
+                        exit={{
+                            scale: 0.8,
+                            opacity: 0,
                             y: 50,
-                            rotateX: 15 
+                            rotateX: 15
                         }}
-                        transition={{ 
-                            duration: 0.4, 
-                            type: "spring", 
+                        transition={{
+                            duration: 0.4,
+                            type: "spring",
                             stiffness: 200,
                             damping: 20
                         }}
@@ -108,7 +108,7 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                         whileHover={{ scale: 1.02 }}
                     >
                         {/* Header with gradient */}
-                        <motion.div 
+                        <motion.div
                             className="notification-header"
                             style={{ background: config.gradient }}
                             initial={{ scaleX: 0 }}
@@ -117,24 +117,24 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                         />
 
                         {/* Icon */}
-                        <motion.div 
+                        <motion.div
                             className="notification-icon"
                             initial={{ scale: 0, rotate: -180 }}
                             animate={{ scale: 1, rotate: 0 }}
-                            transition={{ 
-                                delay: 0.1, 
-                                duration: 0.5, 
+                            transition={{
+                                delay: 0.1,
+                                duration: 0.5,
                                 type: "spring",
-                                stiffness: 300 
+                                stiffness: 300
                             }}
                         >
                             <motion.span
-                                animate={{ 
+                                animate={{
                                     scale: [1, 1.2, 1],
-                                    rotate: [0, 5, -5, 0] 
+                                    rotate: [0, 5, -5, 0]
                                 }}
-                                transition={{ 
-                                    duration: 2, 
+                                transition={{
+                                    duration: 2,
                                     repeat: Infinity,
                                     ease: "easeInOut"
                                 }}
@@ -144,7 +144,7 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                         </motion.div>
 
                         {/* Message */}
-                        <motion.div 
+                        <motion.div
                             className="notification-message"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -160,8 +160,8 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                             initial={{ opacity: 0, scale: 0 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.4, duration: 0.3 }}
-                            whileHover={{ 
-                                scale: 1.1, 
+                            whileHover={{
+                                scale: 1.1,
                                 rotate: 90,
                                 backgroundColor: config.backgroundColor
                             }}
@@ -172,7 +172,7 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
 
                         {/* Progress bar for auto-close */}
                         {autoClose && (
-                            <motion.div 
+                            <motion.div
                                 className="notification-progress"
                                 style={{ backgroundColor: config.borderColor }}
                                 initial={{ scaleX: 1 }}

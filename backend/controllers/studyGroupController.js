@@ -49,10 +49,10 @@ export const createStudyGroup = async (req, res) => {
             // Get current user to check their current stats
             const user = await UserQuiz.findById(creatorId);
             const currentGroupsCreated = user?.social?.socialStats?.groupsCreated || 0;
-            
+
             // Add to creator's study groups
             await UserQuiz.findByIdAndUpdate(creatorId, {
-                $push: { 
+                $push: {
                     "social.studyGroups": studyGroup._id
                 },
                 $set: {
@@ -96,7 +96,7 @@ export const joinStudyGroup = async (req, res) => {
         }
 
         // Check if already a member
-        const isMember = studyGroup.members.some(member => 
+        const isMember = studyGroup.members.some(member =>
             member.user.toString() === userId
         );
 
@@ -159,7 +159,7 @@ export const leaveStudyGroup = async (req, res) => {
         }
 
         // Check if user is a member
-        const memberIndex = studyGroup.members.findIndex(member => 
+        const memberIndex = studyGroup.members.findIndex(member =>
             member.user.toString() === userId
         );
 
@@ -176,7 +176,7 @@ export const leaveStudyGroup = async (req, res) => {
             const oldestMember = studyGroup.members
                 .filter(m => m.user.toString() !== userId)
                 .sort((a, b) => new Date(a.joinedAt) - new Date(b.joinedAt))[0];
-            
+
             if (oldestMember) {
                 oldestMember.role = "admin";
                 logger.info(`Transferred admin role of study group ${groupId} to user ${oldestMember.user}`);
@@ -313,7 +313,7 @@ export const getStudyGroupDetails = async (req, res) => {
         }
 
         // Check if user can view this group
-        const isMember = studyGroup.members.some(member => 
+        const isMember = studyGroup.members.some(member =>
             member.user._id.toString() === userId
         );
 
@@ -332,7 +332,7 @@ export const getStudyGroupDetails = async (req, res) => {
             studyGroup: {
                 ...studyGroup.toObject(),
                 activities: recentActivities,
-                userRole: isMember ? studyGroup.members.find(m => 
+                userRole: isMember ? studyGroup.members.find(m =>
                     m.user._id.toString() === userId
                 )?.role : null
             }
@@ -359,7 +359,7 @@ export const shareQuizWithGroup = async (req, res) => {
         }
 
         // Check if user is a member
-        const isMember = studyGroup.members.some(member => 
+        const isMember = studyGroup.members.some(member =>
             member.user.toString() === userId
         );
 
@@ -423,7 +423,7 @@ export const updateStudyGroup = async (req, res) => {
         }
 
         // Check if user is admin
-        const member = studyGroup.members.find(member => 
+        const member = studyGroup.members.find(member =>
             member.user.toString() === userId
         );
 

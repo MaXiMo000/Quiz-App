@@ -14,7 +14,7 @@ const SpacedRepetition = () => {
       try {
         const res = await axios.get("/api/reviews");
         setReviews(res.data);
-        
+
         // Initialize quiz progress tracking
         const progress = {};
         res.data.forEach((review) => {
@@ -41,7 +41,7 @@ const SpacedRepetition = () => {
   const handleUpdateReview = async (quality) => {
     const review = reviews[currentReviewIndex];
     const quizId = review.quiz._id;
-    
+
     try {
       await axios.post("/api/reviews/update", {
         quizId: quizId,
@@ -130,7 +130,7 @@ const SpacedRepetition = () => {
           <h2>🧠 Spaced Repetition</h2>
           <p>Master your knowledge with scientifically-proven spaced repetition</p>
         </div>
-        
+
         {/* Progress Indicator */}
         <div className="progress-indicator">
           <span className="progress-text">
@@ -148,11 +148,11 @@ const SpacedRepetition = () => {
             <h3 className="quiz-title">{currentReview.quiz.title}</h3>
             <span className="quiz-category">{currentReview.quiz.category}</span>
           </div>
-          
+
           <div className="question-section">
             <p className="question-text">{question.question}</p>
           </div>
-          
+
           {(showAnswer || !isFirstTimeForQuiz) && (
             <div className="answer-section">
               <p className="answer-label">
@@ -160,13 +160,13 @@ const SpacedRepetition = () => {
               </p>
               <div className="options-grid">
                 {question.options && question.options.map((option, index) => {
-                  const isCorrect = question.correctAnswer && 
+                  const isCorrect = question.correctAnswer &&
                     question.correctAnswer.charCodeAt(0) - 65 === index;
                   const optionLetter = String.fromCharCode(65 + index); // A, B, C, D
-                  
+
                   return (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className={`option-item ${isCorrect ? 'correct-option' : 'incorrect-option'}`}
                     >
                       <div className="option-letter">{optionLetter}</div>
@@ -178,7 +178,7 @@ const SpacedRepetition = () => {
               </div>
             </div>
           )}
-          
+
           <div className="button-group">
             {(!showAnswer && isFirstTimeForQuiz) ? (
               <button

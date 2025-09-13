@@ -9,13 +9,13 @@ import { calculateNextReview } from "../algorithms/spacedRepetition.js";
 export const getReviewScheduleForUser = async (userId) => {
   const schedules = await ReviewSchedule.find({ user: userId, nextReviewDate: { $lte: new Date() } })
     .populate("quiz", "title category questions");
-  
+
   // Manually populate question data from the quiz
   return schedules.map(schedule => {
     // Convert both IDs to strings for comparison
     const questionIdStr = schedule.question.toString();
     const question = schedule.quiz.questions.find(q => q._id.toString() === questionIdStr);
-    
+
     return {
       ...schedule.toObject(),
       question: question || null

@@ -326,13 +326,13 @@
 }
 
 @keyframes checkmark {
-    0% { 
-        opacity: 0; 
-        transform: scale(0.5); 
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
     }
-    100% { 
-        opacity: 1; 
-        transform: scale(1); 
+    100% {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
@@ -401,31 +401,31 @@
         padding: 40px;
         overflow-y: auto;
     }
-    
+
     .share-quiz-modal {
         max-width: 600px;
         width: 100%;
         margin: 0 auto;
         position: relative;
     }
-    
+
     .modal-content {
         padding: 25px;
         overflow-y: auto;
         max-height: none;
     }
-    
+
     .groups-list {
         max-height: 300px;
         padding-right: 8px;
     }
-    
+
     .groups-section {
         width: 100%;
         display: flex;
         flex-direction: column;
     }
-    
+
     .groups-section h4 {
         text-align: left;
         width: 100%;
@@ -448,7 +448,7 @@
         width: calc(100vw - 10px);
         border-radius: 12px;
     }
-    
+
     .modal-header {
         padding: 10px 15px; /* Reduced header padding */
     }
@@ -456,12 +456,12 @@
     .modal-header h2 {
         font-size: 1.3em;
     }
-    
+
     .modal-content {
         padding: 12px 15px; /* Reduced content padding */
-        margin-left: 10px;  
+        margin-left: 10px;
     }
-    
+
     .quiz-info {
         padding: 10px;
         margin-bottom: 12px; /* Reduced margin */
@@ -471,7 +471,7 @@
         font-size: 1.1em;
         margin-bottom: 8px;
     }
-    
+
     .quiz-meta {
         flex-direction: column;
         align-items: flex-start;
@@ -486,28 +486,28 @@
         min-height: 60px; /* Reduced textarea height */
         max-height: 80px;
     }
-    
+
     .groups-list {
         max-height: 180px; /* Increased groups list height */
         margin-bottom: 5px;
     }
-    
+
     .group-item {
         padding: 10px;
     }
-    
+
     .group-avatar {
         width: 35px;
         height: 35px;
         font-size: 1em;
     }
-    
+
     .modal-actions {
         flex-direction: column;
         padding: 10px 15px; /* Reduced footer padding */
         gap: 8px;
     }
-    
+
     .cancel-btn, .share-btn {
         width: 100%;
         padding: 10px 16px; /* Reduced button padding */
@@ -539,7 +539,7 @@
 
     .modal-content {
         padding: 10px 12px; /* Minimal content padding */
-        margin-left: 0px;   
+        margin-left: 0px;
     }
 
     .quiz-info {

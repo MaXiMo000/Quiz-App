@@ -62,7 +62,7 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!formData.name.trim() || formData.name.trim().length < 3) {
             setError('Group name must be at least 3 characters long');
             return;
@@ -86,7 +86,7 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
             if (onUpdate) {
                 onUpdate(response.data.studyGroup);
             }
-            
+
             onClose();
         } catch (error) {
             console.error('Error updating group:', error);
@@ -129,8 +129,8 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                 animate={{ opacity: 1, y: 0 }}
                             >
                                 {error}
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     onClick={() => setError('')}
                                     className="error-close"
                                 >
@@ -216,7 +216,7 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                     Add
                                 </button>
                             </div>
-                            
+
                             {formData.tags.length > 0 && (
                                 <div className="tags-list">
                                     {formData.tags.map(tag => (
@@ -254,16 +254,16 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                         </div>
 
                         <div className="modal-actions">
-                            <button 
-                                type="button" 
-                                className="cancel-btn" 
+                            <button
+                                type="button"
+                                className="cancel-btn"
                                 onClick={onClose}
                                 disabled={updating}
                             >
                                 Cancel
                             </button>
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="save-btn"
                                 disabled={updating}
                             >

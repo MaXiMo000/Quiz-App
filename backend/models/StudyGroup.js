@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 const studyGroupSchema = new mongoose.Schema({
     name: { type: String, required: true, maxlength: 100 },
     description: { type: String, maxlength: 500 },
-    creator: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "UserQuiz", 
-        required: true 
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserQuiz",
+        required: true
     },
     members: [{
         user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" },
@@ -17,7 +17,7 @@ const studyGroupSchema = new mongoose.Schema({
     maxMembers: { type: Number, default: 50, min: 2, max: 100 },
     category: { type: String }, // e.g., "Math", "Science", "General"
     tags: [{ type: String }],
-    
+
     // Group statistics
     stats: {
         totalQuizzes: { type: Number, default: 0 },
@@ -25,7 +25,7 @@ const studyGroupSchema = new mongoose.Schema({
         averageScore: { type: Number, default: 0 },
         mostActiveDay: { type: String, default: "Monday" }
     },
-    
+
     // Study sessions and activities
     activities: [{
         type: { type: String, enum: ["quiz_shared", "member_joined", "member_left", "quiz_completed", "challenge_created"] },
@@ -33,7 +33,7 @@ const studyGroupSchema = new mongoose.Schema({
         details: { type: mongoose.Schema.Types.Mixed },
         timestamp: { type: Date, default: Date.now }
     }],
-    
+
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 

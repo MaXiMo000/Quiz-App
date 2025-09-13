@@ -50,7 +50,7 @@ const TakeQuiz = () => {
                 setError("");
                 setRetryCount(prev => prev + 1);
             }
-            
+
             const res = await axios.get(`/api/quizzes/${id}`);
             if (res.data && res.data.questions && res.data.questions.length > 0) {
                 setQuiz(res.data);
@@ -92,7 +92,7 @@ const TakeQuiz = () => {
         if (!hasAutoSubmitted && !isSubmittingRef.current && autoSubmitQuizRef.current) {
             autoSubmitQuizRef.current("Close button clicked");
         }
-        
+
         // Exit fullscreen with error handling
         try {
             // Check if document is still active before trying to exit fullscreen
@@ -118,7 +118,7 @@ const TakeQuiz = () => {
                 document.msFullscreenElement
             );
             setIsFullScreen(isCurrentlyFullscreen);
-            
+
             // Add/remove fullscreen class to body for better CSS targeting
             if (isCurrentlyFullscreen) {
                 document.body.classList.add('quiz-fullscreen');
@@ -133,7 +133,7 @@ const TakeQuiz = () => {
                 document.documentElement.style.overflow = '';
                 document.body.style.overflow = '';
                 document.documentElement.style.touchAction = '';
-                
+
                 // Check if this was caused by Escape key (auto-submit scenario)
                 // Small delay to ensure the fullscreen change is complete
                 setTimeout(() => {
@@ -144,7 +144,7 @@ const TakeQuiz = () => {
                         document.webkitFullscreenElement ||
                         document.msFullscreenElement
                     );
-                    
+
                     if (stillNotFullscreen && !hasAutoSubmitted && !isSubmittingRef.current && !isSubmitButtonClicked.current) {
                         if (autoSubmitQuizRef.current) {
                             autoSubmitQuizRef.current("Escape key pressed");
@@ -228,7 +228,7 @@ const TakeQuiz = () => {
     const autoSubmitQuiz = useCallback(async (reason = "Quiz interrupted") => {
         // Set ref for exitFullScreen to use
         autoSubmitQuizRef.current = autoSubmitQuiz;
-        
+
         // Prevent multiple auto-submits
         if (autoSubmitRef.current || isSubmittingRef.current || hasAutoSubmitted) {
             return;
@@ -269,7 +269,7 @@ const TakeQuiz = () => {
         try {
             // Record current question time before submitting
             recordAnswerTime();
-            
+
             // Update UI states (same as regular submit)
             setScore(scoreAchieved);
             setFinalScore(totalMarks);
@@ -278,7 +278,7 @@ const TakeQuiz = () => {
                 : scoreAchieved >= totalMarks * 0.4 ? "medium"
                 : "low"
             );
-            
+
             // Save the report with error handling
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
@@ -315,11 +315,11 @@ const TakeQuiz = () => {
                     const totalTimeSpent = Object.values(answerTimes).reduce((sum, time) => sum + time, 0);
                     await axios.post('/api/intelligence/preferences', {
                         quizId: id,
-                        score: scoreAchieved, 
+                        score: scoreAchieved,
                         totalQuestions: quiz.questions.length,
                         timeSpent: totalTimeSpent,
                         category: quiz.category || 'General',
-                        difficulty: quiz.questions.length > 10 ? 'hard' : 
+                        difficulty: quiz.questions.length > 10 ? 'hard' :
                                    quiz.questions.length > 5 ? 'medium' : 'easy'
                     });
                 }
@@ -338,11 +338,11 @@ const TakeQuiz = () => {
             // Mark quiz as completed and show result modal
             setIsQuizCompleted(true);
             setShowResultModal(true);
-            
-            
+
+
         } catch (error) {
             console.error("Error auto-submitting quiz:", error);
-            
+
             // Fallback: Save quiz data locally if backend fails
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
@@ -358,17 +358,17 @@ const TakeQuiz = () => {
                     timestamp: new Date().toISOString(),
                     timeSpent: totalTimeSpent
                 };
-                
+
                 // Save to localStorage as backup
                 const existingData = JSON.parse(localStorage.getItem('pendingQuizSubmissions') || '[]');
                 existingData.push(localQuizData);
                 localStorage.setItem('pendingQuizSubmissions', JSON.stringify(existingData));
-                
-                
+
+
                 // Mark quiz as completed and show result modal even if backend failed
                 setIsQuizCompleted(true);
                 setShowResultModal(true);
-                
+
             } catch (fallbackError) {
                 console.error("Failed to save quiz data locally:", fallbackError);
             }
@@ -447,7 +447,7 @@ const TakeQuiz = () => {
             const timer = setTimeout(() => {
                 setIsQuizInitialized(true);
             }, 1000); // 1 second delay to ensure quiz is properly loaded
-            
+
             return () => clearTimeout(timer);
         }
     }, [quiz]);
@@ -491,7 +491,7 @@ const TakeQuiz = () => {
     const handleSubmit = useCallback(async () => {
         // Set flag to indicate submit button was clicked
         isSubmitButtonClicked.current = true;
-        
+
         // Prevent submission if already auto-submitted or currently auto-submitting
         if (hasAutoSubmitted || isSubmittingRef.current) {
             return;
@@ -534,7 +534,7 @@ const TakeQuiz = () => {
 
         try {
             const user = JSON.parse(localStorage.getItem("user"));
-            
+
             // Save the report as before
             await axios.post(`/api/reports`, {
                 username: user?.name,
@@ -557,11 +557,11 @@ const TakeQuiz = () => {
             if (user?._id) {
                 await axios.post('/api/intelligence/preferences', {
                     quizId: id,
-                    score: scoreAchieved, 
+                    score: scoreAchieved,
                     totalQuestions: quiz.questions.length,
                     timeSpent: totalTimeSpent,
                     category: quiz.category || 'General',
-                    difficulty: quiz.questions.length > 10 ? 'hard' : 
+                    difficulty: quiz.questions.length > 10 ? 'hard' :
                                quiz.questions.length > 5 ? 'medium' : 'easy'
                 });
 
@@ -599,7 +599,7 @@ const TakeQuiz = () => {
             handleSubmit();
             return;
         }
-        
+
         // Stop timer if quiz is completed, submitted, or result modal is showing
         if (isQuizCompleted || hasAutoSubmitted || showResultModal || isSubmittingRef.current) {
             return;
@@ -648,7 +648,7 @@ const TakeQuiz = () => {
         setCurrentQuestion(prev => prev + 1);
         }
     };
-    
+
     const handlePrev = () => {
         recordAnswerTime();
         if (currentQuestion > 0) {
@@ -661,7 +661,7 @@ const TakeQuiz = () => {
         <div className="error-container">
             <p className="error-message">{error}</p>
             {error.includes('Network error') && retryCount < 3 && (
-                <button 
+                <button
                     className="retry-button"
                     onClick={() => fetchQuiz(true)}
                     disabled={loading}
@@ -670,7 +670,7 @@ const TakeQuiz = () => {
                 </button>
             )}
             {error.includes('Network error') && retryCount >= 3 && (
-                <button 
+                <button
                     className="retry-button"
                     onClick={() => {
                         setRetryCount(0);
@@ -684,7 +684,7 @@ const TakeQuiz = () => {
         </div>
     );
     if (isAutoSubmitting) return <Spinner message="Auto-submitting quiz..." />;
-    
+
     // Add null checks for quiz data
     if (!quiz) return <Spinner message="Loading quiz data..." />;
     if (!currentQ) return <Spinner message="Loading question..." />;
@@ -693,7 +693,7 @@ const TakeQuiz = () => {
         <div className="quiz-container">
             {/* Fullscreen exit button */}
             {isFullScreen && (
-                <button 
+                <button
                     className="exit-fullscreen-btn"
                     onClick={exitFullScreen}
                     title="Exit Fullscreen"
@@ -701,7 +701,7 @@ const TakeQuiz = () => {
                     ✕
                 </button>
             )}
-            
+
             <div className="quiz-content">
             <h1>{quiz.title}</h1>
             {!isQuizCompleted && !showResultModal && (
@@ -723,7 +723,7 @@ const TakeQuiz = () => {
                 </div>
             </div>
 
-            <div className="navigation-buttons">  
+            <div className="navigation-buttons">
                 <button
                     onClick={handlePrev}
                     disabled={currentQuestion === 0}
@@ -750,7 +750,7 @@ const TakeQuiz = () => {
                             <div className="result-icon">🎉</div>
                             <h2>Quiz Completed!</h2>
                         </div>
-                        
+
                         {autoSubmitReason && (
                             <div className="auto-submit-notice">
                                 <div className="notice-icon">⚠️</div>
@@ -760,7 +760,7 @@ const TakeQuiz = () => {
                                 </div>
                             </div>
                         )}
-                        
+
                         <div className="score-display">
                             <div className="score-circle">
                                 <span className="score-number">{score}</span>
@@ -774,8 +774,8 @@ const TakeQuiz = () => {
 
                         <div className="performance-badge">
                             <span className={`badge ${performanceLevel}`}>
-                                {performanceLevel === 'high' ? '🏆 Excellent!' : 
-                                 performanceLevel === 'medium' ? '👍 Good Job!' : 
+                                {performanceLevel === 'high' ? '🏆 Excellent!' :
+                                 performanceLevel === 'medium' ? '👍 Good Job!' :
                                  '📚 Keep Learning!'}
                             </span>
                         </div>
@@ -783,15 +783,15 @@ const TakeQuiz = () => {
                         <p className="result-message">
                             Would you like to generate more questions based on your performance?
                         </p>
-                        
+
                         <div className="modal-actions">
-                            <button 
+                            <button
                                 className="generate-btn"
                                 onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}
                             >
                                 🚀 Generate More
                             </button>
-                            <button 
+                            <button
                                 className="reports-btn"
                                 onClick={() => navigate("/user/report")}
                             >
@@ -801,7 +801,7 @@ const TakeQuiz = () => {
                     </div>
                 </div>
             )}
-            
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}

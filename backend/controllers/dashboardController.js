@@ -53,7 +53,7 @@ export const getDashboardData = async (req, res) => {
 
         // Get all user reports using the user's name (since reports use username)
         const reports = await Report.find({ username: user.name });
-        
+
         // Calculate basic stats
         let quizFilter;
         if (user.role === "admin") {
@@ -72,7 +72,7 @@ export const getDashboardData = async (req, res) => {
         }
         const totalQuizzes = await Quiz.countDocuments(quizFilter);
         const completedQuizzes = reports.length;
-        const averageScore = reports.length > 0 
+        const averageScore = reports.length > 0
             ? Math.round(reports.reduce((sum, report) => sum + (report.score / report.total * 100), 0) / reports.length * 10) / 10
             : 0;
 
@@ -143,7 +143,7 @@ const calculateStreak = async (username) => {
         for (let i = 0; i < 30; i++) {
             const checkDate = new Date(today - (i * oneDayMs));
             const dateKey = checkDate.toDateString();
-            
+
             if (reportsByDate[dateKey]) {
                 streak++;
             } else if (i > 0) { // Allow for today to be empty
@@ -198,7 +198,7 @@ const getCategoryPerformance = async (username) => {
 
         // Get all unique quiz names from reports
         const quizNames = [...new Set(reports.map(report => report.quizName))];
-        
+
         // Fetch quiz categories from database
         const quizzes = await Quiz.find({ title: { $in: quizNames } }).select("title category");
         const quizCategoryMap = {};
@@ -208,7 +208,7 @@ const getCategoryPerformance = async (username) => {
 
         reports.forEach(report => {
             let category = "General"; // Default fallback
-            
+
             // First, try to get category from database
             const dbCategory = quizCategoryMap[report.quizName];
             if (dbCategory && dbCategory.trim() !== "") {
@@ -216,7 +216,7 @@ const getCategoryPerformance = async (username) => {
             } else {
                 // Fallback to name-based detection
                 const quizName = report.quizName.toLowerCase();
-                
+
                 if (quizName.includes("science") || quizName.includes("biology") || quizName.includes("chemistry") ||
                     quizName.includes("physics") || quizName.includes("anatomy") || quizName.includes("botany") ||
                     quizName.includes("zoology") || quizName.includes("genetics") || quizName.includes("ecology")) {
@@ -273,11 +273,11 @@ const getCategoryPerformance = async (username) => {
                 } else {
                     // Dynamic category creation from quiz name
                     const words = quizName.split(" ");
-                    const potentialCategory = words.find(word => 
-                        word.length > 3 && 
+                    const potentialCategory = words.find(word =>
+                        word.length > 3 &&
                         !["quiz", "test", "the", "and", "for", "with", "about"].includes(word)
                     );
-                    
+
                     if (potentialCategory) {
                         category = potentialCategory.charAt(0).toUpperCase() + potentialCategory.slice(1);
                     }
@@ -287,7 +287,7 @@ const getCategoryPerformance = async (username) => {
             if (!categoryStats[category]) {
                 categoryStats[category] = { total: 0, count: 0 };
             }
-            
+
             const percentage = (report.score / report.total) * 100;
             categoryStats[category].total += percentage;
             categoryStats[category].count += 1;
@@ -428,7 +428,7 @@ export const getUserLeaderboardPosition = async (req, res) => {
     logger.info(`Fetching leaderboard position for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
-        
+
         // Get all users sorted by XP
         const users = await UserQuiz.find({})
             .sort({ xp: -1 })
@@ -454,22 +454,22 @@ export const getUserLeaderboardPosition = async (req, res) => {
 const getUserAchievements = async (username, user, reports, currentStreak) => {
     const unlockedAchievements = [];
     const lockedAchievements = [];
-    
+
     // Calculate stats
     const totalQuizzes = reports.length;
-    const averageScore = reports.length > 0 
+    const averageScore = reports.length > 0
         ? reports.reduce((sum, report) => (sum + (report.score / report.total * 100)), 0) / reports.length
         : 0;
-    
+
     const perfectScores = reports.filter(r => (r.score / r.total) === 1).length;
     const userLevel = user.level || 1;
-    
+
     // Enhanced category detection with dynamic category creation
     const categoryScores = {};
     reports.forEach(report => {
         let category = "Other"; // Default for unmatched categories
         const quizName = report.quizName.toLowerCase();
-        
+
         // Science categories
         if (quizName.includes("science") || quizName.includes("biology") || quizName.includes("chemistry") ||
             quizName.includes("physics") || quizName.includes("anatomy") || quizName.includes("botany") ||
@@ -553,11 +553,11 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
         else {
             // Extract potential category from quiz name
             const words = quizName.split(" ");
-            const potentialCategory = words.find(word => 
-                word.length > 3 && 
+            const potentialCategory = words.find(word =>
+                word.length > 3 &&
                 !["quiz", "test", "the", "and", "for", "with", "about"].includes(word)
             );
-            
+
             if (potentialCategory) {
                 // Capitalize first letter and create dynamic category
                 category = potentialCategory.charAt(0).toUpperCase() + potentialCategory.slice(1);
@@ -565,38 +565,38 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
                 category = "General";
             }
         }
-        
+
         if (!categoryScores[category]) categoryScores[category] = [];
         categoryScores[category].push((report.score / report.total) * 100);
     });
-    
+
     // Check each achievement
     Object.entries(ACHIEVEMENTS).forEach(([key, achievement]) => {
         let unlocked = false;
-        
+
         // Streak achievements
         if (key.startsWith("streak_")) {
             const required = parseInt(key.split("_")[1]);
             unlocked = currentStreak >= required;
         }
-        
+
         // Quiz count achievements
         else if (key.startsWith("quizzes_")) {
             const required = parseInt(key.split("_")[1]);
             unlocked = totalQuizzes >= required;
         }
-        
+
         // Score achievements
         else if (key.startsWith("score_")) {
             const required = parseInt(key.split("_")[1]);
             unlocked = averageScore >= required;
         }
-        
+
         // Category achievements
         else if (key.startsWith("category_")) {
             const categoryKey = key.split("_")[1];
             let categoryName;
-            
+
             // Map achievement keys to actual category names
             switch(categoryKey) {
                 case "math": categoryName = "Mathematics"; break;
@@ -614,7 +614,7 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
                 case "health": categoryName = "Health & Medicine"; break;
                 default: categoryName = categoryKey;
             }
-            
+
             const scores = categoryScores[categoryName] || [];
             if (scores.length >= 3) { // Need at least 3 quizzes in category
                 const categoryAvg = scores.reduce((a, b) => a + b, 0) / scores.length;
@@ -623,18 +623,18 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
                 unlocked = false;
             }
         }
-        
+
         // Perfect score achievements
         else if (key === "perfect_10") {
             unlocked = perfectScores >= 10;
         }
-        
+
         // Level achievements
         else if (key.startsWith("level_")) {
             const required = parseInt(key.split("_")[1]);
             unlocked = userLevel >= required;
         }
-        
+
         // Time-based achievements
         else if (key === "early_bird") {
             // Check if user has completed quizzes before 8 AM
@@ -652,21 +652,21 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
             });
             unlocked = lateReports.length >= 5; // At least 5 late night quizzes
         }
-        
+
         const achievementData = {
             id: key,
             ...achievement,
             unlocked,
             progress: getAchievementProgress(key, { totalQuizzes, averageScore, currentStreak, perfectScores, userLevel, reports, categoryScores })
         };
-        
+
         if (unlocked) {
             unlockedAchievements.push(achievementData);
         } else {
             lockedAchievements.push(achievementData);
         }
     });
-    
+
     return {
         unlocked: unlockedAchievements,
         locked: lockedAchievements,
@@ -678,35 +678,35 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
 // Get achievement progress
 const getAchievementProgress = (achievementKey, stats) => {
     const { totalQuizzes, averageScore, currentStreak, perfectScores, userLevel, reports, categoryScores } = stats;
-    
+
     if (achievementKey.startsWith("streak_")) {
         const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (currentStreak / required) * 100);
     }
-    
+
     if (achievementKey.startsWith("quizzes_")) {
         const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (totalQuizzes / required) * 100);
     }
-    
+
     if (achievementKey.startsWith("score_")) {
         const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (averageScore / required) * 100);
     }
-    
+
     if (achievementKey === "perfect_10") {
         return Math.min(100, (perfectScores / 10) * 100);
     }
-    
+
     if (achievementKey.startsWith("level_")) {
         const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (userLevel / required) * 100);
     }
-    
+
     if (achievementKey.startsWith("category_") && categoryScores) {
         const categoryKey = achievementKey.split("_")[1];
         let categoryName;
-        
+
         // Map achievement keys to actual category names
         switch(categoryKey) {
             case "math": categoryName = "Mathematics"; break;
@@ -724,14 +724,14 @@ const getAchievementProgress = (achievementKey, stats) => {
             case "health": categoryName = "Health & Medicine"; break;
             default: categoryName = categoryKey;
         }
-        
+
         const scores = categoryScores[categoryName] || [];
         if (scores.length === 0) return 0;
-        
+
         const categoryAvg = scores.reduce((a, b) => a + b, 0) / scores.length;
         return Math.min(100, (categoryAvg / 85) * 100);
     }
-    
+
     if (achievementKey === "early_bird" && reports) {
         const earlyReports = reports.filter(report => {
             const hour = new Date(report.createdAt).getHours();
@@ -739,7 +739,7 @@ const getAchievementProgress = (achievementKey, stats) => {
         });
         return Math.min(100, (earlyReports.length / 5) * 100);
     }
-    
+
     if (achievementKey === "night_owl" && reports) {
         const lateReports = reports.filter(report => {
             const hour = new Date(report.createdAt).getHours();
@@ -747,7 +747,7 @@ const getAchievementProgress = (achievementKey, stats) => {
         });
         return Math.min(100, (lateReports.length / 5) * 100);
     }
-    
+
     return 0;
 };
 
@@ -761,12 +761,12 @@ export const getUserAchievementsEndpoint = async (req, res) => {
             logger.warn(`User not found with ID: ${userId} when fetching achievements`);
             return res.status(404).json({ message: "User not found" });
         }
-        
+
         const reports = await Report.find({ username: user.name });
         const currentStreak = await calculateStreak(user.name);
-        
+
         const achievements = await getUserAchievements(user.name, user, reports, currentStreak);
-        
+
         logger.info(`Successfully fetched ${achievements.unlocked.length} unlocked achievements for user ${userId}`);
         res.json(achievements);
     } catch (error) {
@@ -781,7 +781,7 @@ export const getAllCategories = async (req, res) => {
     try {
         // Get all unique categories from quizzes
         const categories = await Quiz.distinct("category", { category: { $exists: true, $ne: null, $nin: [""] } });
-        
+
         // Sort categories alphabetically
         const sortedCategories = categories.sort();
         logger.info(`Successfully fetched ${sortedCategories.length} categories`);

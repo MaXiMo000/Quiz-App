@@ -8,7 +8,7 @@
   border: 1px solid var(--card-border);
   padding: var(--space-lg);
   border-radius: var(--radius-xl);
-  box-shadow: 
+  box-shadow:
     var(--shadow-xl),
     0 0 30px rgba(99, 102, 241, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -25,7 +25,7 @@
 
 .container:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  box-shadow:
     var(--shadow-xl),
     0 0 40px rgba(99, 102, 241, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -73,8 +73,8 @@
 
 .container:hover {
   transform: translateY(-3px) scale(1.003);
-  box-shadow: 
-    var(--shadow-2xl), 
+  box-shadow:
+    var(--shadow-2xl),
     0 0 50px rgba(99, 102, 241, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   border-color: var(--accent);

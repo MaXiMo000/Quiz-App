@@ -66,7 +66,7 @@ const AdvancedAnalytics = () => {
           <div className="error-icon">⚠️</div>
           <h3 className="error-title">Unable to Load Analytics</h3>
           <p className="error-message">{error}</p>
-          <button 
+          <button
             className="retry-button"
             onClick={() => window.location.reload()}
           >
@@ -215,25 +215,25 @@ const AdvancedAnalytics = () => {
 
       {/* Tab Navigation */}
       <div className="tab-navigation">
-        <button 
+        <button
           className={`tab-button ${activeTab === "overview" ? "active" : ""}`}
           onClick={() => setActiveTab("overview")}
         >
           📊 Overview
         </button>
-        <button 
+        <button
           className={`tab-button ${activeTab === "cognitive" ? "active" : ""}`}
           onClick={() => setActiveTab("cognitive")}
         >
           🧠 Cognitive
         </button>
-        <button 
+        <button
           className={`tab-button ${activeTab === "learning" ? "active" : ""}`}
           onClick={() => setActiveTab("learning")}
         >
           📚 Learning
         </button>
-        <button 
+        <button
           className={`tab-button ${activeTab === "insights" ? "active" : ""}`}
           onClick={() => setActiveTab("insights")}
         >
@@ -254,7 +254,7 @@ const AdvancedAnalytics = () => {
               <div className="performance-metrics">
                 <div className="metric-item">
                   <div className="metric-label">Average Response Time</div>
-                  <div 
+                  <div
                     className="metric-value"
                     style={{ color: getScoreColor(
                       cognitiveMetrics.reduce((acc, metric) => acc + metric.metrics.responseTime, 0) / cognitiveMetrics.length || 0,
@@ -269,7 +269,7 @@ const AdvancedAnalytics = () => {
                 </div>
                 <div className="metric-item">
                   <div className="metric-label">Engagement Level</div>
-                  <div 
+                  <div
                     className="metric-value"
                     style={{ color: getScoreColor(
                       learningAnalytics.reduce((acc, analytic) => acc + analytic.metrics.engagement, 0) / learningAnalytics.length || 0,
@@ -284,7 +284,7 @@ const AdvancedAnalytics = () => {
                 </div>
                 <div className="metric-item">
                   <div className="metric-label">Comprehension Rate</div>
-                  <div 
+                  <div
                     className="metric-value"
                     style={{ color: getScoreColor(
                       learningAnalytics.reduce((acc, analytic) => acc + analytic.metrics.comprehension, 0) / learningAnalytics.length || 0,
@@ -324,7 +324,7 @@ const AdvancedAnalytics = () => {
               <h2 className="section-title">Cognitive Performance</h2>
               <p className="section-subtitle">Analysis of your mental processing and response patterns</p>
             </div>
-            
+
             <div className="metrics-grid">
               {cognitiveMetrics.map((metric, index) => (
                 <div key={metric._id || index} className="metric-card">
@@ -337,7 +337,7 @@ const AdvancedAnalytics = () => {
                   <div className="metric-card-content">
                     <div className="metric-row">
                       <div className="metric-label">Response Time</div>
-                      <div 
+                      <div
                         className="metric-value"
                         style={{ color: getScoreColor(metric.metrics.responseTime, 2) }}
                       >
@@ -346,7 +346,7 @@ const AdvancedAnalytics = () => {
                     </div>
                     <div className="metric-row">
                       <div className="metric-label">Fatigue Score</div>
-                      <div 
+                      <div
                         className="metric-value"
                         style={{ color: getScoreColor(metric.metrics.fatigueScore, 1) }}
                       >
@@ -355,7 +355,7 @@ const AdvancedAnalytics = () => {
                     </div>
                     <div className="performance-indicator">
                       <div className="indicator-label">Performance Level</div>
-                      <div 
+                      <div
                         className="indicator-value"
                         style={{ color: getScoreColor(metric.metrics.responseTime, 2) }}
                       >
@@ -375,7 +375,7 @@ const AdvancedAnalytics = () => {
               <h2 className="section-title">Learning Analytics</h2>
               <p className="section-subtitle">Your engagement and comprehension patterns over time</p>
             </div>
-            
+
             <div className="learning-grid">
               <div className="learning-chart-card">
                 <h3 className="chart-title">Comprehension Distribution</h3>
@@ -383,7 +383,7 @@ const AdvancedAnalytics = () => {
                   <Doughnut data={comprehensionData} options={chartOptions} />
                 </div>
               </div>
-              
+
               <div className="learning-metrics">
                 {learningAnalytics.map((analytic, index) => (
                   <div key={analytic._id || index} className="learning-metric-card">
@@ -397,9 +397,9 @@ const AdvancedAnalytics = () => {
                       <div className="learning-metric-row">
                         <div className="learning-metric-label">Engagement</div>
                         <div className="learning-metric-progress">
-                          <div 
+                          <div
                             className="progress-bar"
-                            style={{ 
+                            style={{
                               width: `${(analytic.metrics.engagement / 20) * 100}%`,
                               backgroundColor: getScoreColor(analytic.metrics.engagement, 20)
                             }}
@@ -412,9 +412,9 @@ const AdvancedAnalytics = () => {
                       <div className="learning-metric-row">
                         <div className="learning-metric-label">Comprehension</div>
                         <div className="learning-metric-progress">
-                          <div 
+                          <div
                             className="progress-bar"
-                            style={{ 
+                            style={{
                               width: `${analytic.metrics.comprehension * 100}%`,
                               backgroundColor: getScoreColor(analytic.metrics.comprehension, 1)
                             }}
@@ -438,7 +438,7 @@ const AdvancedAnalytics = () => {
               <h2 className="section-title">AI-Powered Insights</h2>
               <p className="section-subtitle">Personalized recommendations based on your learning data</p>
             </div>
-            
+
             <div className="insights-grid">
               <div className="insight-card">
                 <div className="insight-icon">🎯</div>
@@ -447,7 +447,7 @@ const AdvancedAnalytics = () => {
                   Based on your response times, consider taking breaks every 30-45 minutes to maintain optimal performance.
                 </p>
               </div>
-              
+
               <div className="insight-card">
                 <div className="insight-icon">📈</div>
                 <h3 className="insight-title">Improvement Trends</h3>
@@ -455,7 +455,7 @@ const AdvancedAnalytics = () => {
                   Your engagement levels are showing positive trends. Keep up the consistent practice!
                 </p>
               </div>
-              
+
               <div className="insight-card">
                 <div className="insight-icon">⏰</div>
                 <h3 className="insight-title">Optimal Study Time</h3>
@@ -463,7 +463,7 @@ const AdvancedAnalytics = () => {
                   Your cognitive performance peaks during morning sessions. Schedule challenging quizzes for 9-11 AM.
                 </p>
               </div>
-              
+
               <div className="insight-card">
                 <div className="insight-icon">🧠</div>
                 <h3 className="insight-title">Cognitive Load</h3>

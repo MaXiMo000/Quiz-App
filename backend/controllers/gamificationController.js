@@ -497,7 +497,7 @@ export const getAvailableTournaments = async (req, res) => {
         const now = new Date();
         const userId = req.user.id;
         const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
-        
+
         // Find tournaments that are active and not completed by the user
         const tournaments = await Tournament.find({
             $and: [
@@ -526,19 +526,19 @@ export const getAvailableTournaments = async (req, res) => {
             const userParticipation = tournament.participants.find(p =>
                 p.user.toString() === userId
             );
-            
+
             // Include tournament if:
             // 1. User hasn't participated yet, OR
             // 2. User participated but tournament is still active and not completed
             if (!userParticipation) {
                 return true; // User hasn't joined yet
             }
-            
+
             // If tournament is completed or ended more than 2 days ago, exclude it
             if (tournament.status === "completed" || tournament.tournamentEnd < twoDaysAgo) {
                 return false;
             }
-            
+
             return true; // Tournament is still active
         });
 
@@ -578,7 +578,7 @@ export const deleteDailyChallenge = async (req, res) => {
 
         const { challengeId } = req.params;
         const challenge = await DailyChallenge.findById(challengeId);
-        
+
         if (!challenge) {
             logger.warn(`Daily challenge not found for deletion: ${challengeId}`);
             return res.status(404).json({ message: "Challenge not found" });
@@ -609,7 +609,7 @@ export const deleteTournament = async (req, res) => {
 
         const { tournamentId } = req.params;
         const tournament = await Tournament.findById(tournamentId);
-        
+
         if (!tournament) {
             logger.warn(`Tournament not found for deletion: ${tournamentId}`);
             return res.status(404).json({ message: "Tournament not found" });
@@ -667,15 +667,15 @@ export const registerForTournament = async (req, res) => {
         }
 
         const now = new Date();
-        
+
         // More flexible date comparison - check if we're within the registration period
         const regStart = new Date(tournament.registrationStart);
         const regEnd = new Date(tournament.registrationEnd);
-        
+
         // Check if registration is open (considering full days rather than exact times)
         if (now < regStart || now > regEnd) {
             logger.warn(`User ${userId} attempted to register for tournament ${tournamentId} outside of registration period`);
-            return res.status(400).json({ 
+            return res.status(400).json({
                 message: "Registration is not open",
                 registrationStart: regStart,
                 registrationEnd: regEnd,
@@ -689,7 +689,7 @@ export const registerForTournament = async (req, res) => {
         }
 
         // Check if already registered
-        const isRegistered = tournament.participants.some(p => 
+        const isRegistered = tournament.participants.some(p =>
             p.user.toString() === userId
         );
 
@@ -749,7 +749,7 @@ export const getTournamentLeaderboard = async (req, res) => {
     logger.info(`Fetching leaderboard for tournament ${req.params.tournamentId}`);
     try {
         const { tournamentId } = req.params;
-        
+
         const tournament = await Tournament.findById(tournamentId)
             .populate("participants.user", "name email level");
 
@@ -866,8 +866,8 @@ export const createTournament = async (req, res) => {
         }
 
         const tournamentData = req.body;
-        
-        
+
+
         // Ensure dates are properly converted
         if (tournamentData.registrationStart) {
             tournamentData.registrationStart = new Date(tournamentData.registrationStart);
@@ -881,13 +881,13 @@ export const createTournament = async (req, res) => {
         if (tournamentData.tournamentEnd) {
             tournamentData.tournamentEnd = new Date(tournamentData.tournamentEnd);
         }
-        
+
         // Ensure required fields are set
         tournamentData.createdBy = req.user.id;
         tournamentData.status = "registration_open";
         tournamentData.participants = tournamentData.participants || [];
         tournamentData.quizzes = tournamentData.quizzes || [];
-        
+
         // Initialize stats if not provided
         if (!tournamentData.stats) {
             tournamentData.stats = {
@@ -925,7 +925,7 @@ export const createSampleTournament = async (req, res) => {
 
         // Get some sample quizzes for the tournament (remove isActive filter)
         let availableQuizzes = await Quiz.find({}).limit(5);
-        
+
         if (availableQuizzes.length === 0) {
             // Create sample quizzes if none exist
             logger.info("No sample quizzes found, creating some for the tournament");
@@ -954,7 +954,7 @@ export const createSampleTournament = async (req, res) => {
                     createdBy: req.user.id,
                     category: "Tournament Practice"
                 });
-                
+
                 await sampleQuiz.save();
                 sampleQuizzes.push(sampleQuiz);
             }
@@ -966,10 +966,10 @@ export const createSampleTournament = async (req, res) => {
         const registrationStart = new Date(now);
         const registrationEnd = new Date(now);
         registrationEnd.setDate(registrationEnd.getDate() + 1); // Registration open for 1 day
-        
+
         const tournamentStart = new Date(now);
         tournamentStart.setHours(tournamentStart.getHours() + 2); // Start in 2 hours
-        
+
         const tournamentEnd = new Date(tournamentStart);
         tournamentEnd.setHours(tournamentEnd.getHours() + 4); // 4 hour tournament
 
@@ -1122,7 +1122,7 @@ export const submitChallengeQuiz = async (req, res) => {
             const userAnswer = answers[index];
             const correctAnswer = question.correctAnswer;
             const questionPoints = question.points || 10; // Default 10 points per question
-            
+
             // Handle both number and letter format answers
             let isCorrect = false;
             if (typeof correctAnswer === "string" && typeof userAnswer === "number") {
@@ -1137,8 +1137,8 @@ export const submitChallengeQuiz = async (req, res) => {
                 // Same type comparison
                 isCorrect = userAnswer === correctAnswer;
             }
-            
-            
+
+
             if (isCorrect) {
                 correctAnswers++;
                 calculatedScore += questionPoints;
@@ -1154,7 +1154,7 @@ export const submitChallengeQuiz = async (req, res) => {
         if (!participant.completedQuizzes) {
             participant.completedQuizzes = [];
         }
-        
+
         if (!participant.quizScores) {
             participant.quizScores = [];
         }
@@ -1170,7 +1170,7 @@ export const submitChallengeQuiz = async (req, res) => {
 
 
         // Update participant attempts
-        participant.attempts += 1;  
+        participant.attempts += 1;
 
         // Update overall progress
         const completedCount = participant.completedQuizzes.length;
@@ -1338,7 +1338,7 @@ export const submitTournamentQuiz = async (req, res) => {
             const userAnswer = answers[index];
             const correctAnswer = question.correctAnswer;
             const questionPoints = question.points || 10; // Default 10 points per question
-            
+
             // Handle both number and letter format answers
             let isCorrect = false;
             if (typeof correctAnswer === "string" && typeof userAnswer === "number") {
@@ -1353,8 +1353,8 @@ export const submitTournamentQuiz = async (req, res) => {
                 // Same type comparison
                 isCorrect = userAnswer === correctAnswer;
             }
-            
-            
+
+
             if (isCorrect) {
                 correctAnswers++;
                 calculatedScore += questionPoints;
@@ -1370,7 +1370,7 @@ export const submitTournamentQuiz = async (req, res) => {
         if (!participant.completedQuizzes) {
             participant.completedQuizzes = [];
         }
-        
+
         if (!participant.quizScores) {
             participant.quizScores = [];
         }
@@ -1437,7 +1437,7 @@ export const getUserCompletedChallenges = async (req, res) => {
     logger.info(`Getting completed challenges for user ${req.user.id}`);
     try {
         const userId = req.user.id;
-        
+
         // Find all challenges where user actually completed them (not just joined)
         const challenges = await DailyChallenge.find({
             "participants": {
@@ -1447,21 +1447,21 @@ export const getUserCompletedChallenges = async (req, res) => {
                 }
             }
         }).sort({ endDate: -1 }).limit(20);
-        
+
 
         // Extract user's specific data for each completed challenge
         const challengeHistory = challenges.map(challenge => {
-            const userParticipation = challenge.participants.find(p => 
+            const userParticipation = challenge.participants.find(p =>
                 p.user.toString() === userId && p.completed === true // Double check completion
             );
-            
+
             // Skip if no valid completed participation found
             if (!userParticipation || !userParticipation.completed) {
                 logger.warn(`No valid participation found for challenge ${challenge.title}`);
                 return null;
             }
-            
-            
+
+
             return {
                 _id: challenge._id,
                 title: challenge.title,
@@ -1492,13 +1492,13 @@ export const getTournamentHistory = async (req, res) => {
     logger.info(`Getting tournament history for user ${req.user.id}`);
     try {
         const userId = req.user.id;
-        
+
         // Find all tournaments where user participated (including completed active ones)
         const tournaments = await Tournament.find({
             "participants.user": userId,
             $or: [
                 { status: "completed" }, // Completed tournaments
-                { 
+                {
                     "participants.quizzesCompleted": { $gt: 0 },
                     "participants.user": userId
                 } // Active tournaments where user has completed quizzes
@@ -1508,10 +1508,10 @@ export const getTournamentHistory = async (req, res) => {
 
         // Extract user's specific data for each tournament
         const tournamentHistory = tournaments.map(tournament => {
-            const userParticipation = tournament.participants.find(p => 
+            const userParticipation = tournament.participants.find(p =>
                 p.user.toString() === userId
             );
-            
+
             logger.debug("Debug - User tournament participation:", {
                 tournamentId: tournament._id,
                 currentScore: userParticipation?.currentScore,
@@ -1523,8 +1523,8 @@ export const getTournamentHistory = async (req, res) => {
             const sortedParticipants = tournament.participants
                 .filter(p => p.currentScore > 0)
                 .sort((a, b) => b.currentScore - a.currentScore);
-            
-            const userRank = sortedParticipants.findIndex(p => 
+
+            const userRank = sortedParticipants.findIndex(p =>
                 p.user.toString() === userId
             ) + 1;
 
@@ -1635,7 +1635,7 @@ export const resetDailyChallenges = async () => {
     try {
         const now = new Date();
         const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-        
+
         logger.info(`Looking for challenges completed before ${twentyFourHoursAgo.toISOString()}`);
 
         // Find challenges where users completed them more than 24 hours ago
@@ -1657,11 +1657,11 @@ export const resetDailyChallenges = async () => {
             // Reset individual participants who completed more than 24 hours ago
             for (let i = 0; i < challenge.participants.length; i++) {
                 const participant = challenge.participants[i];
-                
-                if (participant.completed && 
-                    participant.completedAt && 
+
+                if (participant.completed &&
+                    participant.completedAt &&
                     participant.completedAt < twentyFourHoursAgo) {
-                    
+
                     // Preserve old results in historical completions
                     if (!challenge.historicalCompletions) {
                         challenge.historicalCompletions = [];
@@ -1675,13 +1675,13 @@ export const resetDailyChallenges = async () => {
                         quizScores: participant.quizScores,
                         resetAt: new Date()
                     });
-                    
+
                     // Update historical completion stats
                     if (!challenge.stats.totalHistoricalCompletions) {
                         challenge.stats.totalHistoricalCompletions = 0;
                     }
                     challenge.stats.totalHistoricalCompletions += 1;
-                    
+
                     // Reset participant data
                     challenge.participants[i] = {
                         user: participant.user,
@@ -1692,16 +1692,16 @@ export const resetDailyChallenges = async () => {
                         completedQuizzes: [],
                         quizScores: []
                     };
-                    
+
                     usersResetInChallenge++;
                     challengeModified = true;
-                    
+
                     // Also update user's dailyChallenges data
                     await UserQuiz.findByIdAndUpdate(participant.user, {
                         $pull: { "gamification.dailyChallenges.completed": challenge._id },
                         $set: { "gamification.dailyChallenges.current": challenge._id }
                     });
-                    
+
                     logger.info(`Reset user ${participant.user} in challenge "${challenge.title}"`);
                 }
             }
@@ -1709,20 +1709,20 @@ export const resetDailyChallenges = async () => {
             if (challengeModified) {
                 // Recalculate challenge statistics
                 const completedParticipants = challenge.participants.filter(p => p.completed).length;
-                challenge.stats.completionRate = challenge.participants.length > 0 
-                    ? (completedParticipants / challenge.participants.length) * 100 
+                challenge.stats.completionRate = challenge.participants.length > 0
+                    ? (completedParticipants / challenge.participants.length) * 100
                     : 0;
-                
+
                 await challenge.save();
                 challengesModified++;
                 totalUsersReset += usersResetInChallenge;
-                
+
                 logger.info(`Reset ${usersResetInChallenge} users in challenge "${challenge.title}"`);
             }
         }
 
         logger.info(`Daily reset completed: ${totalUsersReset} users reset across ${challengesModified} challenges`);
-        
+
         return {
             success: true,
             usersReset: totalUsersReset,
@@ -1784,14 +1784,14 @@ export const isChallengeAvailableForUser = async (challengeId, userId) => {
         }
 
         const now = new Date();
-        
+
         // Check if challenge period is active
         if (now < challenge.startDate || now > challenge.endDate) {
             return false;
         }
 
         // Find user's participation
-        const participant = challenge.participants.find(p => 
+        const participant = challenge.participants.find(p =>
             p.user.toString() === userId
         );
 
@@ -2062,9 +2062,9 @@ export const getCompletedChallenges = async (req, res) => {
 
         // Filter and format challenges to only include user's completed data
         const userCompletedChallenges = completedChallenges.map(challenge => {
-            const userParticipation = challenge.participants.find(p => 
-                p.user.toString() === userId && 
-                p.completed && 
+            const userParticipation = challenge.participants.find(p =>
+                p.user.toString() === userId &&
+                p.completed &&
                 p.completedAt >= twentyFourHoursAgo // Double-check the time constraint
             );
 
@@ -2076,7 +2076,7 @@ export const getCompletedChallenges = async (req, res) => {
             // Calculate comprehensive stats
             const quizScores = userParticipation.quizScores || [];
             const totalScore = quizScores.reduce((sum, quiz) => sum + (quiz.score || 0), 0);
-            const averagePercentage = quizScores.length > 0 
+            const averagePercentage = quizScores.length > 0
                 ? quizScores.reduce((sum, quiz) => sum + (quiz.percentage || 0), 0) / quizScores.length
                 : 0;
             const totalTimeSpent = quizScores.reduce((sum, quiz) => sum + (quiz.timeSpent || 0), 0);
@@ -2113,9 +2113,9 @@ export const getCompletedChallenges = async (req, res) => {
 
         logger.info(`Returning ${userCompletedChallenges.length} completed challenges for display`);
 
-        res.json({ 
+        res.json({
             completedChallenges: userCompletedChallenges,
-            total: userCompletedChallenges.length 
+            total: userCompletedChallenges.length
         });
 
     } catch (error) {
@@ -2139,7 +2139,7 @@ export const getCompletedTournaments = async (req, res) => {
             "participants.user": userId,
             $or: [
                 { status: "completed" },
-                { 
+                {
                     tournamentEnd: { $lt: twoDaysAgo },
                     status: { $in: ["completed", "in_progress"] }
                 }
@@ -2151,7 +2151,7 @@ export const getCompletedTournaments = async (req, res) => {
 
         // Format tournaments to include user's performance data
         const userCompletedTournaments = completedTournaments.map(tournament => {
-            const userParticipation = tournament.participants.find(p => 
+            const userParticipation = tournament.participants.find(p =>
                 p.user.toString() === userId
             );
 
@@ -2161,7 +2161,7 @@ export const getCompletedTournaments = async (req, res) => {
             const sortedParticipants = tournament.participants
                 .sort((a, b) => b.currentScore - a.currentScore)
                 .map((p, index) => ({ ...p, rank: index + 1 }));
-            
+
             const userRank = sortedParticipants.find(p => p.user.toString() === userId)?.rank || 0;
 
             return {
@@ -2183,7 +2183,7 @@ export const getCompletedTournaments = async (req, res) => {
                     rank: userRank,
                     eliminated: userParticipation.eliminated,
                     quizScores: userParticipation.quizScores,
-                    averagePercentage: userParticipation.quizScores.length > 0 
+                    averagePercentage: userParticipation.quizScores.length > 0
                         ? userParticipation.quizScores.reduce((sum, quiz) => sum + quiz.percentage, 0) / userParticipation.quizScores.length
                         : 0
                 },
@@ -2195,9 +2195,9 @@ export const getCompletedTournaments = async (req, res) => {
         }).filter(Boolean);
 
         logger.info(`Successfully fetched ${userCompletedTournaments.length} completed tournaments for user ${userId}`);
-        res.json({ 
+        res.json({
             completedTournaments: userCompletedTournaments,
-            total: userCompletedTournaments.length 
+            total: userCompletedTournaments.length
         });
 
     } catch (error) {

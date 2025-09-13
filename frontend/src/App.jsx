@@ -76,7 +76,7 @@ const IntelligenceDashboard = lazy(() => import("./pages/IntelligenceDashboard")
 
 const App = () => {
     const isOnline = useNetworkStatus(); // ✅ Monitor network status
-    
+
     // 🔒 SECURITY: Removed unnecessary user state and logging
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -89,7 +89,7 @@ const App = () => {
     useEffect(() => {
         // Initialize PWA manager
         window.pwaManager = pwaManager;
-        
+
         // Add PWA debug utilities (development only)
         if (import.meta.env.DEV) {
             window.pwaDebug = {
@@ -135,12 +135,12 @@ const App = () => {
                 }
             };
         }
-        
+
         // Check for updates periodically when online
         if (isOnline) {
             pwaManager.checkForUpdates();
         }
-        
+
         // Check for beforeinstallprompt event
         setTimeout(() => {
             const newPwaInfo = pwaManager.getInstallationInfo();
@@ -172,19 +172,19 @@ const App = () => {
                             <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />
                             <Route path="/achievements" element={<AchievementSystem />} />
                             <Route path="/themes" element={<ThemePage />} />
-                            
+
                             {/* Phase 3: Social & Gamification Routes */}
                             <Route path="/friends" element={<FriendsSystem />} />
                             <Route path="/study-groups" element={<StudyGroups />} />
                             <Route path="/gamification" element={<GamificationHub />} />
-                            
+
                             {/* Phase 4: Next-Gen Features */}
                             <Route path="/ai-study-buddy" element={<AIStudyBuddy />} />
                             <Route path="/real-time-quiz" element={<RealTimeQuiz />} />
-                            
+
                             {/* Phase 5: Advanced Learning Path Engine */}
                             <Route path="/learning-paths" element={<LearningPathHub />} />
-                            
+
                             <Route path="/admin" element={<AdminDashboard />} />
                             <Route path="/admin/create" element={<AdminQuizzes />} />
                             <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />
@@ -203,7 +203,7 @@ const App = () => {
                             <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
                             <Route path="/leaderboard" element={<Leaderboard />} />
                             <Route path="/xp-leaderboard" element={<XPLeaderboard />} />
-                            
+
                             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                             <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                             <Route path="/refund-policy" element={<RefundPolicy />} />

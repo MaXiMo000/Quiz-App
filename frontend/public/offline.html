@@ -158,7 +158,7 @@
         <div class="offline-icon">📴</div>
         <h1>You're Offline</h1>
         <p>Don't worry! You can still access some QuizNest features while offline.</p>
-        
+
         <div class="features">
             <h3>Available Offline:</h3>
             <ul class="feature-list">
@@ -230,7 +230,7 @@
                     z-index: 1000;
                 `;
                 document.body.appendChild(status);
-                
+
                 setTimeout(() => {
                     location.reload();
                 }, 1500);
@@ -239,7 +239,7 @@
 
         // Listen for connection changes
         window.addEventListener('online', checkConnection);
-        
+
         // Check connection periodically
         setInterval(checkConnection, 5000);
 

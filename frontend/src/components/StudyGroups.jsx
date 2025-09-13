@@ -17,7 +17,7 @@ const QuizActivity = React.memo(({ activity, onTakeQuiz }) => {
     useEffect(() => {
         const fetchBasicQuizInfo = async () => {
             if (!activity.details?.quizId) return;
-            
+
             try {
                 const response = await axios.get(`/api/quizzes/${activity.details.quizId}`);
                 setQuizDetails(response.data);
@@ -100,7 +100,7 @@ const QuizActivity = React.memo(({ activity, onTakeQuiz }) => {
                                         </div>
                                     )}
                                 </div>
-                                
+
                                 {quizDetails.questions?.slice(0, 3).map((question, index) => (
                                     <div key={index} className="question-preview">
                                         <div className="question-text">
@@ -108,8 +108,8 @@ const QuizActivity = React.memo(({ activity, onTakeQuiz }) => {
                                         </div>
                                         <div className="answers-preview">
                                             {question.options?.map((option, optIndex) => (
-                                                <div 
-                                                    key={optIndex} 
+                                                <div
+                                                    key={optIndex}
                                                     className={`answer-option ${option === question.correctAnswer ? 'correct' : ''}`}
                                                 >
                                                     <span className="answer-label">
@@ -121,11 +121,11 @@ const QuizActivity = React.memo(({ activity, onTakeQuiz }) => {
                                         </div>
                                     </div>
                                 ))}
-                                
+
                                 {quizDetails.questions?.length > 3 && (
-                                    <div style={{ 
-                                        textAlign: 'center', 
-                                        color: 'var(--text-secondary)', 
+                                    <div style={{
+                                        textAlign: 'center',
+                                        color: 'var(--text-secondary)',
                                         fontSize: '0.85em',
                                         marginTop: '12px',
                                         fontStyle: 'italic'
@@ -143,15 +143,15 @@ const QuizActivity = React.memo(({ activity, onTakeQuiz }) => {
 });
 
 // Separate component to prevent re-renders
-const CreateGroupModal = React.memo(({ 
-    showCreateModal, 
-    setShowCreateModal, 
-    createForm, 
-    setCreateForm, 
-    categories, 
-    createGroup, 
-    addTag, 
-    removeTag 
+const CreateGroupModal = React.memo(({
+    showCreateModal,
+    setShowCreateModal,
+    createForm,
+    setCreateForm,
+    categories,
+    createGroup,
+    addTag,
+    removeTag
 }) => {
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
@@ -316,7 +316,7 @@ const CreateGroupModal = React.memo(({
 const GroupCard = React.memo(({ group, showJoin = false, showLeave = false, currentUserId, onViewDetails, onJoinGroup, onLeaveGroup, onOpenSettings }) => {
     // Ensure group and members exist
     if (!group) return null;
-    
+
     // Check if current user is admin of this group
     const userMember = group.members?.find(member => {
         const memberId = member.user?._id || member.user;
@@ -412,7 +412,7 @@ const GroupCard = React.memo(({ group, showJoin = false, showLeave = false, curr
 const StudyGroups = () => {
     const navigate = useNavigate();
     const { showSuccess, showError, notification, hideNotification } = useNotification();
-    
+
     // State declarations
     const [activeTab, setActiveTab] = useState('myGroups');
     const [myGroups, setMyGroups] = useState([]);
@@ -473,13 +473,13 @@ const StudyGroups = () => {
 
     const searchGroups = useCallback(async () => {
         if (activeTab !== 'browse') return; // Only search when on browse tab
-        
+
         setSearchLoading(true);
         try {
             const params = new URLSearchParams();
             if (searchQuery) params.append('query', searchQuery);
             if (selectedCategory) params.append('category', selectedCategory);
-            
+
             const response = await axios.get(`/api/study-groups/search?${params}`);
             setSearchResults(response.data.studyGroups || []);
         } catch (error) {
@@ -496,7 +496,7 @@ const StudyGroups = () => {
             const timeoutId = setTimeout(() => {
                 searchGroups();
             }, 300); // 300ms debounce
-            
+
             return () => clearTimeout(timeoutId);
         }
     }, [activeTab, searchQuery, selectedCategory, searchGroups]);
@@ -507,11 +507,11 @@ const StudyGroups = () => {
             // Ensure maxMembers is a valid number
             const formData = {
                 ...createForm,
-                maxMembers: typeof createForm.maxMembers === 'number' && !isNaN(createForm.maxMembers) 
-                    ? createForm.maxMembers 
+                maxMembers: typeof createForm.maxMembers === 'number' && !isNaN(createForm.maxMembers)
+                    ? createForm.maxMembers
                     : 50
             };
-            
+
             const response = await axios.post('/api/study-groups', formData);
             setMyGroups([response.data.studyGroup, ...myGroups]);
             setShowCreateModal(false);
@@ -585,12 +585,12 @@ const StudyGroups = () => {
 
     const handleGroupUpdate = (updatedGroup) => {
         // Update the group in myGroups list
-        setMyGroups(prev => 
-            prev.map(group => 
+        setMyGroups(prev =>
+            prev.map(group =>
                 group._id === updatedGroup._id ? updatedGroup : group
             )
         );
-        
+
         // Update selectedGroup if it's the same group
         if (selectedGroup?._id === updatedGroup._id) {
             setSelectedGroup(updatedGroup);
@@ -778,9 +778,9 @@ const StudyGroups = () => {
                                                 />
                                             );
                                         }
-                                        
+
                                         return (
-                                            <div key={`activity-${index}-${activity.timestamp || Date.now()}`} 
+                                            <div key={`activity-${index}-${activity.timestamp || Date.now()}`}
                                                  className="activity-item"
                                             >
                                                 <div className="activity-icon">
@@ -797,11 +797,11 @@ const StudyGroups = () => {
                                             </div>
                                         );
                                     })}
-                                    
+
                                     {(!selectedGroup.activities || selectedGroup.activities.length === 0) && (
-                                        <div style={{ 
-                                            textAlign: 'center', 
-                                            color: 'var(--text-secondary)', 
+                                        <div style={{
+                                            textAlign: 'center',
+                                            color: 'var(--text-secondary)',
                                             padding: '20px',
                                             fontSize: '0.9em'
                                         }}>
@@ -866,7 +866,7 @@ const StudyGroups = () => {
             )}
 
             {/* Modals should always be available */}
-            <CreateGroupModal 
+            <CreateGroupModal
                 showCreateModal={showCreateModal}
                 setShowCreateModal={setShowCreateModal}
                 createForm={createForm}
@@ -877,7 +877,7 @@ const StudyGroups = () => {
                 removeTag={removeTag}
             />
             <GroupDetailsModal />
-            <GroupSettingsModal 
+            <GroupSettingsModal
                 group={editingGroup}
                 isOpen={showSettingsModal}
                 onClose={() => {

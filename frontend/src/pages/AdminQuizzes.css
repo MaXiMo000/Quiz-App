@@ -21,13 +21,13 @@
 /* ✨ Ultra Beautiful Admin Container ✨ */
 .admin-quiz-container {
     min-height: 100vh;
-    background: 
+    background:
         radial-gradient(ellipse at top left, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
         radial-gradient(ellipse at top right, rgba(240, 147, 251, 0.12) 0%, transparent 50%),
         radial-gradient(ellipse at bottom left, rgba(79, 172, 254, 0.1) 0%, transparent 50%),
         radial-gradient(ellipse at bottom right, rgba(17, 153, 142, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg, 
-            rgba(15, 15, 35, 0.95) 0%, 
+        linear-gradient(135deg,
+            rgba(15, 15, 35, 0.95) 0%,
             rgba(26, 26, 46, 0.97) 25%,
             rgba(22, 33, 62, 0.95) 50%,
             rgba(30, 20, 60, 0.97) 75%,
@@ -41,13 +41,13 @@
 }
 
 @keyframes containerFadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(30px) scale(0.98); 
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -65,17 +65,17 @@
 }
 
 @keyframes adminHeaderGlow {
-    0%, 100% { 
-        background: var(--admin-gradient-gold); 
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); 
+    0%, 100% {
+        background: var(--admin-gradient-gold);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
     }
-    33% { 
-        background: var(--admin-gradient-1); 
-        box-shadow: 0 0 30px rgba(102, 126, 234, 0.6); 
+    33% {
+        background: var(--admin-gradient-1);
+        box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
     }
-    66% { 
-        background: var(--admin-gradient-2); 
-        box-shadow: 0 0 30px rgba(240, 147, 251, 0.6); 
+    66% {
+        background: var(--admin-gradient-2);
+        box-shadow: 0 0 30px rgba(240, 147, 251, 0.6);
     }
 }
 
@@ -170,7 +170,7 @@
     border-radius: 1.5rem;
     font-size: 1.2rem;
     font-weight: 600;
-    box-shadow: 
+    box-shadow:
         var(--admin-shadow-xl),
         0 0 50px rgba(239, 68, 68, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -180,13 +180,13 @@
 }
 
 @keyframes errorSlideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(30px) scale(0.9); 
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -630,7 +630,7 @@
         gap: 1.5rem;
         text-align: center;
     }
-    
+
     .quiz-list {
         grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     }

@@ -44,21 +44,21 @@ const IntelligenceDashboard = () => {
 
     if (loading) {
         return (
-            <motion.div 
+            <motion.div
                 className="intelligence-dashboard-container"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
                 <div className="loading-container">
-                    <motion.div 
+                    <motion.div
                         className="loading-spinner"
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                     >
                         <div className="spinner-ring"></div>
                     </motion.div>
-                    <motion.p 
+                    <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
@@ -73,21 +73,21 @@ const IntelligenceDashboard = () => {
 
     if (error) {
         return (
-            <motion.div 
+            <motion.div
                 className="intelligence-dashboard-container"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                <motion.div 
+                <motion.div
                     className="error-container"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3 }}
                 >
                     <p className="error-message">{error}</p>
-                    <button 
-                        onClick={() => window.location.reload()} 
+                    <button
+                        onClick={() => window.location.reload()}
                         className="retry-btn"
                     >
                         Try Again
@@ -98,14 +98,14 @@ const IntelligenceDashboard = () => {
     }
 
     return (
-        <motion.div 
+        <motion.div
             className="intelligence-dashboard-container"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
         >
             {/* Header Section */}
-            <motion.div 
+            <motion.div
                 className="dashboard-header"
                 initial={{ opacity: 0, y: -30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -165,7 +165,7 @@ const IntelligenceDashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <motion.div 
+            <motion.div
                 className="quick-actions"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -173,7 +173,7 @@ const IntelligenceDashboard = () => {
             >
                 <h3>Quick Actions</h3>
                 <div className="action-buttons">
-                    <motion.button 
+                    <motion.button
                         className="action-btn secondary"
                         onClick={() => navigate("/user/test")}
                         whileHover={{ scale: 1.05 }}
@@ -181,7 +181,7 @@ const IntelligenceDashboard = () => {
                     >
                         🎯 Take Smart Quiz
                     </motion.button>
-                    <motion.button 
+                    <motion.button
                         className="action-btn secondary"
                         onClick={() => navigate("/user/report")}
                         whileHover={{ scale: 1.05 }}
@@ -189,7 +189,7 @@ const IntelligenceDashboard = () => {
                     >
                         📊 View Reports
                     </motion.button>
-                    <motion.button 
+                    <motion.button
                         className="action-btn secondary"
                         onClick={() => navigate("/premium/quizzes")}
                         whileHover={{ scale: 1.05 }}
@@ -197,7 +197,7 @@ const IntelligenceDashboard = () => {
                     >
                         🌟 Premium Quizzes
                     </motion.button>
-                    <motion.button 
+                    <motion.button
                         className="action-btn secondary"
                         onClick={() => navigate("/")}
                         whileHover={{ scale: 1.05 }}

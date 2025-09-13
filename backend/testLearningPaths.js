@@ -13,7 +13,7 @@ const testConnection = async () => {
 
         // Test model creation
         console.log("🧪 Testing models...");
-        
+
         // Test that models are defined correctly
         console.log("LearningPath model:", !!LearningPath);
         console.log("UserPathProgress model:", !!UserPathProgress);
@@ -25,7 +25,7 @@ const testConnection = async () => {
         console.log(`📊 Learning paths in database: ${pathCount}`);
 
         console.log("✅ All models working correctly!");
-        
+
     } catch (error) {
         console.error("❌ Test failed:", error.message);
         console.error("Stack:", error.stack);

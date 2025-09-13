@@ -9,7 +9,7 @@ const MigrationPanel = () => {
     const runMigration = async () => {
         setLoading(true);
         setMigrationStatus('Starting migration...');
-        
+
         try {
             const response = await axios.post('/api/migrate/quiz-difficulty');
             setMigrationStatus(`✅ Migration completed! Updated ${response.data.updatedCount} quizzes.`);
@@ -25,15 +25,15 @@ const MigrationPanel = () => {
         <div className="migration-panel">
             <h3>🔧 Database Migrations</h3>
             <p>Run this once to update existing quizzes with Phase 2 features</p>
-            
-            <button 
-                onClick={runMigration} 
+
+            <button
+                onClick={runMigration}
                 disabled={loading}
                 className="migration-btn"
             >
                 {loading ? '⏳ Running Migration...' : '🚀 Update Quiz Difficulty Distribution'}
             </button>
-            
+
             {migrationStatus && (
                 <div className={`migration-status ${migrationStatus.includes('✅') ? 'success' : migrationStatus.includes('❌') ? 'error' : 'info'}`}>
                     {migrationStatus}

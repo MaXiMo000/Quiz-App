@@ -30,8 +30,8 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
     };
 
     const handleGroupToggle = (groupId) => {
-        setSelectedGroups(prev => 
-            prev.includes(groupId) 
+        setSelectedGroups(prev =>
+            prev.includes(groupId)
                 ? prev.filter(id => id !== groupId)
                 : [...prev, groupId]
         );
@@ -45,7 +45,7 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
 
         try {
             setSharing(true);
-            
+
             // Share with each selected group
             const sharePromises = selectedGroups.map(groupId =>
                 axios.post(`/api/study-groups/${groupId}/share-quiz`, {
@@ -55,16 +55,16 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
             );
 
             await Promise.all(sharePromises);
-            
+
             if (onShare) {
                 onShare(selectedGroups.length);
             }
-            
+
             // Reset form
             setSelectedGroups([]);
             setMessage('');
             onClose();
-            
+
         } catch (error) {
             console.error('Error sharing quiz:', error);
             alert('Failed to share quiz. Please try again.');
@@ -128,7 +128,7 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                             ) : userGroups.length === 0 ? (
                                 <div className="empty-state">
                                     <p>You're not a member of any study groups yet.</p>
-                                    <button 
+                                    <button
                                         className="create-group-btn"
                                         onClick={() => {
                                             onClose();
@@ -176,12 +176,12 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                         <button className="cancel-btn" onClick={onClose} disabled={sharing}>
                             Cancel
                         </button>
-                        <button 
-                            className="share-btn" 
+                        <button
+                            className="share-btn"
                             onClick={handleShare}
                             disabled={sharing || selectedGroups.length === 0}
                         >
-                            {sharing ? 'Sharing...' : 
+                            {sharing ? 'Sharing...' :
                              selectedGroups.length === 0 ? 'Select groups to share' :
                              `Share with ${selectedGroups.length} group${selectedGroups.length !== 1 ? 's' : ''}`}
                         </button>

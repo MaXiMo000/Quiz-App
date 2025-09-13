@@ -176,36 +176,36 @@
   .test-page {
     padding: var(--space-lg);
   }
-  
+
   .test-header {
     padding: var(--space-lg);
   }
-  
+
   .test-header h1 {
     font-size: 2rem;
   }
-  
+
   .test-grid {
     grid-template-columns: 1fr;
     gap: var(--space-lg);
   }
-  
+
   .test-card {
     margin: 0;
   }
-  
+
   .test-link {
     padding: var(--space-xl);
   }
-  
+
   .test-icon {
     font-size: 3rem;
   }
-  
+
   .test-info {
     padding: var(--space-xl);
   }
-  
+
   .test-info h2 {
     font-size: 1.5rem;
   }
@@ -215,19 +215,19 @@
   .test-page {
     padding: var(--space-md);
   }
-  
+
   .test-header {
     padding: var(--space-md);
   }
-  
+
   .test-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .test-link {
     padding: var(--space-lg);
   }
-  
+
   .test-info {
     padding: var(--space-lg);
   }

@@ -5,8 +5,8 @@ const learningNodeSchema = new mongoose.Schema({
     id: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String },
-    type: { 
-        type: String, 
+    type: {
+        type: String,
         enum: ["concept", "skill", "milestone", "assessment", "project"],
         default: "concept"
     },
@@ -36,7 +36,7 @@ const learningPathSchema = new mongoose.Schema({
     description: { type: String },
     category: { type: String, required: true },
     subject: { type: String, required: true },
-    
+
     // Path metadata
     level: {
         type: String,
@@ -45,10 +45,10 @@ const learningPathSchema = new mongoose.Schema({
     },
     estimatedDuration: { type: Number }, // total hours
     tags: [{ type: String }],
-    
+
     // Learning nodes and structure
     nodes: [learningNodeSchema],
-    
+
     // Learning objectives
     objectives: [{
         id: { type: String, required: true },
@@ -58,7 +58,7 @@ const learningPathSchema = new mongoose.Schema({
         targetScore: { type: Number, default: 80 }, // percentage
         priority: { type: Number, default: 1 } // 1-5 scale
     }],
-    
+
     // Path statistics
     stats: {
         totalLearners: { type: Number, default: 0 },
@@ -66,12 +66,12 @@ const learningPathSchema = new mongoose.Schema({
         averageRating: { type: Number, default: 0 },
         totalRatings: { type: Number, default: 0 }
     },
-    
+
     // Path settings
     isPublic: { type: Boolean, default: true },
     isActive: { type: Boolean, default: true },
     adaptiveEnabled: { type: Boolean, default: true },
-    
+
     // Creator info
     createdBy: {
         _id: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" },
@@ -83,7 +83,7 @@ const learningPathSchema = new mongoose.Schema({
 const userPathProgressSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz", required: true },
     learningPath: { type: mongoose.Schema.Types.ObjectId, ref: "LearningPath", required: true },
-    
+
     // Overall progress
     status: {
         type: String,
@@ -92,7 +92,7 @@ const userPathProgressSchema = new mongoose.Schema({
     },
     overallProgress: { type: Number, default: 0 }, // percentage
     timeSpent: { type: Number, default: 0 }, // minutes
-    
+
     // Node progress
     nodeProgress: [{
         nodeId: { type: String, required: true },
@@ -106,14 +106,14 @@ const userPathProgressSchema = new mongoose.Schema({
         attempts: { type: Number, default: 0 },
         bestScore: { type: Number, default: 0 },
         mastery: { type: Number, default: 0 }, // 0-100 mastery level
-        
+
         // Spaced repetition data
         nextReviewDate: { type: Date },
         reviewCount: { type: Number, default: 0 },
         easeFactor: { type: Number, default: 2.5 },
         interval: { type: Number, default: 1 } // days
     }],
-    
+
     // Objective progress
     objectiveProgress: [{
         objectiveId: { type: String, required: true },
@@ -121,7 +121,7 @@ const userPathProgressSchema = new mongoose.Schema({
         currentScore: { type: Number, default: 0 },
         completionDate: { type: Date }
     }],
-    
+
     // Learning analytics
     analytics: {
         strengths: [{ type: String }],
@@ -135,7 +135,7 @@ const userPathProgressSchema = new mongoose.Schema({
             breakFrequency: { type: Number, default: 15 } // minutes
         }
     },
-    
+
     // Adaptive recommendations
     recommendations: [{
         type: {
@@ -147,7 +147,7 @@ const userPathProgressSchema = new mongoose.Schema({
         expiresAt: { type: Date },
         acted: { type: Boolean, default: false }
     }],
-    
+
     // Path customization
     personalizedPath: [{
         nodeId: { type: String },
@@ -168,14 +168,14 @@ const competencySchema = new mongoose.Schema({
         default: "foundational"
     },
     prerequisites: [{ type: String }], // Other competency names
-    
+
     // Measurement criteria
     assessmentCriteria: [{
         criterion: { type: String, required: true },
         weight: { type: Number, default: 1 },
         measurableAction: { type: String }
     }],
-    
+
     // Related learning paths
     relatedPaths: [{ type: mongoose.Schema.Types.ObjectId, ref: "LearningPath" }]
 }, { timestamps: true });
@@ -184,12 +184,12 @@ const competencySchema = new mongoose.Schema({
 const userCompetencySchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz", required: true },
     competency: { type: mongoose.Schema.Types.ObjectId, ref: "Competency", required: true },
-    
+
     // Proficiency tracking
     currentLevel: { type: Number, default: 0 }, // 0-100 scale
     targetLevel: { type: Number, default: 80 },
     masteryDate: { type: Date },
-    
+
     // Evidence of competency
     evidence: [{
         type: {
@@ -201,7 +201,7 @@ const userCompetencySchema = new mongoose.Schema({
         date: { type: Date, default: Date.now },
         verified: { type: Boolean, default: false }
     }],
-    
+
     // Learning history
     learningHistory: [{
         activity: { type: String },

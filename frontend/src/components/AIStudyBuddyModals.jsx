@@ -15,7 +15,7 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.topic.trim()) return;
-        
+
         setIsLoading(true);
         try {
             await onSubmit(formData);
@@ -57,7 +57,7 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
                                 ×
                             </button>
                         </div>
-                        
+
                         <div className="ai-modal-body">
                             <form onSubmit={handleSubmit}>
                                 <div className="ai-form-group">
@@ -173,21 +173,21 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
                                 ×
                             </button>
                         </div>
-                        
+
                         <div className="ai-modal-body">
                             <div className="quiz-preview-content">
                                 <h3 style={{ margin: '0 0 15px 0', color: '#2d3748' }}>
                                     {quiz.title}
                                 </h3>
-                                <div style={{ 
-                                    display: 'flex', 
-                                    gap: '10px', 
+                                <div style={{
+                                    display: 'flex',
+                                    gap: '10px',
                                     marginBottom: '20px',
                                     flexWrap: 'wrap'
                                 }}>
-                                    <span style={{ 
-                                        background: 'rgba(102, 126, 234, 0.1)', 
-                                        padding: '4px 12px', 
+                                    <span style={{
+                                        background: 'rgba(102, 126, 234, 0.1)',
+                                        padding: '4px 12px',
                                         borderRadius: '15px',
                                         fontSize: '0.85rem',
                                         color: '#4a5568',
@@ -195,9 +195,9 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
                                     }}>
                                         {quiz.questionCount} questions
                                     </span>
-                                    <span style={{ 
-                                        background: 'rgba(118, 75, 162, 0.1)', 
-                                        padding: '4px 12px', 
+                                    <span style={{
+                                        background: 'rgba(118, 75, 162, 0.1)',
+                                        padding: '4px 12px',
                                         borderRadius: '15px',
                                         fontSize: '0.85rem',
                                         color: '#4a5568',
@@ -205,9 +205,9 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
                                     }}>
                                         {quiz.difficulty}
                                     </span>
-                                    <span style={{ 
-                                        background: 'rgba(72, 187, 120, 0.1)', 
-                                        padding: '4px 12px', 
+                                    <span style={{
+                                        background: 'rgba(72, 187, 120, 0.1)',
+                                        padding: '4px 12px',
                                         borderRadius: '15px',
                                         fontSize: '0.85rem',
                                         color: '#4a5568',
@@ -268,7 +268,7 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!concept.trim()) return;
-        
+
         setIsLoading(true);
         try {
             await onSubmit(concept);
@@ -306,7 +306,7 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
                                 ×
                             </button>
                         </div>
-                        
+
                         <div className="ai-modal-body">
                             <form onSubmit={handleSubmit}>
                                 <div className="ai-form-group">
@@ -358,7 +358,7 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!reminderText.trim()) return;
-        
+
         setIsLoading(true);
         try {
             await onSubmit(reminderText);
@@ -403,7 +403,7 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                                 ×
                             </button>
                         </div>
-                        
+
                         <div className="ai-modal-body">
                             <form onSubmit={handleSubmit}>
                                 <div className="ai-form-group">
@@ -507,11 +507,11 @@ export const ErrorModal = ({ isOpen, onClose, message, title = "Error" }) => {
                                 ×
                             </button>
                         </div>
-                        
+
                         <div className="ai-modal-body">
-                            <p style={{ 
-                                margin: '0 0 20px 0', 
-                                color: '#4a5568', 
+                            <p style={{
+                                margin: '0 0 20px 0',
+                                color: '#4a5568',
                                 lineHeight: '1.6',
                                 fontSize: '1rem'
                             }}>

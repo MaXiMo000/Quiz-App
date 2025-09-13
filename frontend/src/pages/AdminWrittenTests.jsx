@@ -78,13 +78,13 @@ const AdminWrittenTests = () => {
     // ✅ Create a new written test
     const createTest = useCallback(async (event) => {
         event.preventDefault();
-        
+
         try {
-            await axios.post('/api/written-tests/create', { 
-                title, 
-                category, 
-                duration, 
-                questions: [] 
+            await axios.post('/api/written-tests/create', {
+                title,
+                category,
+                duration,
+                questions: []
             });
             await fetchTests();
             setTitle("");
@@ -150,7 +150,7 @@ const AdminWrittenTests = () => {
     // ✅ Loading state with beautiful animation
     if (loading) {
         return (
-            <motion.div 
+            <motion.div
                 className="loading-container"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -165,14 +165,14 @@ const AdminWrittenTests = () => {
     // ✅ Error state with motion animation
     if (error) {
         return (
-            <motion.div 
+            <motion.div
                 className="error-container"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
             >
                 <p className="error-text">{error}</p>
-                <motion.button 
+                <motion.button
                     className="retry-btn"
                     onClick={() => {
                         setError("");
@@ -188,7 +188,7 @@ const AdminWrittenTests = () => {
     }
 
     return (
-        <motion.div 
+        <motion.div
             className="admin-quiz-container main-content"
             variants={containerVariants}
             initial="hidden"
@@ -196,8 +196,8 @@ const AdminWrittenTests = () => {
         >
             <motion.div className="quiz-header" variants={itemVariants}>
                 <h2>✍️ Manage Written Tests</h2>
-                <motion.button 
-                    className="create-btn" 
+                <motion.button
+                    className="create-btn"
                     onClick={() => setShowCreateModal(true)}
                     whileHover={{ scale: 1.05, backgroundColor: "#4f46e5" }}
                     whileTap={{ scale: 0.95 }}
@@ -211,27 +211,27 @@ const AdminWrittenTests = () => {
             <motion.div className="quiz-list" variants={itemVariants}>
                 <AnimatePresence>
                     {tests.map((test, index) => (
-                        <motion.div 
-                            key={test._id} 
+                        <motion.div
+                            key={test._id}
                             className="quiz-box"
                             variants={itemVariants}
                             initial="hidden"
                             animate="visible"
                             exit="hidden"
                             transition={{ delay: index * 0.1 }}
-                            whileHover={{ 
-                                scale: 1.02, 
-                                boxShadow: "0 10px 30px rgba(99, 102, 241, 0.2)" 
+                            whileHover={{
+                                scale: 1.02,
+                                boxShadow: "0 10px 30px rgba(99, 102, 241, 0.2)"
                             }}
                         >
                             <h3>{test.title}</h3>
                             <p>Category: {test.category}</p>
                             <p>Duration: {test.duration} minutes</p>
                             <p>Total Questions: {test.questions.length}</p>
-                            
+
                             <div className="quiz-actions">
-                                <motion.button 
-                                    className="delete-btn" 
+                                <motion.button
+                                    className="delete-btn"
                                     onClick={() => deleteQuiz(test.title)}
                                     disabled={deletingTitle === test.title}
                                     whileHover={{ scale: 1.05, backgroundColor: "#ef4444" }}
@@ -240,9 +240,9 @@ const AdminWrittenTests = () => {
                                 >
                                     {deletingTitle === test.title ? "Deleting..." : "🗑️ Delete"}
                                 </motion.button>
-                                
-                                <motion.button 
-                                    className="add-question-btn" 
+
+                                <motion.button
+                                    className="add-question-btn"
                                     onClick={() => openAddQuestionModal(test._id)}
                                     whileHover={{ scale: 1.05, backgroundColor: "#10b981" }}
                                     whileTap={{ scale: 0.95 }}
@@ -250,9 +250,9 @@ const AdminWrittenTests = () => {
                                 >
                                     ➕ Add Question
                                 </motion.button>
-                                
-                                <motion.button 
-                                    className="view-questions-btn" 
+
+                                <motion.button
+                                    className="view-questions-btn"
                                     onClick={() => navigate(`/admin/written-test/question/${test._id}`)}
                                     whileHover={{ scale: 1.05, backgroundColor: "#8b5cf6" }}
                                     whileTap={{ scale: 0.95 }}
@@ -261,15 +261,15 @@ const AdminWrittenTests = () => {
                                     📜 View Questions
                                 </motion.button>
                             </div>
-                            
-                            <motion.ul 
+
+                            <motion.ul
                                 className="display-ans"
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 transition={{ delay: 0.3 }}
                             >
                                 {test.questions.map((q, i) => (
-                                    <motion.li 
+                                    <motion.li
                                         key={i}
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
@@ -288,14 +288,14 @@ const AdminWrittenTests = () => {
             {/* ✅ Create Test Modal with motion */}
             <AnimatePresence>
                 {showCreateModal && (
-                    <motion.div 
+                    <motion.div
                         className="modal-backdrop"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setShowCreateModal(false)}
                     >
-                        <motion.div 
+                        <motion.div
                             className="modal-box"
                             variants={modalVariants}
                             initial="hidden"
@@ -304,9 +304,9 @@ const AdminWrittenTests = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <form onSubmit={createTest}>
-                                <motion.button 
+                                <motion.button
                                     type="button"
-                                    className="close-btn" 
+                                    className="close-btn"
                                     onClick={() => setShowCreateModal(false)}
                                     whileHover={{ scale: 1.1, rotate: 90 }}
                                     transition={{ duration: 0.2 }}
@@ -314,38 +314,38 @@ const AdminWrittenTests = () => {
                                     ✕
                                 </motion.button>
                                 <h3 className="modal-title">Create Written Test</h3>
-                                <motion.input 
-                                    type="text" 
-                                    name="title" 
-                                    placeholder="Enter Test Title" 
-                                    value={title} 
-                                    onChange={(e) => setTitle(e.target.value)} 
-                                    required 
+                                <motion.input
+                                    type="text"
+                                    name="title"
+                                    placeholder="Enter Test Title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
                                 />
-                                <motion.input 
-                                    type="text" 
-                                    name="category" 
-                                    placeholder="Enter Test Category" 
-                                    value={category} 
-                                    onChange={(e) => setCategory(e.target.value)} 
-                                    required 
+                                <motion.input
+                                    type="text"
+                                    name="category"
+                                    placeholder="Enter Test Category"
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
                                 />
-                                <motion.input 
-                                    type="number" 
-                                    name="duration" 
-                                    placeholder="Duration (minutes)" 
-                                    value={duration} 
-                                    onChange={(e) => setDuration(parseInt(e.target.value) || 30)} 
-                                    required 
+                                <motion.input
+                                    type="number"
+                                    name="duration"
+                                    placeholder="Duration (minutes)"
+                                    value={duration}
+                                    onChange={(e) => setDuration(parseInt(e.target.value) || 30)}
+                                    required
                                     min="1"
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
                                 />
-                                <motion.button 
+                                <motion.button
                                     className="submit-btn"
                                     type="submit"
                                     whileHover={{ scale: 1.05, backgroundColor: "#4f46e5" }}
@@ -363,14 +363,14 @@ const AdminWrittenTests = () => {
             {/* ✅ Add Question Modal with motion */}
             <AnimatePresence>
                 {showQuestionModal && (
-                    <motion.div 
+                    <motion.div
                         className="modal-backdrop"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setShowQuestionModal(false)}
                     >
-                        <motion.div 
+                        <motion.div
                             className="modal-box"
                             variants={modalVariants}
                             initial="hidden"
@@ -379,9 +379,9 @@ const AdminWrittenTests = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <form onSubmit={addQuestion}>
-                                <motion.button 
+                                <motion.button
                                     type="button"
-                                    className="close-btn" 
+                                    className="close-btn"
                                     onClick={() => setShowQuestionModal(false)}
                                     whileHover={{ scale: 1.1, rotate: 90 }}
                                     transition={{ duration: 0.2 }}
@@ -389,26 +389,26 @@ const AdminWrittenTests = () => {
                                     ✕
                                 </motion.button>
                                 <h3 className="modal-title">Add Question</h3>
-                                <motion.textarea 
-                                    name="question" 
-                                    placeholder="Enter Question" 
-                                    value={newQuestion} 
-                                    onChange={(e) => setNewQuestion(e.target.value)} 
-                                    required 
+                                <motion.textarea
+                                    name="question"
+                                    placeholder="Enter Question"
+                                    value={newQuestion}
+                                    onChange={(e) => setNewQuestion(e.target.value)}
+                                    required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
                                 />
-                                <motion.input 
-                                    type="number" 
-                                    name="marks" 
-                                    placeholder="Marks" 
-                                    value={newMarks} 
-                                    onChange={(e) => setNewMarks(e.target.value)} 
-                                    required 
+                                <motion.input
+                                    type="number"
+                                    name="marks"
+                                    placeholder="Marks"
+                                    value={newMarks}
+                                    onChange={(e) => setNewMarks(e.target.value)}
+                                    required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
                                 />
-                                <motion.button 
+                                <motion.button
                                     className="submit-btn"
                                     type="submit"
                                     whileHover={{ scale: 1.05, backgroundColor: "#4f46e5" }}

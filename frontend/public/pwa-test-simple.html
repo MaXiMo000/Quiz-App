@@ -87,7 +87,7 @@
 <body>
     <div class="container">
         <h1>🔧 PWA Installation Test</h1>
-        
+
         <div class="status-card success">
             <h2>✅ Current Status</h2>
             <div id="status-info">Loading...</div>
@@ -110,13 +110,13 @@
                     <li>If you see it, click it and then click <strong>Install</strong></li>
                     <li>If not visible, click <strong>⋮ Menu</strong> → <strong>Install Quiz Master...</strong></li>
                 </ol>
-                
+
                 <h3>🟦 For Edge Users:</h3>
                 <ol>
                     <li>Look in the address bar for a <strong>📱 Install app</strong> icon</li>
                     <li>Or click <strong>⋯ Menu</strong> → <strong>Apps</strong> → <strong>Install this site as an app</strong></li>
                 </ol>
-                
+
                 <button class="btn" onclick="showDetailedInstructions()">📖 Show Detailed Instructions</button>
             </div>
         </div>
@@ -149,26 +149,26 @@
 
     <script>
         let consoleDiv = document.getElementById('console');
-        
+
         // Simple PWA Manager for testing
         class SimplePWAManager {
             constructor() {
                 this.installPrompt = null;
                 this.setupEventListeners();
             }
-            
+
             setupEventListeners() {
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     this.installPrompt = e;
                     log('🎯 Install prompt captured!');
                 });
-                
+
                 window.addEventListener('appinstalled', () => {
                     log('🎉 PWA installed successfully!');
                 });
             }
-            
+
             async promptInstall() {
                 if (this.installPrompt) {
                     const result = await this.installPrompt.prompt();
@@ -180,20 +180,20 @@
                     return false;
                 }
             }
-            
+
             showBrowserSpecificInstructions() {
                 const userAgent = navigator.userAgent;
                 let browser = 'Unknown';
-                
+
                 if (userAgent.includes('Chrome') && !userAgent.includes('Edge')) {
                     browser = 'Chrome';
                 } else if (userAgent.includes('Edge')) {
                     browser = 'Edge';
                 }
-                
+
                 showBrowserInstructions(browser);
             }
-            
+
             getInstallationInfo() {
                 return {
                     isInstalled: window.matchMedia('(display-mode: standalone)').matches,
@@ -204,10 +204,10 @@
                 };
             }
         }
-        
+
         // Initialize PWA Manager
         window.pwaManager = new SimplePWAManager();
-        
+
         function log(message) {
             const timestamp = new Date().toLocaleTimeString();
             consoleDiv.textContent += `[${timestamp}] ${message}\n`;
@@ -223,7 +223,7 @@
             localStorage.clear();
             sessionStorage.clear();
             log('🗑️ All local data cleared');
-            
+
             if ('caches' in window) {
                 caches.keys().then(names => {
                     names.forEach(name => {
@@ -232,7 +232,7 @@
                 });
                 log('🗑️ All caches cleared');
             }
-            
+
             setTimeout(() => {
                 log('🔄 Reloading page...');
                 window.location.reload();
@@ -241,19 +241,19 @@
 
         function testBasicPWA() {
             log('🔍 Testing basic PWA requirements...');
-            
+
             const tests = {
                 serviceWorker: 'serviceWorker' in navigator,
                 manifest: !!document.querySelector('link[rel="manifest"]'),
                 https: location.protocol === 'https:' || location.hostname === 'localhost',
                 standalone: window.matchMedia('(display-mode: standalone)').matches
             };
-            
+
             log(`✅ Service Worker: ${tests.serviceWorker ? 'Available' : 'Missing'}`);
             log(`✅ Manifest: ${tests.manifest ? 'Found' : 'Missing'}`);
             log(`✅ Secure Context: ${tests.https ? 'Yes' : 'No'}`);
             log(`📱 Standalone Mode: ${tests.standalone ? 'Yes' : 'No'}`);
-            
+
             if (tests.serviceWorker && tests.manifest && tests.https) {
                 log('🎉 Basic PWA requirements met!');
             } else {
@@ -263,11 +263,11 @@
 
         function testInstallPrompt() {
             log('🧪 Testing install prompt...');
-            
+
             if (window.pwaManager) {
                 const status = window.pwaManager.getInstallationInfo();
                 log(`📱 PWA Status: ${JSON.stringify(status, null, 2)}`);
-                
+
                 if (status.canInstall) {
                     log('✅ Install prompt available, triggering...');
                     window.pwaManager.promptInstall();
@@ -282,10 +282,10 @@
 
         function testBrowserInstall() {
             log('🌐 Testing browser-specific install...');
-            
+
             const userAgent = navigator.userAgent;
             let browser = 'Unknown';
-            
+
             if (userAgent.includes('Chrome') && !userAgent.includes('Edge')) {
                 browser = 'Chrome';
             } else if (userAgent.includes('Edge')) {
@@ -295,9 +295,9 @@
             } else if (userAgent.includes('Firefox')) {
                 browser = 'Firefox';
             }
-            
+
             log(`🌐 Detected browser: ${browser}`);
-            
+
             if (window.pwaManager && window.pwaManager.showBrowserSpecificInstructions) {
                 log('📱 Showing browser-specific install instructions...');
                 window.pwaManager.showBrowserSpecificInstructions();
@@ -308,7 +308,7 @@
 
         function showBrowserInstructions(browser) {
             let content = '';
-            
+
             switch(browser) {
                 case 'Chrome':
                     content = `
@@ -346,7 +346,7 @@
                         <p>Look for install options in your browser menu or address bar.</p>
                     `;
             }
-            
+
             showModal(content);
         }
 
@@ -355,21 +355,21 @@
                 <h3>📋 Complete Installation Guide</h3>
                 <p><strong>The PWA install button is working correctly!</strong></p>
                 <p>When you click it, you get browser-specific instructions because that's the most reliable way to install PWAs.</p>
-                
+
                 <h4>Why this happens:</h4>
                 <ul>
                     <li>Browser controls when native prompts appear</li>
                     <li>Requires user engagement over time</li>
                     <li>May be disabled if previously dismissed</li>
                 </ul>
-                
+
                 <h4>Manual install always works:</h4>
                 <ul>
                     <li><strong>Chrome:</strong> Address bar install icon or menu</li>
                     <li><strong>Edge:</strong> Address bar install icon or Apps menu</li>
                     <li><strong>Safari:</strong> Share → Add to Home Screen</li>
                 </ul>
-                
+
                 <p><a href="/pwa-install-guide.html" target="_blank">📋 View Complete Guide</a></p>
             `;
             showModal(content);
@@ -387,40 +387,40 @@
         // Initialize
         window.addEventListener('load', async () => {
             log('🚀 PWA Installation Test loaded');
-            
+
             // Register service worker
             if ('serviceWorker' in navigator) {
                 try {
                     const registration = await navigator.serviceWorker.register('/sw.js');
                     log('✅ Service Worker registered successfully');
-                    
+
                     // Wait for service worker to be ready
                     await registration.ready;
                     log('🎯 Service Worker is ready');
-                    
+
                     // Force PWA installability check after SW is ready
                     setTimeout(() => {
                         log('🔍 Checking for PWA installability...');
                         testBasicPWA();
                     }, 2000);
-                    
+
                 } catch (error) {
                     log(`❌ Service Worker registration failed: ${error.message}`);
                 }
             }
-            
+
             // Update status
             const statusDiv = document.getElementById('status-info');
             statusDiv.innerHTML = `
-                <strong>Browser:</strong> ${navigator.userAgent.includes('Chrome') ? 'Chrome' : 
-                                         navigator.userAgent.includes('Edge') ? 'Edge' : 
-                                         navigator.userAgent.includes('Safari') ? 'Safari' : 
+                <strong>Browser:</strong> ${navigator.userAgent.includes('Chrome') ? 'Chrome' :
+                                         navigator.userAgent.includes('Edge') ? 'Edge' :
+                                         navigator.userAgent.includes('Safari') ? 'Safari' :
                                          navigator.userAgent.includes('Firefox') ? 'Firefox' : 'Other'}<br>
                 <strong>URL:</strong> ${window.location.href}<br>
                 <strong>Protocol:</strong> ${window.location.protocol}<br>
                 <strong>PWA Manager:</strong> ${window.pwaManager ? 'Available' : 'Not Found'}
             `;
-            
+
             testBasicPWA();
         });
 

@@ -1,7 +1,7 @@
 import express from "express";
-import { 
-    getSmartRecommendations, 
-    getAdaptiveDifficulty, 
+import {
+    getSmartRecommendations,
+    getAdaptiveDifficulty,
     getLearningAnalytics,
     updateUserPreferences,
     trackUserPerformance

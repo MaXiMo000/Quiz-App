@@ -22,7 +22,7 @@ export default function UserReportsCheck() {
                 setLoading(false);
                 return;
             }
-            
+
             const res = await axios.get(`/api/reports/${id}`);
             setReport(res.data);
             setError("");
@@ -73,14 +73,14 @@ export default function UserReportsCheck() {
             {loading ? (
                 <Spinner message="Loading report..." />
             ) : error ? (
-                <motion.div 
+                <motion.div
                     className="error-container"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     key="error"
                 >
                     <p className="error-message">{error}</p>
-                    <motion.button 
+                    <motion.button
                         className="back-btn"
                         onClick={() => navigate("/user/report")}
                         whileHover={{ scale: 1.05 }}
@@ -90,14 +90,14 @@ export default function UserReportsCheck() {
                     </motion.button>
                 </motion.div>
             ) : !report ? (
-                <motion.div 
+                <motion.div
                     className="error-container"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     key="not-found"
                 >
                     <p className="error-message">Report not found</p>
-                    <motion.button 
+                    <motion.button
                         className="back-btn"
                         onClick={() => navigate("/user/report")}
                         whileHover={{ scale: 1.05 }}
@@ -107,7 +107,7 @@ export default function UserReportsCheck() {
                     </motion.button>
                 </motion.div>
             ) : (
-                <motion.div 
+                <motion.div
                     className="report-container main-content"
                     initial="hidden"
                     animate="visible"
@@ -115,7 +115,7 @@ export default function UserReportsCheck() {
                     key="report-content"
                 >
                     <motion.div className="report-header" variants={itemVariants}>
-                        <motion.button 
+                        <motion.button
                             className="back-btn"
                             onClick={() => navigate("/user/report")}
                             whileHover={{ scale: 1.05, x: -5 }}
@@ -123,21 +123,21 @@ export default function UserReportsCheck() {
                         >
                             🔙 Back to Reports
                         </motion.button>
-                        
-                        <motion.h2 
+
+                        <motion.h2
                             whileHover={{ scale: 1.02 }}
                         >
                             📄 Quiz Report: {report.quizName}
                         </motion.h2>
-                        
-                        <motion.div 
+
+                        <motion.div
                             className="score-summary"
                             whileHover={{ scale: 1.05 }}
                         >
                             <p className="score">
                                 Score: <strong>{Math.round(report.score)}</strong> / {report.total}
                             </p>
-                            <motion.div 
+                            <motion.div
                                 className={`result-badge ${report.score >= report.total * 0.5 ? 'passed' : 'failed'}`}
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
@@ -151,24 +151,24 @@ export default function UserReportsCheck() {
                     <motion.div className="question-list" variants={itemVariants}>
                         <AnimatePresence>
                             {report.questions.map((q, i) => (
-                                <motion.div 
+                                <motion.div
                                     key={`question-${i}`}
                                     className={`question-box ${q.userAnswer===q.correctAnswer?"correct":"wrong"}`}
                                     variants={questionVariants}
                                     layout
-                                    whileHover={{ 
+                                    whileHover={{
                                         scale: 1.01,
                                         boxShadow: "0 10px 40px rgba(99, 102, 241, 0.1)"
                                     }}
                                 >
-                                    <motion.h3 
+                                    <motion.h3
                                         whileHover={{ color: "#6366f1" }}
                                         transition={{ duration: 0.2 }}
                                     >
                                         Q{i+1}: {q.questionText}
                                     </motion.h3>
 
-                                    <motion.ul 
+                                    <motion.ul
                                         className="options-list"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
@@ -179,13 +179,13 @@ export default function UserReportsCheck() {
                                             const isUser    = letter === q.userAnswer;
                                             const isCorrect = letter === q.correctAnswer;
                                             return (
-                                                <motion.li 
+                                                <motion.li
                                                     key={idx}
                                                     className={`${isCorrect?"correct-option":""} ${isUser?"your-option":""}`}
                                                     initial={{ x: -20, opacity: 0 }}
                                                     animate={{ x: 0, opacity: 1 }}
                                                     transition={{ delay: 0.1 * idx }}
-                                                    whileHover={{ 
+                                                    whileHover={{
                                                         x: 5,
                                                         backgroundColor: isCorrect ? "rgba(34, 197, 94, 0.1)" : isUser ? "rgba(239, 68, 68, 0.1)" : "rgba(99, 102, 241, 0.05)"
                                                     }}
@@ -198,7 +198,7 @@ export default function UserReportsCheck() {
                                         })}
                                     </motion.ul>
 
-                                    <motion.div 
+                                    <motion.div
                                         className="answer-summary"
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}

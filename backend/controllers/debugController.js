@@ -7,7 +7,7 @@ export const debugUserXP = async (req, res) => {
     logger.info(`Debugging XP for user ${req.params.userId}`);
     try {
         const { userId } = req.params;
-        
+
         // Get user data
         const user = await UserQuiz.findById(userId);
         if (!user) {
@@ -61,7 +61,7 @@ export const resetUserXP = async (req, res) => {
     logger.warn(`Attempting to reset XP for user ${req.params.userId}`);
     try {
         const { userId } = req.params;
-        
+
         const user = await UserQuiz.findById(userId);
         if (!user) {
             logger.error(`User not found with ID: ${userId} for XP reset`);
@@ -136,7 +136,7 @@ export const fixGoogleOAuthUsers = async (req, res) => {
         }
 
         logger.info(`Fixed ${fixedCount} Google OAuth users successfully`);
-        res.json({ 
+        res.json({
             message: `Fixed ${fixedCount} users successfully`,
             totalFound: usersToFix.length,
             fixedUsers: usersToFix.map(u => ({ name: u.name, email: u.email }))

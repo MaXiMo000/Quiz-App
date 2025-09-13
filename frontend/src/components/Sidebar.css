@@ -5,8 +5,8 @@
     left: 0;
     width: 280px;
     height: 100vh;
-    background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.1) 0%, 
+    background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.1) 0%,
         rgba(255, 255, 255, 0.05) 100%);
     backdrop-filter: blur(20px);
     border-right: 1px solid rgba(255, 255, 255, 0.2);
@@ -25,8 +25,8 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, 
-        var(--primary-color, #8B4513), 
+    background: linear-gradient(180deg,
+        var(--primary-color, #8B4513),
         var(--accent-color, #D2B48C),
         var(--primary-color, #8B4513));
     background-size: 100% 200%;
@@ -55,8 +55,8 @@
     transform: translateX(-50%);
     width: 80px;
     height: 2px;
-    background: linear-gradient(90deg, 
-        var(--primary-color, #8B4513), 
+    background: linear-gradient(90deg,
+        var(--primary-color, #8B4513),
         var(--accent-color, #D2B48C));
     border-radius: 1px;
 }
@@ -64,8 +64,8 @@
 .sidebar-title {
     font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, 
-        var(--primary-color, #8B4513), 
+    background: linear-gradient(135deg,
+        var(--primary-color, #8B4513),
         var(--accent-color, #D2B48C));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -92,8 +92,8 @@
     font-size: 0.9rem;
     color: var(--text-secondary, #666);
     padding: 0.3rem 0.8rem;
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.1), 
+    background: linear-gradient(135deg,
+        rgba(139, 69, 19, 0.1),
         rgba(210, 180, 140, 0.1));
     border-radius: 15px;
     border: 1px solid rgba(139, 69, 19, 0.2);
@@ -151,9 +151,9 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(139, 69, 19, 0.1), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(139, 69, 19, 0.1),
         transparent);
     transition: left 0.5s ease;
 }
@@ -170,8 +170,8 @@
 }
 
 .nav-link.active {
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.15), 
+    background: linear-gradient(135deg,
+        rgba(139, 69, 19, 0.15),
         rgba(210, 180, 140, 0.15));
     color: var(--primary-color, #8B4513);
     border: 1px solid rgba(139, 69, 19, 0.2);
@@ -224,8 +224,8 @@
 }
 
 .role-btn.active {
-    background: linear-gradient(135deg, 
-        var(--primary-color, #8B4513), 
+    background: linear-gradient(135deg,
+        var(--primary-color, #8B4513),
         var(--accent-color, #D2B48C));
     color: white;
     border-color: var(--primary-color, #8B4513);
@@ -254,9 +254,9 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
         transparent);
     transition: left 0.5s ease;
 }
@@ -298,20 +298,20 @@
     .sidebar-toggle {
         display: block;
     }
-    
+
     .sidebar {
         transform: translateX(-100%);
         width: 100%;
         max-width: 280px;
     }
-    
+
     .sidebar.open {
         transform: translateX(0);
         z-index: 1201;
         box-shadow: 0 0 24px rgba(0,0,0,0.18);
         padding-bottom: 72px;
     }
-    
+
     .sidebar-overlay {
         position: fixed;
         top: 0;
@@ -324,7 +324,7 @@
         visibility: hidden;
         transition: all 0.3s ease;
     }
-    
+
     .sidebar-overlay.active {
         opacity: 1;
         visibility: visible;
@@ -336,20 +336,20 @@
         width: 100%;
         padding: 1.5rem 0;
     }
-    
+
     .sidebar-header {
         padding: 0 1.5rem 1.5rem;
     }
-    
+
     .sidebar-nav {
         padding: 0 0.8rem;
     }
-    
+
     .nav-link {
         padding: 0.8rem 1rem;
         font-size: 0.9rem;
     }
-    
+
     .role-toggle {
         padding: 1rem 1.5rem;
     }
@@ -465,8 +465,8 @@
 
 /* ✅ Premium Dashboard Link Styling */
 .sidebar a.premium-dashboard {
-    background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.1), 
+    background: linear-gradient(135deg,
+        rgba(255, 215, 0, 0.1),
         rgba(255, 193, 7, 0.05));
     border: 1px solid rgba(255, 215, 0, 0.3);
     color: #FFD700;
@@ -490,8 +490,8 @@
 }
 
 .sidebar a.premium-dashboard:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.2), 
+    background: linear-gradient(135deg,
+        rgba(255, 215, 0, 0.2),
         rgba(255, 193, 7, 0.1));
     border-color: #FFD700;
     color: #FFF;
@@ -505,11 +505,11 @@
 }
 
 @keyframes sparkle {
-    0%, 100% { 
+    0%, 100% {
         transform: scale(1) rotate(0deg);
         opacity: 0.7;
     }
-    50% { 
+    50% {
         transform: scale(1.2) rotate(180deg);
         opacity: 1;
     }
@@ -517,8 +517,8 @@
 
 /* ✅ Intelligence Dashboard Link Styling - Special Premium Feature */
 .sidebar a.intelligence-link {
-    background: linear-gradient(135deg, 
-        rgba(79, 70, 229, 0.15), 
+    background: linear-gradient(135deg,
+        rgba(79, 70, 229, 0.15),
         rgba(147, 51, 234, 0.1)) !important;
     border: 1px solid rgba(79, 70, 229, 0.4) !important;
     color: #6366f1 !important;
@@ -542,8 +542,8 @@
 }
 
 .sidebar a.intelligence-link:hover {
-    background: linear-gradient(135deg, 
-        rgba(79, 70, 229, 0.25), 
+    background: linear-gradient(135deg,
+        rgba(79, 70, 229, 0.25),
         rgba(147, 51, 234, 0.15)) !important;
     border-color: #6366f1 !important;
     color: #FFF !important;
@@ -557,7 +557,7 @@
 }
 
 @keyframes intelligenceGlow {
-    0%, 100% { 
+    0%, 100% {
         transform: scale(1) rotate(0deg);
         opacity: 0.8;
         filter: hue-rotate(0deg);
@@ -718,7 +718,7 @@
     .sidebar-toggle {
         display: none;
     }
-    
+
     .sidebar {
         transform: translateX(-100%);
         width: 300px;
@@ -884,11 +884,11 @@
         top: 0 !important;
         z-index: 1000 !important;
     }
-    
+
     .sidebar-toggle {
         display: none !important;
     }
-    
+
     .close-btn-sidebar {
         display: none !important;
     }

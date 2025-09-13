@@ -12,7 +12,7 @@ const SmartRecommendations = ({ user }) => {
     useEffect(() => {
         const fetchRecommendations = async () => {
             if (!user?._id) return;
-            
+
             try {
                 setLoading(true);
                 const response = await axios.get('/api/intelligence/recommendations');
@@ -84,7 +84,7 @@ const SmartRecommendations = ({ user }) => {
 
     return (
         <div className="smart-recommendations">
-            
+
             <div className="recommendations-header">
                 <h3>🎯 Smart Recommendations</h3>
                 {userProfile && (
@@ -116,7 +116,7 @@ const SmartRecommendations = ({ user }) => {
                                 <h4>{rec.quiz.title}</h4>
                                 <span className="quiz-category">{rec.quiz.category}</span>
                             </div>
-                            <div 
+                            <div
                                 className="reason-icon"
                                 title={rec.reason.replace(/_/g, ' ')}
                             >
@@ -148,7 +148,7 @@ const SmartRecommendations = ({ user }) => {
                         </div>
 
                         <div className="recommendation-footer">
-                            <div 
+                            <div
                                 className="confidence-badge"
                                 style={{ backgroundColor: getConfidenceColor(rec.confidence) }}
                             >
@@ -177,7 +177,7 @@ const SmartRecommendations = ({ user }) => {
                                 </div>
                             </div>
                         )}
-                        
+
                         {userProfile.weakAreas?.length > 0 && (
                             <div className="weak-areas">
                                 <h4>📚 Areas to Improve</h4>

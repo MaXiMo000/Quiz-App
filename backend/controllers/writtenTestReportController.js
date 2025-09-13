@@ -70,23 +70,23 @@ export const deleteWrittenTestReport = async (req, res) => {
     logger.info(`Attempting to delete written test report with ID: ${req.params.id}`);
     try {
             const { id } = req.params;
-    
+
             if (!id) {
                 logger.warn("Report ID is required for deletion");
                 return res.status(400).json({ message: "Report ID is required" });
             }
-    
+
             const reportItem = await WrittenTestReport.findById(id);
-    
+
             if (!reportItem) {
                 logger.warn(`Written test report not found for deletion with ID: ${id}`);
                 return res.status(404).json({ message: "Report not found" });
             }
-    
+
             await WrittenTestReport.findByIdAndDelete(id);
             logger.info(`Written test report with ID ${id} deleted successfully`);
             return res.status(200).json({ message: "Report deleted successfully!" });
-    
+
         } catch (error) {
             logger.error({ message: `Error deleting written test report with ID: ${req.params.id}`, error: error.message, stack: error.stack });
             res.status(500).json({ message: "Error deleting Report", error: error.message });

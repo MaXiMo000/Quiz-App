@@ -15,17 +15,17 @@ const AchievementSystem = ({ _userId }) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Get user data from localStorage
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
       const userId = userData._id;
-      
+
       if (!userId) {
         throw new Error('User not found. Please log in again.');
       }
 
       const response = await axios.get(`/api/achievements/${userId}`);
-      
+
       if (response.data && response.status === 200) {
         setAchievements({
           unlocked: response.data.unlocked || [],
@@ -39,7 +39,7 @@ const AchievementSystem = ({ _userId }) => {
     } catch (error) {
       console.error('Error fetching achievements:', error);
       setError(error.message);
-      
+
       // Set empty state on error instead of mock data
       setAchievements({
         unlocked: [],
@@ -95,19 +95,19 @@ const AchievementSystem = ({ _userId }) => {
 
   const getRarityStyle = (rarity) => {
     const styles = {
-      common: { 
+      common: {
         border: '2px solid #9ca3af',
         glow: '0 0 15px rgba(156, 163, 175, 0.3)'
       },
-      rare: { 
+      rare: {
         border: '2px solid #3b82f6',
         glow: '0 0 15px rgba(59, 130, 246, 0.4)'
       },
-      epic: { 
+      epic: {
         border: '2px solid #8b5cf6',
         glow: '0 0 15px rgba(139, 92, 246, 0.4)'
       },
-      legendary: { 
+      legendary: {
         border: '2px solid #f59e0b',
         glow: '0 0 20px rgba(245, 158, 11, 0.6)'
       }
@@ -123,7 +123,7 @@ const AchievementSystem = ({ _userId }) => {
   });
 
   const getCompletionPercentage = () => {
-    return allAchievements.length > 0 
+    return allAchievements.length > 0
       ? Math.round((achievements.unlocked.length / allAchievements.length) * 100)
       : 0;
   };
@@ -136,8 +136,8 @@ const AchievementSystem = ({ _userId }) => {
     'Subject Mastery': filteredAchievements.filter(a => a.id.startsWith('category_')),
     'Levels': filteredAchievements.filter(a => a.id.includes('level')),
     'Time-Based': filteredAchievements.filter(a => a.id.includes('early_bird') || a.id.includes('night_owl')),
-    'Special': filteredAchievements.filter(a => 
-      !['streak', 'quiz', 'score', 'level', 'category_', 'early_bird', 'night_owl'].some(type => 
+    'Special': filteredAchievements.filter(a =>
+      !['streak', 'quiz', 'score', 'level', 'category_', 'early_bird', 'night_owl'].some(type =>
         a.id.includes(type) || a.id.startsWith(type)
       )
     )
@@ -145,7 +145,7 @@ const AchievementSystem = ({ _userId }) => {
 
   return (
     <div className="achievement-system">
-      <motion.div 
+      <motion.div
         className="achievement-header"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -201,9 +201,9 @@ const AchievementSystem = ({ _userId }) => {
       <div className="achievements-grid">
         {Object.entries(achievementsByCategory).map(([category, categoryAchievements]) => {
           if (categoryAchievements.length === 0) return null;
-          
+
           return (
-            <motion.div 
+            <motion.div
               key={category}
               className="achievement-category"
               initial={{ opacity: 0, y: 20 }}
@@ -216,7 +216,7 @@ const AchievementSystem = ({ _userId }) => {
               <div className="category-achievements">
                 {categoryAchievements.map((achievement) => {
                   const rarityStyle = getRarityStyle(achievement.rarity);
-                  
+
                   return (
                     <motion.div
                       key={achievement.id}
@@ -240,8 +240,8 @@ const AchievementSystem = ({ _userId }) => {
                           <span className={`rarity ${achievement.rarity}`}>{achievement.rarity}</span>
                           {!achievement.unlocked && achievement.progress !== undefined && (
                             <div className="progress-bar">
-                              <div 
-                                className="progress-fill" 
+                              <div
+                                className="progress-fill"
                                 style={{ width: `${achievement.progress}%` }}
                               ></div>
                               <span className="progress-text">{Math.round(achievement.progress)}%</span>

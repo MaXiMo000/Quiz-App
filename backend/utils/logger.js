@@ -38,7 +38,7 @@ if (!isProduction) {
     maxSize: "20m",
     maxFiles: "14d",
   });
-  
+
   fileTransports.push(fileRotateTransport);
   exceptionHandlers.push(new winston.transports.File({ filename: "logs/exception.log" }));
   rejectionHandlers.push(new winston.transports.File({ filename: "logs/rejection.log" }));

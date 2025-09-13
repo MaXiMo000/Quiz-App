@@ -56,7 +56,7 @@ const UserWrittenReports = () => {
             setLoading(false);
             return;
         }
-        
+
         try {
             setLoading(true);
             const response = await axios.get(`/api/written-test-reports/user?username=${user.name}`);
@@ -97,14 +97,14 @@ const UserWrittenReports = () => {
     // ✅ Error state with motion animation
     if (error) {
         return (
-            <motion.div 
+            <motion.div
                 className="error-container"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
             >
                 <p className="error-text">{error}</p>
-                <motion.button 
+                <motion.button
                     className="retry-btn"
                     onClick={() => {
                         setError("");
@@ -120,16 +120,16 @@ const UserWrittenReports = () => {
     }
 
     return (
-        <motion.div 
+        <motion.div
             className="reports-container"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
             <motion.h1 variants={itemVariants}>📄 My Written Test Reports</motion.h1>
-            
+
             {reports.length === 0 ? (
-                <motion.div 
+                <motion.div
                     className="no-reports"
                     variants={itemVariants}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -137,7 +137,7 @@ const UserWrittenReports = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <p>No reports found.</p>
-                    <motion.button 
+                    <motion.button
                         className="take-test-btn"
                         onClick={() => navigate('/user/written-tests')}
                         whileHover={{ scale: 1.05, backgroundColor: "#4f46e5" }}
@@ -170,14 +170,14 @@ const UserWrittenReports = () => {
                         <tbody>
                             <AnimatePresence>
                                 {reports.map((report, index) => (
-                                    <motion.tr 
+                                    <motion.tr
                                         key={report._id}
                                         variants={tableRowVariants}
                                         initial="hidden"
                                         animate="visible"
                                         exit="exit"
                                         transition={{ delay: index * 0.1 }}
-                                        whileHover={{ 
+                                        whileHover={{
                                             backgroundColor: "rgba(99, 102, 241, 0.1)",
                                             scale: 1.01
                                         }}
@@ -209,8 +209,8 @@ const UserWrittenReports = () => {
                                             {report.score >= report.total * 0.5 ? "✅" : "❌"}
                                         </motion.td>
                                         <motion.td className="action-buttons">
-                                            <motion.button 
-                                                className="view-btn" 
+                                            <motion.button
+                                                className="view-btn"
                                                 onClick={() => navigate(`/user/written-test-report/${report._id}`)}
                                                 whileHover={{ scale: 1.05, backgroundColor: "#8b5cf6" }}
                                                 whileTap={{ scale: 0.95 }}
@@ -218,8 +218,8 @@ const UserWrittenReports = () => {
                                             >
                                                 👁️ View
                                             </motion.button>
-                                            <motion.button 
-                                                className="delete-btn" 
+                                            <motion.button
+                                                className="delete-btn"
                                                 onClick={() => deleteReport(report._id)}
                                                 disabled={deletingId === report._id}
                                                 whileHover={{ scale: 1.05, backgroundColor: "#ef4444" }}

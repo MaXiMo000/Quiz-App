@@ -128,9 +128,9 @@ const AdaptiveQuiz = () => {
                     </div>
                 )}
             </div>
-            <NotificationModal 
-                notification={notification} 
-                onClose={hideNotification} 
+            <NotificationModal
+                notification={notification}
+                onClose={hideNotification}
             />
         </div>
     );

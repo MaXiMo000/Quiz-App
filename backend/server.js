@@ -116,15 +116,15 @@ app.use((req, res, next) => {
     }
 
     // Set CORS headers for all requests
-    if (origin && allowedOrigins.some(allowed => 
+    if (origin && allowedOrigins.some(allowed =>
         allowed === origin || allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")
     )) {
         res.header("Access-Control-Allow-Origin", origin);
     }
-    
+
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Vary", "Origin"); // Important for caching
-    
+
     next();
 });
 
@@ -133,7 +133,7 @@ const corsOptions = {
     origin: function (origin, callback) {
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
-        
+
         const allowedOrigins = [
             process.env.FRONTEND_URL,
             "http://localhost:5173", // Development frontend
@@ -141,7 +141,7 @@ const corsOptions = {
             "http://localhost:3000", // Alternative React port
             "http://127.0.0.1:3000"  // Alternative React port
         ].filter(Boolean); // Remove undefined values
-        
+
         // Check if origin is allowed
         const isOriginAllowed = allowedOrigins.some(allowedOrigin => {
             // Exact match
@@ -150,7 +150,7 @@ const corsOptions = {
             if (allowedOrigin.replace(/\/$/, "") === origin.replace(/\/$/, "")) return true;
             return false;
         });
-        
+
         if (isOriginAllowed) {
             callback(null, true);
         } else {
@@ -191,8 +191,8 @@ const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
 
 // Configure session with Redis store for production
 const sessionConfig = {
-    secret: GOOGLE_SECRET, 
-    resave: false, 
+    secret: GOOGLE_SECRET,
+    resave: false,
     saveUninitialized: false, // Don't create session until something stored
     name: "quiz-app-session", // Custom session name
     cookie: {
@@ -222,7 +222,7 @@ app.use(passport.session());
 // Test Route
 app.get("/ping", (req, res) => {
     res.status(200).send("Server is awake");
-}); 
+});
 
 // CORS Debug Route (remove in production)
 app.get("/debug/cors", (req, res) => {
@@ -239,13 +239,13 @@ app.get("/debug/cors", (req, res) => {
         timestamp: new Date().toISOString(),
         origin: origin,
         allowedOrigins: allowedOrigins,
-        isOriginAllowed: allowedOrigins.some(allowed => 
+        isOriginAllowed: allowedOrigins.some(allowed =>
             allowed === origin || allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")
         ),
         headers: req.headers,
         method: req.method
     });
-}); 
+});
 
 // Routes
 app.use("/api/users/login", authLimiter); // Apply auth rate limiting

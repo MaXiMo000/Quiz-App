@@ -11,7 +11,7 @@ const AdminDashboard = () => {
     const [quizs, setQuizs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -51,13 +51,13 @@ const AdminDashboard = () => {
                 const { scrollTop, scrollHeight, clientHeight } = tableContainer;
                 const isScrollable = scrollHeight > clientHeight;
                 const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
-                
+
                 // Remove scroll hint when scrolling or at bottom
                 const scrollHint = tableContainer.querySelector('.scroll-hint');
                 if (scrollHint && (scrollTop > 0 || isAtBottom)) {
                     scrollHint.remove();
                 }
-                
+
                 if (isScrollable && !isAtBottom) {
                     tableContainer.classList.add('scrollable');
                 } else {
@@ -68,16 +68,16 @@ const AdminDashboard = () => {
             // Initial setup
             const isScrollable = tableContainer.scrollHeight > tableContainer.clientHeight;
             const hasManyUsers = users && users.length > 5;
-            
+
             tableContainer.classList.toggle('scrollable', isScrollable);
-            
+
             // Add scroll hint if needed
             if (hasManyUsers && isScrollable && !tableContainer.querySelector('.scroll-hint')) {
                 const scrollHint = document.createElement('div');
                 scrollHint.className = 'scroll-hint';
                 scrollHint.textContent = '↓ More users below ↓';
                 tableContainer.appendChild(scrollHint);
-                
+
                 // Auto-remove hint after 5 seconds
                 setTimeout(() => {
                     if (scrollHint.parentNode) {
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
             }
 
             tableContainer.addEventListener('scroll', handleScroll);
-            
+
             // Check initially
             handleScroll();
 
@@ -98,21 +98,21 @@ const AdminDashboard = () => {
     }, [users]); // Re-run when users change
 
     if (loading) return (
-        <motion.div 
+        <motion.div
             className="admin-dashboard"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
             <div className="loading-container">
-                <motion.div 
+                <motion.div
                     className="loading-spinner"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 >
                     <div className="spinner-ring"></div>
                 </motion.div>
-                <motion.p 
+                <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
@@ -123,15 +123,15 @@ const AdminDashboard = () => {
             </div>
         </motion.div>
     );
-    
+
     if (error) return (
-        <motion.div 
+        <motion.div
             className="admin-dashboard"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <motion.div 
+            <motion.div
                 className="error-container"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -143,7 +143,7 @@ const AdminDashboard = () => {
     );
 
     return (
-        <motion.div 
+        <motion.div
             className="admin-dashboard"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -163,11 +163,11 @@ const AdminDashboard = () => {
                     >
                         <motion.span
                             className="dashboard-icon"
-                            animate={{ 
+                            animate={{
                                 rotateY: [0, 360],
                                 scale: [1, 1.1, 1]
                             }}
-                            transition={{ 
+                            transition={{
                                 rotateY: { duration: 3, repeat: Infinity },
                                 scale: { duration: 2, repeat: Infinity }
                             }}
@@ -186,32 +186,32 @@ const AdminDashboard = () => {
                     </motion.p>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     className="stats"
                     initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
                 >
-                    <motion.div 
+                    <motion.div
                         className="stat-card users-card"
                         initial={{ x: -100, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.6, delay: 0.5 }}
-                        whileHover={{ 
-                            y: -10, 
+                        whileHover={{
+                            y: -10,
                             scale: 1.05,
                             rotateY: 5,
                             boxShadow: "0 20px 50px rgba(99, 102, 241, 0.3)"
                         }}
                     >
-                        <motion.div 
+                        <motion.div
                             className="stat-icon"
-                            animate={{ 
+                            animate={{
                                 scale: [1, 1.2, 1],
                                 rotate: [0, 5, -5, 0]
                             }}
-                            transition={{ 
-                                duration: 3, 
+                            transition={{
+                                duration: 3,
                                 repeat: Infinity,
                                 repeatType: "reverse"
                             }}
@@ -229,27 +229,27 @@ const AdminDashboard = () => {
                         </motion.p>
                         <div className="stat-bg-effect"></div>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                         className="stat-card quizzes-card"
                         initial={{ x: 100, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.6, delay: 0.6 }}
-                        whileHover={{ 
-                            y: -10, 
+                        whileHover={{
+                            y: -10,
                             scale: 1.05,
                             rotateY: -5,
                             boxShadow: "0 20px 50px rgba(168, 85, 247, 0.3)"
                         }}
                     >
-                        <motion.div 
+                        <motion.div
                             className="stat-icon"
-                            animate={{ 
+                            animate={{
                                 scale: [1, 1.2, 1],
                                 rotate: [0, -5, 5, 0]
                             }}
-                            transition={{ 
-                                duration: 3, 
+                            transition={{
+                                duration: 3,
                                 repeat: Infinity,
                                 repeatType: "reverse",
                                 delay: 1
@@ -285,33 +285,33 @@ const AdminDashboard = () => {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.5 }}
                 >
-                    <motion.h2 
+                    <motion.h2
                         className="table-title"
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.6, delay: 0.7 }}
                     >
                         <motion.span
-                            animate={{ 
+                            animate={{
                                 scale: [1, 1.2, 1],
                                 rotateZ: [0, 10, -10, 0]
                             }}
-                            transition={{ 
-                                duration: 4, 
-                                repeat: Infinity 
+                            transition={{
+                                duration: 4,
+                                repeat: Infinity
                             }}
                         >
                             👥
                         </motion.span>
                         Registered Users
                     </motion.h2>
-                    
-                    <motion.div 
+
+                    <motion.div
                         className={`table-container ${users.length > 5 ? 'has-many-users' : ''}`}
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.6, delay: 0.8 }}
-                        whileHover={{ 
+                        whileHover={{
                             boxShadow: "0 25px 70px rgba(99, 102, 241, 0.15)"
                         }}
                     >
@@ -325,18 +325,18 @@ const AdminDashboard = () => {
                             </thead>
                             <tbody>
                                 {users.map((user, index) => (
-                                    <motion.tr 
+                                    <motion.tr
                                         key={user._id}
                                         className={user.role === 'PREMIUM' ? 'premium-user' : ''}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        transition={{ 
-                                            duration: 0.4, 
+                                        transition={{
+                                            duration: 0.4,
                                             delay: 1.3 + (index * 0.1)
                                         }}
-                                        whileHover={{ 
-                                            backgroundColor: user.role === 'PREMIUM' 
-                                                ? "rgba(251, 191, 36, 0.1)" 
+                                        whileHover={{
+                                            backgroundColor: user.role === 'PREMIUM'
+                                                ? "rgba(251, 191, 36, 0.1)"
                                                 : "rgba(99, 102, 241, 0.05)",
                                             transition: { duration: 0.2 }
                                         }}
@@ -355,7 +355,7 @@ const AdminDashboard = () => {
                     </motion.div>
                 </motion.div>
             </div>
-            
+
             {/* Floating decorative elements */}
             <motion.div
                 className="floating-element floating-1"

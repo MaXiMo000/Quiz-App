@@ -99,7 +99,7 @@
 <body>
     <div class="container">
         <h1>📱 PWA Installation Guide</h1>
-        
+
         <div class="success">
             <h3>✅ Current Status</h3>
             <div id="pwa-status">
@@ -121,7 +121,7 @@
         </div>
 
         <h2>🌐 Browser-Specific Instructions</h2>
-        
+
         <div class="browser-guide">
             <div class="browser-card">
                 <span class="browser-icon">🟦</span>
@@ -173,7 +173,7 @@
         </div>
 
         <h2>🛠️ Troubleshooting Steps</h2>
-        
+
         <div class="step-card">
             <h3>Step 1: Clear Browser Data</h3>
             <p>Clear cache and cookies for this site, then reload the page.</p>
@@ -199,7 +199,7 @@
         </div>
 
         <h2>🧪 Debug Tools</h2>
-        
+
         <div class="debug-section">
             <h3>PWA Debug Console</h3>
             <div>
@@ -279,7 +279,7 @@
             if (window.pwaDebug) {
                 const status = window.pwaDebug.checkStatus();
                 addLog(`📱 PWA Status: ${JSON.stringify(status, null, 2)}`);
-                
+
                 const criteria = window.pwaDebug.checkCriteria();
                 addLog(`✅ Install Criteria: ${JSON.stringify(criteria, null, 2)}`);
             } else {
@@ -311,15 +311,15 @@
             if (window.pwaDebug) {
                 window.pwaDebug.clearPWAData();
             }
-            
+
             // Clear localStorage
             localStorage.clear();
-            
+
             // Clear sessionStorage
             sessionStorage.clear();
-            
+
             addLog('🗑️ Site data cleared. Please refresh the page.');
-            
+
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
@@ -337,7 +337,7 @@
         function showManualInstructions() {
             const userAgent = navigator.userAgent;
             let instructions = '';
-            
+
             if (userAgent.includes('Chrome')) {
                 instructions = 'Chrome: Click ⋮ menu → Install Quiz Master...';
             } else if (userAgent.includes('Edge')) {
@@ -349,7 +349,7 @@
             } else {
                 instructions = 'Look for install option in browser menu or address bar';
             }
-            
+
             addLog(`📱 Manual Install: ${instructions}`);
         }
 

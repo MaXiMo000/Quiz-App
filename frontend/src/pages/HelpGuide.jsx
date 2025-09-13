@@ -449,22 +449,22 @@ const HelpGuide = () => {
             setFilteredSections([]);
             return;
         }
-        
+
         const filtered = sections.filter(section => {
             const searchText = query.toLowerCase();
             return (
                 section.title.toLowerCase().includes(searchText) ||
                 section.content.description.toLowerCase().includes(searchText) ||
-                (section.content.features && section.content.features.some(feature => 
+                (section.content.features && section.content.features.some(feature =>
                     typeof feature === 'string' ? feature.toLowerCase().includes(searchText) :
                     feature.name.toLowerCase().includes(searchText) || feature.description.toLowerCase().includes(searchText)
                 )) ||
-                (section.content.steps && section.content.steps.some(step => 
+                (section.content.steps && section.content.steps.some(step =>
                     step.title.toLowerCase().includes(searchText) || step.description.toLowerCase().includes(searchText)
                 )) ||
-                (section.content.tips && section.content.tips.some(tip => 
+                (section.content.tips && section.content.tips.some(tip =>
                     typeof tip === 'string' ? tip.toLowerCase().includes(searchText) :
-                    tip.category.toLowerCase().includes(searchText) || 
+                    tip.category.toLowerCase().includes(searchText) ||
                     (tip.items && tip.items.some(item => item.toLowerCase().includes(searchText)))
                 ))
             );
@@ -517,7 +517,7 @@ const HelpGuide = () => {
                     transition={{ duration: 0.6, delay: 0.3 }}
                 >
                     <h3>📖 Table of Contents</h3>
-                    
+
                     {/* Search Bar */}
                     <div className="help-search-container">
                         <div className="help-search-box">
@@ -556,11 +556,11 @@ const HelpGuide = () => {
                                 <span className="nav-text">{section.title}</span>
                             </motion.button>
                         ))}
-                        
+
                         {searchQuery && filteredSections.length === 0 && (
                             <div className="no-results">
                                 <p>No results found for "{searchQuery}"</p>
-                                <button 
+                                <button
                                     className="clear-search-btn"
                                     onClick={() => handleSearch('')}
                                 >

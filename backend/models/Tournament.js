@@ -4,12 +4,12 @@ const tournamentSchema = new mongoose.Schema({
     name: { type: String, required: true, maxlength: 100 },
     description: { type: String, maxlength: 1000 },
     category: { type: String, default: "General" }, // Tournament category
-    type: { 
-        type: String, 
+    type: {
+        type: String,
         enum: ["single_elimination", "round_robin", "time_based", "seasonal"],
         default: "time_based"
     },
-    
+
     // Tournament settings
     settings: {
         maxParticipants: { type: Number, default: 100 },
@@ -20,16 +20,16 @@ const tournamentSchema = new mongoose.Schema({
         questionsPerRound: { type: Number, default: 10 },
         timeLimit: { type: Number, default: 300 } // Time limit per quiz in seconds
     },
-    
+
     // Quiz references for the tournament
     quizzes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }],
-    
+
     // Tournament schedule
     registrationStart: { type: Date, required: true },
     registrationEnd: { type: Date, required: true },
     tournamentStart: { type: Date, required: true },
     tournamentEnd: { type: Date, required: true },
-    
+
     // Participants
     participants: [{
         user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" },
@@ -48,7 +48,7 @@ const tournamentSchema = new mongoose.Schema({
             completedAt: { type: Date, default: Date.now }
         }]
     }],
-    
+
     // Prize structure
     prizes: [{
         position: { type: Number }, // 1st, 2nd, 3rd place
@@ -57,14 +57,14 @@ const tournamentSchema = new mongoose.Schema({
         theme: { type: String },
         title: { type: String } // Special title for winner
     }],
-    
+
     // Tournament status
     status: {
         type: String,
         enum: ["upcoming", "registration_open", "in_progress", "completed", "cancelled"],
         default: "upcoming"
     },
-    
+
     // Tournament stats
     stats: {
         totalParticipants: { type: Number, default: 0 },
@@ -72,13 +72,13 @@ const tournamentSchema = new mongoose.Schema({
         highestScore: { type: Number, default: 0 },
         winner: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" }
     },
-    
-    createdBy: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "UserQuiz", 
-        required: true 
+
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserQuiz",
+        required: true
     },
-    
+
     // Seasonal tournament specific
     season: { type: String }, // "Spring 2025", "Holiday Special", etc.
     theme: { type: String } // Visual theme for the tournament
