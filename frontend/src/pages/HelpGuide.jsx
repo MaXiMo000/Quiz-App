@@ -5,6 +5,8 @@ import './HelpGuide.css';
 const HelpGuide = () => {
     const [activeSection, setActiveSection] = useState('overview');
     const [activeSubSection, setActiveSubSection] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredSections, setFilteredSections] = useState([]);
 
     const sections = [
         {
@@ -12,14 +14,20 @@ const HelpGuide = () => {
             title: 'Website Overview',
             icon: '🏠',
             content: {
-                description: 'QuizNest is your ultimate learning companion! Think of it as your personal study buddy that helps you learn through interactive quizzes, track your progress, and compete with friends.',
+                description: 'QuizNest is your ultimate learning companion! Think of it as your personal study buddy that helps you learn through interactive quizzes, track your progress, and compete with friends. Our platform combines gamification, AI-powered insights, and social learning to make education engaging and effective.',
                 features: [
-                    '📚 Take quizzes on various topics',
-                    '📊 Track your learning progress',
-                    '🏆 Earn achievements and XP',
-                    '👥 Compete with friends',
-                    '🎨 Customize your experience',
-                    '📱 Works on all devices'
+                    '📚 Take unlimited quizzes on various topics',
+                    '📊 Advanced analytics and progress tracking',
+                    '🏆 Comprehensive achievement system with XP rewards',
+                    '👥 Social features: friends, challenges, and leaderboards',
+                    '🎨 Beautiful themes and customizable interface',
+                    '📱 Progressive Web App (PWA) - works offline',
+                    '🤖 AI-powered study recommendations',
+                    '📈 Learning paths and personalized content',
+                    '⏰ Spaced repetition for better retention',
+                    '🎯 Real-time multiplayer quizzes',
+                    '📝 Create and share your own quizzes (Premium)',
+                    '📊 Detailed performance reports and insights'
                 ]
             }
         },
@@ -247,6 +255,116 @@ const HelpGuide = () => {
             }
         },
         {
+            id: 'advanced-features',
+            title: 'Advanced Features',
+            icon: '🚀',
+            content: {
+                description: 'Discover the powerful advanced features that make QuizNest stand out from other learning platforms:',
+                features: [
+                    {
+                        name: '🤖 AI Study Buddy',
+                        description: 'Get personalized study recommendations based on your performance patterns and learning style. The AI analyzes your strengths and weaknesses to suggest the most effective study materials.'
+                    },
+                    {
+                        name: '📈 Intelligence Dashboard',
+                        description: 'Advanced analytics showing your cognitive performance, learning velocity, and knowledge retention patterns. Track your intellectual growth over time.'
+                    },
+                    {
+                        name: '⏰ Spaced Repetition System',
+                        description: 'Scientifically-proven learning technique that schedules review sessions at optimal intervals to maximize long-term retention.'
+                    },
+                    {
+                        name: '🎯 Real-time Multiplayer Quizzes',
+                        description: 'Compete with friends and other users in live quiz sessions. See who answers fastest and most accurately!'
+                    },
+                    {
+                        name: '📊 Advanced Analytics',
+                        description: 'Detailed performance metrics including accuracy trends, time analysis, topic mastery levels, and personalized insights.'
+                    },
+                    {
+                        name: '📚 Learning Paths',
+                        description: 'Structured learning journeys designed to take you from beginner to expert in any subject area.'
+                    },
+                    {
+                        name: '🏆 Achievement System',
+                        description: 'Unlock badges and achievements as you reach milestones. Collect rare achievements for special accomplishments.'
+                    },
+                    {
+                        name: '👥 Study Groups',
+                        description: 'Create or join study groups to collaborate with peers, share resources, and learn together.'
+                    }
+                ]
+            }
+        },
+        {
+            id: 'analytics-insights',
+            title: 'Analytics & Insights',
+            icon: '📊',
+            content: {
+                description: 'Understand your learning patterns and optimize your study strategy with our comprehensive analytics:',
+                features: [
+                    {
+                        name: '📈 Performance Trends',
+                        description: 'Track your improvement over time with detailed charts showing accuracy, speed, and consistency trends.'
+                    },
+                    {
+                        name: '🎯 Topic Mastery',
+                        description: 'See which topics you\'ve mastered and which need more practice. Color-coded indicators show your proficiency level.'
+                    },
+                    {
+                        name: '⏱️ Time Analysis',
+                        description: 'Understand how long you spend on different types of questions and optimize your pacing strategy.'
+                    },
+                    {
+                        name: '🧠 Cognitive Load Tracking',
+                        description: 'Monitor your mental effort and identify when you\'re most productive for different types of learning.'
+                    },
+                    {
+                        name: '📅 Study Patterns',
+                        description: 'Discover your optimal study times and patterns to maximize learning efficiency.'
+                    },
+                    {
+                        name: '🎲 Difficulty Progression',
+                        description: 'See how you handle increasing difficulty levels and identify areas for improvement.'
+                    }
+                ]
+            }
+        },
+        {
+            id: 'mobile-pwa',
+            title: 'Mobile & PWA Features',
+            icon: '📱',
+            content: {
+                description: 'QuizNest works seamlessly across all devices with our Progressive Web App technology:',
+                features: [
+                    {
+                        name: '📱 Install as App',
+                        description: 'Add QuizNest to your home screen for a native app experience. Works on iOS, Android, and desktop.'
+                    },
+                    {
+                        name: '🌐 Offline Mode',
+                        description: 'Download quizzes and study materials to access them without internet connection. Perfect for studying on the go.'
+                    },
+                    {
+                        name: '🔔 Smart Notifications',
+                        description: 'Get personalized study reminders, achievement notifications, and challenge invitations.'
+                    },
+                    {
+                        name: '🔄 Sync Across Devices',
+                        description: 'Your progress automatically syncs across all your devices. Start on desktop, continue on mobile.'
+                    },
+                    {
+                        name: '👆 Touch Optimized',
+                        description: 'Beautiful, responsive interface designed specifically for touch interactions on mobile devices.'
+                    },
+                    {
+                        name: '⚡ Fast Loading',
+                        description: 'Optimized for speed with instant loading and smooth animations on all devices.'
+                    }
+                ]
+            }
+        },
+        {
             id: 'troubleshooting',
             title: 'Troubleshooting',
             icon: '🔧',
@@ -257,42 +375,102 @@ const HelpGuide = () => {
                         problem: 'Quiz not loading',
                         solutions: [
                             'Check your internet connection',
-                            'Refresh the page',
-                            'Clear browser cache',
-                            'Try a different browser'
+                            'Refresh the page (Ctrl+F5 or Cmd+Shift+R)',
+                            'Clear browser cache and cookies',
+                            'Try a different browser or incognito mode',
+                            'Disable browser extensions temporarily',
+                            'Check if JavaScript is enabled'
                         ]
                     },
                     {
                         problem: 'Can\'t see my progress',
                         solutions: [
-                            'Make sure you\'re logged in',
-                            'Check the Reports section',
+                            'Make sure you\'re logged in with the correct account',
+                            'Check the Reports section in the sidebar',
                             'Wait a few minutes for data to sync',
+                            'Try refreshing the page',
+                            'Clear browser cache',
                             'Contact support if issue persists'
                         ]
                     },
                     {
                         problem: 'Mobile app not working',
                         solutions: [
-                            'Update your browser',
-                            'Clear app data and reinstall',
+                            'Update your browser to the latest version',
+                            'Clear app data and reinstall the PWA',
                             'Check if PWA is properly installed',
-                            'Restart your device'
+                            'Restart your device',
+                            'Check available storage space',
+                            'Try accessing via browser first'
                         ]
                     },
                     {
                         problem: 'Premium features not available',
                         solutions: [
-                            'Verify your premium subscription',
+                            'Verify your premium subscription status',
                             'Log out and log back in',
-                            'Check payment status',
-                            'Contact support for assistance'
+                            'Check payment status in your account',
+                            'Wait up to 24 hours for activation',
+                            'Contact support for assistance',
+                            'Check if you\'re using the correct account'
+                        ]
+                    },
+                    {
+                        problem: 'Slow performance',
+                        solutions: [
+                            'Close unnecessary browser tabs',
+                            'Clear browser cache and cookies',
+                            'Check your internet connection speed',
+                            'Try using a different browser',
+                            'Restart your device',
+                            'Check available RAM and storage'
+                        ]
+                    },
+                    {
+                        problem: 'Can\'t create quizzes',
+                        solutions: [
+                            'Verify you have a Premium subscription',
+                            'Check if you\'re logged in as Premium user',
+                            'Try refreshing the page',
+                            'Clear browser cache',
+                            'Check if all required fields are filled',
+                            'Contact support if issue persists'
                         ]
                     }
                 ]
             }
         }
     ];
+
+    // Search functionality
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        if (query.trim() === '') {
+            setFilteredSections([]);
+            return;
+        }
+        
+        const filtered = sections.filter(section => {
+            const searchText = query.toLowerCase();
+            return (
+                section.title.toLowerCase().includes(searchText) ||
+                section.content.description.toLowerCase().includes(searchText) ||
+                (section.content.features && section.content.features.some(feature => 
+                    typeof feature === 'string' ? feature.toLowerCase().includes(searchText) :
+                    feature.name.toLowerCase().includes(searchText) || feature.description.toLowerCase().includes(searchText)
+                )) ||
+                (section.content.steps && section.content.steps.some(step => 
+                    step.title.toLowerCase().includes(searchText) || step.description.toLowerCase().includes(searchText)
+                )) ||
+                (section.content.tips && section.content.tips.some(tip => 
+                    typeof tip === 'string' ? tip.toLowerCase().includes(searchText) :
+                    tip.category.toLowerCase().includes(searchText) || 
+                    (tip.items && tip.items.some(item => item.toLowerCase().includes(searchText)))
+                ))
+            );
+        });
+        setFilteredSections(filtered);
+    };
 
     const getCurrentContent = () => {
         const section = sections.find(s => s.id === activeSection);
@@ -305,6 +483,8 @@ const HelpGuide = () => {
 
         return section;
     };
+
+    const displaySections = searchQuery ? filteredSections : sections;
 
     const currentContent = getCurrentContent();
 
@@ -337,8 +517,31 @@ const HelpGuide = () => {
                     transition={{ duration: 0.6, delay: 0.3 }}
                 >
                     <h3>📖 Table of Contents</h3>
+                    
+                    {/* Search Bar */}
+                    <div className="help-search-container">
+                        <div className="help-search-box">
+                            <span className="search-icon">🔍</span>
+                            <input
+                                type="text"
+                                placeholder="Search help topics..."
+                                value={searchQuery}
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="help-search-input"
+                            />
+                            {searchQuery && (
+                                <button
+                                    className="search-clear-btn"
+                                    onClick={() => handleSearch('')}
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
                     <nav className="help-nav">
-                        {sections.map((section) => (
+                        {displaySections.map((section) => (
                             <motion.button
                                 key={section.id}
                                 className={`nav-item ${activeSection === section.id ? 'active' : ''}`}
@@ -353,6 +556,18 @@ const HelpGuide = () => {
                                 <span className="nav-text">{section.title}</span>
                             </motion.button>
                         ))}
+                        
+                        {searchQuery && filteredSections.length === 0 && (
+                            <div className="no-results">
+                                <p>No results found for "{searchQuery}"</p>
+                                <button 
+                                    className="clear-search-btn"
+                                    onClick={() => handleSearch('')}
+                                >
+                                    Clear search
+                                </button>
+                            </div>
+                        )}
                     </nav>
                 </motion.aside>
 
@@ -563,9 +778,33 @@ const HelpGuide = () => {
                             className="quick-help-btn"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            onClick={() => setActiveSection('advanced-features')}
+                        >
+                            🚀 Advanced Features
+                        </motion.button>
+                        <motion.button
+                            className="quick-help-btn"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setActiveSection('mobile-pwa')}
+                        >
+                            📱 Mobile & PWA
+                        </motion.button>
+                        <motion.button
+                            className="quick-help-btn"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection('creating-quizzes')}
                         >
                             📝 Create Quizzes
+                        </motion.button>
+                        <motion.button
+                            className="quick-help-btn"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setActiveSection('analytics-insights')}
+                        >
+                            📊 Analytics
                         </motion.button>
                     </div>
                 </div>
