@@ -142,7 +142,7 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
         if (onTakeQuiz) {
             onTakeQuiz(quiz.id);
         } else if (quiz.id) {
-            window.open(`/user/test/${quiz.id}`, '_blank');
+            window.location.href = `/user/test/${quiz.id}`;
         }
         onClose();
     };
@@ -223,11 +223,11 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
                                             Preview of first {previewQuestions.length} question{previewQuestions.length === 1 ? '' : 's'}:
                                         </h4>
                                         {previewQuestions.map((question, index) => (
-                                            <div key={index} className="quiz-preview-question">
+                                            <div key={`preview-q-${index}-${question.question?.slice(0, 20)}`} className="quiz-preview-question">
                                                 <h4>{index + 1}. {question.question}</h4>
                                                 <ul className="quiz-preview-options">
                                                     {question.options?.map((option, optIndex) => (
-                                                        <li key={optIndex}>
+                                                        <li key={`preview-opt-${index}-${optIndex}`}>
                                                             {String.fromCharCode(65 + optIndex)}) {option}
                                                         </li>
                                                     ))}
@@ -426,7 +426,7 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '10px' }}>
                                         {quickReminderOptions.map((option, index) => (
                                             <button
-                                                key={index}
+                                                key={`reminder-${option}-${index}`}
                                                 type="button"
                                                 style={{
                                                     padding: '6px 12px',

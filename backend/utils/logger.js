@@ -1,7 +1,6 @@
 import winston from "winston";
 import "winston-daily-rotate-file";
 import fs from "fs";
-import path from "path";
 
 const { combine, timestamp, json, colorize, align, printf } = winston.format;
 

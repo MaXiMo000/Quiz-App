@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import logger from "../utils/logger.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -10,7 +11,7 @@ export const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        console.log("❌ No Bearer token provided");
+        logger.info("❌ No Bearer token provided");
         return res.status(401).json({ message: "Access denied. No token provided." });
     }
 
@@ -18,11 +19,11 @@ export const verifyToken = (req, res, next) => {
     
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("✅ Token decoded successfully:", { id: decoded.id, email: decoded.email });
+        logger.info("✅ Token decoded successfully:", { id: decoded.id, email: decoded.email });
         req.user = decoded;
         next();
     } catch (err) {
-        console.error("❌ JWT verification failed:", err.message);
+        logger.error("❌ JWT verification failed:", err.message);
         return res.status(403).json({ message: "Invalid or expired token." });
     }
 };
