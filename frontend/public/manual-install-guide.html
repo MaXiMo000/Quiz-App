@@ -79,7 +79,7 @@
 <body>
     <div class="container">
         <h1>🎯 PWA Manual Installation Guide</h1>
-        
+
         <div class="success-card">
             <h2>🎉 Great News!</h2>
             <p><strong>Your PWA meets ALL installation requirements!</strong></p>
@@ -89,7 +89,7 @@
 
         <div class="install-steps">
             <h2>📱 How to Install (Choose Your Method)</h2>
-            
+
             <div class="step">
                 <h3>🔍 Method 1: Address Bar (Easiest)</h3>
                 <p>Look at your Chrome address bar RIGHT NOW:</p>
@@ -148,7 +148,7 @@
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
             const hasManifest = !!document.querySelector('link[rel="manifest"]');
             const hasServiceWorker = 'serviceWorker' in navigator;
-            
+
             const status = {
                 isInstalled: isStandalone,
                 displayMode: isStandalone ? 'standalone' : 'browser',
@@ -156,13 +156,13 @@
                 hasServiceWorker,
                 canManuallyInstall: hasManifest && hasServiceWorker && window.isSecureContext
             };
-            
+
             let html = '<div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin: 10px 0;">';
             html += '<h4>📊 Current Installation Status:</h4>';
             html += `<p><strong>Installed:</strong> ${status.isInstalled ? '✅ Yes' : '❌ Not yet'}</p>`;
             html += `<p><strong>Display Mode:</strong> ${status.displayMode}</p>`;
             html += `<p><strong>Can Install:</strong> ${status.canManuallyInstall ? '✅ Yes' : '❌ No'}</p>`;
-            
+
             if (status.isInstalled) {
                 html += '<p style="color: #48bb78;"><strong>🎉 PWA is installed and running!</strong></p>';
             } else if (status.canManuallyInstall) {
@@ -170,20 +170,20 @@
             } else {
                 html += '<p style="color: #ef4444;"><strong>❌ PWA requirements not met</strong></p>';
             }
-            
+
             html += '</div>';
             results.innerHTML = html;
         }
-        
+
         function openMainApp() {
             window.open('http://localhost:5173/', '_blank');
         }
-        
+
         // Auto-test on load
         window.addEventListener('load', () => {
             setTimeout(testInstallation, 1000);
         });
-        
+
         // Register service worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').then(() => {

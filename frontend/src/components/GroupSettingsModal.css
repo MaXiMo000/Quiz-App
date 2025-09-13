@@ -303,32 +303,32 @@
         margin: 10px;
         max-height: calc(100vh - 20px);
     }
-    
+
     .settings-form {
         padding: 20px;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 10px;
     }
-    
+
     .tags-input {
         flex-direction: column;
     }
-    
+
     .add-tag-btn {
         width: 100%;
     }
-    
+
     .modal-actions {
         flex-direction: column;
     }
-    
+
     .cancel-btn, .save-btn {
         width: 100%;
     }

@@ -13,7 +13,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { changeTheme } = useContext(ThemeContext);
-    
+
     // Notification system
     const { notification, showError, hideNotification } = useNotification();
 
@@ -95,8 +95,8 @@ const Login = () => {
                         />
                     </div>
 
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="auth-btn primary"
                         disabled={loading}
                     >
@@ -110,8 +110,8 @@ const Login = () => {
                         <span>or</span>
                     </div>
 
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="auth-btn google"
                         onClick={handleGoogleLogin}
                         disabled={loading}
@@ -130,7 +130,7 @@ const Login = () => {
                     <p>Don't have an account? <Link to="/register">Create one</Link></p>
                 </div>
             </div>
-            
+
             {/* Full Screen Loader */}
             {loading && (
                 <div className="fullscreen-loader">
@@ -148,7 +148,7 @@ const Login = () => {
                 onClose={hideNotification}
                 autoClose={notification.autoClose}
             />
-        </div>         
+        </div>
     );
 };
 

@@ -15,8 +15,8 @@ const AdvancedThemeSelector = () => {
 
   const themes = {
     light: [
-      { 
-        name: 'Default', 
+      {
+        name: 'Default',
         category: 'standard',
         description: 'Modern dark theme with purple accents',
         preview: {
@@ -26,8 +26,8 @@ const AdvancedThemeSelector = () => {
           card: '#1a1b2e'
         }
       },
-      { 
-        name: 'Light', 
+      {
+        name: 'Light',
         category: 'standard',
         description: 'Clean light theme for daytime use',
         preview: {
@@ -37,8 +37,8 @@ const AdvancedThemeSelector = () => {
           card: '#f8fafc'
         }
       },
-      { 
-        name: 'ayu-light', 
+      {
+        name: 'ayu-light',
         category: 'standard',
         description: 'Gentle pastels with orange highlights',
         preview: {
@@ -50,8 +50,8 @@ const AdvancedThemeSelector = () => {
       }
     ],
     dark: [
-      { 
-        name: 'dracula', 
+      {
+        name: 'dracula',
         category: 'vibrant',
         description: 'Gothic dark theme with bright highlights',
         preview: {
@@ -61,8 +61,8 @@ const AdvancedThemeSelector = () => {
           card: '#44475a'
         }
       },
-      { 
-        name: 'tokyo-night', 
+      {
+        name: 'tokyo-night',
         category: 'modern',
         description: 'Moody indigos with neon green accents',
         preview: {
@@ -72,8 +72,8 @@ const AdvancedThemeSelector = () => {
           card: '#24283b'
         }
       },
-      { 
-        name: 'night-owl', 
+      {
+        name: 'night-owl',
         category: 'modern',
         description: 'Nighttime blues with bright colors',
         preview: {
@@ -85,8 +85,8 @@ const AdvancedThemeSelector = () => {
       }
     ],
     nature: [
-      { 
-        name: 'Forest', 
+      {
+        name: 'Forest',
         category: 'nature',
         description: 'Earthy greens inspired by deep forests',
         preview: {
@@ -96,8 +96,8 @@ const AdvancedThemeSelector = () => {
           card: '#14532d'
         }
       },
-      { 
-        name: 'Ocean', 
+      {
+        name: 'Ocean',
         category: 'nature',
         description: 'Deep ocean blues with wave-like gradients',
         preview: {
@@ -107,8 +107,8 @@ const AdvancedThemeSelector = () => {
           card: '#1e3a8a'
         }
       },
-      { 
-        name: 'Sunset', 
+      {
+        name: 'Sunset',
         category: 'nature',
         description: 'Warm sunset colors with golden hues',
         preview: {
@@ -120,8 +120,8 @@ const AdvancedThemeSelector = () => {
       }
     ],
     retro: [
-      { 
-        name: 'gruvbox-dark', 
+      {
+        name: 'gruvbox-dark',
         category: 'retro',
         description: 'Warm retro colors with vintage feel',
         preview: {
@@ -131,8 +131,8 @@ const AdvancedThemeSelector = () => {
           card: '#3c3836'
         }
       },
-      { 
-        name: 'solarized-dark', 
+      {
+        name: 'solarized-dark',
         category: 'retro',
         description: 'Classic solarized dark theme',
         preview: {
@@ -142,8 +142,8 @@ const AdvancedThemeSelector = () => {
           card: '#073642'
         }
       },
-      { 
-        name: 'monokai', 
+      {
+        name: 'monokai',
         category: 'retro',
         description: 'Classic monokai with sublime colors',
         preview: {
@@ -234,7 +234,7 @@ const AdvancedThemeSelector = () => {
             >
               <div className="modal-header">
                 <h2>🎨 Choose Your Perfect Theme</h2>
-                <button 
+                <button
                   className="close-btn"
                   onClick={() => {
                     setIsOpen(false);
@@ -309,11 +309,11 @@ const AdvancedThemeSelector = () => {
                         border: `2px solid ${theme.preview.accent}`
                       }}>
                         <div className="preview-elements">
-                          <div 
-                            className="preview-accent" 
+                          <div
+                            className="preview-accent"
                             style={{ backgroundColor: theme.preview.accent }}
                           ></div>
-                          <div 
+                          <div
                             className="preview-text"
                             style={{ color: theme.preview.text }}
                           >
@@ -347,7 +347,7 @@ const AdvancedThemeSelector = () => {
                 <div className="preview-notice">
                   <span className="preview-icon">👁️</span>
                   Previewing: <strong>{previewTheme.name}</strong>
-                  <button 
+                  <button
                     className="apply-preview-btn"
                     onClick={() => {
                       handleApplyTheme(previewTheme.name);

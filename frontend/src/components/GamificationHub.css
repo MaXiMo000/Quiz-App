@@ -808,9 +808,9 @@
 
 .completed-challenge-card {
     border: 2px solid rgba(67, 233, 123, 0.3);
-    background: linear-gradient(135deg, 
-        rgba(67, 233, 123, 0.05) 0%, 
-        rgba(56, 249, 215, 0.05) 50%, 
+    background: linear-gradient(135deg,
+        rgba(67, 233, 123, 0.05) 0%,
+        rgba(56, 249, 215, 0.05) 50%,
         rgba(102, 126, 234, 0.05) 100%);
 }
 
@@ -875,11 +875,11 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
     }
-    
+
     .stat-item {
         padding: 0.5rem;
     }
-    
+
     .stat-value {
         font-size: 1rem;
     }
@@ -3281,33 +3281,33 @@
         margin: 0.5rem;
         border-radius: 16px;
     }
-    
+
     .challenge-history-modal .modal-header {
         padding: 1rem 1.5rem;
         border-radius: 16px 16px 0 0;
     }
-    
+
     .challenge-history-modal .modal-header h3 {
         font-size: 1.2rem;
         line-height: 1.3;
     }
-    
+
     .challenge-history-modal .modal-body {
         padding: 1.5rem;
         max-height: calc(90vh - 100px);
     }
-    
+
     .completion-details {
         grid-template-columns: 1fr;
         gap: 0.5rem;
     }
-    
+
     .completion-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
     }
-    
+
     .completion-progress {
         align-self: flex-end;
     }
@@ -3321,21 +3321,21 @@
         border-radius: 0;
         margin: 0;
     }
-    
+
     .challenge-history-modal .modal-header {
         padding: 1rem;
         border-radius: 0;
     }
-    
+
     .challenge-history-modal .modal-header h3 {
         font-size: 1.1rem;
     }
-    
+
     .challenge-history-modal .modal-body {
         padding: 1rem;
         max-height: calc(100vh - 80px);
     }
-    
+
     .history-summary,
     .current-attempt,
     .completion-item {
@@ -3456,36 +3456,36 @@
         max-width: 100%;
         margin: 0;
     }
-    
+
     .quiz-progress-stats {
         justify-content: center;
         order: 1;
     }
-    
+
     .quiz-progress-bar {
         width: 100%;
         max-width: 280px;
         margin-left: 0;
         order: 2;
     }
-    
+
     .completed-count {
         font-size: 2rem;
     }
-    
+
     .total-count {
         font-size: 1.6rem;
     }
-    
+
     .progress-separator {
         font-size: 1.6rem;
     }
-    
+
     .progress-label {
         font-size: 1.1rem;
         margin-left: 1rem;
     }
-    
+
     /* Make History button bigger on mobile */
     .view-history-btn {
         padding: 0.8rem 1.5rem;
@@ -3500,29 +3500,29 @@
         gap: 1rem;
         max-width: 100%;
     }
-    
+
     .completed-count {
         font-size: 1.8rem;
     }
-    
+
     .total-count {
         font-size: 1.4rem;
     }
-    
+
     .progress-separator {
         font-size: 1.4rem;
     }
-    
+
     .progress-label {
         font-size: 1rem;
         margin-left: 0.8rem;
     }
-    
+
     .quiz-progress-bar {
         max-width: 100%;
         height: 8px;
     }
-    
+
     /* Bigger History button on small mobile */
     .view-history-btn {
         padding: 1rem 2rem;
@@ -3531,4 +3531,3 @@
         border-radius: 12px;
     }
 }
-

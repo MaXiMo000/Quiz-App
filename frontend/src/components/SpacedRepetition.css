@@ -454,44 +454,44 @@
     .spaced-repetition {
         padding: var(--space-lg);
     }
-    
+
     .spaced-repetition-header h2 {
         font-size: 2rem;
     }
-    
+
     .review-card {
         padding: var(--space-lg);
     }
-    
+
     .button-group {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .action-button {
         width: 100%;
         max-width: 200px;
     }
-    
+
     .question-text {
         font-size: 1.1rem;
     }
-    
+
     .option-item {
         padding: var(--space-sm);
     }
-    
+
     .option-letter {
         width: 35px;
         height: 35px;
         font-size: 0.9rem;
         margin-right: var(--space-sm);
     }
-    
+
     .option-text {
         font-size: 0.95rem;
     }
-    
+
     .correct-badge {
         width: 20px;
         height: 20px;
@@ -505,38 +505,38 @@
     .spaced-repetition {
         padding: var(--space-md);
     }
-    
+
     .spaced-repetition-header h2 {
         font-size: 1.8rem;
     }
-    
+
     .review-card {
         padding: var(--space-md);
     }
-    
+
     .quiz-title {
         font-size: 1.3rem;
     }
-    
+
     .question-text {
         font-size: 1rem;
     }
-    
+
     .option-item {
         padding: var(--space-xs);
     }
-    
+
     .option-letter {
         width: 30px;
         height: 30px;
         font-size: 0.8rem;
         margin-right: var(--space-xs);
     }
-    
+
     .option-text {
         font-size: 0.9rem;
     }
-    
+
     .correct-badge {
         width: 18px;
         height: 18px;
@@ -544,7 +544,7 @@
         top: -5px;
         right: -5px;
     }
-    
+
     .answer-label {
         font-size: 1rem;
         margin-bottom: var(--space-md);

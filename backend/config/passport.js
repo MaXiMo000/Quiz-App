@@ -23,7 +23,7 @@ const unlockThemesForLevel = (user) => {
         7: "Forest",
         10: "Sunset",
         15: "Neon",
-        4: "material-light",    
+        4: "material-light",
         6: "material-dark",
         8: "dracula",
         12: "nord",
@@ -88,7 +88,7 @@ passport.use(
                         lastQuizDate: null
                     });
                     await user.save();
-                    
+
                     // Refetch the user to ensure all fields are properly set
                     user = await UserQuiz.findById(user._id);
                 }
@@ -105,7 +105,7 @@ passport.use(
                 if (isNewDay) {
                     // Check if it's consecutive day for streak
                     const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
-                    
+
                     if (lastLoginMidnight && lastLoginMidnight.getTime() === oneDayAgo.getTime()) {
                         // Continued streak
                         user.loginStreak += 1;

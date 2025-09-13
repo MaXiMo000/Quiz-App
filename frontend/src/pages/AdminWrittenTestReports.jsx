@@ -97,13 +97,13 @@ const AdminWrittenTestReports = () => {
     if (error) return <p className="error-message">{error}</p>;
 
     return (
-        <motion.div 
+        <motion.div
             className="container"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
         >
-            <motion.h1 
+            <motion.h1
                 variants={itemVariants}
                 whileHover={{ scale: 1.02 }}
             >
@@ -112,7 +112,7 @@ const AdminWrittenTestReports = () => {
 
             <AnimatePresence mode="wait">
                 {loading ? (
-                    <motion.div 
+                    <motion.div
                         className="loading-container"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -123,7 +123,7 @@ const AdminWrittenTestReports = () => {
                         <p>Loading reports...</p>
                     </motion.div>
                 ) : error ? (
-                    <motion.div 
+                    <motion.div
                         className="error-container"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -132,7 +132,7 @@ const AdminWrittenTestReports = () => {
                         <p className="error-message">{error}</p>
                     </motion.div>
                 ) : reports.length === 0 ? (
-                    <motion.div 
+                    <motion.div
                         className="no-reports"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -143,7 +143,7 @@ const AdminWrittenTestReports = () => {
                         <p className="no-reports-subtitle">Users haven't taken any written tests yet!</p>
                     </motion.div>
                 ) : (
-                    <motion.div 
+                    <motion.div
                         className="table-container"
                         variants={itemVariants}
                         key="reports-table"
@@ -170,35 +170,35 @@ const AdminWrittenTestReports = () => {
                             <motion.tbody>
                                 <AnimatePresence>
                                     {reports.map((report, index) => (
-                                        <motion.tr 
+                                        <motion.tr
                                             key={`admin-test-report-${report._id || index}`}
                                             variants={tableRowVariants}
                                             initial="hidden"
                                             animate="visible"
                                             exit="exit"
                                             layout
-                                            whileHover={{ 
+                                            whileHover={{
                                                 backgroundColor: "rgba(99, 102, 241, 0.05)",
-                                                scale: 1.01 
+                                                scale: 1.01
                                             }}
                                             transition={{ duration: 0.2 }}
                                             custom={index}
                                         >
-                                            <motion.td 
+                                            <motion.td
                                                 className="username-cell"
                                                 whileHover={{ x: 5, color: "#6366f1" }}
                                             >
                                                 {report.username}
                                             </motion.td>
                                             <motion.td whileHover={{ x: 5 }}>{report.testName}</motion.td>
-                                            <motion.td 
+                                            <motion.td
                                                 className="score-cell"
                                                 whileHover={{ scale: 1.1, color: "#6366f1" }}
                                             >
                                                 {report.score.toFixed(1)}
                                             </motion.td>
                                             <motion.td whileHover={{ x: 5 }}>{report.total}</motion.td>
-                                            <motion.td 
+                                            <motion.td
                                                 className="pass-status"
                                                 whileHover={{ scale: 1.2 }}
                                             >
@@ -209,8 +209,8 @@ const AdminWrittenTestReports = () => {
                                                 )}
                                             </motion.td>
                                             <motion.td>
-                                                <motion.button 
-                                                    className="delete-btn" 
+                                                <motion.button
+                                                    className="delete-btn"
                                                     onClick={() => deleteReport(report._id)}
                                                     disabled={deletingId === report._id}
                                                     whileHover={{ scale: 1.05, y: -2 }}
@@ -228,9 +228,9 @@ const AdminWrittenTestReports = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-            <NotificationModal 
-                notification={notification} 
-                onClose={hideNotification} 
+            <NotificationModal
+                notification={notification}
+                onClose={hideNotification}
             />
         </motion.div>
     );

@@ -27,7 +27,7 @@ const UserWrittenTests = () => {
         fetchTests();
     }, []);
 
-    
+
 
     if (loading) return <Spinner message="Loading tests..." />;
     if (error) return <p className="error-message">{error}</p>;

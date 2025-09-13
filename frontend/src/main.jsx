@@ -6,12 +6,12 @@ import App from './App.jsx'
 // Enhanced Service Worker Registration with better PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
-    try {    
+    try {
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
         updateViaCache: 'none'
       });
-      
+
       // Handle service worker updates with better UX
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
@@ -37,17 +37,17 @@ if ('serviceWorker' in navigator) {
           });
         }
       });
-      
+
       // Trigger installation criteria check after SW is ready
       if (registration.ready) {
-        registration.ready.then(() => { 
+        registration.ready.then(() => {
           // Force a check for PWA installability
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('pwa-check-installability'));
           }, 3000);
         });
       }
-      
+
       // Check for updates more frequently during development
       const isDevelopment = import.meta.env.DEV;
       if (isDevelopment) {
@@ -59,7 +59,7 @@ if ('serviceWorker' in navigator) {
           registration.update();
         }, 300000); // Every 5 minutes in production
       }
-      
+
     } catch (error) {
       console.error('❌ Service Worker registration failed:', error);
     }

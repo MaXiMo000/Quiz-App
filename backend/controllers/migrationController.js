@@ -5,7 +5,7 @@ import logger from "../utils/logger.js";
 export const migrateQuizDifficultyDistribution = async () => {
     logger.info("Starting quiz difficulty distribution migration");
     try {
-        
+
         const quizzes = await Quiz.find({
             $or: [
                 { difficultyDistribution: { $exists: false } },
@@ -18,7 +18,7 @@ export const migrateQuizDifficultyDistribution = async () => {
 
         for (const quiz of quizzes) {
             const distribution = { easy: 0, medium: 0, hard: 0 };
-            
+
             // Count difficulty distribution from existing questions
             quiz.questions.forEach(question => {
                 const difficulty = question.difficulty || "medium";
@@ -53,7 +53,7 @@ export const migrateQuizDifficultyDistribution = async () => {
 
         logger.info(`Successfully migrated ${updatedCount} quizzes`);
         return { success: true, updatedCount };
-        
+
     } catch (error) {
         logger.error({ message: "Quiz difficulty distribution migration failed", error: error.message, stack: error.stack });
         return { success: false, error: error.message };
@@ -65,7 +65,7 @@ export const runMigration = async (req, res) => {
     logger.info("API endpoint to trigger migration called");
     try {
         const result = await migrateQuizDifficultyDistribution();
-        
+
         if (result.success) {
             logger.info(`Migration API endpoint completed successfully, updated ${result.updatedCount} quizzes`);
             res.json({

@@ -537,7 +537,7 @@
     .analytics-tabs {
         flex-wrap: wrap;
     }
-    
+
     .tab-button {
         flex: 1;
         min-width: 120px;
@@ -550,68 +550,68 @@
         margin: 1rem 0;
         border-radius: 16px;
     }
-    
+
     .analytics-header {
         padding: 1.5rem 1rem;
         border-radius: 16px 16px 0 0;
     }
-    
+
     .analytics-header h3 {
         font-size: 1.8rem;
         margin-bottom: 0.75rem;
     }
-    
+
     .analytics-header p {
         font-size: 1rem;
         line-height: 1.4;
     }
-    
+
     .analytics-content {
         padding: 1.5rem 1rem;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .stat-card {
         padding: 1rem;
     }
-    
+
     .stat-icon {
         width: 50px;
         height: 50px;
         font-size: 1.5rem;
     }
-    
+
     .stat-content h4 {
         font-size: 1.5rem;
     }
-    
+
     .trends-chart {
         height: 150px;
         padding: 0.5rem;
     }
-    
+
     .trend-bar {
         min-width: 40px;
     }
-    
+
     .prediction-header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .predicted-score {
         font-size: 2.5rem;
     }
-    
+
     .strengths-weaknesses {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
+
     .analytics-tabs {
         flex-direction: column;
         overflow-x: visible;
@@ -619,7 +619,7 @@
         gap: 0.5rem;
         padding: 1rem;
     }
-    
+
     .tab-button {
         padding: 1rem 2rem;
         justify-content: center;
@@ -631,48 +631,48 @@
         transition: all 0.3s ease;
         position: relative;
     }
-    
+
     .tab-button:hover {
         background: var(--hover-color);
         border-color: var(--primary-color);
         transform: translateY(-2px);
         box-shadow: var(--shadow-medium);
     }
-    
+
     .tab-button.active {
         background: var(--primary-color);
         color: white;
         border-color: var(--primary-color);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
-    
+
     .tab-button.active::after {
         display: none;
     }
-    
+
     .tab-button:last-child {
         border-bottom: 2px solid var(--border-color);
     }
-    
+
     .tab-label {
         display: block;
         font-size: 1rem;
         font-weight: 600;
     }
-    
+
     .tab-icon {
         font-size: 1.3rem;
         margin-right: 0.75rem;
     }
-    
+
     .learning-analytics.empty {
         padding: 2rem 1rem;
     }
-    
+
     .learning-analytics.empty h3 {
         font-size: 1.3rem;
     }
-    
+
     .learning-analytics.empty p {
         font-size: 0.95rem;
         line-height: 1.4;
@@ -686,7 +686,7 @@
     .tip-card {
         transition: none;
     }
-    
+
     .category-fill {
         transition: none;
     }
@@ -697,11 +697,11 @@
     .stat-card {
         border-width: 3px;
     }
-    
+
     .trend-bar {
         border: 2px solid var(--text-primary);
     }
-    
+
     .confidence-badge,
     .trend-badge {
         border-width: 2px;

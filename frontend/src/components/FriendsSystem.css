@@ -639,17 +639,17 @@
         margin: 5px;
         border-radius: 10px;
     }
-    
+
     .friends-header h2 {
         font-size: 1.8em;
         margin-bottom: 8px;
     }
-    
+
     .friends-header p {
         font-size: 1em;
         padding: 0 10px;
     }
-    
+
     .friends-tabs {
         flex-wrap: wrap;
         justify-content: center;
@@ -657,7 +657,7 @@
         margin-bottom: 20px;
         padding: 0 10px;
     }
-    
+
     .tab-button {
         padding: 12px 18px;
         font-size: 0.9em;
@@ -665,7 +665,7 @@
         border-radius: 25px;
         flex-shrink: 0;
     }
-    
+
     .tab-button.active {
         background: var(--primary-color);
         color: white;
@@ -673,127 +673,127 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(var(--primary-color-rgb), 0.2);
     }
-    
+
     .tab-count {
         background: rgba(255, 255, 255, 0.2);
         font-size: 0.8em;
     }
-    
+
     .tab-button.active .tab-count {
         background: rgba(255, 255, 255, 0.2);
         color: white;
     }
-    
+
     .tab-button.active .tab-count {
         background: rgba(255, 255, 255, 0.2);
         color: white;
     }
-    
+
     .friends-grid, .search-results {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .blocked-grid {
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .blocked-user-card {
         padding: 16px;
         border-radius: 12px;
     }
-    
+
     .blocked-user-card h4 {
         font-size: 1em;
     }
-    
+
     .unblock-user-btn {
         padding: 6px 12px;
         font-size: 11px;
     }
-    
+
     .friend-card, .search-result-card {
         padding: 16px;
         border-radius: 15px;
         margin-bottom: 0;
         overflow: hidden;
     }
-    
+
     .search-result-card {
         display: flex;
         align-items: center;
         gap: 12px;
     }
-    
+
     .friend-avatar, .search-result-avatar {
         width: 45px;
         height: 45px;
         font-size: 1.1em;
     }
-    
+
     .friend-info h4, .search-result-info h4 {
         font-size: 1.05em;
         margin-bottom: 4px;
     }
-    
+
     .friend-level, .search-result-level {
         font-size: 0.85em;
         margin-bottom: 6px;
     }
-    
+
     .add-friend-btn {
         padding: 10px 18px;
         font-size: 0.9em;
         border-radius: 20px;
         min-width: 90px;
     }
-    
+
     .search-result-actions {
         min-width: 100px;
         gap: 6px;
     }
-    
+
     .search-block-btn {
         padding: 5px 10px;
         font-size: 11px;
         border-radius: 15px;
     }
-    
+
     .request-card {
         padding: 16px;
         border-radius: 15px;
         margin-bottom: 12px;
     }
-    
+
     .request-avatar {
         width: 42px;
         height: 42px;
     }
-    
+
     .request-actions {
         flex-direction: row;
         gap: 8px;
     }
-    
+
     .accept-btn, .decline-btn {
         padding: 8px 16px;
         font-size: 0.85em;
         border-radius: 15px;
         min-width: 70px;
     }
-    
+
     .search-input {
         padding: 14px 18px;
         font-size: 16px; /* Prevents zoom on iOS */
         border-radius: 25px;
         margin-bottom: 20px;
     }
-    
+
     .search-input-container {
         margin-bottom: 20px;
     }
-    
+
     .remove-friend-btn {
         opacity: 1; /* Always visible on mobile for better UX */
         right: 12px;
@@ -810,23 +810,23 @@
         padding: 4px 8px;
         font-size: 10px;
     }
-    
+
     .error-message {
         padding: 12px 16px;
         border-radius: 12px;
         margin: 0 5px 15px 5px;
         font-size: 0.9em;
     }
-    
+
     .tab-content {
         min-height: 300px;
     }
-    
+
     .empty-state, .no-results, .search-hint {
         padding: 30px 15px;
         font-size: 1em;
     }
-    
+
     .no-requests {
         padding: 30px 15px;
         font-size: 0.95em;
@@ -839,22 +839,22 @@
         padding: 8px;
         margin: 2px;
     }
-    
+
     .friends-header h2 {
         font-size: 1.6em;
     }
-    
+
     .friends-header p {
         font-size: 0.95em;
     }
-    
+
     .friends-tabs {
         flex-wrap: wrap;
         justify-content: center;
         gap: 8px;
         margin-bottom: 25px;
     }
-    
+
     .tab-button {
         padding: 10px 16px;
         font-size: 0.85em;
@@ -863,14 +863,14 @@
         max-width: 180px;
         justify-content: center;
     }
-    
+
     .tab-count {
         font-size: 0.75em;
         min-width: 18px;
         height: 18px;
         padding: 1px 6px;
     }
-    
+
     .friend-card, .search-result-card, .request-card {
         padding: 14px;
         overflow: hidden;
@@ -883,17 +883,17 @@
         justify-content: flex-end;
         align-items: center;
     }
-    
+
     .search-result-card {
         display: flex;
         align-items: center;
         gap: 10px;
     }
-    
+
     .blocked-user-card {
         padding: 14px;
     }
-    
+
     .block-user-btn {
         position: static;
         width: 20px;
@@ -910,41 +910,41 @@
         font-size: 12px;
         opacity: 1;
     }
-    
+
     .unblock-user-btn {
         padding: 6px 10px;
         font-size: 10px;
     }
-    
+
     .friend-avatar, .search-result-avatar, .request-avatar {
         width: 40px;
         height: 40px;
         font-size: 1em;
     }
-    
+
     .add-friend-btn {
         padding: 8px 14px;
         font-size: 0.8em;
         min-width: 80px;
     }
-    
+
     .search-result-actions {
         min-width: 85px;
         gap: 4px;
     }
-    
+
     .search-block-btn {
         padding: 4px 8px;
         font-size: 10px;
         border-radius: 12px;
     }
-    
+
     .accept-btn, .decline-btn {
         padding: 6px 12px;
         font-size: 0.8em;
         min-width: 60px;
     }
-    
+
     .search-input {
         padding: 12px 16px;
         border-radius: 20px;

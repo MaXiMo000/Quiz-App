@@ -50,7 +50,7 @@ Visit: http://localhost:5173/pwa-install-guide.html
 - Or Menu → Install Quiz Master...
 
 **Edge:**
-- Look for 📱 Install app icon in address bar  
+- Look for 📱 Install app icon in address bar
 - Or Menu → Apps → Install this site as an app
 
 **Safari (iOS):**

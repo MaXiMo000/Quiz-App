@@ -273,11 +273,11 @@
     .intelligence-dashboard-container {
         padding: 1.5rem;
     }
-    
+
     .dashboard-header {
         padding: 1.5rem;
     }
-    
+
     .header-text h1 {
         font-size: 2rem;
     }
@@ -289,19 +289,19 @@
         align-items: flex-start;
         gap: 1.5rem;
     }
-    
+
     .quick-actions h3 {
         text-align: left;
         margin-bottom: 0;
     }
-    
+
     .action-buttons {
         width: 100%;
         justify-content: stretch;
         flex-direction: row;
         flex-wrap: wrap;
     }
-    
+
     .action-btn {
         flex: 1;
         min-width: 150px;
@@ -312,7 +312,7 @@
     .header-text h1 {
         font-size: 2.2rem;
     }
-    
+
     .premium-badge {
         font-size: 0.85rem;
         padding: 0.4rem 0.8rem;
@@ -323,69 +323,69 @@
     .intelligence-dashboard-container {
         padding: 1rem;
     }
-    
+
     .dashboard-header {
         padding: 1.5rem 1rem;
     }
-    
+
     .header-content {
         flex-direction: column;
         gap: 1rem;
         align-items: flex-start;
     }
-    
+
     .header-text {
         width: 100%;
     }
-    
+
     .header-text h1 {
         font-size: 1.8rem;
         line-height: 1.1;
     }
-    
+
     .premium-badge {
         align-self: flex-end;
         margin-top: 0.5rem;
     }
-    
+
     .header-text p {
         font-size: 1rem;
     }
-    
+
     .user-info {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
     }
-    
+
     .welcome-text {
         font-size: 1.1rem;
     }
-    
+
     .quick-actions {
         flex-direction: column;
         align-items: flex-start;
         gap: 1.5rem;
     }
-    
+
     .quick-actions h3 {
         text-align: left;
         margin-bottom: 0;
     }
-    
+
     .action-buttons {
         width: 100%;
         justify-content: stretch;
         flex-direction: column;
         gap: 0.75rem;
     }
-    
+
     .action-btn {
         padding: 0.875rem 1rem;
         font-size: 0.95rem;
         width: 100%;
     }
-    
+
     .dashboard-content {
         gap: 1.5rem;
     }
@@ -396,16 +396,16 @@
         width: 150px;
         height: 150px;
     }
-    
+
     .header-text h1 {
         font-size: 1.6rem;
     }
-    
+
     .premium-badge {
         padding: 0.4rem 0.8rem;
         font-size: 0.85rem;
     }
-    
+
     .quick-actions {
         padding: 1.5rem;
     }
@@ -426,11 +426,11 @@
     .dashboard-section {
         border-width: 2px;
     }
-    
+
     .action-btn.secondary {
         border-width: 3px;
     }
-    
+
     .premium-badge {
         border-width: 2px;
     }
@@ -441,11 +441,11 @@
     .badge-icon {
         animation: none;
     }
-    
+
     .dashboard-section:hover {
         transform: none;
     }
-    
+
     .action-btn:hover {
         transform: none;
     }

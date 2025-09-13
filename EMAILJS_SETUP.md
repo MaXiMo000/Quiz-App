@@ -20,7 +20,7 @@ Reply to: {{from_email}}
 
 ### 3. Get Your Credentials
 - Service ID: Found in EmailJS dashboard > Email Services
-- Template ID: Found in EmailJS dashboard > Email Templates  
+- Template ID: Found in EmailJS dashboard > Email Templates
 - Public Key: Found in EmailJS dashboard > Account > API Keys
 
 ### 4. Environment Variables
@@ -49,7 +49,7 @@ VITE_CONTACT_KEY=your_public_key
 
 ## 📧 Template Variables Used
 - `from_name` - User's name
-- `from_email` - User's email  
+- `from_email` - User's email
 - `message` - User's message
 
 ## 🎨 Customization

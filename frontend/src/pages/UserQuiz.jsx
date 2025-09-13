@@ -49,7 +49,7 @@ const UserQuiz = () => {
             </div>
         </div>
     );
-    
+
     if (error) return (
         <div className="user-quiz-container">
             <div className="error-container">
@@ -60,7 +60,7 @@ const UserQuiz = () => {
 
     return (
         <>
-        <motion.div 
+        <motion.div
             className="user-quiz-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -85,7 +85,7 @@ const UserQuiz = () => {
                     </div>
                 </div>
             ) : (
-                <motion.div 
+                <motion.div
                     className="quiz-grid"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -99,8 +99,8 @@ const UserQuiz = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                transition={{ 
-                                    duration: 0.2, 
+                                transition={{
+                                    duration: 0.2,
                                     delay: index * 0.02
                                 }}
                                 whileHover={{ y: -4 }}
@@ -109,30 +109,30 @@ const UserQuiz = () => {
                                     <div className="quiz-icon">
                                         🎯
                                     </div>
-                                    
+
                                     <h3 className="quiz-title">
                                         {quiz.title}
                                     </h3>
-                                    
+
                                     <div className="quiz-details">
                                         <div className="detail-item">
                                             <span className="detail-icon">🏷️</span>
                                             <span>Category: {quiz.category}</span>
                                         </div>
-                                        
+
                                         <div className="detail-item">
                                             <span className="detail-icon">⏱️</span>
                                             <span>Duration: {quiz.duration} minutes</span>
                                         </div>
-                                        
+
                                         <div className="detail-item">
                                             <span className="detail-icon">📊</span>
                                             <span>Questions: {quiz.questions?.length || 0}</span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="quiz-actions">
-                                        <button 
+                                        <button
                                             className="start-quiz-btn"
                                             onClick={() => {
                                                 // Enter fullscreen first, then navigate
@@ -164,8 +164,8 @@ const UserQuiz = () => {
                                             <span>🚀</span>
                                             Start Quiz
                                         </button>
-                                        
-                                        <button 
+
+                                        <button
                                             className="share-quiz-btn"
                                             onClick={() => {
                                                 setSelectedQuiz(quiz);
@@ -177,20 +177,20 @@ const UserQuiz = () => {
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 <div className="quiz-card-bg-effect"></div>
                             </motion.div>
                         ))}
                     </AnimatePresence>
                 </motion.div>
             )}
-            
+
             {/* Optimized floating decorative elements */}
             <div className="floating-element floating-quiz-1" />
             <div className="floating-element floating-quiz-2" />
         </motion.div>
-        
-        <ShareQuizModal 
+
+        <ShareQuizModal
             quiz={selectedQuiz}
             isOpen={shareModalOpen}
             onClose={() => {

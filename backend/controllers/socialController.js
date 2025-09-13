@@ -71,7 +71,7 @@ export const sendFriendRequest = async (req, res) => {
         });
 
         logger.info(`Friend request sent successfully from ${requesterId} to ${recipientId}`);
-        res.status(201).json({ 
+        res.status(201).json({
             message: "Friend request sent successfully",
             friendRequest: await friendRequest.populate("recipient", "name email")
         });
@@ -137,7 +137,7 @@ export const respondToFriendRequest = async (req, res) => {
         });
 
         logger.info(`User ${userId} successfully responded to friend request ${requestId} with action ${action}`);
-        res.json({ 
+        res.json({
             message: `Friend request ${action}ed successfully`,
             friendRequest: await friendRequest.populate(["requester", "recipient"], "name email")
         });
@@ -153,7 +153,7 @@ export const getFriends = async (req, res) => {
     logger.info(`Getting friends for user ${req.user.id}`);
     try {
         const userId = req.user.id;
-        
+
         const user = await UserQuiz.findById(userId)
             .populate("social.friends", "name email level xp lastSeen isOnline social.privacy")
             .select("social.friends");
@@ -386,7 +386,7 @@ export const blockUser = async (req, res) => {
             // Update existing relationship to blocked
             relationship.status = "blocked";
             relationship.responseDate = new Date();
-            
+
             // Ensure the blocker is always the requester for blocked relationships
             if (relationship.recipient.toString() === userId) {
                 // Swap requester and recipient
@@ -394,7 +394,7 @@ export const blockUser = async (req, res) => {
                 relationship.requester = relationship.recipient;
                 relationship.recipient = temp;
             }
-            
+
             await relationship.save();
 
             // Remove from friends list if they were friends
@@ -417,20 +417,20 @@ export const blockUser = async (req, res) => {
 
         // Remove from friend requests if any
         await UserQuiz.findByIdAndUpdate(userId, {
-            $pull: { 
+            $pull: {
                 "social.friendRequests.sent": { $in: [relationship._id] },
                 "social.friendRequests.received": { $in: [relationship._id] }
             }
         });
         await UserQuiz.findByIdAndUpdate(targetUserId, {
-            $pull: { 
+            $pull: {
                 "social.friendRequests.sent": { $in: [relationship._id] },
                 "social.friendRequests.received": { $in: [relationship._id] }
             }
         });
 
         logger.info(`User ${userId} successfully blocked user ${targetUserId}`);
-        res.json({ 
+        res.json({
             message: "User blocked successfully",
             relationship: await relationship.populate("recipient", "name email")
         });

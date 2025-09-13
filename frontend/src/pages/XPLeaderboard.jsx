@@ -80,25 +80,25 @@ const XPLeaderboard = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className="leaderboard-container"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
         >
-            <motion.h2 
+            <motion.h2
                 variants={itemVariants}
                 whileHover={{ scale: 1.02 }}
             >
                 🔥 XP Leaderboard ({period === "weekly" ? "Weekly" : "Monthly"})
             </motion.h2>
 
-            <motion.div 
+            <motion.div
                 className="leaderboard-buttons"
                 variants={itemVariants}
             >
-                <motion.button 
-                    onClick={() => handlePeriodChange("weekly")} 
+                <motion.button
+                    onClick={() => handlePeriodChange("weekly")}
                     className={period === "weekly" ? "active" : ""}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
@@ -106,8 +106,8 @@ const XPLeaderboard = () => {
                 >
                     Weekly
                 </motion.button>
-                <motion.button 
-                    onClick={() => handlePeriodChange("monthly")} 
+                <motion.button
+                    onClick={() => handlePeriodChange("monthly")}
                     className={period === "monthly" ? "active" : ""}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
@@ -119,7 +119,7 @@ const XPLeaderboard = () => {
 
             <AnimatePresence mode="wait">
                 {loading ? (
-                    <motion.div 
+                    <motion.div
                         className="loading-container"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -130,7 +130,7 @@ const XPLeaderboard = () => {
                         <p>Loading leaderboard...</p>
                     </motion.div>
                 ) : error ? (
-                    <motion.div 
+                    <motion.div
                         className="error-container"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -139,7 +139,7 @@ const XPLeaderboard = () => {
                         <p className="error-message">{error}</p>
                     </motion.div>
                 ) : data.length > 0 ? (
-                    <motion.div 
+                    <motion.div
                         className="leaderboard-table"
                         variants={itemVariants}
                         key="leaderboard-content"
@@ -163,21 +163,21 @@ const XPLeaderboard = () => {
                             <motion.tbody>
                                 <AnimatePresence>
                                     {data.map((user, index) => (
-                                        <motion.tr 
+                                        <motion.tr
                                             key={`${user.username}-${index}`}
                                             variants={tableRowVariants}
                                             initial="hidden"
                                             animate="visible"
-                                            whileHover={{ 
+                                            whileHover={{
                                                 backgroundColor: "rgba(99, 102, 241, 0.05)",
-                                                scale: 1.01 
+                                                scale: 1.01
                                             }}
                                             transition={{ duration: 0.2 }}
                                             custom={index}
                                         >
-                                            <motion.td 
+                                            <motion.td
                                                 className="rank-cell"
-                                                whileHover={{ 
+                                                whileHover={{
                                                     scale: 1.2,
                                                     color: getRankColor(index)
                                                 }}
@@ -185,13 +185,13 @@ const XPLeaderboard = () => {
                                                 <span className="rank-icon">{getRankIcon(index)}</span>
                                                 #{index + 1}
                                             </motion.td>
-                                            <motion.td 
+                                            <motion.td
                                                 className="username-cell"
                                                 whileHover={{ x: 5, color: "#6366f1" }}
                                             >
                                                 {user.username}
                                             </motion.td>
-                                            <motion.td 
+                                            <motion.td
                                                 className="xp-cell"
                                                 whileHover={{ scale: 1.1, color: "#d946ef" }}
                                             >
@@ -204,7 +204,7 @@ const XPLeaderboard = () => {
                         </motion.table>
                     </motion.div>
                 ) : (
-                    <motion.div 
+                    <motion.div
                         className="no-data"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}

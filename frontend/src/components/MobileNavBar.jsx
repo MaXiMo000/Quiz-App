@@ -101,7 +101,7 @@ const MobileNavBar = ({ onMenuClick }) => {
   const navigationItems = getNavigationItems();
 
   return (
-    <motion.div 
+    <motion.div
       className="mobile-nav-bar"
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -151,7 +151,7 @@ const MobileNavBar = ({ onMenuClick }) => {
                 />
               )}
             </motion.div>
-            <span 
+            <span
               className={`nav-label ${activeTab === item.id ? 'active' : ''}`}
               style={{ color: activeTab === item.id ? item.color : '#64748b' }}
             >

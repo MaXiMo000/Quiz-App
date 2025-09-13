@@ -4,15 +4,15 @@
 const config = {
   // Backend URL - this can be public as it's just the API endpoint
   BACKEND_URL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000',
-  
+
   // App configuration
   APP_NAME: 'QuizNest',
   APP_VERSION: '1.0.0',
-  
+
   // Public API timeouts and limits
   API_TIMEOUT: 30000,
   MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
-  
+
   // Feature flags (public)
   FEATURES: {
     ANALYTICS_ENABLED: true,

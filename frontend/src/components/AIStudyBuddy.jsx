@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import './AIStudyBuddy.css';
-import { 
-    QuizCreatorModal, 
-    QuizPreviewModal, 
-    ConceptModal, 
-    ReminderModal, 
-    ErrorModal 
+import {
+    QuizCreatorModal,
+    QuizPreviewModal,
+    ConceptModal,
+    ReminderModal,
+    ErrorModal
 } from './AIStudyBuddyModals';
 
 const AIStudyBuddy = () => {
@@ -48,9 +48,9 @@ const AIStudyBuddy = () => {
     };
 
     const showError = (message, title = 'Error') => {
-        setModalData(prev => ({ 
-            ...prev, 
-            error: { message, title } 
+        setModalData(prev => ({
+            ...prev,
+            error: { message, title }
         }));
         openModal('error');
     };
@@ -78,7 +78,7 @@ const AIStudyBuddy = () => {
             const token = localStorage.getItem('token');
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/start-session`,
-                { 
+                {
                     preferences: {
                         learningStyle: 'visual',
                         difficulty: 'intermediate'
@@ -98,10 +98,10 @@ const AIStudyBuddy = () => {
                 timestamp: new Date()
             }]);
             setIsSessionActive(true);
-            
+
             // Get recommendations
             loadRecommendations();
-            
+
         } catch (error) {
             console.error('Error starting AI session:', error);
             showError('Failed to start AI Study Buddy session. Please try again.');
@@ -144,7 +144,7 @@ const AIStudyBuddy = () => {
             const token = localStorage.getItem('token');
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/chat`,
-                { 
+                {
                     message: message,
                     requestType: requestType
                 },
@@ -168,7 +168,7 @@ const AIStudyBuddy = () => {
         } catch (error) {
             console.error('Error sending message:', error);
             setIsTyping(false);
-            
+
             const errorMessage = {
                 id: Date.now() + 1,
                 role: 'assistant',
@@ -176,7 +176,7 @@ const AIStudyBuddy = () => {
                 timestamp: new Date(),
                 isError: true
             };
-            
+
             setMessages(prev => [...prev, errorMessage]);
         } finally {
             setIsLoading(false);
@@ -187,15 +187,15 @@ const AIStudyBuddy = () => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem('token');
-            
+
             // Validate inputs
             const validDifficulties = ['easy', 'medium', 'hard'];
-            const normalizedDifficulty = validDifficulties.includes(difficulty.toLowerCase()) 
-                ? difficulty.toLowerCase() 
+            const normalizedDifficulty = validDifficulties.includes(difficulty.toLowerCase())
+                ? difficulty.toLowerCase()
                 : 'medium';
-            
+
             const validQuestionCount = Math.min(Math.max(parseInt(questionCount) || 5, 1), 20);
-            
+
             // Add immediate feedback message
             const generatingMessage = {
                 id: Date.now(),
@@ -204,12 +204,12 @@ const AIStudyBuddy = () => {
                 timestamp: new Date(),
                 isGenerating: true
             };
-            
+
             setMessages(prev => [...prev, generatingMessage]);
-            
+
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/generate-quiz`,
-                { 
+                {
                     topic: topic || 'general knowledge',
                     difficulty: normalizedDifficulty,
                     questionCount: validQuestionCount
@@ -369,13 +369,13 @@ const AIStudyBuddy = () => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem('token');
-            
+
             // Get the last study plan from messages
             const lastMessage = messages[messages.length - 1];
             if (lastMessage && lastMessage.role === 'assistant') {
                 const response = await axios.post(
                     `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/save-study-plan`,
-                    { 
+                    {
                         studyPlanContent: lastMessage.content,
                         timestamp: new Date()
                     },
@@ -383,7 +383,7 @@ const AIStudyBuddy = () => {
                         headers: { Authorization: `Bearer ${token}` }
                     }
                 );
-                
+
                 // Add confirmation message
                 const confirmationMessage = {
                     id: Date.now(),
@@ -391,7 +391,7 @@ const AIStudyBuddy = () => {
                     content: response.data.message || 'Study plan saved successfully! You can access it from your dashboard.',
                     timestamp: new Date()
                 };
-                
+
                 setMessages(prev => [...prev, confirmationMessage]);
             }
         } catch (error) {
@@ -413,10 +413,10 @@ const AIStudyBuddy = () => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem('token');
-            
+
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/set-reminder`,
-                { 
+                {
                     reminderText: reminderTime,
                     context: 'study_session'
                 },
@@ -424,14 +424,14 @@ const AIStudyBuddy = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-            
+
             const confirmationMessage = {
                 id: Date.now(),
                 role: 'assistant',
                 content: response.data.message || `Great! I'll remind you ${reminderTime}. Check your notifications for updates.`,
                 timestamp: new Date()
             };
-            
+
             setMessages(prev => [...prev, confirmationMessage]);
         } catch (error) {
             console.error('Error setting reminder:', error);
@@ -452,14 +452,14 @@ const AIStudyBuddy = () => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem('token');
-            
+
             const response = await axios.get(
                 `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/track-progress`,
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-            
+
             const progressMessage = {
                 id: Date.now(),
                 role: 'assistant',
@@ -467,7 +467,7 @@ const AIStudyBuddy = () => {
                 timestamp: new Date(),
                 actions: ['practice_weak_areas', 'generate_quiz']
             };
-            
+
             setMessages(prev => [...prev, progressMessage]);
         } catch (error) {
             console.error('Error tracking improvement:', error);
@@ -530,7 +530,7 @@ const AIStudyBuddy = () => {
         >
             <div className="message-content">
                 {message.content}
-                
+
                 {/* Quiz Component */}
                 {message.quiz && (
                     <div className="quiz-preview">
@@ -552,9 +552,9 @@ const AIStudyBuddy = () => {
                             <motion.button
                                 className="preview-quiz-btn secondary"
                                 onClick={() => {
-                                    setModalData(prev => ({ 
-                                        ...prev, 
-                                        quizPreview: message.quiz 
+                                    setModalData(prev => ({
+                                        ...prev,
+                                        quizPreview: message.quiz
                                     }));
                                     openModal('quizPreview');
                                 }}
@@ -566,7 +566,7 @@ const AIStudyBuddy = () => {
                         </div>
                     </div>
                 )}
-                
+
                 {/* Action Buttons */}
                 {message.actions && message.actions.length > 0 && (
                     <div className="message-actions">
@@ -585,7 +585,7 @@ const AIStudyBuddy = () => {
                                     'offer_practice': '📝 Practice Questions',
                                     'suggest_related_topics': '🔗 Related Topics'
                                 };
-                                
+
                                 return actionMap[actionName] || actionName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                             };
 
@@ -652,7 +652,7 @@ const AIStudyBuddy = () => {
                     >
                         Your personalized AI tutor is ready to help you learn, practice, and improve your quiz performance!
                     </motion.p>
-                    
+
                     <div className="features-preview">
                         <div className="feature">
                             <span className="feature-icon">🎯</span>
@@ -750,7 +750,7 @@ const AIStudyBuddy = () => {
 
                 {/* Input Area */}
                 <div className="input-area">
-                    <div 
+                    <div
                         className="input-container"
                         onClick={() => {
                             console.log('Container clicked');
@@ -772,7 +772,7 @@ const AIStudyBuddy = () => {
                             }}
                             placeholder="Ask me anything about studying, request a quiz, or get help with concepts..."
                             disabled={isLoading}
-                            style={{ 
+                            style={{
                                 flex: 1,
                                 border: 'none',
                                 background: 'transparent',

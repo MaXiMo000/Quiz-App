@@ -393,9 +393,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05), 
-        rgba(139, 92, 246, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05),
+        rgba(139, 92, 246, 0.05),
         rgba(236, 72, 153, 0.05));
     opacity: 0;
     transition: opacity var(--transition-normal);
@@ -469,9 +469,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.03), 
-        rgba(139, 92, 246, 0.03), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.03),
+        rgba(139, 92, 246, 0.03),
         rgba(236, 72, 153, 0.03));
     opacity: 0;
     transition: opacity var(--transition-normal);
@@ -549,9 +549,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05), 
-        rgba(139, 92, 246, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05),
+        rgba(139, 92, 246, 0.05),
         rgba(236, 72, 153, 0.05));
     opacity: 0;
     transition: opacity var(--transition-normal);
@@ -630,9 +630,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(239, 68, 68, 0.05), 
-        rgba(220, 38, 38, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(239, 68, 68, 0.05),
+        rgba(220, 38, 38, 0.05),
         rgba(185, 28, 28, 0.05));
     opacity: 0;
     transition: opacity var(--transition-normal);
@@ -826,21 +826,21 @@
         gap: var(--space-xl);
         max-width: 1200px;
     }
-    
+
     .help-navigation {
         padding: var(--space-lg);
     }
-    
+
     .help-main-content {
         padding: var(--space-xl);
     }
-    
+
     .nav-item {
         min-width: 300px;
         min-height: 75px;
         padding: var(--space-lg) var(--space-md);
     }
-    
+
     .nav-icon {
         font-size: 1.8rem;
     }
@@ -851,32 +851,32 @@
         grid-template-columns: 320px 1fr;
         gap: var(--space-xl);
     }
-    
+
     .help-navigation {
         padding: var(--space-lg);
     }
-    
+
     .help-main-content {
         padding: var(--space-xl);
     }
-    
+
     .quick-help-buttons {
         grid-template-columns: repeat(3, 1fr);
         gap: var(--space-sm);
     }
-    
+
     .nav-item {
         min-width: 300px;
         min-height: 70px;
         padding: var(--space-lg) var(--space-sm);
         font-size: 0.95rem;
     }
-    
+
     .nav-icon {
         font-size: 1.6rem;
         min-width: 28px;
     }
-    
+
     .nav-text {
         font-size: 0.85rem;
     }
@@ -887,56 +887,56 @@
         grid-template-columns: 1fr;
         gap: var(--space-lg);
     }
-    
+
     .help-navigation {
         position: static;
         order: 2;
         margin-top: var(--space-lg);
     }
-    
+
     .help-main-content {
         order: 1;
     }
-    
+
     .user-types-nav {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .user-type-btn {
         width: 100%;
         max-width: 400px;
     }
-    
+
     .quick-help-buttons {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--space-sm);
     }
-    
+
     .help-navigation h3 {
         font-size: 1.2rem;
     }
-    
+
     .nav-item {
         min-width: 250px;
         min-height: 60px;
         padding: var(--space-md) var(--space-sm);
         font-size: 0.9rem;
     }
-    
+
     .nav-icon {
         font-size: 1.4rem;
         min-width: 26px;
     }
-    
+
     .nav-text {
         font-size: 0.8rem;
     }
-    
+
     .help-search-input {
         font-size: 0.9rem;
     }
-    
+
     .search-icon {
         font-size: 1rem;
     }
@@ -947,20 +947,20 @@
         padding: var(--space-md);
         text-align: center;
     }
-    
+
     .help-guide-header h1 {
         font-size: 2.2rem;
     }
-    
+
     .help-subtitle {
         font-size: 1rem;
     }
-    
+
     .help-main-content {
         padding: var(--space-lg);
         text-align: center;
     }
-    
+
     .section-header h2 {
         font-size: 1.8rem;
         flex-direction: column;
@@ -969,47 +969,47 @@
         justify-content: center;
         align-items: center;
     }
-    
+
     .section-icon {
         font-size: 2rem;
     }
-    
+
     .step-item {
         flex-direction: column;
         text-align: center;
         gap: var(--space-md);
     }
-    
+
     .step-number {
         align-self: center;
     }
-    
+
     .quick-help-buttons {
         display: grid;
         grid-template-columns: 1fr;
         gap: var(--space-sm);
         align-items: center;
     }
-    
+
     .quick-help-btn {
         width: 100%;
         max-width: 100%;
         padding: var(--space-sm) var(--space-md);
         font-size: 0.9rem;
     }
-    
+
     .feature-card h4 {
         font-size: 1.1rem;
     }
-    
+
     .feature-card p {
         font-size: 0.9rem;
     }
-    
+
     .tip-category h4 {
         font-size: 1.2rem;
     }
-    
+
     .problem-item h4 {
         font-size: 1.1rem;
     }
@@ -1020,89 +1020,89 @@
         padding: var(--space-sm);
         text-align: center;
     }
-    
+
     .help-guide-header h1 {
         font-size: 1.8rem;
     }
-    
+
     .help-main-content {
         padding: var(--space-md);
         text-align: center;
     }
-    
+
     .section-header h2 {
         font-size: 1.5rem;
         text-align: center;
         justify-content: center;
         align-items: center;
     }
-    
+
     .nav-item {
         min-width: 200px;
         min-height: 50px;
         padding: var(--space-sm) var(--space-xs);
         font-size: 0.85rem;
     }
-    
+
     .nav-icon {
         font-size: 1.2rem;
         min-width: 24px;
     }
-    
+
     .nav-text {
         font-size: 0.75rem;
     }
-    
+
     .feature-item,
     .step-item,
     .tip-category,
     .problem-item {
         padding: var(--space-md);
     }
-    
+
     .step-number {
         width: 40px;
         height: 40px;
         font-size: 1rem;
     }
-    
+
     .quick-help-btn {
         padding: var(--space-xs) var(--space-sm);
         font-size: 0.8rem;
     }
-    
+
     .feature-card h4 {
         font-size: 1rem;
     }
-    
+
     .feature-card p {
         font-size: 0.85rem;
     }
-    
+
     .tip-category h4 {
         font-size: 1.1rem;
     }
-    
+
     .problem-item h4 {
         font-size: 1rem;
     }
-    
+
     .section-description {
         font-size: 0.95rem;
     }
-    
+
     .help-search-input {
         font-size: 0.85rem;
     }
-    
+
     .search-icon {
         font-size: 0.9rem;
     }
-    
+
     .no-results p {
         font-size: 0.8rem;
     }
-    
+
     .clear-search-btn {
         font-size: 0.8rem;
         padding: var(--space-xs) var(--space-sm);

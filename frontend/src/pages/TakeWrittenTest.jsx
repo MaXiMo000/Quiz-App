@@ -123,7 +123,7 @@ const TakeWrittenTest = () => {
                 }, {
                     headers: { "Content-Type": "application/json" }
                 });
-                
+
 
                 const data = response.data;
                 if (data.score !== undefined && !isNaN(data.score)) {
@@ -166,7 +166,7 @@ const TakeWrittenTest = () => {
 
         navigate("/user/written-reports");
     };
-    
+
 
     if (loading) return <Spinner message="Loading test..." />;
     if (error) return <p className="error-message">{error}</p>;
@@ -191,8 +191,8 @@ const TakeWrittenTest = () => {
 
             <div className="navigation-buttons">
                 <button onClick={handlePrev} disabled={currentQuestion === 0}>Previous</button>
-                <button 
-                    onClick={handleNext} 
+                <button
+                    onClick={handleNext}
                     disabled={currentQuestion === test.questions.length - 1}
                 >
                     Next
@@ -207,7 +207,7 @@ const TakeWrittenTest = () => {
             </div>
 
             {score !== null && <h2>Your Score: {score}/{test.totalMarks}</h2>}
-            
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}

@@ -9,19 +9,19 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
     const [selectedCategory, setSelectedCategory] = useState('general');
 
     const categories = [
-        'general', 'mathematics', 'science', 'history', 
+        'general', 'mathematics', 'science', 'history',
         'literature', 'geography', 'programming', 'sports'
     ];
 
     useEffect(() => {
         const fetchAdaptiveDifficulty = async () => {
             if (!user?._id) return;
-            
+
             try {
                 setLoading(true);
                 const response = await axios.get(`/api/intelligence/adaptive-difficulty?category=${selectedCategory}`)
                 setAdaptiveData(response.data);
-                
+
                 // Notify parent component about recommended difficulty
                 if (onDifficultyChange) {
                     onDifficultyChange(response.data.recommendedDifficulty);
@@ -75,7 +75,7 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
 
     return (
         <div className="adaptive-difficulty">
-            
+
             <div className="difficulty-header">
                 <h4>🎯 Smart Difficulty Recommendation</h4>
                 <p>Based on your recent performance</p>
@@ -83,9 +83,9 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
 
             <div className="category-selector">
                 <label htmlFor="category-select">Select Category:</label>
-                <select 
+                <select
                     id="category-select"
-                    value={selectedCategory} 
+                    value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="category-dropdown"
                 >
@@ -97,7 +97,7 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
                 </select>
             </div>
 
-            <motion.div 
+            <motion.div
                 className="difficulty-recommendation"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -108,7 +108,7 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
                         {getDifficultyIcon(adaptiveData.recommendedDifficulty)}
                     </div>
                     <div className="difficulty-info">
-                        <h3 
+                        <h3
                             style={{ color: getDifficultyColor(adaptiveData.recommendedDifficulty) }}
                         >
                             {adaptiveData.recommendedDifficulty.toUpperCase()}
@@ -119,9 +119,9 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
 
                 <div className="confidence-section">
                     <div className="confidence-bar">
-                        <div 
+                        <div
                             className="confidence-fill"
-                            style={{ 
+                            style={{
                                 width: `${adaptiveData.confidence * 100}%`,
                                 backgroundColor: getDifficultyColor(adaptiveData.recommendedDifficulty)
                             }}
@@ -149,11 +149,11 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
             <div className="difficulty-explanation">
                 <h5>💡 Why this difficulty?</h5>
                 <p>
-                    {adaptiveData.recommendedDifficulty === 'easy' && 
+                    {adaptiveData.recommendedDifficulty === 'easy' &&
                         "Based on your recent performance, we recommend starting with easier questions to build confidence and solidify your foundation."}
-                    {adaptiveData.recommendedDifficulty === 'medium' && 
+                    {adaptiveData.recommendedDifficulty === 'medium' &&
                         "Your performance shows you're ready for medium difficulty questions that will challenge you appropriately while maintaining good learning progress."}
-                    {adaptiveData.recommendedDifficulty === 'hard' && 
+                    {adaptiveData.recommendedDifficulty === 'hard' &&
                         "Excellent work! Your strong performance indicates you're ready for challenging questions that will push your limits and accelerate learning."}
                 </p>
             </div>

@@ -7,7 +7,7 @@ import "./Spinner.css";
 const Spinner = ({ message = "Loading..." }) => {
     const location = useLocation();
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-    
+
     // Beautiful auth loading screen for login/register pages
     if (isAuthPage) {
         return (
@@ -24,10 +24,10 @@ const Spinner = ({ message = "Loading..." }) => {
             </div>
         );
     }
-    
+
     // Default spinner for other pages
     return (
-        <motion.div 
+        <motion.div
             className="enhanced-spinner-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -35,14 +35,14 @@ const Spinner = ({ message = "Loading..." }) => {
             transition={{ duration: 0.3 }}
         >
             <div className="enhanced-loading-container">
-                <motion.div 
+                <motion.div
                     className="enhanced-loading-spinner"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 >
                     <div className="enhanced-spinner-ring"></div>
                 </motion.div>
-                <motion.p 
+                <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}

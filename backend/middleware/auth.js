@@ -16,7 +16,7 @@ export const verifyToken = (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-    
+
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         logger.info("✅ Token decoded successfully:", { id: decoded.id, email: decoded.email });
@@ -27,4 +27,3 @@ export const verifyToken = (req, res, next) => {
         return res.status(403).json({ message: "Invalid or expired token." });
     }
 };
-

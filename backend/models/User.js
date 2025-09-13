@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     lastQuizDate:  { type: Date,   default: null },  // last quiz date
     unlockedThemes:{ type: [String], default: [] },   // unlocked UI themes
     selectedTheme: { type: String, default: "Default" }, // selected UI theme
-    
+
     // Phase 2: Intelligence Layer - User preferences and analytics
     preferences: {
         favoriteCategories: { type: [String], default: [] },
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
         weakAreas: { type: [String], default: [] },
         strongAreas: { type: [String], default: [] }
     },
-    
+
     // Intelligence tracking for AI features
     intelligence: {
         weakAreas: { type: [String], default: [] },
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
         adaptiveDifficulty: { type: String, enum: ["easy", "medium", "hard"], default: "medium" },
         lastAnalyzed: { type: Date, default: Date.now }
     },
-    
+
     // Performance tracking for adaptive difficulty
     performanceHistory: [{
         quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz" },
@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
         timeSpent: Number, // in seconds
         date: { type: Date, default: Date.now }
     }],
-    
+
     // Smart recommendations tracking
     recommendationHistory: [{
         quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz" },
@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
         taken: { type: Boolean, default: false },
         takenAt: Date
     }],
-    
+
     // Phase 3: Social Features
     social: {
         // Friends system
@@ -62,10 +62,10 @@ const userSchema = new mongoose.Schema({
             sent: [{ type: mongoose.Schema.Types.ObjectId, ref: "Friend" }],
             received: [{ type: mongoose.Schema.Types.ObjectId, ref: "Friend" }]
         },
-        
+
         // Study groups
         studyGroups: [{ type: mongoose.Schema.Types.ObjectId, ref: "StudyGroup" }],
-        
+
         // Social stats
         socialStats: {
             quizzesShared: { type: Number, default: 0 },
@@ -76,7 +76,7 @@ const userSchema = new mongoose.Schema({
             multiplayerGames: { type: Number, default: 0 },
             multiplayerWins: { type: Number, default: 0 }
         },
-        
+
         // Privacy settings
         privacy: {
             profileVisibility: { type: String, enum: ["public", "friends", "private"], default: "public" },
@@ -85,7 +85,7 @@ const userSchema = new mongoose.Schema({
             showProgressToFriends: { type: Boolean, default: true }
         }
     },
-    
+
     // Phase 3: Advanced Gamification
     gamification: {
         // Skill trees
@@ -111,7 +111,7 @@ const userSchema = new mongoose.Schema({
                 unlockedSkills: [{ type: String }]
             }
         },
-        
+
         // Daily challenges progress
         dailyChallenges: {
             current: { type: mongoose.Schema.Types.ObjectId, ref: "DailyChallenge" },
@@ -119,7 +119,7 @@ const userSchema = new mongoose.Schema({
             streak: { type: Number, default: 0 },
             lastCompleted: { type: Date }
         },
-        
+
         // Tournaments
         tournaments: {
             participating: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tournament" }],
@@ -127,7 +127,7 @@ const userSchema = new mongoose.Schema({
             wins: { type: Number, default: 0 },
             totalParticipations: { type: Number, default: 0 }
         },
-        
+
         // Special titles earned
         titles: [{
             name: { type: String },
@@ -135,15 +135,15 @@ const userSchema = new mongoose.Schema({
             earnedAt: { type: Date, default: Date.now },
             rarity: { type: String, enum: ["common", "rare", "epic", "legendary"], default: "common" }
         }],
-        
+
         // Current equipped title
         activeTitle: { type: String }
     },
-    
+
     // Activity status
     lastSeen: { type: Date, default: Date.now },
     isOnline: { type: Boolean, default: false },
-    
+
     // AI Study Buddy features
     studyPlans: [{
         content: { type: String, required: true },
@@ -153,7 +153,7 @@ const userSchema = new mongoose.Schema({
         completedTasks: [{ type: String }],
         progress: { type: Number, default: 0 } // percentage completed
     }],
-    
+
     reminders: [{
         text: { type: String, required: true },
         context: { type: String, default: "general" },

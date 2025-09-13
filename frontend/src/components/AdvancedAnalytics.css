@@ -541,7 +541,7 @@
   .overview-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .learning-grid {
     grid-template-columns: 1fr;
   }
@@ -551,39 +551,39 @@
   .advanced-analytics-container {
     padding: var(--space-md);
   }
-  
+
   .analytics-header {
     flex-direction: column;
     gap: var(--space-lg);
     text-align: center;
   }
-  
+
   .analytics-title {
     font-size: 2rem;
   }
-  
+
   .header-stats {
     justify-content: center;
   }
-  
+
   .tab-navigation {
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .tab-button {
     font-size: 0.9rem;
     padding: var(--space-sm) var(--space-md);
   }
-  
+
   .metrics-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .insights-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .chart-container {
     height: 250px;
   }
@@ -593,28 +593,28 @@
   .advanced-analytics-container {
     padding: var(--space-sm);
   }
-  
+
   .analytics-title {
     font-size: 1.8rem;
   }
-  
+
   .analytics-subtitle {
     font-size: 1rem;
   }
-  
+
   .stat-card {
     min-width: 100px;
     padding: var(--space-sm);
   }
-  
+
   .stat-value {
     font-size: 1.5rem;
   }
-  
+
   .metric-card, .learning-metric-card, .insight-card {
     padding: var(--space-md);
   }
-  
+
   .chart-container {
     height: 200px;
   }

@@ -96,23 +96,23 @@
     .offline-banner {
         padding: 10px 12px;
     }
-    
+
     .offline-banner-content {
         gap: 8px;
     }
-    
+
     .offline-icon {
         font-size: 18px;
     }
-    
+
     .offline-status {
         font-size: 13px;
     }
-    
+
     .offline-message {
         font-size: 11px;
     }
-    
+
     .retry-connection-btn {
         width: 28px;
         height: 28px;
@@ -125,7 +125,7 @@
     .offline-banner.offline {
         background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
     }
-    
+
     .offline-banner.slow-connection {
         background: linear-gradient(135deg, #f57c00 0%, #ef6c00 100%);
     }
@@ -136,12 +136,12 @@
     .offline-banner {
         border-bottom: 2px solid currentColor;
     }
-    
+
     .offline-banner.offline {
         background: #dc3545;
         color: white;
     }
-    
+
     .offline-banner.slow-connection {
         background: #fd7e14;
         color: black;
@@ -153,11 +153,11 @@
     .offline-banner {
         animation: none;
     }
-    
+
     .retry-connection-btn:hover {
         transform: none;
     }
-    
+
     .retry-connection-btn:active {
         transform: scale(0.95);
     }

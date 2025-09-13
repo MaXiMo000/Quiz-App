@@ -4,8 +4,8 @@
   margin: 0 auto;
   padding: var(--space-xl);
   min-height: 100vh;
-  background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.03), 
+  background: linear-gradient(135deg,
+    rgba(255, 215, 0, 0.03),
     rgba(255, 193, 7, 0.02),
     transparent 50%);
   width: 100%;
@@ -57,8 +57,8 @@
   align-items: center;
   margin-bottom: var(--space-2xl);
   padding: var(--space-xl);
-  background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.08), 
+  background: linear-gradient(135deg,
+    rgba(255, 215, 0, 0.08),
     rgba(255, 193, 7, 0.05));
   backdrop-filter: blur(25px);
   border-radius: var(--radius-2xl);
@@ -212,25 +212,25 @@
 }
 
 @keyframes pulse {
-  0% { 
+  0% {
     opacity: 0.7;
     transform: scale(1);
   }
-  50% { 
+  50% {
     opacity: 1;
     transform: scale(1.02);
   }
-  100% { 
+  100% {
     opacity: 0.7;
     transform: scale(1);
   }
 }
 
 @keyframes shimmer {
-  0% { 
+  0% {
     background-position: -200% 0;
   }
-  100% { 
+  100% {
     background-position: 200% 0;
   }
 }
@@ -276,8 +276,8 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.05), 
+  background: linear-gradient(135deg,
+    rgba(255, 215, 0, 0.05),
     rgba(255, 193, 7, 0.03));
   backdrop-filter: blur(25px);
   padding: var(--space-xl);
@@ -343,8 +343,8 @@
 }
 
 .chart-card {
-  background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.04), 
+  background: linear-gradient(135deg,
+    rgba(255, 215, 0, 0.04),
     rgba(255, 193, 7, 0.02));
   backdrop-filter: blur(25px);
   padding: var(--space-xl);
@@ -413,8 +413,8 @@
 
 .achievements-card,
 .recommendations-card {
-  background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.04), 
+  background: linear-gradient(135deg,
+    rgba(255, 215, 0, 0.04),
     rgba(255, 193, 7, 0.02));
   backdrop-filter: blur(25px);
   padding: var(--space-xl);
@@ -586,11 +586,11 @@
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .progress-chart {
     grid-column: span 1;
   }
-  
+
   .stats-row {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -603,7 +603,7 @@
     max-width: 100vw;
     overflow-x: hidden;
   }
-  
+
   .dashboard-header {
     flex-direction: column;
     gap: var(--space-lg);
@@ -612,13 +612,13 @@
     margin-bottom: var(--space-lg);
     width: 100%;
     border-radius: var(--radius-lg);
-    background: linear-gradient(135deg, 
-      rgba(255, 215, 0, 0.08), 
+    background: linear-gradient(135deg,
+      rgba(255, 215, 0, 0.08),
       rgba(255, 193, 7, 0.05));
     backdrop-filter: blur(20px);
     border: none;
   }
-  
+
   .dashboard-header h1 {
     font-size: clamp(1.5rem, 4vw, 2rem);
     line-height: 1.2;
@@ -633,14 +633,14 @@
     outline: none;
     box-shadow: none;
   }
-  
+
   .premium-badge {
     font-size: 0.85rem;
     margin-left: 0;
     margin-top: var(--space-xs);
     padding: var(--space-xs) var(--space-sm);
   }
-  
+
   .time-selector {
     width: 100%;
     flex-wrap: wrap;
@@ -651,7 +651,7 @@
     border-radius: var(--radius-md);
     border: none;
   }
-  
+
   .time-btn {
     flex: 1;
     min-width: 70px;
@@ -661,14 +661,14 @@
     min-height: 44px;
     border-radius: var(--radius-md);
   }
-  
+
   .stats-row {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-md);
     margin-bottom: var(--space-lg);
     width: 100%;
   }
-  
+
   .stat-card {
     padding: var(--space-lg);
     gap: var(--space-sm);
@@ -680,7 +680,7 @@
     max-width: 100%;
     overflow: hidden;
   }
-  
+
   .stat-icon {
     width: 30px;
     height: 30px;
@@ -688,7 +688,7 @@
     margin: 0 auto var(--space-xs);
     flex-shrink: 0;
   }
-  
+
   .stat-content h3 {
     font-size: clamp(0.9rem, 2.5vw, 1.1rem);
     margin-bottom: var(--space-xs);
@@ -698,7 +698,7 @@
     max-width: 100%;
     line-height: 1.2;
   }
-  
+
   .stat-content p {
     font-size: 0.7rem;
     opacity: 0.85;
@@ -708,7 +708,7 @@
     max-width: 100%;
     line-height: 1.1;
   }
-  
+
   .chart-container {
     height: 200px;
     width: 100%;
@@ -716,7 +716,7 @@
     overflow: hidden;
     min-height: 180px;
   }
-  
+
   .chart-card {
     padding: var(--space-md);
     border-radius: var(--radius-lg);
@@ -725,7 +725,7 @@
     min-height: 250px;
     max-height: 300px;
   }
-  
+
   .chart-card h3 {
     font-size: clamp(0.9rem, 2.5vw, 1.1rem);
     margin-bottom: var(--space-md);
@@ -741,21 +741,21 @@
     width: 100%;
     box-sizing: border-box;
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;
     gap: var(--space-lg);
     width: 100%;
     padding: 0;
   }
-  
+
   .progress-chart,
   .category-chart {
     grid-column: span 1;
     width: 100%;
     max-width: none;
   }
-  
+
   .achievements-card,
   .recommendations-card {
     width: 100%;
@@ -770,7 +770,7 @@
     flex-direction: column;
     gap: var(--space-sm);
   }
-  
+
   .achievement-item,
   .recommendation-item {
     padding: var(--space-md);
@@ -786,14 +786,14 @@
     text-align: left;
     align-items: center;
   }
-  
+
   .achievement-content {
     max-width: calc(100% - 100px);
     min-width: 0;
     text-align: left;
     align-items: flex-start;
   }
-  
+
   .achievement-rarity {
     max-width: 70px;
     font-size: 0.65rem;
@@ -898,13 +898,13 @@
     outline: none !important;
     box-shadow: none !important;
   }
-  
+
   .dashboard-header {
     padding: var(--space-md);
     margin-bottom: var(--space-md);
     gap: var(--space-sm);
   }
-  
+
   .dashboard-header h1 {
     font-size: clamp(1.2rem, 5vw, 1.5rem);
     line-height: 1.3;
@@ -912,18 +912,18 @@
     position: relative;
     z-index: 2;
   }
-  
+
   .premium-badge {
     font-size: 0.75rem;
     padding: var(--space-xs) var(--space-sm);
     margin: var(--space-xs) auto 0;
   }
-  
+
   .time-selector {
     padding: var(--space-xs);
     gap: var(--space-xs);
   }
-  
+
   .time-btn {
     min-width: 60px;
     max-width: 80px;
@@ -931,11 +931,11 @@
     font-size: 0.75rem;
     min-height: 40px;
   }
-  
+
   .stats-row {
     gap: var(--space-sm);
   }
-  
+
   .stat-card {
     padding: var(--space-md);
     gap: var(--space-xs);
@@ -943,7 +943,7 @@
     max-width: 100%;
     overflow: hidden;
   }
-  
+
   .stat-icon {
     width: 50px;
     height: 50px;
@@ -951,7 +951,7 @@
     border: none;
     margin-bottom: var(--space-xs);
   }
-  
+
   .stat-content h3 {
     font-size: clamp(0.7rem, 2vw, 0.8rem);
     margin-bottom: var(--space-xs);
@@ -960,7 +960,7 @@
     text-overflow: ellipsis;
     max-width: 100%;
   }
-  
+
   .stat-content p {
     font-size: 0.7rem;
     opacity: 0.9;
@@ -969,20 +969,20 @@
     text-overflow: ellipsis;
     max-width: 100%;
   }
-  
+
   .chart-container {
     height: 180px;
     padding: var(--space-xs);
     min-height: 160px;
   }
-  
+
   .chart-card {
     padding: var(--space-sm);
     margin: 0 0 var(--space-sm) 0;
     min-height: 220px;
     max-height: 280px;
   }
-  
+
   .chart-card h3 {
     font-size: clamp(0.85rem, 2.5vw, 1rem);
     margin-bottom: var(--space-sm);
@@ -999,13 +999,13 @@
     white-space: normal;
     overflow: hidden;
   }
-  
+
   .achievements-list,
   .recommendations-list {
     flex-direction: column;
     gap: var(--space-xs);
   }
-  
+
   .achievement-item,
   .recommendation-item {
     padding: var(--space-sm);
@@ -1021,43 +1021,43 @@
     text-align: left;
     align-items: center;
   }
-  
+
   .achievement-content {
     max-width: calc(100% - 90px);
     min-width: 0;
     text-align: left;
     align-items: flex-start;
   }
-  
+
   .achievement-rarity {
     max-width: 60px;
     font-size: 0.6rem;
     margin: 0 0 0 auto;
   }
-  
+
   .achievement-icon,
   .rec-icon {
     width: 28px;
     height: 28px;
     font-size: 0.9rem;
   }
-  
+
   .achievement-content h4,
   .recommendation-item h4 {
     font-size: 0.85rem;
     margin-bottom: var(--space-xs);
   }
-  
+
   .achievement-content p,
   .recommendation-item p {
     font-size: 0.7rem;
     line-height: 1.3;
   }
-  
+
   .dashboard-grid {
     gap: var(--space-md);
   }
-  
+
   .achievements-card,
   .recommendations-card {
     padding: var(--space-md);
@@ -1204,7 +1204,7 @@
     transform: scale(0.95);
     transition: transform 0.1s ease;
   }
-  
+
   .stat-card:active {
     transform: translateY(-1px) scale(0.98);
   }
@@ -1241,21 +1241,21 @@
 
 /* Enhanced animations */
 @keyframes sparkle {
-  0%, 100% { 
+  0%, 100% {
     transform: rotate(0deg) scale(1);
     opacity: 0.8;
   }
-  50% { 
+  50% {
     transform: rotate(180deg) scale(1.1);
     opacity: 1;
   }
 }
 
 @keyframes goldenPulse {
-  0%, 100% { 
+  0%, 100% {
     box-shadow: var(--shadow-xl), 0 0 20px rgba(255, 215, 0, 0.08);
   }
-  50% { 
+  50% {
     box-shadow: var(--shadow-2xl), 0 0 35px rgba(255, 215, 0, 0.15);
   }
 }
@@ -1273,7 +1273,7 @@
   .recommendations-card {
     background: rgba(255, 255, 255, 0.02);
   }
-  
+
   .achievement-item,
   .recommendation-item {
     background: rgba(255, 255, 255, 0.01);
@@ -1282,8 +1282,8 @@
 
 /* Connection Status Indicator */
 .connection-status {
-  background: linear-gradient(135deg, 
-    rgba(59, 130, 246, 0.08), 
+  background: linear-gradient(135deg,
+    rgba(59, 130, 246, 0.08),
     rgba(99, 102, 241, 0.05));
   border: none;
   border-radius: var(--radius-lg);
@@ -1293,8 +1293,8 @@
 }
 
 .connection-status.offline {
-  background: linear-gradient(135deg, 
-    rgba(249, 115, 22, 0.08), 
+  background: linear-gradient(135deg,
+    rgba(249, 115, 22, 0.08),
     rgba(234, 88, 12, 0.05));
 }
 
@@ -1352,8 +1352,8 @@
 
 /* PWA Install Banner */
 .pwa-install-banner {
-  background: linear-gradient(135deg, 
-    rgba(72, 187, 120, 0.1), 
+  background: linear-gradient(135deg,
+    rgba(72, 187, 120, 0.1),
     rgba(56, 161, 105, 0.05));
   border: none;
   border-radius: var(--radius-lg);
@@ -1430,8 +1430,8 @@
 
 /* PWA Installed Status Indicator */
 .pwa-installed-status {
-  background: linear-gradient(135deg, 
-    rgba(34, 197, 94, 0.1), 
+  background: linear-gradient(135deg,
+    rgba(34, 197, 94, 0.1),
     rgba(16, 185, 129, 0.05));
   border: none;
   border-radius: var(--radius-lg);
@@ -1678,8 +1678,8 @@
 /* Next-Gen Features Showcase */
 .features-showcase-card {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, 
-    rgba(102, 126, 234, 0.08), 
+  background: linear-gradient(135deg,
+    rgba(102, 126, 234, 0.08),
     rgba(118, 75, 162, 0.05));
   backdrop-filter: blur(25px);
   padding: var(--space-xl);
@@ -1715,8 +1715,8 @@
 }
 
 .feature-card {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.08), 
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.08),
     rgba(255, 255, 255, 0.04));
   backdrop-filter: blur(20px);
   padding: var(--space-lg);

@@ -23,7 +23,7 @@ const UserReports = () => {
 
     const getReport = useCallback(async () => {
         if (!user?.name) return;
-        
+
         try {
             const response = await axios.get(`/api/reports/user?username=${user.name}`); // auto-token
             setReports(response.data);
@@ -47,10 +47,10 @@ const UserReports = () => {
             showWarning("Report ID is missing!");
             return;
         }
-    
+
         try {
             const response = await axios.delete(`/api/reports/${id}`);
-    
+
             if (response.status === 200) {
                 showSuccess("Report deleted successfully!");
                 getReport(); // Refresh reports list after deletion
@@ -93,7 +93,7 @@ const UserReports = () => {
                                     <td>
                                         <Link to={`/report/${report._id}`}>
                                             <button className="view-btn">View Report</button>
-                                        </Link> 
+                                        </Link>
                                     </td>
                                     <td>
                                         <button className="delete-btn" onClick={() => deleteReport(report._id)}>Delete</button>
@@ -112,7 +112,7 @@ const UserReports = () => {
                                     {report.score >= report.total * 0.5 ? "✅ Passed" : "❌ Failed"}
                                 </div>
                             </div>
-                            
+
                             <div className="report-details">
                                 <div className="report-detail">
                                     <div className="report-detail-label">Score</div>
@@ -123,7 +123,7 @@ const UserReports = () => {
                                     <div className="report-detail-value">{report.total}</div>
                                 </div>
                             </div>
-                            
+
                             <div className="report-actions">
                                 <Link to={`/report/${report._id}`}>
                                     <button className="view-btn">📊 View Report</button>
@@ -134,7 +134,7 @@ const UserReports = () => {
                     ))}
                 </div>
             )}
-            
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}

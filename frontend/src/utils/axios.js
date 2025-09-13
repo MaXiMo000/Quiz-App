@@ -33,7 +33,7 @@ instance.interceptors.response.use(
         // Handle rate limiting specifically
         if (status === 429) {
             console.error('❌ Rate Limited:', error.message);
-            
+
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
@@ -52,22 +52,22 @@ instance.interceptors.response.use(
                 max-width: 300px;
             `;
             notification.innerHTML = '⚠️ Too many requests. Please wait a moment and try again.';
-            
+
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.remove();
                 }
             }, 3000);
-            
+
             return Promise.reject(error);
         }
 
         // Handle CORS errors specifically
         if (error.code === 'ERR_NETWORK' || !error.response) {
             console.error('❌ Network/CORS Error:', error.message);
-            
+
             // Show user-friendly CORS error message
             const notification = document.createElement('div');
             notification.style.cssText = `
@@ -87,9 +87,9 @@ instance.interceptors.response.use(
                 max-width: 300px;
             `;
             notification.innerHTML = '⚠️ Connection issue detected. Please refresh the page.';
-            
+
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.remove();
@@ -116,7 +116,7 @@ instance.interceptors.response.use(
                 animation: slideIn 0.3s ease-out;
             `;
             notification.innerHTML = '⚠️ Please login first. Redirecting...';
-            
+
             // Add animation keyframes if not already added
             if (!document.querySelector('#auth-notification-styles')) {
                 const style = document.createElement('style');
@@ -129,9 +129,9 @@ instance.interceptors.response.use(
                 `;
                 document.head.appendChild(style);
             }
-            
+
             document.body.appendChild(notification);
-            
+
             // Remove notification and redirect after 2 seconds
             setTimeout(() => {
                 if (notification.parentNode) {

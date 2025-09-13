@@ -14,11 +14,11 @@ const Sidebar = ({ isOpen = false, onClose }) => {
     const [closeBtnSlide, setCloseBtnSlide] = useState(false);
     const [sidebarSlide, setSidebarSlide] = useState(false);
     const navigate = useNavigate();
-    
+
     // Enhanced mobile responsiveness
     const { isMobile, breakpoints } = useResponsive();
     const { handleSwipe, vibrate, isTouchDevice } = useTouchHandler();
-    
+
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
 
@@ -79,7 +79,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
             if (response.status === 200) {
                 const updatedUser = response.data.user;
                 const newToken = response.data.token;
-            
+
                 localStorage.setItem("token", newToken); // ✅ Replace old token
                 localStorage.setItem("user", JSON.stringify(updatedUser));
                 setUser(updatedUser);
@@ -93,8 +93,8 @@ const Sidebar = ({ isOpen = false, onClose }) => {
 
     return (
         <>
-            <motion.button 
-                className="sidebar-toggle" 
+            <motion.button
+                className="sidebar-toggle"
                 onClick={toggleSidebar}
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
@@ -119,8 +119,8 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                         transition={{ duration: 0.3 }}
                     />
                 )}
-                
-                <aside 
+
+                <aside
                     className={`sidebar ${((isMobile || breakpoints.mobile) ? isOpen : isSidebarOpen) ? "open" : ""} ${sidebarSlide ? "slide-left" : ""}`}
                     {...(isMobile ? swipeHandlers : {})}
                 >
@@ -131,7 +131,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                     >
                                                 {/* Mobile close button */}
                         {(isMobile || breakpoints.mobile) && (
-                            <button 
+                            <button
                                 className={`close-btn-sidebar${closeBtnSlide ? " slide-left" : ""}`}
                                 aria-label="Close sidebar"
                                 onClick={() => {
@@ -191,7 +191,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
                                 </motion.div>
-                                
+
                                 {/* Phase 3: Social & Gamification Links */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -299,7 +299,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
                                 </motion.div>
-                                
+
                                 {/* Phase 4: Next-Gen Features */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -315,7 +315,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/real-time-quiz" onClick={handleLinkClick}>⚡ Real-Time Quiz</Link>
                                 </motion.div>
-                                
+
                                 {/* Phase 5: Advanced Learning Path Engine */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
@@ -338,7 +338,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/advanced-analytics" onClick={handleLinkClick}>📈 Advanced Analytics</Link>
                                 </motion.div>
-                                
+
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -353,7 +353,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
                                 </motion.div>
-                                <motion.button 
+                                <motion.button
                                     onClick={() => updateRole("user")}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -432,8 +432,8 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
                                 </motion.div>
-                                
-                                <motion.button 
+
+                                <motion.button
                                     onClick={() => updateRole("premium")}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -447,8 +447,8 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                         )}
                     </motion.nav>
 
-                    <motion.button 
-                        className="logout-btn" 
+                    <motion.button
+                        className="logout-btn"
                         onClick={handleLogout}
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -460,7 +460,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                     </motion.button>
                 </aside>
             </AnimatePresence>
-            
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}

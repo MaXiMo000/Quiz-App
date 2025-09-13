@@ -26,10 +26,10 @@ export const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(12); // Increased salt rounds for better security
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = new UserQuiz({ 
-            name: name.trim(), 
-            email: email.toLowerCase().trim(), 
-            password: hashedPassword 
+        const newUser = new UserQuiz({
+            name: name.trim(),
+            email: email.toLowerCase().trim(),
+            password: hashedPassword
         });
         await newUser.save();
 
@@ -70,7 +70,7 @@ export const loginUser = async (req, res) => {
         if (isNewDay) {
             // Check if it's consecutive day for streak
             const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
-            
+
             if (lastLoginMidnight && lastLoginMidnight.getTime() === oneDayAgo.getTime()) {
                 // Continued streak
                 user.loginStreak += 1;

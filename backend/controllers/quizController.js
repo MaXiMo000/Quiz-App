@@ -179,7 +179,7 @@ export async function deleteQuestion(req, res) {
         // Phase 2: Update difficulty distribution before removing question
         const questionToRemove = quiz.questions[questionIndex];
         if (quiz.difficultyDistribution && questionToRemove.difficulty) {
-            quiz.difficultyDistribution[questionToRemove.difficulty] = Math.max(0, 
+            quiz.difficultyDistribution[questionToRemove.difficulty] = Math.max(0,
                 quiz.difficultyDistribution[questionToRemove.difficulty] - 1);
         }
 
@@ -202,7 +202,7 @@ export async function updateQuizStats(req, res) {
     logger.info(`Updating stats for quiz ${req.body.quizId}`);
     try {
         const { quizId, score, totalQuestions, timeSpent } = req.body;
-        
+
         const quiz = await Quiz.findById(quizId);
         if (!quiz) {
             logger.warn(`Quiz not found: ${quizId} when updating stats`);
@@ -213,23 +213,23 @@ export async function updateQuizStats(req, res) {
         const newTotalAttempts = (quiz.totalAttempts || 0) + 1;
         const currentAverageScore = quiz.averageScore || 0;
         const currentAverageTime = quiz.averageTime || 0;
-        
+
         // Calculate new averages using incremental average formula
         const newAverageScore = ((currentAverageScore * (newTotalAttempts - 1)) + (score / totalQuestions)) / newTotalAttempts;
         const newAverageTime = ((currentAverageTime * (newTotalAttempts - 1)) + timeSpent) / newTotalAttempts;
-        
+
         // Update popularity score (combination of attempts and average score)
         const popularityScore = newTotalAttempts * newAverageScore;
-        
+
         quiz.totalAttempts = newTotalAttempts;
         quiz.averageScore = newAverageScore;
         quiz.averageTime = newAverageTime;
         quiz.popularityScore = popularityScore;
-        
+
         await quiz.save();
-        
+
         logger.info(`Successfully updated stats for quiz ${quizId}`);
-        res.json({ 
+        res.json({
             message: "Quiz statistics updated successfully",
             stats: {
                 totalAttempts: quiz.totalAttempts,
@@ -238,7 +238,7 @@ export async function updateQuizStats(req, res) {
                 popularityScore: Math.round(quiz.popularityScore * 100)
             }
         });
-        
+
     } catch (error) {
         logger.error({ message: `Error updating quiz stats for quiz ${req.body.quizId}`, error: error.message, stack: error.stack });
         res.status(500).json({ message: "Error updating quiz stats", error });

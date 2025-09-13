@@ -13,7 +13,7 @@ const GamificationHub = () => {
     const [completedTournaments, setCompletedTournaments] = useState([]);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
-    
+
     // Admin modal states
     const [showCreateChallenge, setShowCreateChallenge] = useState(false);
     const [showCreateTournament, setShowCreateTournament] = useState(false);
@@ -21,7 +21,7 @@ const GamificationHub = () => {
     const [tournamentHistory, setTournamentHistory] = useState([]);
     const [selectedChallengeHistory, setSelectedChallengeHistory] = useState(null);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
-    
+
     // Quiz taking states
     const [currentQuizData, setCurrentQuizData] = useState(null);
     const [showQuizModal, setShowQuizModal] = useState(false);
@@ -37,7 +37,7 @@ const GamificationHub = () => {
         if (userData) {
             setUser(JSON.parse(userData));
         }
-        
+
         if (activeTab === 'challenges') {
             fetchDailyChallenge();
         } else if (activeTab === 'tournaments') {
@@ -56,35 +56,35 @@ const GamificationHub = () => {
         try {
             // Use the enhanced status endpoint that includes reset logic
             const response = await axios.get('/api/gamification/challenges/status');
-            
+
             if (response.data.challenges) {
                 // Filter challenges: ONLY show available challenges or in-progress challenges
                 // Do NOT show completed challenges (they belong in completed tab until reset)
                 const availableChallenges = response.data.challenges.filter(challenge => {
                     const status = challenge.status;
-                    
+
                     // Show if available (including reset challenges) or in progress
                     if (status === 'available' || status === 'in_progress') {
                         return true;
                     }
-                    
+
                     // Hide completed challenges - they should only appear in completed tab
                     if (status === 'completed_today') {
                         return false;
                     }
-                    
+
                     return false;
                 });
-                
+
                 setDailyChallenges(availableChallenges);
-                
+
                 // Log reset challenges for debugging
                 availableChallenges.forEach(challenge => {
                     if (challenge.wasReset) {
                         console.log(`🔄 Challenge "${challenge.title}" has been reset and is available again`);
                     }
                 });
-                
+
             } else {
                 setDailyChallenges([]);
             }
@@ -119,7 +119,7 @@ const GamificationHub = () => {
         try {
             // Use the dedicated completed challenges endpoint
             const response = await axios.get('/api/gamification/challenges/completed');
-            
+
             if (response.data.completedChallenges) {
                 setCompletedChallenges(response.data.completedChallenges);
             } else {
@@ -208,12 +208,12 @@ const GamificationHub = () => {
         const now = new Date();
         const end = new Date(endDate);
         const diff = end - now;
-        
+
         if (diff <= 0) return 'Expired';
-        
+
         const hours = Math.floor(diff / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        
+
         if (hours > 24) {
             const days = Math.floor(hours / 24);
             return `${days}d ${hours % 24}h remaining`;
@@ -228,7 +228,7 @@ const GamificationHub = () => {
                 axios.get('/api/gamification/challenges/history'),
                 axios.get('/api/gamification/tournaments/history')
             ]);
-            setChallengeHistory((challengeRes.data.challenges || []).filter(challenge => 
+            setChallengeHistory((challengeRes.data.challenges || []).filter(challenge =>
                 // Only show completed challenges with meaningful progress
                 challenge.completed && (challenge.progress > 0 || challenge.attempts > 0 || (challenge.quizScores && challenge.quizScores.length > 0))
             ));
@@ -279,7 +279,7 @@ const GamificationHub = () => {
             // eslint-disable-next-line no-unused-vars
             const response = await axios.post('/api/gamification/tournaments/create-sample');
             showSuccess('Sample tournament created successfully!');
-            
+
             // Refresh tournaments list
             fetchTournaments();
         } catch (error) {
@@ -291,12 +291,12 @@ const GamificationHub = () => {
     // Delete daily challenge (admin only)
     const deleteDailyChallenge = async (challengeId) => {
         showWarning('Are you sure you want to delete this daily challenge? This action cannot be undone.', false);
-        
+
         // For now, we'll use a simple confirm, but this could be enhanced with a custom modal
         if (!window.confirm('Are you sure you want to delete this daily challenge?')) {
             return;
         }
-        
+
         try {
             await axios.delete(`/api/gamification/challenges/${challengeId}`);
             showSuccess('Daily challenge deleted successfully!');
@@ -311,7 +311,7 @@ const GamificationHub = () => {
         try {
             setLoading(true);
             const response = await axios.get(`/api/gamification/challenges/${challengeId}/history`);
-            
+
             setSelectedChallengeHistory(response.data);
             setShowHistoryModal(true);
         } catch (error) {
@@ -327,7 +327,7 @@ const GamificationHub = () => {
         if (!window.confirm('Are you sure you want to cleanup all challenges with no quizzes?')) {
             return;
         }
-        
+
         try {
             const response = await axios.post('/api/gamification/challenges/cleanup');
             showSuccess(response.data.message);
@@ -343,7 +343,7 @@ const GamificationHub = () => {
         if (!window.confirm('Are you sure you want to delete this tournament?')) {
             return;
         }
-        
+
         try {
             await axios.delete(`/api/gamification/tournaments/${tournamentId}`);
             showSuccess('Tournament deleted successfully!');
@@ -359,7 +359,7 @@ const GamificationHub = () => {
         try {
             const response = await axios.get(`/api/gamification/challenges/${challengeId}/quiz/start`);
             const { quiz, message } = response.data;
-            
+
             if (quiz) {
                 setCurrentQuizData(quiz);
                 setQuizType('challenge');
@@ -379,7 +379,7 @@ const GamificationHub = () => {
         try {
             const response = await axios.get(`/api/gamification/tournaments/${tournamentId}/quiz/start`);
             const { quiz, message } = response.data;
-            
+
             if (quiz) {
                 setCurrentQuizData(quiz);
                 setQuizType('tournament');
@@ -414,13 +414,13 @@ const GamificationHub = () => {
                     timeTaken
                 });
             }
-            
+
             showSuccess(response.data.message || 'Quiz submitted successfully!');
             setShowQuizModal(false);
             setCurrentQuizData(null);
             setQuizType(null);
             setGamificationId(null);
-            
+
             // Refresh the data
             if (quizType === 'challenge') {
                 fetchDailyChallenge();
@@ -452,13 +452,13 @@ const GamificationHub = () => {
         const progressPercentage = challengeUserProgress.progress || 0;
         const isCompleted = challengeStatus === 'completed_today';
         const isAvailable = challenge.isAvailable !== false; // Default to true
-        
+
         // Check if user is participating - look for user in the participants array
         const userId = user?.id || user?._id;
-        
+
         let participantData = null;
         let isParticipating = false;
-        
+
         if (userId && challenge.participants) {
             participantData = challenge.participants.find(p => {
                 const participantUserId = p.user?._id || p.user;
@@ -470,7 +470,7 @@ const GamificationHub = () => {
         // Determine the status message and styling
         let statusMessage = '';
         let statusClass = '';
-        
+
         switch (challengeStatus) {
             case 'available':
                 if (challenge.wasReset) {
@@ -562,7 +562,7 @@ const GamificationHub = () => {
                             </div>
                         )}
                     </div>
-                    <button 
+                    <button
                         className="view-history-btn"
                         onClick={() => viewChallengeHistory(challenge._id)}
                         title="View your history for this challenge"
@@ -632,7 +632,7 @@ const GamificationHub = () => {
                                                 <span className="progress-label">Quizzes</span>
                                             </div>
                                             <div className="quiz-progress-bar">
-                                                <div 
+                                                <div
                                                     className="quiz-progress-fill"
                                                     style={{
                                                         width: `${((participantData?.completedQuizzes?.length || 0) / (challenge.quizzes?.length || challenge.parameters?.quizCount || 3)) * 100}%`
@@ -646,7 +646,7 @@ const GamificationHub = () => {
                                         onClick={() => startChallengeQuiz(challenge._id)}
                                         disabled={loading}
                                     >
-                                        Continue Challenge 
+                                        Continue Challenge
                                     </button>
                                 </div>
                             ) : challengeStatus === 'available' ? (
@@ -666,9 +666,9 @@ const GamificationHub = () => {
                             </span>
                         </div>
                     )}
-                    
+
                     {user?.role === 'admin' && (
-                        <button 
+                        <button
                             className="delete-btn admin-btn"
                             onClick={() => deleteDailyChallenge(challenge._id)}
                             title="Delete Challenge"
@@ -706,19 +706,19 @@ const GamificationHub = () => {
 
     const TournamentCard = ({ tournament }) => {
         const userId = user?.id || user?._id;
-        
+
         // Check if user is registered and get their progress data
         let isRegistered = false;
         let userProgress = null;
-        
+
         if (userId && tournament.participants) {
-            const participant = tournament.participants.find(p => 
+            const participant = tournament.participants.find(p =>
                 p.user === userId || p.user.toString() === userId
             );
             isRegistered = !!participant;
             userProgress = participant;
         }
-        
+
         return (
             <motion.div
                 className="tournament-card"
@@ -732,7 +732,7 @@ const GamificationHub = () => {
                         <h3>{tournament.name}</h3>
                         <div className="tournament-meta">
                             <span className="tournament-type">{tournament.type.replace('_', ' ')}</span>
-                            <span 
+                            <span
                                 className="tournament-status"
                                 style={{ color: getTournamentStatusColor(tournament.status) }}
                             >
@@ -859,7 +859,7 @@ const GamificationHub = () => {
                                         <span className="progress-label">Quizzes</span>
                                     </div>
                                     <div className="quiz-progress-bar">
-                                        <div 
+                                        <div
                                             className="quiz-progress-fill"
                                             style={{
                                                 width: `${((userProgress?.quizzesCompleted || 0) / (tournament.quizCount || tournament.settings?.quizCount || 1)) * 100}%`
@@ -868,7 +868,7 @@ const GamificationHub = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button 
+                            <button
                                 className="participate-btn"
                                 onClick={() => startTournamentQuiz(tournament._id)}
                             >
@@ -887,9 +887,9 @@ const GamificationHub = () => {
                     <button className="leaderboard-btn">
                         📊 View Leaderboard
                     </button>
-                    
+
                     {user?.role === 'admin' && (
-                        <button 
+                        <button
                             className="delete-btn admin-btn"
                             onClick={() => deleteTournament(tournament._id)}
                             title="Delete Tournament"
@@ -916,7 +916,7 @@ const GamificationHub = () => {
                 const resetTime = new Date(challenge.nextResetTime);
                 const now = new Date();
                 const hoursLeft = Math.ceil((resetTime - now) / (1000 * 60 * 60));
-                
+
                 if (hoursLeft > 0) {
                     return {
                         text: `Resets in ${hoursLeft}h`,
@@ -1051,14 +1051,14 @@ const GamificationHub = () => {
     // CompletedTournamentCard Component - Shows completed tournament with rank and performance
     const CompletedTournamentCard = ({ tournament }) => {
         const { userPerformance } = tournament;
-        
+
         if (!tournament || !userPerformance) {
             return null;
         }
 
         const getRankDisplay = (rank) => {
             if (rank === 1) return "🥇 1st Place";
-            if (rank === 2) return "🥈 2nd Place";  
+            if (rank === 2) return "🥈 2nd Place";
             if (rank === 3) return "🥉 3rd Place";
             return `#${rank}`;
         };
@@ -1273,13 +1273,13 @@ const GamificationHub = () => {
                                 <p>Check back tomorrow for a new exciting challenge!</p>
                                 {user?.role === 'admin' && (
                                     <div className="admin-actions">
-                                        <button 
+                                        <button
                                             className="create-sample-btn"
                                             onClick={createSampleChallenge}
                                         >
                                             Create Sample Challenge
                                         </button>
-                                        <button 
+                                        <button
                                             className="cleanup-btn"
                                             onClick={cleanupEmptyChallenges}
                                             style={{ marginLeft: '10px', backgroundColor: '#e74c3c' }}
@@ -1433,7 +1433,7 @@ const GamificationHub = () => {
                                                         <div className="progress-info">
                                                             <span>Progress: {challenge.progress}%</span>
                                                             <div className="mini-progress-bar">
-                                                                <div 
+                                                                <div
                                                                     className="mini-progress-fill"
                                                                     style={{ width: `${challenge.progress}%` }}
                                                                 ></div>
@@ -1521,7 +1521,7 @@ const GamificationHub = () => {
 
             {/* Admin Create Challenge Modal */}
             {showCreateChallenge && (
-                <CreateChallengeModal 
+                <CreateChallengeModal
                     onClose={() => setShowCreateChallenge(false)}
                     onCreate={createDailyChallenge}
                 />
@@ -1529,7 +1529,7 @@ const GamificationHub = () => {
 
             {/* Admin Create Tournament Modal */}
             {showCreateTournament && (
-                <CreateTournamentModal 
+                <CreateTournamentModal
                     onClose={() => setShowCreateTournament(false)}
                     onCreate={createTournament}
                 />
@@ -1553,7 +1553,7 @@ const GamificationHub = () => {
                     ''
                 }
             />
-            
+
             {/* Challenge History Modal */}
             {showHistoryModal && selectedChallengeHistory && (
                 <div className="modal-overlay" onClick={() => setShowHistoryModal(false)}>
@@ -1562,7 +1562,7 @@ const GamificationHub = () => {
                             <h3>📊 Challenge History: {selectedChallengeHistory.challengeTitle}</h3>
                             <button className="close-btn" onClick={() => setShowHistoryModal(false)}>✕</button>
                         </div>
-                        
+
                         <div className="modal-body">
                             <div className="history-summary">
                                 <p><strong>🎯 Total Attempts:</strong> {selectedChallengeHistory.totalAttempts}</p>
@@ -1575,7 +1575,7 @@ const GamificationHub = () => {
                                     </div>
                                 )}
                             </div>
-                            
+
                             {selectedChallengeHistory.historicalCompletions.length > 0 && (
                                 <div className="historical-completions">
                                     <h4>📈 Previous Completions</h4>
@@ -1600,7 +1600,7 @@ const GamificationHub = () => {
                                     ))}
                                 </div>
                             )}
-                            
+
                             {selectedChallengeHistory.historicalCompletions.length === 0 && !selectedChallengeHistory.currentParticipation && (
                                 <div className="no-history">
                                     <p>No history found for this challenge yet.</p>
@@ -1684,33 +1684,33 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (formData.selectedQuizzes.length === 0) {
             alert('Please select at least one quiz for the challenge.');
             return;
         }
-        
+
         setCreating(true);
-        
+
         // Calculate start and end dates
         const startDate = new Date();
         const endDate = new Date();
         endDate.setHours(endDate.getHours() + formData.duration);
-        
+
         const challengeData = {
             ...formData,
             quizzes: formData.selectedQuizzes,
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString()
         };
-        
+
         await onCreate(challengeData);
         setCreating(false);
     };
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <motion.div 
+            <motion.div
                 className="modal-content create-challenge-modal"
                 onClick={(e) => e.stopPropagation()}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -1721,7 +1721,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                     <h2>🎯 Create Daily Challenge</h2>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
-                
+
                 <form onSubmit={handleSubmit} className="create-form">
                     <div className="form-group">
                         <label>Challenge Title</label>
@@ -1733,7 +1733,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                             placeholder="Enter challenge title..."
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label>Description</label>
                         <textarea
@@ -1744,7 +1744,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                             rows="3"
                         />
                     </div>
-                    
+
                     <div className="form-row">
                         <div className="form-group">
                             <label>Challenge Type</label>
@@ -1759,7 +1759,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                 <option value="speed_challenge">Speed Challenge</option>
                             </select>
                         </div>
-                        
+
                         <div className="form-group">
                             <label>Duration (hours)</label>
                             <input
@@ -1771,7 +1771,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                             />
                         </div>
                     </div>
-                    
+
                     {/* Challenge Parameters */}
                     <div className="challenge-parameters">
                         <h4>Challenge Parameters</h4>
@@ -1787,7 +1787,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                 />
                             </div>
                         )}
-                        
+
                         {formData.type === 'score_target' && (
                             <div className="form-group">
                                 <label>Target Score</label>
@@ -1800,7 +1800,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                 />
                             </div>
                         )}
-                        
+
                         {formData.type === 'streak_maintenance' && (
                             <div className="form-group">
                                 <label>Streak Days</label>
@@ -1813,7 +1813,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                 />
                             </div>
                         )}
-                        
+
                         {formData.type === 'category_focus' && (
                             <div className="form-group">
                                 <label>Quiz Category</label>
@@ -1829,7 +1829,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                 </select>
                             </div>
                         )}
-                        
+
                         {formData.type === 'speed_challenge' && (
                             <div className="form-group">
                                 <label>Time Limit (seconds)</label>
@@ -1843,7 +1843,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Quiz Selection */}
                     <div className="quiz-selection">
                         <h4>Select Quizzes for Challenge {availableQuizzes.length > 0 && `(${availableQuizzes.length} available)`}</h4>
@@ -1862,8 +1862,8 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                         ) : availableQuizzes.length > 0 ? (
                             <div className="quiz-list">
                                 {availableQuizzes.map(quiz => (
-                                    <label 
-                                        key={quiz._id} 
+                                    <label
+                                        key={quiz._id}
                                         className={`quiz-checkbox ${formData.selectedQuizzes.includes(quiz._id) ? 'selected' : ''}`}
                                     >
                                         <input
@@ -1875,8 +1875,8 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                                     // Avoid duplicates
                                                     setFormData(prev => ({
                                                         ...prev,
-                                                        selectedQuizzes: prev.selectedQuizzes.includes(quizId) 
-                                                            ? prev.selectedQuizzes 
+                                                        selectedQuizzes: prev.selectedQuizzes.includes(quizId)
+                                                            ? prev.selectedQuizzes
                                                             : [...prev.selectedQuizzes, quizId]
                                                     }));
                                                 } else {
@@ -1899,7 +1899,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                         ) : (
                             <p className="no-quizzes">No quizzes available. Please create some quizzes first.</p>
                         )}
-                        
+
                         <div className="form-group">
                             <label>Time Limit per Quiz (seconds)</label>
                             <input
@@ -1911,7 +1911,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                             />
                         </div>
                     </div>
-                    
+
                     {/* Rewards */}
                     <div className="challenge-rewards-form">
                         <h4>Rewards</h4>
@@ -1926,7 +1926,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                     max="500"
                                 />
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Badge (optional)</label>
                                 <input
@@ -1937,7 +1937,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="form-group">
                             <label>Theme Unlock (optional)</label>
                             <input
@@ -1948,7 +1948,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                             />
                         </div>
                     </div>
-                    
+
                     <div className="modal-actions">
                         <button type="button" className="cancel-btn" onClick={onClose}>
                             Cancel
@@ -2023,7 +2023,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
     const handlePrizeChange = (index, field, value) => {
         setFormData(prev => ({
             ...prev,
-            prizes: prev.prizes.map((prize, i) => 
+            prizes: prev.prizes.map((prize, i) =>
                 i === index ? { ...prize, [field]: value } : prize
             )
         }));
@@ -2031,30 +2031,30 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (formData.selectedQuizzes.length === 0) {
             alert('Please select at least one quiz for the tournament.');
             return;
         }
-        
+
         setCreating(true);
-        
+
         // Calculate registration and tournament dates
         const registrationStart = new Date();
         registrationStart.setHours(0, 0, 0, 0); // Start from beginning of today
-        
+
         const registrationEnd = new Date();
         registrationEnd.setDate(registrationEnd.getDate() + 2); // 2 days registration
         registrationEnd.setHours(23, 59, 59, 999); // End at end of day
-        
+
         const tournamentStart = new Date();
         tournamentStart.setDate(tournamentStart.getDate() + 3); // Start 3 days from now
         tournamentStart.setHours(9, 0, 0, 0); // Start at 9 AM
-        
+
         const tournamentEnd = new Date();
         tournamentEnd.setDate(tournamentEnd.getDate() + 3 + formData.settings.duration);
         tournamentEnd.setHours(18, 0, 0, 0); // End at 6 PM
-        
+
         const tournamentData = {
             ...formData,
             quizzes: formData.selectedQuizzes,
@@ -2064,14 +2064,14 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
             tournamentEnd: tournamentEnd.toISOString(),
             status: 'registration_open'
         };
-        
+
         await onCreate(tournamentData);
         setCreating(false);
     };
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <motion.div 
+            <motion.div
                 className="modal-content create-tournament-modal"
                 onClick={(e) => e.stopPropagation()}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -2082,7 +2082,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                     <h2>🏆 Create Tournament</h2>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
-                
+
                 <form onSubmit={handleSubmit} className="create-form">
                     <div className="form-group">
                         <label>Tournament Name</label>
@@ -2094,7 +2094,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                             placeholder="Enter tournament name..."
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label>Description</label>
                         <textarea
@@ -2105,7 +2105,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                             rows="3"
                         />
                     </div>
-                    
+
                     <div className="form-row">
                         <div className="form-group">
                             <label>Tournament Type</label>
@@ -2118,7 +2118,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                                 <option value="swiss_system">Swiss System</option>
                             </select>
                         </div>
-                        
+
                         <div className="form-group">
                             <label>Category</label>
                             <select
@@ -2133,7 +2133,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                             </select>
                         </div>
                     </div>
-                    
+
                     {/* Tournament Settings */}
                     <div className="tournament-settings">
                         <h4>Tournament Settings</h4>
@@ -2150,7 +2150,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                                     <option value={128}>128</option>
                                 </select>
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Entry Fee (XP)</label>
                                 <input
@@ -2161,7 +2161,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                                     max="500"
                                 />
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Duration (days)</label>
                                 <input
@@ -2172,7 +2172,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                                     max="30"
                                 />
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Time Limit per Quiz (seconds)</label>
                                 <input
@@ -2185,7 +2185,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Quiz Selection */}
                     <div className="quiz-selection">
                         <h4>Select Quizzes for Tournament {availableQuizzes.length > 0 && `(${availableQuizzes.length} available)`}</h4>
@@ -2204,8 +2204,8 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                         ) : availableQuizzes.length > 0 ? (
                             <div className="quiz-list">
                                 {availableQuizzes.map(quiz => (
-                                    <label 
-                                        key={quiz._id} 
+                                    <label
+                                        key={quiz._id}
                                         className={`quiz-checkbox ${formData.selectedQuizzes.includes(quiz._id) ? 'selected' : ''}`}
                                     >
                                         <input
@@ -2217,8 +2217,8 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                                                     // Avoid duplicates
                                                     setFormData(prev => ({
                                                         ...prev,
-                                                        selectedQuizzes: prev.selectedQuizzes.includes(quizId) 
-                                                            ? prev.selectedQuizzes 
+                                                        selectedQuizzes: prev.selectedQuizzes.includes(quizId)
+                                                            ? prev.selectedQuizzes
                                                             : [...prev.selectedQuizzes, quizId]
                                                     }));
                                                 } else {
@@ -2242,7 +2242,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                             <p className="no-quizzes">No quizzes available. Please create some quizzes first.</p>
                         )}
                     </div>
-                    
+
                     {/* Prizes */}
                     <div className="tournament-prizes-form">
                         <h4>Prize Distribution</h4>
@@ -2275,7 +2275,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                             </div>
                         ))}
                     </div>
-                    
+
                     <div className="modal-actions">
                         <button type="button" className="cancel-btn" onClick={onClose}>
                             Cancel
@@ -2291,13 +2291,13 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
 };
 
 // GameQuizModal Component for taking quizzes within gamification
-const GameQuizModal = ({ 
-    isOpen, 
-    onClose, 
-    quiz, 
-    onSubmit, 
-    quizType, 
-    gamificationTitle 
+const GameQuizModal = ({
+    isOpen,
+    onClose,
+    quiz,
+    onSubmit,
+    quizType,
+    gamificationTitle
 }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState({});
@@ -2351,11 +2351,11 @@ const GameQuizModal = ({
 
     const handleSubmitQuiz = useCallback(async () => {
         if (isSubmitting) return;
-        
+
         setIsSubmitting(true);
         const score = calculateScore();
         const timeTaken = Math.round((Date.now() - quizStartTime) / 1000);
-        
+
         try {
             await onSubmit(answers, score, timeTaken);
             onClose();
@@ -2387,7 +2387,7 @@ const GameQuizModal = ({
 
     const currentQ = quiz.questions[currentQuestion];
     if (!currentQ) return null;
-    
+
     const progress = ((currentQuestion + 1) / quiz.questions.length) * 100;
 
     return (
@@ -2407,15 +2407,15 @@ const GameQuizModal = ({
                 </div>
 
                 <div className="progress-bar">
-                    <div 
-                        className="progress-fill" 
+                    <div
+                        className="progress-fill"
                         style={{ width: `${progress}%` }}
                     ></div>
                 </div>
 
                 <div className="question-container">
                     <h4 className="question-text">{currentQ.question}</h4>
-                    
+
                     <div className="options-container">
                         {currentQ.options.map((option, index) => (
                             <button
@@ -2431,21 +2431,21 @@ const GameQuizModal = ({
                 </div>
 
                 <div className="quiz-navigation">
-                    <button 
-                        className="nav-btn prev-btn" 
+                    <button
+                        className="nav-btn prev-btn"
                         onClick={handlePrevious}
                         disabled={currentQuestion === 0}
                     >
                         ← Previous
                     </button>
-                    
+
                     <div className="nav-center">
                         <div className="question-indicator">
                             {quiz.questions.map((_, index) => (
                                 <div
                                     key={index}
                                     className={`indicator-dot ${
-                                        index === currentQuestion ? 'current' : 
+                                        index === currentQuestion ? 'current' :
                                         answers[index] !== undefined ? 'answered' : ''
                                     }`}
                                     onClick={() => setCurrentQuestion(index)}
@@ -2455,16 +2455,16 @@ const GameQuizModal = ({
                     </div>
 
                     {currentQuestion === quiz.questions.length - 1 ? (
-                        <button 
-                            className="nav-btn submit-btn" 
+                        <button
+                            className="nav-btn submit-btn"
                             onClick={handleSubmitQuiz}
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? 'Submitting...' : 'Submit Quiz'}
                         </button>
                     ) : (
-                        <button 
-                            className="nav-btn next-btn" 
+                        <button
+                            className="nav-btn next-btn"
                             onClick={handleNext}
                         >
                             Next →

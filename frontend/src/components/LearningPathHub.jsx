@@ -150,12 +150,12 @@ const LearningPathHub = () => {
                 score,
                 timeSpent
             });
-            
+
             // Reload current path to reflect changes
             if (currentPath && currentPath.path._id === pathId) {
                 openPathViewer(pathId);
             }
-            
+
             // Reload my paths
             loadMyPaths();
         } catch (error) {
@@ -172,7 +172,7 @@ const LearningPathHub = () => {
             <div className="explore-header">
                 <h2>🗺️ Explore Learning Paths</h2>
                 <p>Discover structured learning journeys designed to master new skills</p>
-                
+
                 <div className="path-filters">
                     <select
                         value={filters.category}
@@ -188,7 +188,7 @@ const LearningPathHub = () => {
                         <option value="Languages">Languages</option>
                         <option value="History">History</option>
                     </select>
-                    
+
                     <select
                         value={filters.level}
                         onChange={(e) => setFilters(prev => ({ ...prev, level: e.target.value }))}
@@ -199,7 +199,7 @@ const LearningPathHub = () => {
                         <option value="advanced">Advanced</option>
                         <option value="expert">Expert</option>
                     </select>
-                    
+
                     <input
                         type="text"
                         placeholder="Search paths..."
@@ -223,9 +223,9 @@ const LearningPathHub = () => {
                                 {path.level}
                             </span>
                         </div>
-                        
+
                         <p className="path-description">{path.description}</p>
-                        
+
                         <div className="path-stats">
                             <div className="stat">
                                 <span className="stat-icon">🎯</span>
@@ -240,11 +240,11 @@ const LearningPathHub = () => {
                                 <span>{path.stats.totalLearners} Learners</span>
                             </div>
                         </div>
-                        
+
                         {path.userProgress && (
                             <div className="path-progress">
                                 <div className="progress-bar">
-                                    <div 
+                                    <div
                                         className="progress-fill"
                                         style={{ width: `${path.userProgress.overallProgress}%` }}
                                     />
@@ -252,7 +252,7 @@ const LearningPathHub = () => {
                                 <span>{path.userProgress.overallProgress}% Complete</span>
                             </div>
                         )}
-                        
+
                         <div className="path-actions">
                             <button
                                 className="btn-secondary"
@@ -321,18 +321,18 @@ const LearningPathHub = () => {
                                     {path.userProgress.overallProgress}%
                                 </span>
                             </div>
-                            
+
                             <h3>{path.title}</h3>
-                            
+
                             <div className="progress-visual">
                                 <div className="progress-bar">
-                                    <div 
+                                    <div
                                         className="progress-fill"
                                         style={{ width: `${path.userProgress.overallProgress}%` }}
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="path-details">
                                 <div className="detail">
                                     <span className="detail-label">Time Spent:</span>
@@ -343,7 +343,7 @@ const LearningPathHub = () => {
                                     <span>{path.category}</span>
                                 </div>
                             </div>
-                            
+
                             <button
                                 className="btn-primary"
                                 onClick={() => openPathViewer(path._id)}
@@ -367,9 +367,9 @@ const LearningPathHub = () => {
                     {skillTreeData.links.map((link, index) => {
                         const sourceNode = skillTreeData.nodes.find(n => n.id === link.source);
                         const targetNode = skillTreeData.nodes.find(n => n.id === link.target);
-                        
+
                         if (!sourceNode || !targetNode) return null;
-                        
+
                         return (
                             <line
                                 key={index}
@@ -383,7 +383,7 @@ const LearningPathHub = () => {
                             />
                         );
                     })}
-                    
+
                     {/* Render nodes */}
                     {skillTreeData.nodes.map(node => (
                         <g key={node.id}>
@@ -398,7 +398,7 @@ const LearningPathHub = () => {
                                 onClick={() => setSelectedNode(node)}
                                 style={{ cursor: 'pointer' }}
                             />
-                            
+
                             {/* Mastery indicator */}
                             {node.status === 'completed' && (
                                 <circle
@@ -412,7 +412,7 @@ const LearningPathHub = () => {
                                     transform={`rotate(-90 ${node.position.x} ${node.position.y})`}
                                 />
                             )}
-                            
+
                             {/* Node type icon */}
                             <text
                                 x={node.position.x}
@@ -426,7 +426,7 @@ const LearningPathHub = () => {
                         </g>
                     ))}
                 </svg>
-                
+
                 {/* Node details panel */}
                 <AnimatePresence>
                     {selectedNode && (
@@ -440,10 +440,10 @@ const LearningPathHub = () => {
                                 <h3>{selectedNode.title}</h3>
                                 <button onClick={() => setSelectedNode(null)}>×</button>
                             </div>
-                            
+
                             <div className="panel-content">
                                 <p>{selectedNode.description}</p>
-                                
+
                                 <div className="node-stats">
                                     <div className="stat">
                                         <span>Status:</span>
@@ -451,20 +451,20 @@ const LearningPathHub = () => {
                                             {selectedNode.status.replace('_', ' ')}
                                         </span>
                                     </div>
-                                    
+
                                     {selectedNode.status === 'completed' && (
                                         <div className="stat">
                                             <span>Mastery:</span>
                                             <span>{selectedNode.mastery}%</span>
                                         </div>
                                     )}
-                                    
+
                                     <div className="stat">
                                         <span>Estimated Time:</span>
                                         <span>{selectedNode.estimatedTime} min</span>
                                     </div>
                                 </div>
-                                
+
                                 {selectedNode.status === 'available' && (
                                     <button
                                         className="btn-primary"
@@ -476,7 +476,7 @@ const LearningPathHub = () => {
                                         Start Learning
                                     </button>
                                 )}
-                                
+
                                 {selectedNode.status === 'in_progress' && (
                                     <button
                                         className="btn-primary"
@@ -488,7 +488,7 @@ const LearningPathHub = () => {
                                         Mark Complete
                                     </button>
                                 )}
-                                
+
                                 {selectedNode.status === 'completed' && selectedNode.mastery < 80 && (
                                     <button
                                         className="btn-secondary"
@@ -518,7 +518,7 @@ const LearningPathHub = () => {
                 animate={{ opacity: 1, y: 0 }}
             >
                 <h2>📊 Learning Analytics</h2>
-                
+
                 <div className="analytics-overview">
                     <div className="stat-card">
                         <div className="stat-icon">🗺️</div>
@@ -527,7 +527,7 @@ const LearningPathHub = () => {
                             <p>Learning Paths</p>
                         </div>
                     </div>
-                    
+
                     <div className="stat-card">
                         <div className="stat-icon">✅</div>
                         <div className="stat-content">
@@ -535,7 +535,7 @@ const LearningPathHub = () => {
                             <p>Completed</p>
                         </div>
                     </div>
-                    
+
                     <div className="stat-card">
                         <div className="stat-icon">⏱️</div>
                         <div className="stat-content">
@@ -543,7 +543,7 @@ const LearningPathHub = () => {
                             <p>Time Invested</p>
                         </div>
                     </div>
-                    
+
                     <div className="stat-card">
                         <div className="stat-icon">🚀</div>
                         <div className="stat-content">
@@ -552,7 +552,7 @@ const LearningPathHub = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="analytics-details">
                     <div className="strengths-weaknesses">
                         <div className="strengths">
@@ -567,7 +567,7 @@ const LearningPathHub = () => {
                                 <p>Complete more paths to identify strengths</p>
                             )}
                         </div>
-                        
+
                         <div className="weaknesses">
                             <h3>🎯 Areas to Improve</h3>
                             {analytics.weaknesses.length > 0 ? (
@@ -581,7 +581,7 @@ const LearningPathHub = () => {
                             )}
                         </div>
                     </div>
-                    
+
                     {analytics.upcomingReviews.length > 0 && (
                         <div className="upcoming-reviews">
                             <h3>📅 Upcoming Reviews</h3>
@@ -612,7 +612,7 @@ const LearningPathHub = () => {
             animate={{ opacity: 1, y: 0 }}
         >
             <h2>🎯 Skills & Competencies</h2>
-            
+
             {competencies.length === 0 ? (
                 <div className="empty-state">
                     <div className="empty-icon">🎯</div>
@@ -633,7 +633,7 @@ const LearningPathHub = () => {
                                     {competency.competency.level}
                                 </span>
                             </div>
-                            
+
                             <div className="competency-progress">
                                 <div className="progress-circle">
                                     <svg viewBox="0 0 36 36" className="circular-chart">
@@ -656,11 +656,11 @@ const LearningPathHub = () => {
                                     </svg>
                                 </div>
                             </div>
-                            
+
                             <p className="competency-description">
                                 {competency.competency.description}
                             </p>
-                            
+
                             {competency.masteryDate && (
                                 <div className="mastery-badge">
                                     🏆 Mastered on {new Date(competency.masteryDate).toLocaleDateString()}
@@ -779,7 +779,7 @@ const LearningPathHub = () => {
                                     ×
                                 </button>
                             </div>
-                            
+
                             <div className="viewer-body">
                                 {renderSkillTree()}
                             </div>

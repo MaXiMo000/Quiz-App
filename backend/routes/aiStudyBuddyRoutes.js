@@ -72,7 +72,7 @@ router.post("/start-session", verifyToken, async (req, res) => {
 
         // Generate welcome message based on user data
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-        
+
         const prompt = `You are an AI Study Buddy for a quiz learning platform. Create a personalized welcome message for this user:
 
 User Profile:
@@ -131,10 +131,10 @@ router.post("/chat", verifyToken, async (req, res) => {
 
         // Get user data for context
         const user = await User.findById(userId);
-        
+
         // Generate AI response based on request type
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        
+
         let response;
         switch (requestType) {
             case "quiz_request":
@@ -182,7 +182,7 @@ router.post("/generate-quiz", verifyToken, async (req, res) => {
 
         const user = await User.findById(userId);
         let session = studySessions.get(userId);
-        
+
         if (!session) {
             session = new StudySession(userId);
             studySessions.set(userId, session);
@@ -230,7 +230,7 @@ Return ONLY a valid JSON object with this structure:
 
         const result = await model.generateContent(prompt);
         let quizData;
-        
+
         try {
             // Clean the response to ensure valid JSON
             let responseText = result.response.text().trim();
@@ -248,13 +248,13 @@ Return ONLY a valid JSON object with this structure:
             if (typeof correctAnswer === "number") {
                 correctAnswer = ["A", "B", "C", "D"][correctAnswer];
             }
-            
+
             // Validate that correctAnswer is a valid letter
             if (!["A", "B", "C", "D"].includes(correctAnswer)) {
                 console.warn(`Invalid correctAnswer: ${correctAnswer}, defaulting to A`);
                 correctAnswer = "A";
             }
-            
+
             // Map difficulty to valid enum values
             let questionDifficulty = q.difficulty || difficulty;
             const difficultyMapping = {
@@ -266,11 +266,11 @@ Return ONLY a valid JSON object with this structure:
                 "hard": "hard",
                 "expert": "hard"
             };
-            
+
             // Normalize to lowercase and map to valid enum
             const normalizedDifficulty = questionDifficulty.toLowerCase();
             questionDifficulty = difficultyMapping[normalizedDifficulty] || "medium";
-            
+
             return {
                 question: q.question,
                 options: q.options,
@@ -390,7 +390,7 @@ Format as a JSON array of recommendation objects:
 
         const result = await model.generateContent(prompt);
         let recommendations;
-        
+
         try {
             let responseText = result.response.text().trim();
             responseText = responseText.replace(/```json\n?/, "").replace(/\n?```/, "");
@@ -452,7 +452,7 @@ Respond encouragingly and ask for specific details:
 Keep it conversational and helpful. Offer suggestions based on their weak areas.`;
 
     const result = await model.generateContent(prompt);
-    
+
     return {
         content: result.response.text(),
         actions: ["generate_quiz"]
@@ -475,7 +475,7 @@ Provide a clear, detailed explanation that:
 Adapt the explanation style to their learning preference (${session.learningStyle}).`;
 
     const result = await model.generateContent(prompt);
-    
+
     return {
         content: result.response.text(),
         actions: ["offer_practice", "suggest_related_topics"]
@@ -501,7 +501,7 @@ Create a structured study plan with:
 Make it realistic and achievable for their level.`;
 
     const result = await model.generateContent(prompt);
-    
+
     return {
         content: result.response.text(),
         actions: ["save_study_plan", "set_reminders"]
@@ -524,7 +524,7 @@ Provide:
 Be encouraging and specific about how to improve.`;
 
     const result = await model.generateContent(prompt);
-    
+
     return {
         content: result.response.text(),
         actions: ["practice_weak_areas", "track_improvement"]
@@ -561,11 +561,11 @@ If they ask about generating quizzes, be specific about topics and difficulty le
 If they mention struggling with something, offer targeted help and practice suggestions.`;
 
     const result = await model.generateContent(prompt);
-    
+
     // Analyze the response to suggest relevant actions
     const responseText = result.response.text().toLowerCase();
     const actions = [];
-    
+
     if (responseText.includes("quiz") || responseText.includes("practice")) {
         actions.push("generate_quiz");
     }
@@ -578,7 +578,7 @@ If they mention struggling with something, offer targeted help and practice sugg
     if (responseText.includes("weak") || responseText.includes("improve")) {
         actions.push("analyze_weak_areas");
     }
-    
+
     return {
         content: result.response.text(),
         actions: actions.length > 0 ? actions : ["generate_quiz", "explain_concept"]
@@ -598,7 +598,7 @@ router.post("/end-session", verifyToken, async (req, res) => {
         // Calculate session summary
         const sessionDuration = (new Date() - session.startTime) / 1000 / 60; // minutes
         const totalMessages = session.messages.length;
-        
+
         // Archive session (in production, save to database)
         const sessionSummary = {
             sessionId: session.sessionId,
@@ -723,7 +723,7 @@ router.get("/track-progress", verifyToken, async (req, res) => {
 
         // Calculate progress metrics
         const totalQuizzesTaken = recentQuizzes.length;
-        const averageScore = recentQuizzes.length > 0 
+        const averageScore = recentQuizzes.length > 0
             ? recentQuizzes.reduce((sum, quiz) => {
                 const userResult = quiz.results.find(r => r.userId.toString() === userId);
                 return sum + (userResult ? (userResult.score / quiz.totalMarks) * 100 : 0);
@@ -735,17 +735,17 @@ router.get("/track-progress", verifyToken, async (req, res) => {
         if (totalQuizzesTaken >= 4) {
             const firstHalf = recentQuizzes.slice(Math.ceil(totalQuizzesTaken / 2));
             const secondHalf = recentQuizzes.slice(0, Math.floor(totalQuizzesTaken / 2));
-            
+
             const firstHalfAvg = firstHalf.reduce((sum, quiz) => {
                 const userResult = quiz.results.find(r => r.userId.toString() === userId);
                 return sum + (userResult ? (userResult.score / quiz.totalMarks) * 100 : 0);
             }, 0) / firstHalf.length;
-            
+
             const secondHalfAvg = secondHalf.reduce((sum, quiz) => {
                 const userResult = quiz.results.find(r => r.userId.toString() === userId);
                 return sum + (userResult ? (userResult.score / quiz.totalMarks) * 100 : 0);
             }, 0) / secondHalf.length;
-            
+
             if (secondHalfAvg > firstHalfAvg + 5) {
                 improvementTrend = "improving";
             } else if (secondHalfAvg < firstHalfAvg - 5) {
@@ -755,7 +755,7 @@ router.get("/track-progress", verifyToken, async (req, res) => {
 
         // Generate AI progress report
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        
+
         const prompt = `Generate a motivational progress report for this student:
 
 Student Profile:

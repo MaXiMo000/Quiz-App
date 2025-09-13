@@ -12,7 +12,7 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    
+
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
 
@@ -90,8 +90,8 @@ const Register = () => {
                         />
                     </div>
 
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="auth-btn primary"
                         disabled={loading}
                     >
@@ -106,7 +106,7 @@ const Register = () => {
                     <p>Already have an account? <Link to="/login">Sign in</Link></p>
                 </div>
             </div>
-            
+
             {/* Full Screen Loader */}
             {loading && (
                 <div className="fullscreen-loader">

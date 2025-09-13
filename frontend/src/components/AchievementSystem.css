@@ -401,45 +401,45 @@
   .achievement-system {
     padding: var(--space-lg);
   }
-  
+
   .achievement-header {
     padding: var(--space-lg);
   }
-  
+
   .header-content {
     flex-direction: column;
     text-align: center;
     gap: var(--space-md);
   }
-  
+
   .header-content h1 {
     font-size: 2.2rem;
   }
-  
+
   .progress-overview {
     flex-direction: column;
     gap: var(--space-md);
   }
-  
+
   .category-achievements {
     grid-template-columns: 1fr;
   }
-  
+
   .achievement-card {
     padding: var(--space-lg);
     min-height: 120px;
   }
-  
+
   .achievement-icon {
     width: 60px;
     height: 60px;
     font-size: 2rem;
   }
-  
+
   .achievement-title {
     font-size: 1.2rem;
   }
-  
+
   .progress-bar {
     width: 100px;
   }
@@ -449,43 +449,43 @@
   .achievement-system {
     padding: var(--space-md);
   }
-  
+
   .achievement-header {
     padding: var(--space-md);
   }
-  
+
   .header-content h1 {
     font-size: 1.8rem;
   }
-  
+
   .achievement-card {
     padding: var(--space-md);
     flex-direction: column;
     text-align: center;
     gap: var(--space-md);
   }
-  
+
   .achievement-icon {
     width: 50px;
     height: 50px;
     font-size: 1.8rem;
     align-self: center;
   }
-  
+
   .achievement-meta {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .filter-controls {
     flex-wrap: wrap;
   }
-  
+
   .filter-btn {
     flex: 1;
     min-width: 80px;
   }
-  
+
   .notification-content {
     flex-direction: column;
     text-align: center;

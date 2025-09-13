@@ -57,7 +57,7 @@
 <body>
     <div class="container">
         <h1>🔧 PWA Install Button - Fixed</h1>
-        
+
         <div id="status" class="status">
             Checking PWA status...
         </div>
@@ -92,7 +92,7 @@
             const timestamp = new Date().toLocaleTimeString();
             const logEntry = `[${timestamp}] ${message}`;
             console.log(logEntry);
-            
+
             consoleDiv.innerHTML += `<div style="color: ${type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : 'white'}">${logEntry}</div>`;
             consoleDiv.scrollTop = consoleDiv.scrollHeight;
         }
@@ -100,7 +100,7 @@
         function updateStatus() {
             const info = pwaManager.getInstallationInfo();
             log('📱 PWA Status: ' + JSON.stringify(info));
-            
+
             statusDiv.innerHTML = `
                 <strong>PWA Status:</strong><br>
                 • Installed: ${info.isInstalled ? '✅' : '❌'}<br>
@@ -109,9 +109,9 @@
                 • Installable: ${info.isInstallable ? '✅' : '❌'}<br>
                 • Display Mode: ${info.displayMode}
             `;
-            
+
             statusDiv.className = 'status ' + (info.canInstall ? 'success' : info.isInstalled ? 'warning' : 'error');
-            
+
             // Update button
             if (info.isInstalled) {
                 installBtn.textContent = '✅ Already Installed';
@@ -162,7 +162,7 @@
         // Initialize
         log('🚀 PWA Test page loaded');
         setTimeout(updateStatus, 1000);
-        
+
         // Update status periodically
         setInterval(updateStatus, 5000);
     </script>

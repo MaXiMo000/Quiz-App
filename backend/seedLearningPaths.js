@@ -16,7 +16,7 @@ const seedDatabase = async () => {
         await seedCompetencies();
 
         console.log("🎉 Database seeding completed successfully!");
-        
+
     } catch (error) {
         console.error("❌ Error seeding database:", error);
     } finally {

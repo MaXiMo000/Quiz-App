@@ -18,7 +18,7 @@ export const getSmartRecommendations = async (req, res) => {
         const userId = req.user.id;
         const userRole = req.user.role;
         const user = await UserQuiz.findById(userId);
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -48,7 +48,7 @@ export const getSmartRecommendations = async (req, res) => {
 
         // Remove duplicates and limit to top 10
         const uniqueRecommendations = recommendations
-            .filter((rec, index, self) => 
+            .filter((rec, index, self) =>
                 index === self.findIndex(r => r.quiz._id.toString() === rec.quiz._id.toString())
             )
             .slice(0, 10);
@@ -93,7 +93,7 @@ function getQuizFilter(userId, userRole) {
 // Helper function: Category-based recommendations
 async function getCategoryBasedRecommendations(user, recentReports, userId, userRole) {
     const recommendations = [];
-    
+
     // Analyze user's favorite categories from recent performance
     const categoryStats = {};
     recentReports.forEach(report => {
@@ -134,17 +134,17 @@ async function getCategoryBasedRecommendations(user, recentReports, userId, user
 // Helper function: Difficulty-based recommendations
 async function getDifficultyBasedRecommendations(user, recentReports, userId, userRole) {
     const recommendations = [];
-    
+
     // Analyze user's performance to determine optimal difficulty
     let totalScore = 0;
     let totalQuizzes = recentReports.length;
-    
+
     recentReports.forEach(report => {
         totalScore += (report.score / report.total);
     });
-    
+
     const averagePerformance = totalQuizzes > 0 ? totalScore / totalQuizzes : 0.5;
-    
+
     let recommendedDifficulty;
     if (averagePerformance >= 0.9) {
         recommendedDifficulty = "hard";
@@ -156,7 +156,7 @@ async function getDifficultyBasedRecommendations(user, recentReports, userId, us
 
     // Get base filter for user role
     const baseFilter = getQuizFilter(userId, userRole);
-    
+
     // Find quizzes with appropriate difficulty
     const difficultyQuizzes = await Quiz.aggregate([
         {
@@ -167,7 +167,7 @@ async function getDifficultyBasedRecommendations(user, recentReports, userId, us
                 averageDifficulty: {
                     $switch: {
                         branches: [
-                            { 
+                            {
                                 case: { $gte: ["$difficultyDistribution.hard", "$difficultyDistribution.medium"] },
                                 then: "hard"
                             },
@@ -202,11 +202,11 @@ async function getDifficultyBasedRecommendations(user, recentReports, userId, us
 // Helper function: Weakness improvement recommendations
 async function getWeaknessImprovementRecommendations(user, recentReports, userId, userRole) {
     const recommendations = [];
-    
+
     // Identify weak areas from recent performance
     const weakAreas = [];
     const categoryPerformance = {};
-    
+
     recentReports.forEach(report => {
         const category = extractCategoryFromQuizName(report.quizName);
         if (!categoryPerformance[category]) {
@@ -246,7 +246,7 @@ async function getWeaknessImprovementRecommendations(user, recentReports, userId
 // Helper function: Popular quizzes for user level
 async function getPopularQuizzesForLevel(user, userId, userRole) {
     const recommendations = [];
-    
+
     // Find popular quizzes (high attempts and good average scores) with user filter
     const baseFilter = getQuizFilter(userId, userRole);
     const popularQuizzes = await Quiz.find({
@@ -272,7 +272,7 @@ async function getPopularQuizzesForLevel(user, userId, userRole) {
 // Helper function to extract category from quiz name
 function extractCategoryFromQuizName(quizName) {
     const lowercaseName = quizName.toLowerCase();
-    
+
     if (lowercaseName.includes("math") || lowercaseName.includes("algebra") || lowercaseName.includes("geometry") || lowercaseName.includes("calculus") || lowercaseName.includes("statistics")) {
         return "mathematics";
     } else if (lowercaseName.includes("science") || lowercaseName.includes("physics") || lowercaseName.includes("chemistry") || lowercaseName.includes("biology")) {
@@ -298,14 +298,14 @@ export const getAdaptiveDifficulty = async (req, res) => {
     try {
         const userId = req.user.id;
         const { category } = req.query;
-        
+
         const user = await UserQuiz.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         // Get all user's reports first
-        const allReports = await Report.find({ 
+        const allReports = await Report.find({
             username: user.name
         }).sort({ createdAt: -1 });
 
@@ -325,7 +325,7 @@ export const getAdaptiveDifficulty = async (req, res) => {
         let confidence = 0.5;
 
         if (categoryReports.length >= 3) {
-            const avgScore = categoryReports.reduce((sum, report) => 
+            const avgScore = categoryReports.reduce((sum, report) =>
                 sum + (report.score / report.total), 0) / categoryReports.length;
 
             if (avgScore >= 0.85) {
@@ -340,7 +340,7 @@ export const getAdaptiveDifficulty = async (req, res) => {
             }
         } else if (categoryReports.length > 0) {
             // If we have some data but less than 3 quizzes, use it with lower confidence
-            const avgScore = categoryReports.reduce((sum, report) => 
+            const avgScore = categoryReports.reduce((sum, report) =>
                 sum + (report.score / report.total), 0) / categoryReports.length;
 
             if (avgScore >= 0.8) {
@@ -370,7 +370,7 @@ export const getAdaptiveDifficulty = async (req, res) => {
             basedOnQuizzes: categoryReports.length,
             category: category || "general"
         };
-        
+
         logger.info(`Successfully calculated adaptive difficulty for user ${userId}: ${response.recommendedDifficulty}`);
         res.json(response);
 
@@ -386,7 +386,7 @@ export const getLearningAnalytics = async (req, res) => {
     try {
         const userId = req.user.id;
         const user = await UserQuiz.findById(userId);
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -466,7 +466,7 @@ function calculateOverviewStats(reports) {
 function calculatePerformanceTrends(reports) {
     if (reports.length === 0) return [];
 
-    const last30Days = reports.filter(r => 
+    const last30Days = reports.filter(r =>
         new Date(r.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
     );
 
@@ -478,7 +478,7 @@ function calculatePerformanceTrends(reports) {
         const reportDate = new Date(report.createdAt);
         const weeksAgo = Math.floor((Date.now() - reportDate.getTime()) / (7 * 24 * 60 * 60 * 1000));
         const weekKey = Math.min(weeksAgo, 4); // Group older data into week 4+
-        
+
         if (!weeklyData[weekKey]) {
             weeklyData[weekKey] = { total: 0, correct: 0, count: 0 };
         }
@@ -521,10 +521,10 @@ function calculatePerformancePredictions(reports) {
 
     const recentPerformance = reports.slice(0, Math.min(5, reports.length));
     const avgRecent = recentPerformance.reduce((sum, r) => sum + (r.score / r.total), 0) / recentPerformance.length;
-    
+
     const trend = calculateTrend(recentPerformance);
     let prediction = avgRecent;
-    
+
     if (trend === "improving") {
         prediction = Math.min(1, avgRecent + 0.05);
     } else if (trend === "declining") {
@@ -547,7 +547,7 @@ function calculatePerformancePredictions(reports) {
 
 function calculateStrengths(reports) {
     const categoryStats = {};
-    
+
     reports.forEach(report => {
         const category = extractCategoryFromQuizName(report.quizName);
         if (!categoryStats[category]) {
@@ -570,7 +570,7 @@ function calculateStrengths(reports) {
 
 function calculateWeaknesses(reports) {
     const categoryStats = {};
-    
+
     reports.forEach(report => {
         const category = extractCategoryFromQuizName(report.quizName);
         if (!categoryStats[category]) {
@@ -594,7 +594,7 @@ function calculateWeaknesses(reports) {
 
 function generateStudyRecommendations(reports, user) {
     const recommendations = [];
-    
+
     // Time-based recommendations
     const hourStats = {};
     reports.forEach(report => {
@@ -628,7 +628,7 @@ function generateStudyRecommendations(reports, user) {
 
     // Frequency recommendations
     const avgQuizzesPerWeek = reports.length / Math.max(1, Math.ceil((Date.now() - new Date(reports[reports.length - 1]?.createdAt || Date.now())) / (7 * 24 * 60 * 60 * 1000)));
-    
+
     if (avgQuizzesPerWeek < 3) {
         recommendations.push({
             type: "frequency",
@@ -643,7 +643,7 @@ function generateStudyRecommendations(reports, user) {
 
 function calculateOptimalStudyTime(reports) {
     const hourlyPerformance = {};
-    
+
     reports.forEach(report => {
         const hour = new Date(report.createdAt).getHours();
         if (!hourlyPerformance[hour]) {
@@ -666,25 +666,25 @@ function calculateOptimalStudyTime(reports) {
 
 function calculateImprovementRate(reports) {
     if (reports.length < 6) return 0;
-    
+
     const recentAvg = reports.slice(0, 3).reduce((sum, r) => sum + (r.score / r.total), 0) / 3;
     const olderAvg = reports.slice(3, 6).reduce((sum, r) => sum + (r.score / r.total), 0) / 3;
-    
+
     return Math.round((recentAvg - olderAvg) * 100);
 }
 
 function calculateTrend(reports) {
     if (reports.length < 3) return "stable";
-    
+
     const scores = reports.map(r => r.score / r.total);
     let improvements = 0;
     let declines = 0;
-    
+
     for (let i = 1; i < scores.length; i++) {
         if (scores[i-1] > scores[i]) improvements++;
         else if (scores[i-1] < scores[i]) declines++;
     }
-    
+
     if (improvements > declines + 1) return "improving";
     if (declines > improvements + 1) return "declining";
     return "stable";
@@ -696,7 +696,7 @@ export const updateUserPreferences = async (req, res) => {
     try {
         const userId = req.user.id;
         const { quizId, score, totalQuestions, timeSpent, category, difficulty } = req.body;
-        
+
         const user = await UserQuiz.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -720,18 +720,18 @@ export const updateUserPreferences = async (req, res) => {
 
         // Update preferences based on performance
         const performancePercentage = score / totalQuestions;
-        
+
         // Update favorite categories
         if (performancePercentage >= 0.7) {
             if (!user.preferences.favoriteCategories.includes(category)) {
                 user.preferences.favoriteCategories.push(category);
             }
-            
+
             // Add to strong areas
             if (!user.preferences.strongAreas.includes(category)) {
                 user.preferences.strongAreas.push(category);
             }
-            
+
             // Remove from weak areas if present
             user.preferences.weakAreas = user.preferences.weakAreas.filter(area => area !== category);
         } else if (performancePercentage < 0.5) {
@@ -739,7 +739,7 @@ export const updateUserPreferences = async (req, res) => {
             if (!user.preferences.weakAreas.includes(category)) {
                 user.preferences.weakAreas.push(category);
             }
-            
+
             // Remove from strong areas if present
             user.preferences.strongAreas = user.preferences.strongAreas.filter(area => area !== category);
         }
@@ -748,7 +748,7 @@ export const updateUserPreferences = async (req, res) => {
         const recentPerformance = user.performanceHistory.slice(-5);
         if (recentPerformance.length >= 3) {
             const avgScore = recentPerformance.reduce((sum, p) => sum + (p.score / p.totalQuestions), 0) / recentPerformance.length;
-            
+
             if (avgScore >= 0.85) {
                 user.preferences.preferredDifficulty = "hard";
             } else if (avgScore >= 0.65) {
@@ -759,7 +759,7 @@ export const updateUserPreferences = async (req, res) => {
         }
 
         await user.save();
-        
+
         logger.info(`Successfully updated preferences for user ${userId}`);
         res.json({
             message: "User preferences updated successfully",

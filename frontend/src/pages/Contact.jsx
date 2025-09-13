@@ -17,8 +17,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-    hidden: { 
-        y: 60, 
+    hidden: {
+        y: 60,
         opacity: 0,
         rotateX: -30,
         scale: 0.8
@@ -38,8 +38,8 @@ const itemVariants = {
 };
 
 const textVariants = {
-    hidden: { 
-        x: -100, 
+    hidden: {
+        x: -100,
         opacity: 0,
         rotateY: -30
     },
@@ -103,14 +103,14 @@ const Contact = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className="contact"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
             <div className="floating-elements">
-                <motion.div 
+                <motion.div
                     className="floating-orb orb-1"
                     animate={{
                         y: [-20, 20, -20],
@@ -123,7 +123,7 @@ const Contact = () => {
                         ease: "easeInOut"
                     }}
                 />
-                <motion.div 
+                <motion.div
                     className="floating-orb orb-2"
                     animate={{
                         y: [30, -30, 30],
@@ -136,7 +136,7 @@ const Contact = () => {
                         ease: "easeInOut"
                     }}
                 />
-                <motion.div 
+                <motion.div
                     className="floating-orb orb-3"
                     animate={{
                         y: [-25, 25, -25],
@@ -151,7 +151,7 @@ const Contact = () => {
                 />
             </div>
 
-            <motion.div 
+            <motion.div
                 className="textContainer"
                 variants={textVariants}
             >
@@ -159,29 +159,29 @@ const Contact = () => {
                     <motion.h1
                         initial={{ opacity: 0, y: -50, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ 
-                            delay: 0.3, 
+                        transition={{
+                            delay: 0.3,
                             duration: 0.8,
                             type: "spring",
                             stiffness: 120
                         }}
                     >
-                        Let's Create Something 
+                        Let's Create Something
                         <span className="gradient-text"> Amazing Together</span>
                     </motion.h1>
-                    
-                    <motion.p 
+
+                    <motion.p
                         className="subtitle"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5, duration: 0.6 }}
                     >
-                        Ready to transform your ideas into reality? 
+                        Ready to transform your ideas into reality?
                         Let's connect and build the future together.
                     </motion.p>
                 </div>
 
-                <motion.div 
+                <motion.div
                     className="contact-items"
                     variants={containerVariants}
                 >
@@ -210,30 +210,30 @@ const Contact = () => {
                     </motion.div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     className="social-links"
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2, duration: 0.6 }}
                 >
-                    <motion.a 
-                        href="#" 
+                    <motion.a
+                        href="#"
                         className="social-link"
                         whileHover={{ scale: 1.2, rotate: 5 }}
                         whileTap={{ scale: 0.9 }}
                     >
                         🌐
                     </motion.a>
-                    <motion.a 
-                        href="#" 
+                    <motion.a
+                        href="#"
                         className="social-link"
                         whileHover={{ scale: 1.2, rotate: -5 }}
                         whileTap={{ scale: 0.9 }}
                     >
                         📱
                     </motion.a>
-                    <motion.a 
-                        href="#" 
+                    <motion.a
+                        href="#"
                         className="social-link"
                         whileHover={{ scale: 1.2, rotate: 5 }}
                         whileTap={{ scale: 0.9 }}
@@ -243,7 +243,7 @@ const Contact = () => {
                 </motion.div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
                 className="formContainer"
                 variants={itemVariants}
             >
@@ -264,14 +264,14 @@ const Contact = () => {
                     </motion.p>
                 </div>
 
-                <motion.form 
+                <motion.form
                     ref={formRef}
                     onSubmit={handleSubmit}
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.0, duration: 0.6 }}
                 >
-                    <motion.div 
+                    <motion.div
                         className="input-group"
                         whileFocus={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
@@ -287,7 +287,7 @@ const Contact = () => {
                         />
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="input-group"
                         whileFocus={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
@@ -303,7 +303,7 @@ const Contact = () => {
                         />
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="input-group"
                         whileFocus={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}

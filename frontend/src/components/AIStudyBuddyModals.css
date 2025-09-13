@@ -25,7 +25,7 @@
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 
+    box-shadow:
         0 25px 50px rgba(0, 0, 0, 0.2),
         0 0 30px rgba(102, 126, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -377,7 +377,7 @@
         padding: 15px;
         padding-bottom: calc(15px + 80px); /* Add space for mobile navbar */
     }
-    
+
     .ai-modal-content {
         max-width: 100%;
         border-radius: 15px;
@@ -385,44 +385,44 @@
         max-height: calc(100vh - 120px); /* Ensure modal doesn't exceed viewport */
         overflow-y: auto;
     }
-    
+
     .ai-modal-header {
         padding: 20px 20px 15px;
     }
-    
+
     .ai-modal-body {
         padding: 20px 20px 25px;
         padding-bottom: calc(25px + 20px); /* Extra space for mobile navbar */
     }
-    
+
     .ai-modal-title {
         font-size: 1.3rem;
         line-height: 1.3;
         word-break: break-word;
         hyphens: auto;
     }
-    
+
     .quiz-options-grid {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .ai-modal-buttons {
         flex-direction: column;
         gap: 10px;
         margin-bottom: 20px; /* Extra margin to prevent navbar overlap */
     }
-    
+
     .ai-btn {
         width: 100%;
         min-width: auto;
     }
-    
+
     .difficulty-buttons {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .difficulty-btn {
         width: 100%;
     }
@@ -433,16 +433,16 @@
         padding: 10px;
         padding-bottom: calc(10px + 80px); /* Add space for mobile navbar */
     }
-    
+
     .ai-modal-header {
         padding: 15px 15px 12px;
     }
-    
+
     .ai-modal-body {
         padding: 15px 15px 20px;
         padding-bottom: calc(20px + 20px); /* Extra space for mobile navbar */
     }
-    
+
     .ai-modal-title {
         font-size: 1.1rem;
         line-height: 1.2;
@@ -451,14 +451,14 @@
         text-align: left;
         max-width: calc(100% - 50px);
     }
-    
+
     .ai-modal-close {
         width: 32px;
         height: 32px;
         font-size: 16px;
         flex-shrink: 0;
     }
-    
+
     .ai-form-input,
     .ai-form-select,
     .ai-form-textarea {
@@ -472,16 +472,16 @@
         padding: 10px;
         padding-bottom: calc(10px + 80px); /* Add space for mobile navbar */
     }
-    
+
     .ai-modal-header {
         padding: 15px 20px 12px;
     }
-    
+
     .ai-modal-body {
         padding: 15px 20px 20px;
         padding-bottom: calc(20px + 20px); /* Extra space for mobile navbar */
     }
-    
+
     .ai-modal-title {
         font-size: 1.2rem;
     }

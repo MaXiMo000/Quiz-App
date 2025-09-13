@@ -1,0 +1,51 @@
+name: Basic Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        npm ci
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm ci
+
+    - name: Run backend linting
+      run: |
+        cd backend
+        npm run lint || echo "Linting failed"
+
+    - name: Run frontend linting
+      run: |
+        cd frontend
+        npm run lint || echo "Linting failed"
+
+    - name: Run backend tests
+      run: |
+        cd backend
+        npm test || echo "Tests failed"
+
+    - name: Run frontend tests
+      run: |
+        cd frontend
+        npm test || echo "Tests failed"

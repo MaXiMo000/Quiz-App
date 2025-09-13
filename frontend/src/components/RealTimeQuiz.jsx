@@ -39,7 +39,7 @@ const RealTimeQuiz = () => {
         loadQuizzes();
         loadPlayerStats();
         loadAvailableRooms();
-        
+
         return () => {
             if (socket) {
                 socket.disconnect();
@@ -87,7 +87,7 @@ const RealTimeQuiz = () => {
         if (socket && socket.on && typeof socket.on === 'function' && !socket.handlersSetup) {
             setupSocketHandlers(socket);
             socket.handlersSetup = true; // Mark that handlers are set up
-            
+
             return () => {
                 if (socket && socket.off && typeof socket.off === 'function') {
                     socket.off('room_created');
@@ -163,7 +163,7 @@ const RealTimeQuiz = () => {
             setQuizLoadError(null);
             const response = await axios.get('/api/quizzes');
             setQuizzes(response.data || []);
-            
+
             if (showNotifications) {
                 if (response.data && response.data.length > 0) {
                     showSuccess(`✅ ${response.data.length} quizzes loaded successfully!`);
@@ -204,7 +204,7 @@ const RealTimeQuiz = () => {
         try {
             const response = await axios.get('/api/real-time-quiz/active-rooms');
             setAvailableRooms(response.data.rooms || []);
-            
+
             if (showNotifications && response.data.rooms && response.data.rooms.length > 0) {
                 showSuccess(`🏠 Found ${response.data.rooms.length} active rooms`);
             }
@@ -217,7 +217,7 @@ const RealTimeQuiz = () => {
         }
     };
 
-    // Socket event handlers  
+    // Socket event handlers
     const handleRoomCreated = (data) => {
         setRoomData(data.room);
         setGameState('lobby');
@@ -238,7 +238,7 @@ const RealTimeQuiz = () => {
             players: data.players,
             playerCount: data.playerCount
         }));
-        
+
         setChatMessages(prev => [...prev, {
             type: 'system',
             message: `${data.player.name} joined the room`,
@@ -252,7 +252,7 @@ const RealTimeQuiz = () => {
             players: data.players,
             playerCount: data.playerCount
         }));
-        
+
         setChatMessages(prev => [...prev, {
             type: 'system',
             message: `${data.playerName} left the room`,
@@ -265,7 +265,7 @@ const RealTimeQuiz = () => {
             ...prev,
             hostId: data.newHostId
         }));
-        
+
         setChatMessages(prev => [...prev, {
             type: 'system',
             message: `${data.newHostName} is now the host`,
@@ -278,11 +278,11 @@ const RealTimeQuiz = () => {
         setSelectedAnswer(null);
         setTimeLeft(data.timeLimit);
         setGameState('playing');
-        
+
         if (data.questionIndex === 0) {
             showSuccess('Quiz started! Good luck! 🍀');
         }
-        
+
         // Start timer
         if (timerRef.current) clearInterval(timerRef.current);
         timerRef.current = setInterval(() => {
@@ -307,11 +307,11 @@ const RealTimeQuiz = () => {
     const handleQuestionResults = (data) => {
         setLeaderboard(data.leaderboard);
         setGameState('question-results');
-        
+
         if (timerRef.current) {
             clearInterval(timerRef.current);
         }
-        
+
         // Show results for a few seconds, then auto-advance
         setTimeout(() => {
             if (data.questionIndex < roomData.quiz.questionCount - 1) {
@@ -323,14 +323,14 @@ const RealTimeQuiz = () => {
     const handleQuizFinished = (data) => {
         setLeaderboard(data.leaderboard);
         setGameState('final-results');
-        
+
         if (timerRef.current) {
             clearInterval(timerRef.current);
         }
-        
+
         // Reload player stats immediately after quiz completion
         loadPlayerStats();
-        
+
         // Show congratulations based on position
         const userPosition = data.leaderboard.findIndex(player => player.isCurrentUser) + 1;
         if (userPosition === 1) {
@@ -350,7 +350,7 @@ const RealTimeQuiz = () => {
             message: data.message,
             timestamp: data.timestamp
         }]);
-        
+
         // Auto-scroll chat
         setTimeout(() => {
             if (chatRef.current) {
@@ -370,11 +370,11 @@ const RealTimeQuiz = () => {
             showError('Please select a quiz first');
             return;
         }
-        
+
         // If no socket or not authenticated, connect first
         if (!socket || !socketAuthenticated) {
             showWarning('Connecting to server...');
-            
+
             const token = localStorage.getItem('token');
             if (!token) {
                 showError('Please login to play multiplayer quizzes', false);
@@ -398,11 +398,11 @@ const RealTimeQuiz = () => {
             newSocket.on('authenticated', (userInfo) => {
                 newSocket.userInfo = userInfo;
                 setSocketAuthenticated(true);
-                
+
                 // Set up socket handlers for the new socket
                 setupSocketHandlers(newSocket);
                 newSocket.handlersSetup = true;
-                
+
                 // Create room immediately after authentication
                 newSocket.emit('create_room', {
                     quizId: selectedQuiz._id,
@@ -441,7 +441,7 @@ const RealTimeQuiz = () => {
         // If no socket or not authenticated, connect first
         if (!socket || !socketAuthenticated) {
             showWarning('Connecting to server...');
-            
+
             const token = localStorage.getItem('token');
             if (!token) {
                 showError('Please login to play multiplayer quizzes', false);
@@ -465,11 +465,11 @@ const RealTimeQuiz = () => {
             newSocket.on('authenticated', (userInfo) => {
                 newSocket.userInfo = userInfo;
                 setSocketAuthenticated(true);
-                
+
                 // Set up socket handlers for the new socket
                 setupSocketHandlers(newSocket);
                 newSocket.handlersSetup = true;
-                
+
                 // Join room immediately after authentication
                 showWarning('Joining room...');
                 newSocket.emit('join_room', { roomId });
@@ -502,7 +502,7 @@ const RealTimeQuiz = () => {
 
     const startQuiz = () => {
         if (socket && roomData) {
-            console.log('Starting quiz...', { 
+            console.log('Starting quiz...', {
                 roomData: roomData,
                 playerCount: roomData.playerCount,
                 hostId: roomData.hostId,
@@ -519,15 +519,15 @@ const RealTimeQuiz = () => {
 
     const submitAnswer = (answerIndex) => {
         if (selectedAnswer !== null || !socket) return;
-        
+
         setSelectedAnswer(answerIndex);
-        
+
         const timeSpent = roomSettings.timePerQuestion - timeLeft;
         socket.emit('submit_answer', {
             answer: answerIndex,
             timeSpent: timeSpent
         });
-        
+
         showSuccess(`Answer submitted! ✅`);
     };
 
@@ -545,7 +545,7 @@ const RealTimeQuiz = () => {
 
     const sendChatMessage = () => {
         if (!chatInput.trim() || !socket) return;
-        
+
         socket.emit('chat_message', { message: chatInput });
         setChatInput('');
     };
@@ -615,7 +615,7 @@ const RealTimeQuiz = () => {
                                 disabled={isLoadingQuizzes}
                             >
                                 <option value="" disabled>
-                                    {isLoadingQuizzes ? 'Loading quizzes...' : 
+                                    {isLoadingQuizzes ? 'Loading quizzes...' :
                                      quizLoadError ? 'Failed to load quizzes' :
                                      quizzes.length === 0 ? 'No quizzes available' :
                                      'Choose a quiz...'}
@@ -641,7 +641,7 @@ const RealTimeQuiz = () => {
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="settings-grid">
                             <div className="form-group">
                                 <label>Max Players:</label>
@@ -661,7 +661,7 @@ const RealTimeQuiz = () => {
                                     }}
                                 />
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Time per Question (sec):</label>
                                 <input
@@ -681,7 +681,7 @@ const RealTimeQuiz = () => {
                                 />
                             </div>
                         </div>
-                        
+
                         <motion.button
                             className="create-room-btn"
                             onClick={createRoom}
@@ -702,14 +702,14 @@ const RealTimeQuiz = () => {
                 >
                     <div className="section-header">
                         <h3>Join Room</h3>
-                        <button 
+                        <button
                             className="refresh-btn"
                             onClick={() => loadAvailableRooms(true)}
                         >
                             🔄 Refresh
                         </button>
                     </div>
-                    
+
                     <div className="available-rooms">
                         {availableRooms.length === 0 ? (
                             <p className="no-rooms">No active rooms found. Create one to get started!</p>
@@ -774,7 +774,7 @@ const RealTimeQuiz = () => {
                                 </div>
                             </motion.div>
                         ))}
-                        
+
                         {/* Empty slots */}
                         {Array.from({ length: roomData.settings.maxPlayers - roomData.playerCount }).map((_, index) => (
                             <div key={`empty-${index}`} className="player-card empty">
@@ -861,7 +861,7 @@ const RealTimeQuiz = () => {
                 animate={{ opacity: 1, y: 0 }}
             >
                 <h2>{currentQuestion.question.question}</h2>
-                
+
                 <div className="options-grid">
                     {currentQuestion.question.options.map((option, index) => (
                         <motion.button
@@ -958,7 +958,7 @@ const RealTimeQuiz = () => {
                         {renderMainMenu()}
                     </motion.div>
                 )}
-                
+
                 {gameState === 'lobby' && (
                     <motion.div
                         key="lobby"
@@ -969,7 +969,7 @@ const RealTimeQuiz = () => {
                         {renderLobby()}
                     </motion.div>
                 )}
-                
+
                 {(gameState === 'playing' || gameState === 'waiting-next') && (
                     <motion.div
                         key="playing"
@@ -980,7 +980,7 @@ const RealTimeQuiz = () => {
                         {renderQuestionPhase()}
                     </motion.div>
                 )}
-                
+
                 {(gameState === 'question-results' || gameState === 'final-results') && (
                     <motion.div
                         key="results"
@@ -992,10 +992,10 @@ const RealTimeQuiz = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-            
-            <NotificationModal 
-                notification={notification} 
-                onClose={hideNotification} 
+
+            <NotificationModal
+                notification={notification}
+                onClose={hideNotification}
             />
         </div>
     );

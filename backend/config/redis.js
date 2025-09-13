@@ -31,13 +31,13 @@ const connectRedis = async () => {
         // Connect redis client
         await redisClient.connect();
         logger.info("Redis client connected successfully to Redis Cloud.");
-        
+
         // Test the redis connection
         await redisClient.ping();
         logger.info("Redis ping successful - connection is working!");
-        
+
         logger.info("Redis Cloud caching is fully functional!");
-        
+
     } catch (err) {
         logger.error("Failed to connect to Redis Cloud", err);
         logger.error("Please check your Redis Cloud credentials and network connection");

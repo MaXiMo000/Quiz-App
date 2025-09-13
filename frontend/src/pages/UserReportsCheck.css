@@ -15,7 +15,7 @@
     color: var(--text-color);
     border-radius: var(--radius-2xl);
     border: 1px solid var(--card-border);
-    box-shadow: 
+    box-shadow:
         var(--shadow-2xl),
         0 0 50px rgba(99, 102, 241, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -71,9 +71,9 @@
     align-items: center;
     gap: var(--space-md);
     padding: var(--space-xl);
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05) 0%, 
-        rgba(139, 92, 246, 0.05) 50%, 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05) 0%,
+        rgba(139, 92, 246, 0.05) 50%,
         rgba(217, 70, 239, 0.05) 100%);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(99, 102, 241, 0.2);
@@ -162,7 +162,7 @@
 
 .back-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 10px 30px rgba(99, 102, 241, 0.4);
     background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
@@ -178,9 +178,9 @@
 
 /* ✅ Enhanced Question Boxes */
 .question-box {
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05) 0%, 
-        rgba(139, 92, 246, 0.05) 50%, 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05) 0%,
+        rgba(139, 92, 246, 0.05) 50%,
         rgba(217, 70, 239, 0.05) 100%);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -188,7 +188,7 @@
     border-radius: var(--radius-xl);
     padding: var(--space-xl);
     margin-bottom: var(--space-xl);
-    box-shadow: 
+    box-shadow:
         var(--shadow-lg),
         0 0 30px rgba(99, 102, 241, 0.08);
     transition: all var(--transition-smooth);
@@ -226,7 +226,7 @@
 
 .question-box:hover {
     transform: translateY(-4px);
-    box-shadow: 
+    box-shadow:
         var(--shadow-2xl),
         0 20px 60px rgba(99, 102, 241, 0.15),
         0 0 40px rgba(139, 92, 246, 0.1);
@@ -235,15 +235,15 @@
 
 .question-box.correct {
     border-color: rgba(34, 197, 94, 0.3);
-    background: linear-gradient(135deg, 
-        rgba(34, 197, 94, 0.05) 0%, 
+    background: linear-gradient(135deg,
+        rgba(34, 197, 94, 0.05) 0%,
         rgba(22, 163, 74, 0.02) 100%);
 }
 
 .question-box.wrong {
     border-color: rgba(239, 68, 68, 0.3);
-    background: linear-gradient(135deg, 
-        rgba(239, 68, 68, 0.05) 0%, 
+    background: linear-gradient(135deg,
+        rgba(239, 68, 68, 0.05) 0%,
         rgba(220, 38, 38, 0.02) 100%);
 }
 
@@ -359,8 +359,8 @@
     min-height: 50vh;
     text-align: center;
     padding: var(--space-2xl);
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05),
         rgba(139, 92, 246, 0.05));
     backdrop-filter: blur(15px);
     border: 1px solid rgba(99, 102, 241, 0.1);
@@ -394,11 +394,11 @@
         padding: var(--space-lg) var(--space-md);
         margin: var(--space-md) auto;
     }
-    
+
     .report-header h2 {
         font-size: 2rem;
     }
-    
+
     .report-info-cards {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
@@ -412,52 +412,52 @@
         border-radius: var(--radius-md);
         min-height: calc(100vh - 60px); /* Reduced height */
     }
-    
+
     .report-header h2 {
         font-size: 1.6rem; /* Smaller title */
         margin-bottom: var(--space-sm); /* Reduced margin */
     }
-    
+
     .report-info-cards {
         grid-template-columns: 1fr;
         gap: var(--space-sm); /* Reduced gap */
         margin-bottom: var(--space-sm); /* Reduced margin */
     }
-    
+
     .info-card {
         padding: var(--space-sm) var(--space-xs); /* Compact padding */
         border-radius: var(--radius-md);
     }
-    
+
     .info-card h3 {
         font-size: 0.75rem; /* Smaller label */
     }
-    
+
     .info-card p {
         font-size: 1.2rem; /* Smaller value */
     }
-    
+
     .questions-container {
         padding: var(--space-sm) var(--space-xs); /* Compact padding */
         border-radius: var(--radius-md);
     }
-    
+
     .question-box {
         padding: var(--space-sm); /* Reduced padding */
         margin-bottom: var(--space-sm);
         border-radius: var(--radius-sm);
     }
-    
+
     .question-box h4 {
         font-size: 0.9rem; /* Smaller question text */
         margin-bottom: var(--space-xs); /* Reduced margin */
     }
-    
+
     .question-box ul li {
         font-size: 0.8rem; /* Smaller options */
         padding: 0.2rem 0; /* Compact line spacing */
     }
-    
+
     .back-btn {
         padding: var(--space-xs) var(--space-md); /* Compact button */
         font-size: 0.8rem; /* Smaller font */
@@ -473,55 +473,55 @@
         border-radius: 0;
         min-height: 100vh;
     }
-    
+
     .report-header h2 {
         font-size: 1.4rem; /* Smaller title */
         margin-bottom: var(--space-xs); /* Minimal margin */
     }
-    
+
     .report-info-cards {
         gap: var(--space-xs); /* Minimal gap */
         margin-bottom: var(--space-xs); /* Minimal margin */
     }
-    
+
     .info-card {
         padding: var(--space-xs); /* Minimal padding */
         text-align: center;
     }
-    
+
     .info-card h3 {
         font-size: 0.7rem; /* Tiny label */
         margin-bottom: 0.1rem; /* Minimal margin */
     }
-    
+
     .info-card p {
         font-size: 1rem; /* Compact value */
     }
-    
+
     .questions-container {
         padding: var(--space-xs); /* Minimal padding */
         border-radius: var(--radius-sm);
         margin: 0 -0.25rem; /* Reduced negative margin */
     }
-    
+
     .question-box {
         padding: var(--space-xs); /* Minimal padding */
         margin-bottom: var(--space-xs); /* Minimal margin */
         border-radius: 0.4rem;
     }
-    
+
     .question-box h4 {
         font-size: 0.8rem; /* Smaller question */
         margin-bottom: 0.2rem; /* Minimal margin */
         line-height: 1.2; /* Compact line height */
     }
-    
+
     .question-box ul li {
         font-size: 0.7rem; /* Tiny options */
         padding: 0.15rem 0; /* Minimal spacing */
         line-height: 1.3;
     }
-    
+
     .back-btn {
         width: 100%;
         padding: var(--space-sm); /* Compact button */

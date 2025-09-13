@@ -83,11 +83,11 @@
 }
 
 @keyframes textPulse {
-    0%, 100% { 
+    0%, 100% {
         opacity: 0.8;
         text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
     }
-    50% { 
+    50% {
         opacity: 1;
         text-shadow: 0 0 30px rgba(99, 102, 241, 0.8);
     }
@@ -211,15 +211,15 @@
 }
 
 @keyframes iconDance {
-    0%, 100% { 
+    0%, 100% {
         transform: rotate(0deg) scale(1);
         filter: drop-shadow(0 0 25px rgba(99, 102, 241, 0.6));
     }
-    25% { 
+    25% {
         transform: rotate(5deg) scale(1.1);
         filter: drop-shadow(0 0 35px rgba(99, 102, 241, 0.8));
     }
-    75% { 
+    75% {
         transform: rotate(-5deg) scale(1.05);
         filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.7));
     }
@@ -235,11 +235,11 @@
 }
 
 @keyframes subtitleGlow {
-    0%, 100% { 
+    0%, 100% {
         opacity: 0.9;
         text-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
     }
-    50% { 
+    50% {
         opacity: 1;
         text-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
     }
@@ -281,14 +281,14 @@
 }
 
 @keyframes cardFloat {
-    0%, 100% { 
+    0%, 100% {
         transform: translateY(0px) rotateX(0deg);
         box-shadow: var(--shadow-3d);
     }
-    50% { 
+    50% {
         transform: translateY(-8px) rotateX(2deg);
-        box-shadow: 
-            0 25px 50px rgba(0, 0, 0, 0.2), 
+        box-shadow:
+            0 25px 50px rgba(0, 0, 0, 0.2),
             0 0 0 1px rgba(255, 255, 255, 0.1);
     }
 }
@@ -300,9 +300,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05), 
-        rgba(139, 92, 246, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05),
+        rgba(139, 92, 246, 0.05),
         rgba(59, 130, 246, 0.05));
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -367,11 +367,11 @@
 }
 
 @keyframes iconPulse {
-    0%, 100% { 
+    0%, 100% {
         transform: scale(1);
         filter: drop-shadow(0 0 20px currentColor);
     }
-    50% { 
+    50% {
         transform: scale(1.1);
         filter: drop-shadow(0 0 30px currentColor);
     }
@@ -492,7 +492,7 @@
     overflow: auto;
     max-height: 65vh;
     position: relative;
-    box-shadow: 
+    box-shadow:
         var(--shadow-3d),
         0 0 50px rgba(99, 102, 241, 0.1);
     transform-style: preserve-3d;
@@ -521,9 +521,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.03), 
-        rgba(139, 92, 246, 0.03), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.03),
+        rgba(139, 92, 246, 0.03),
         rgba(59, 130, 246, 0.03));
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -537,7 +537,7 @@
 
 .table-container:hover {
     transform: translateY(-5px);
-    box-shadow: 
+    box-shadow:
         0 30px 60px rgba(0, 0, 0, 0.2),
         0 0 70px rgba(99, 102, 241, 0.2);
     border-color: rgba(255, 255, 255, 0.2);
@@ -571,8 +571,8 @@ table {
 }
 
 thead {
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.15), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.15),
         rgba(139, 92, 246, 0.15));
     backdrop-filter: blur(10px);
     position: sticky;
@@ -600,9 +600,9 @@ th::after {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(99, 102, 241, 0.6), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(99, 102, 241, 0.6),
         transparent);
     animation: headerShimmer 3s ease-in-out infinite;
 }
@@ -626,9 +626,9 @@ tbody tr::before {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.05), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.05),
         transparent);
     transition: left 0.5s ease;
 }
@@ -689,10 +689,10 @@ td {
 }
 
 @keyframes premiumGlow {
-    0%, 100% { 
+    0%, 100% {
         box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
     }
-    50% { 
+    50% {
         box-shadow: 0 0 25px rgba(251, 191, 36, 0.5);
     }
 }
@@ -735,8 +735,8 @@ td {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.1), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.1),
         rgba(139, 92, 246, 0.05));
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -755,8 +755,8 @@ td {
     right: 8%;
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, 
-        rgba(168, 85, 247, 0.1), 
+    background: linear-gradient(135deg,
+        rgba(168, 85, 247, 0.1),
         rgba(59, 130, 246, 0.05));
     animation-delay: 2s;
 }
@@ -766,8 +766,8 @@ td {
     left: 15%;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, 
-        rgba(59, 130, 246, 0.1), 
+    background: linear-gradient(135deg,
+        rgba(59, 130, 246, 0.1),
         rgba(16, 185, 129, 0.05));
     animation-delay: 4s;
 }
@@ -821,12 +821,12 @@ td {
         width: 98%;
         padding: 1.5rem;
     }
-    
+
     .stats {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 2rem;
     }
-    
+
     .stat-card {
         padding: 2.5rem;
     }
@@ -836,44 +836,44 @@ td {
     .dashboard-content {
         padding: 1rem;
     }
-    
+
     .dashboard-header h1 {
         font-size: clamp(2rem, 8vw, 3rem);
         gap: 1rem;
     }
-    
+
     .dashboard-icon {
         font-size: 2.5rem;
     }
-    
+
     .dashboard-subtitle {
         font-size: 1.1rem;
     }
-    
+
     .stats {
         grid-template-columns: 1fr;
         gap: 1.5rem;
         margin-bottom: 3rem;
     }
-    
+
     .stat-card {
         padding: 2rem;
         border-radius: 1.5rem;
     }
-    
+
     .stat-icon {
         font-size: 2.5rem;
     }
-    
+
     .stat-number {
         font-size: 2.5rem;
     }
-    
+
     .table-title {
         font-size: 2rem;
         margin-bottom: 2rem;
     }
-    
+
     .table-container {
         border-radius: 1.5rem;
         max-height: 50vh;
@@ -883,48 +883,48 @@ td {
         border-right: none;
         border-radius: 0;
     }
-    
+
     table {
         min-width: 600px;
     }
-    
+
     th {
         padding: 1rem 0.75rem;
         font-size: 0.8rem;
         white-space: nowrap;
     }
-    
+
     td {
         padding: 1rem 0.75rem;
         font-size: 0.85rem;
     }
-    
+
     td:first-child {
         max-width: 120px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    
+
     td:nth-child(2) {
         max-width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    
+
     .role-badge {
         font-size: 0.7rem;
         padding: 0.4rem 0.8rem;
         white-space: nowrap;
     }
-    
+
     .scroll-hint {
         font-size: 0.7rem;
         padding: 0.4rem 0.8rem;
         bottom: 15px;
     }
-    
+
     .floating-element {
         display: none;
     }
@@ -934,49 +934,49 @@ td {
     .dashboard-content {
         padding: 0.5rem;
     }
-    
+
     .dashboard-header {
         margin-bottom: 2rem;
     }
-    
+
     .dashboard-header h1 {
         font-size: clamp(1.5rem, 10vw, 2.5rem);
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .dashboard-subtitle {
         font-size: 1rem;
     }
-    
+
     .stat-card {
         padding: 1.5rem;
     }
-    
+
     .stat-icon {
         font-size: 2rem;
     }
-    
+
     .stat-number {
         font-size: 2rem;
     }
-    
+
     .table-title {
         font-size: 1.5rem;
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .table-container {
         max-height: 40vh;
         border-radius: 1rem;
     }
-    
+
     th, td {
         padding: 0.8rem 0.5rem;
         font-size: 0.8rem;
     }
-    
+
     .role-badge {
         font-size: 0.65rem;
         padding: 0.3rem 0.6rem;
@@ -986,7 +986,7 @@ td {
 /* Dark theme enhancements */
 @media (prefers-color-scheme: dark) {
     .admin-dashboard {
-        background: 
+        background:
             radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
             radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.2) 0%, transparent 50%),
             linear-gradient(135deg, #050505 0%, #0a0a0a 50%, #111111 100%);

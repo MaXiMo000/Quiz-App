@@ -1,8 +1,8 @@
 /* ✨ ULTRA MODERN HOME PAGE STYLES ✨ */
 .home-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.1) 0%, 
+    background: linear-gradient(135deg,
+        rgba(139, 69, 19, 0.1) 0%,
         rgba(101, 67, 33, 0.1) 25%,
         rgba(62, 39, 35, 0.1) 50%,
         rgba(139, 69, 19, 0.1) 75%,
@@ -29,10 +29,10 @@
 }
 
 @keyframes backgroundShift {
-    0%, 100% { 
+    0%, 100% {
         background-position: 0% 50%;
     }
-    50% { 
+    50% {
         background-position: 100% 50%;
     }
 }
@@ -50,11 +50,11 @@
 }
 
 @keyframes elementsFloat {
-    0%, 100% { 
+    0%, 100% {
         opacity: 0.6;
         transform: scale(1);
     }
-    50% { 
+    50% {
         opacity: 1;
         transform: scale(1.05);
     }
@@ -63,28 +63,28 @@
 .floating-circle {
     position: absolute;
     border-radius: 50%;
-    background: linear-gradient(45deg, 
-        rgba(139, 69, 19, 0.1), 
-        rgba(160, 82, 45, 0.1), 
+    background: linear-gradient(45deg,
+        rgba(139, 69, 19, 0.1),
+        rgba(160, 82, 45, 0.1),
         rgba(210, 180, 140, 0.1));
     backdrop-filter: blur(15px);
     border: 1px solid rgba(139, 69, 19, 0.2);
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(139, 69, 19, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     animation: floatCircle 15s ease-in-out infinite;
 }
 
 @keyframes floatCircle {
-    0%, 100% { 
+    0%, 100% {
         transform: translateY(0px) rotate(0deg) scale(1);
         opacity: 0.6;
     }
-    33% { 
+    33% {
         transform: translateY(-20px) rotate(120deg) scale(1.1);
         opacity: 0.8;
     }
-    66% { 
+    66% {
         transform: translateY(10px) rotate(240deg) scale(0.9);
         opacity: 0.4;
     }
@@ -245,8 +245,8 @@
 .welcome-title {
     font-size: 3rem;
     font-weight: 700;
-    background: linear-gradient(135deg, 
-        var(--primary-color, #8B4513), 
+    background: linear-gradient(135deg,
+        var(--primary-color, #8B4513),
         var(--accent-color, #D2B48C),
         var(--primary-color, #8B4513));
     background-size: 200% 200%;
@@ -313,8 +313,8 @@
 .home-container h1 {
     font-size: 3rem;
     font-weight: 700;
-    background: linear-gradient(135deg, 
-        var(--primary-color, #8B4513), 
+    background: linear-gradient(135deg,
+        var(--primary-color, #8B4513),
         var(--accent-color, #D2B48C),
         var(--primary-color, #8B4513));
     background-size: 200% 200%;
@@ -402,7 +402,7 @@
 
 .stat-card:hover {
     transform: translateY(-10px) rotateY(5deg) scale(1.05);
-    box-shadow: 
+    box-shadow:
         0 20px 40px rgba(0, 0, 0, 0.2),
         0 0 30px rgba(139, 69, 19, 0.3);
     border-color: rgba(139, 69, 19, 0.5);
@@ -533,7 +533,7 @@
     backdrop-filter: blur(25px);
     color: white;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(0, 0, 0, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     animation: buttonFloat 3s ease-in-out infinite;
@@ -542,15 +542,15 @@
 }
 
 @keyframes buttonFloat {
-    0%, 100% { 
+    0%, 100% {
         transform: translateY(0px);
-        box-shadow: 
+        box-shadow:
             0 8px 25px rgba(0, 0, 0, 0.15),
             0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     }
-    50% { 
+    50% {
         transform: translateY(-2px);
-        box-shadow: 
+        box-shadow:
             0 12px 30px rgba(0, 0, 0, 0.2),
             0 0 0 1px rgba(255, 255, 255, 0.15) inset;
     }
@@ -590,9 +590,9 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
         transparent);
     transition: left 0.6s ease;
 }
@@ -603,7 +603,7 @@
 
 .action-btn:hover {
     transform: translateY(-8px) scale(1.05);
-    box-shadow: 
+    box-shadow:
         0 20px 40px rgba(0, 0, 0, 0.25),
         0 0 50px rgba(255, 255, 255, 0.1);
     animation: none;
@@ -653,22 +653,22 @@
     position: relative;
     overflow: hidden;
     transition: all var(--transition-normal);
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     animation: cardFloat 4s ease-in-out infinite;
 }
 
 @keyframes cardFloat {
-    0%, 100% { 
+    0%, 100% {
         transform: translateY(0px);
-        box-shadow: 
+        box-shadow:
             0 8px 25px rgba(0, 0, 0, 0.1),
             0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     }
-    50% { 
+    50% {
         transform: translateY(-5px);
-        box-shadow: 
+        box-shadow:
             0 15px 35px rgba(0, 0, 0, 0.15),
             0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     }
@@ -681,9 +681,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.05), 
-        rgba(139, 92, 246, 0.05), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.05),
+        rgba(139, 92, 246, 0.05),
         rgba(236, 72, 153, 0.05));
     opacity: 0;
     transition: opacity var(--transition-normal);
@@ -698,7 +698,7 @@
     transform: translateY(-10px) scale(1.03);
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 
+    box-shadow:
         0 20px 40px rgba(0, 0, 0, 0.2),
         0 0 50px rgba(99, 102, 241, 0.15),
         0 0 0 2px rgba(255, 255, 255, 0.1) inset;
@@ -721,11 +721,11 @@
 }
 
 @keyframes iconPulse {
-    0%, 100% { 
+    0%, 100% {
         transform: scale(1);
         filter: drop-shadow(0 4px 15px rgba(255, 215, 0, 0.3));
     }
-    50% { 
+    50% {
         transform: scale(1.1);
         filter: drop-shadow(0 6px 20px rgba(255, 215, 0, 0.5));
     }
@@ -805,7 +805,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-normal);
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 0 30px rgba(99, 102, 241, 0.2);
     backdrop-filter: blur(20px);
@@ -838,8 +838,8 @@
 
 .choose-theme-btn:hover {
     transform: translateY(-4px) scale(1.05);
-    box-shadow: 
-        var(--shadow-2xl), 
+    box-shadow:
+        var(--shadow-2xl),
         0 0 50px rgba(99, 102, 241, 0.4);
     border-color: rgba(255, 255, 255, 0.2);
 }
@@ -872,7 +872,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all var(--transition-normal);
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(99, 102, 241, 0.4),
         0 0 0 1px rgba(255, 255, 255, 0.1) inset,
         0 0 30px rgba(139, 92, 246, 0.2);
@@ -888,16 +888,16 @@
 }
 
 @keyframes buttonFloat {
-    0%, 100% { 
+    0%, 100% {
         transform: translateY(0px) scale(1);
-        box-shadow: 
+        box-shadow:
             0 8px 25px rgba(99, 102, 241, 0.4),
             0 0 0 1px rgba(255, 255, 255, 0.1) inset,
             0 0 30px rgba(139, 92, 246, 0.2);
     }
-    50% { 
+    50% {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 
+        box-shadow:
             0 12px 30px rgba(99, 102, 241, 0.5),
             0 0 0 1px rgba(255, 255, 255, 0.2) inset,
             0 0 40px rgba(139, 92, 246, 0.3);
@@ -911,9 +911,9 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
         transparent);
     transition: left var(--transition-slow);
 }
@@ -924,8 +924,8 @@
 
 .start-quiz-btn:hover {
     transform: translateY(-6px) scale(1.08);
-    box-shadow: 
-        0 15px 40px rgba(99, 102, 241, 0.6), 
+    box-shadow:
+        0 15px 40px rgba(99, 102, 241, 0.6),
         0 0 50px rgba(139, 92, 246, 0.4),
         0 0 0 2px rgba(255, 255, 255, 0.2) inset;
     background: linear-gradient(135deg, #5b5bd6 0%, #7c3aed 50%, #db2777 100%);
@@ -953,7 +953,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all var(--transition-normal);
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(249, 115, 22, 0.4),
         0 0 0 1px rgba(255, 255, 255, 0.1) inset,
         0 0 30px rgba(234, 88, 12, 0.2);
@@ -969,16 +969,16 @@
 }
 
 @keyframes premiumButtonFloat {
-    0%, 100% { 
+    0%, 100% {
         transform: translateY(0px) scale(1);
-        box-shadow: 
+        box-shadow:
             0 8px 25px rgba(249, 115, 22, 0.4),
             0 0 0 1px rgba(255, 255, 255, 0.1) inset,
             0 0 30px rgba(234, 88, 12, 0.2);
     }
-    50% { 
+    50% {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 
+        box-shadow:
             0 12px 30px rgba(249, 115, 22, 0.5),
             0 0 0 1px rgba(255, 255, 255, 0.2) inset,
             0 0 40px rgba(234, 88, 12, 0.3);
@@ -992,9 +992,9 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
         transparent);
     transition: left var(--transition-slow);
 }
@@ -1005,8 +1005,8 @@
 
 .intelligence-dashboard-btn:hover {
     transform: translateY(-6px) scale(1.08);
-    box-shadow: 
-        0 15px 40px rgba(249, 115, 22, 0.6), 
+    box-shadow:
+        0 15px 40px rgba(249, 115, 22, 0.6),
         0 0 50px rgba(234, 88, 12, 0.4),
         0 0 0 2px rgba(255, 255, 255, 0.2) inset;
     background: linear-gradient(135deg, #ea580c 0%, #dc2626 50%, #b91c1c 100%);
@@ -1028,7 +1028,7 @@
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-2xl);
     padding: var(--space-xl);
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 0 50px rgba(139, 69, 19, 0.1);
     position: relative;
@@ -1043,9 +1043,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.03), 
-        rgba(139, 92, 246, 0.03), 
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.03),
+        rgba(139, 92, 246, 0.03),
         rgba(236, 72, 153, 0.03));
     opacity: 0;
     transition: opacity var(--transition-normal);
@@ -1070,11 +1070,11 @@
 }
 
 @keyframes titleGlow {
-    0%, 100% { 
+    0%, 100% {
         filter: brightness(1);
         text-shadow: none;
     }
-    50% { 
+    50% {
         filter: brightness(1.1);
         text-shadow: 0 0 20px rgba(139, 69, 19, 0.3);
     }
@@ -1115,22 +1115,22 @@
     text-align: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     animation: badgeFloat 3s ease-in-out infinite;
 }
 
 @keyframes badgeFloat {
-    0%, 100% { 
+    0%, 100% {
         transform: translateY(0px);
-        box-shadow: 
+        box-shadow:
             0 4px 15px rgba(0, 0, 0, 0.1),
             0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     }
-    50% { 
+    50% {
         transform: translateY(-2px);
-        box-shadow: 
+        box-shadow:
             0 8px 20px rgba(0, 0, 0, 0.15),
             0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     }
@@ -1154,8 +1154,8 @@
 
 .badge-item:hover {
     transform: translateY(-8px) scale(1.05);
-    box-shadow: 
-        var(--shadow-lg), 
+    box-shadow:
+        var(--shadow-lg),
         0 0 25px var(--accent-light),
         0 0 0 2px rgba(255, 255, 255, 0.1) inset;
     border-color: var(--accent);
@@ -1173,7 +1173,7 @@
     margin: var(--space-md) 0;
     position: relative;
     overflow: hidden;
-    box-shadow: 
+    box-shadow:
         var(--shadow-sm),
         inset 0 2px 4px rgba(0, 0, 0, 0.1),
         0 0 20px rgba(139, 69, 19, 0.15);
@@ -1181,14 +1181,14 @@
 }
 
 @keyframes xpContainerPulse {
-    0%, 100% { 
-        box-shadow: 
+    0%, 100% {
+        box-shadow:
             var(--shadow-sm),
             inset 0 2px 4px rgba(0, 0, 0, 0.1),
             0 0 20px rgba(139, 69, 19, 0.15);
     }
-    50% { 
-        box-shadow: 
+    50% {
+        box-shadow:
             var(--shadow-md),
             inset 0 2px 4px rgba(0, 0, 0, 0.2),
             0 0 30px rgba(139, 69, 19, 0.25);
@@ -1201,22 +1201,22 @@
     transition: width var(--transition-slow);
     border-radius: var(--radius-full);
     position: relative;
-    box-shadow: 
+    box-shadow:
         0 0 15px rgba(139, 69, 19, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     animation: xpBarGlow 2s ease-in-out infinite;
 }
 
 @keyframes xpBarGlow {
-    0%, 100% { 
+    0%, 100% {
         filter: brightness(1) saturate(1);
-        box-shadow: 
+        box-shadow:
             0 0 15px rgba(139, 69, 19, 0.4),
             inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
-    50% { 
+    50% {
         filter: brightness(1.1) saturate(1.2);
-        box-shadow: 
+        box-shadow:
             0 0 25px rgba(139, 69, 19, 0.6),
             inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
@@ -1229,22 +1229,22 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.4), 
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
         transparent);
     animation: shimmer 2.5s infinite;
 }
 
 @keyframes shimmer {
-    0% { 
+    0% {
         transform: translateX(-100%);
         opacity: 0;
     }
     50% {
         opacity: 1;
     }
-    100% { 
+    100% {
         transform: translateX(100%);
         opacity: 0;
     }
@@ -1258,7 +1258,7 @@
     color: var(--text-light);
     line-height: 24px;
     font-size: 0.85rem;
-    text-shadow: 
+    text-shadow:
         0 1px 2px rgba(0, 0, 0, 0.7),
         0 0 10px rgba(139, 69, 19, 0.3);
     z-index: 1;
@@ -1266,11 +1266,11 @@
 }
 
 @keyframes textFloat {
-    0%, 100% { 
+    0%, 100% {
         opacity: 0.9;
         transform: translateY(0px);
     }
-    50% { 
+    50% {
         opacity: 1;
         transform: translateY(-1px);
     }
@@ -1281,7 +1281,7 @@
         max-width: 95%;
         padding: var(--space-lg) var(--space-md);
     }
-    
+
     .badge-list ul {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: var(--space-sm);
@@ -1295,12 +1295,12 @@
         gap: var(--space-md);
         min-height: calc(100vh - 100px);
     }
-    
+
     .home-container h1 {
         font-size: 2.2rem;
         margin-bottom: var(--space-md);
     }
-    
+
     .start-quiz-btn {
         width: 85%;
         max-width: 280px;
@@ -1309,7 +1309,7 @@
         margin-bottom: var(--space-sm);
         min-height: 45px;
     }
-    
+
     .intelligence-dashboard-btn {
         width: 85%;
         max-width: 280px;
@@ -1318,29 +1318,29 @@
         margin-bottom: var(--space-sm);
         min-height: 45px;
     }
-    
+
     .action-btn {
         padding: var(--space-sm) var(--space-md);
         font-size: 0.9rem;
         min-height: 45px;
         min-width: 200px;
     }
-    
+
     .badge-list {
         margin-top: var(--space-md);
         margin-bottom: var(--space-md);
         padding: var(--space-md);
     }
-    
+
     .badge-list ul {
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: var(--space-sm);
     }
-    
+
     .badge-list h3 {
         font-size: 1.1rem;
     }
-    
+
     .badge-item {
         font-size: 0.85rem;
         padding: var(--space-sm);
@@ -1354,18 +1354,18 @@
         gap: var(--space-sm);
         min-height: calc(100vh - 80px);
     }
-    
+
     .home-container h1 {
         font-size: 1.8rem;
         margin-bottom: var(--space-sm);
     }
-    
+
     .home-description {
         font-size: 0.95rem;
         margin-bottom: var(--space-md);
         padding: 0 var(--space-sm);
     }
-    
+
     .start-quiz-btn {
         width: 90%;
         max-width: 250px;
@@ -1374,7 +1374,7 @@
         margin-bottom: var(--space-xs);
         min-height: 40px;
     }
-    
+
     .intelligence-dashboard-btn {
         width: 90%;
         max-width: 250px;
@@ -1383,35 +1383,35 @@
         margin-bottom: var(--space-xs);
         min-height: 40px;
     }
-    
+
     .action-btn {
         padding: var(--space-xs) var(--space-sm);
         font-size: 0.85rem;
         min-height: 40px;
         min-width: 180px;
     }
-    
+
     .badge-list {
         margin-top: var(--space-sm);
         margin-bottom: var(--space-sm);
         padding: var(--space-sm);
     }
-    
+
     .badge-list ul {
         grid-template-columns: 1fr 1fr;
         gap: var(--space-xs);
     }
-    
+
     .badge-item {
         font-size: 0.8rem;
         padding: var(--space-xs) var(--space-sm);
     }
-    
+
     .xp-bar-container {
         height: 20px;
         margin: var(--space-sm) 0;
     }
-    
+
     .xp-label {
         font-size: 0.75rem;
         line-height: 20px;
@@ -1423,16 +1423,16 @@
         padding: var(--space-xs);
         min-height: calc(100vh - 60px);
     }
-    
+
     .home-container h1 {
         font-size: 1.5rem;
     }
-    
+
     .badge-list ul {
         grid-template-columns: 1fr;
         gap: var(--space-xs);
     }
-    
+
     .start-quiz-btn {
         width: 95%;
         max-width: 220px;
@@ -1440,7 +1440,7 @@
         font-size: 0.8rem;
         min-height: 35px;
     }
-    
+
     .intelligence-dashboard-btn {
         width: 95%;
         max-width: 220px;
@@ -1448,7 +1448,7 @@
         font-size: 0.8rem;
         min-height: 35px;
     }
-    
+
     .action-btn {
         padding: var(--space-xs);
         font-size: 0.8rem;

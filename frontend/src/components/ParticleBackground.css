@@ -71,11 +71,11 @@
 }
 
 @keyframes synthwave-glow {
-  0% { 
+  0% {
     opacity: 0.6;
     transform: scale(1);
   }
-  100% { 
+  100% {
     opacity: 1;
     transform: scale(1.2);
   }
@@ -219,11 +219,11 @@
 }
 
 @keyframes synthwave-glow {
-  0% { 
+  0% {
     opacity: 0.6;
     transform: scale(1);
   }
-  100% { 
+  100% {
     opacity: 1;
     transform: scale(1.2);
   }

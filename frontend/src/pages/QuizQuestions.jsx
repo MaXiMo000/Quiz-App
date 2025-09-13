@@ -77,7 +77,7 @@ const QuizQuestions = () => {
             ) : (
                 <p>Loading quiz details...</p>
             )}
-            
+
             {/* Notification Modal */}
             <NotificationModal
                 isOpen={notification.isOpen}
