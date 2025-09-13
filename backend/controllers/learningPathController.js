@@ -1,6 +1,5 @@
 import { LearningPath, UserPathProgress, Competency, UserCompetency } from "../models/LearningPath.js";
 import User from "../models/User.js";
-import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
 import { seedLearningPaths } from "../utils/seedLearningPaths.js";
 
@@ -21,13 +20,13 @@ export const getLearningPaths = async (req, res) => {
         if (level) filter.level = level;
         if (search) {
             filter.$or = [
-                { title: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } }
+                { title: { $regex: search, $options: "i" } },
+                { description: { $regex: search, $options: "i" } }
             ];
         }
         
         const paths = await LearningPath.find(filter)
-            .populate('createdBy._id', 'name')
+            .populate("createdBy._id", "name")
             .sort({ createdAt: -1 });
         
         // Get user's progress for each path
@@ -54,7 +53,7 @@ export const getLearningPath = async (req, res) => {
         const { pathId } = req.params;
         
         const path = await LearningPath.findById(pathId)
-            .populate('createdBy._id', 'name');
+            .populate("createdBy._id", "name");
         
         if (!path) {
             return res.status(404).json({ message: "Learning path not found" });
@@ -198,7 +197,7 @@ export const updateNodeProgress = async (req, res) => {
         await userProgress.save();
         
         // Generate adaptive recommendations
-        const recommendations = await generateAdaptiveRecommendations(userProgress, pathId);
+        const recommendations = await generateAdaptiveRecommendations(userProgress);
         
         res.json({
             message: "Node progress updated successfully",
@@ -219,12 +218,12 @@ export const getLearningAnalytics = async (req, res) => {
         
         // Get all user's learning paths
         const userPaths = await UserPathProgress.find({ user: userId })
-            .populate('learningPath', 'title category level')
+            .populate("learningPath", "title category level")
             .sort({ updatedAt: -1 });
         
         // Get competency progress
         const competencies = await UserCompetency.find({ user: userId })
-            .populate('competency', 'name category level');
+            .populate("competency", "name category level");
         
         // Calculate learning metrics
         const analytics = {
@@ -275,7 +274,7 @@ export const getUserCompetencies = async (req, res) => {
         const userId = req.user.id;
         
         const userCompetencies = await UserCompetency.find({ user: userId })
-            .populate('competency')
+            .populate("competency")
             .sort({ currentLevel: -1 });
         
         res.json({ competencies: userCompetencies });
@@ -470,7 +469,7 @@ function calculateOverallProgress(userProgress) {
 }
 
 // Generate adaptive recommendations based on user progress
-async function generateAdaptiveRecommendations(userProgress, pathId) {
+async function generateAdaptiveRecommendations(userProgress) {
     const recommendations = [];
     
     // Check for nodes due for review
@@ -577,7 +576,7 @@ function extractStrengths(userPaths) {
     });
     
     return Object.entries(categoryPerformance)
-        .filter(([_, scores]) => scores.length > 0)
+        .filter(([, scores]) => scores.length > 0)
         .map(([category, scores]) => ({
             category,
             averageScore: scores.reduce((sum, score) => sum + score, 0) / scores.length
@@ -601,7 +600,7 @@ function extractWeaknesses(userPaths) {
     });
     
     return Object.entries(categoryPerformance)
-        .filter(([_, scores]) => scores.length > 0)
+        .filter(([, scores]) => scores.length > 0)
         .map(([category, scores]) => ({
             category,
             averageScore: scores.reduce((sum, score) => sum + score, 0) / scores.length
@@ -670,7 +669,7 @@ async function ensureBasicData() {
             await seedLearningPaths();
         }
     } catch (error) {
-        console.error('❌ Error in auto-seeding:', error);
+        console.error("❌ Error in auto-seeding:", error);
     }
 }
 
@@ -722,13 +721,13 @@ async function enhancePathsWithUserData(paths, userProgress, userId) {
         });
         
     } catch (error) {
-        console.error('Error enhancing paths with user data:', error);
+        console.error("Error enhancing paths with user data:", error);
         return paths.map(path => ({
             ...path.toObject(),
             userProgress: null,
             isRecommended: false,
             recommendationScore: 0,
-            recommendationReason: 'No performance data available'
+            recommendationReason: "No performance data available"
         }));
     }
 }
@@ -747,7 +746,7 @@ function analyzeUserQuizPerformance(userReports) {
                 totalScore: 0,
                 averageScore: 0,
                 recentQuizzes: [],
-                trend: 'stable',
+                trend: "stable",
                 lastAttempted: null
             };
         }
@@ -777,9 +776,9 @@ function analyzeUserQuizPerformance(userReports) {
             const oldAvg = recent.slice(0, -1).reduce((sum, q) => sum + q.score, 0) / (recent.length - 1);
             const newScore = recent[recent.length - 1].score;
             
-            if (newScore > oldAvg + 10) perf.trend = 'improving';
-            else if (newScore < oldAvg - 10) perf.trend = 'declining';
-            else perf.trend = 'stable';
+            if (newScore > oldAvg + 10) perf.trend = "improving";
+            else if (newScore < oldAvg - 10) perf.trend = "declining";
+            else perf.trend = "stable";
         }
         
         // Sort recent quizzes by date
@@ -795,26 +794,26 @@ function mapQuizCategoryToSubject(quizName) {
     const lowercaseName = quizName.toLowerCase();
     
     // Programming-related mappings
-    if (lowercaseName.includes('javascript') || lowercaseName.includes('js')) return 'JavaScript';
-    if (lowercaseName.includes('python')) return 'Python';
-    if (lowercaseName.includes('react')) return 'React';
-    if (lowercaseName.includes('html') || lowercaseName.includes('css') || lowercaseName.includes('web')) return 'Web Development';
-    if (lowercaseName.includes('algorithm') || lowercaseName.includes('data structure')) return 'Algorithms';
-    if (lowercaseName.includes('programming') || lowercaseName.includes('coding')) return 'Programming';
+    if (lowercaseName.includes("javascript") || lowercaseName.includes("js")) return "JavaScript";
+    if (lowercaseName.includes("python")) return "Python";
+    if (lowercaseName.includes("react")) return "React";
+    if (lowercaseName.includes("html") || lowercaseName.includes("css") || lowercaseName.includes("web")) return "Web Development";
+    if (lowercaseName.includes("algorithm") || lowercaseName.includes("data structure")) return "Algorithms";
+    if (lowercaseName.includes("programming") || lowercaseName.includes("coding")) return "Programming";
     
     // Academic subjects
-    if (lowercaseName.includes('math') || lowercaseName.includes('algebra') || lowercaseName.includes('calculus')) return 'Mathematics';
-    if (lowercaseName.includes('physics') || lowercaseName.includes('chemistry') || lowercaseName.includes('biology') || lowercaseName.includes('science')) return 'General Science';
-    if (lowercaseName.includes('history') || lowercaseName.includes('historical')) return 'World History';
-    if (lowercaseName.includes('english') || lowercaseName.includes('grammar') || lowercaseName.includes('literature')) return 'English';
-    if (lowercaseName.includes('geography')) return 'Geography';
-    if (lowercaseName.includes('data') && (lowercaseName.includes('science') || lowercaseName.includes('analysis'))) return 'Data Analysis';
+    if (lowercaseName.includes("math") || lowercaseName.includes("algebra") || lowercaseName.includes("calculus")) return "Mathematics";
+    if (lowercaseName.includes("physics") || lowercaseName.includes("chemistry") || lowercaseName.includes("biology") || lowercaseName.includes("science")) return "General Science";
+    if (lowercaseName.includes("history") || lowercaseName.includes("historical")) return "World History";
+    if (lowercaseName.includes("english") || lowercaseName.includes("grammar") || lowercaseName.includes("literature")) return "English";
+    if (lowercaseName.includes("geography")) return "Geography";
+    if (lowercaseName.includes("data") && (lowercaseName.includes("science") || lowercaseName.includes("analysis"))) return "Data Analysis";
     
     // Default mapping based on category patterns
-    if (lowercaseName.includes('computer')) return 'Programming';
-    if (lowercaseName.includes('language')) return 'English';
+    if (lowercaseName.includes("computer")) return "Programming";
+    if (lowercaseName.includes("language")) return "English";
     
-    return 'General Knowledge';
+    return "General Knowledge";
 }
 
 // Calculate recommendation score for a learning path based on user performance
@@ -823,7 +822,7 @@ function calculateRecommendationScore(path, subjectPerformance) {
     
     if (!subjectPerf) {
         // No data available - recommend based on level
-        return path.level === 'beginner' ? 0.6 : 0.3;
+        return path.level === "beginner" ? 0.6 : 0.3;
     }
     
     let score = 0;
@@ -831,18 +830,18 @@ function calculateRecommendationScore(path, subjectPerformance) {
     // Factor 1: Performance in subject (0-0.4)
     if (subjectPerf.averageScore < 50) {
         // Poor performance - recommend beginner paths
-        score += path.level === 'beginner' ? 0.4 : 0.1;
+        score += path.level === "beginner" ? 0.4 : 0.1;
     } else if (subjectPerf.averageScore < 75) {
         // Average performance - recommend intermediate paths
-        score += path.level === 'intermediate' ? 0.4 : 0.2;
+        score += path.level === "intermediate" ? 0.4 : 0.2;
     } else {
         // Good performance - recommend advanced paths
-        score += path.level === 'advanced' ? 0.4 : 0.3;
+        score += path.level === "advanced" ? 0.4 : 0.3;
     }
     
     // Factor 2: Trend (0-0.2)
-    if (subjectPerf.trend === 'improving') score += 0.2;
-    else if (subjectPerf.trend === 'stable') score += 0.1;
+    if (subjectPerf.trend === "improving") score += 0.2;
+    else if (subjectPerf.trend === "stable") score += 0.1;
     // declining gets no bonus
     
     // Factor 3: Recent activity (0-0.2)
@@ -866,26 +865,26 @@ function getRecommendationReason(path, subjectPerformance, isRecommended) {
     if (!subjectPerf) {
         return isRecommended ? 
             `Great starting point for ${path.subject}` : 
-            'No quiz history in this subject yet';
+            "No quiz history in this subject yet";
     }
     
     if (isRecommended) {
-        if (subjectPerf.trend === 'improving') {
+        if (subjectPerf.trend === "improving") {
             return `You're improving in ${path.subject}! Perfect time to advance`;
         } else if (subjectPerf.averageScore >= 75) {
             return `Strong performance in ${path.subject} (${Math.round(subjectPerf.averageScore)}% avg)`;
-        } else if (subjectPerf.averageScore < 50 && path.level === 'beginner') {
+        } else if (subjectPerf.averageScore < 50 && path.level === "beginner") {
             return `Build stronger foundations in ${path.subject}`;
         } else {
             return `Continue your ${path.subject} learning journey`;
         }
     } else {
-        if (subjectPerf.averageScore >= 85 && path.level === 'beginner') {
-            return 'You might be ready for more advanced content';
-        } else if (subjectPerf.averageScore < 60 && path.level === 'advanced') {
-            return 'Consider strengthening fundamentals first';
+        if (subjectPerf.averageScore >= 85 && path.level === "beginner") {
+            return "You might be ready for more advanced content";
+        } else if (subjectPerf.averageScore < 60 && path.level === "advanced") {
+            return "Consider strengthening fundamentals first";
         } else {
-            return 'Explore when ready';
+            return "Explore when ready";
         }
     }
 }

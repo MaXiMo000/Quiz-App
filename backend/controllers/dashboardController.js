@@ -200,7 +200,7 @@ const getCategoryPerformance = async (username) => {
         const quizNames = [...new Set(reports.map(report => report.quizName))];
         
         // Fetch quiz categories from database
-        const quizzes = await Quiz.find({ title: { $in: quizNames } }).select('title category');
+        const quizzes = await Quiz.find({ title: { $in: quizNames } }).select("title category");
         const quizCategoryMap = {};
         quizzes.forEach(quiz => {
             quizCategoryMap[quiz.title] = quiz.category;
@@ -211,7 +211,7 @@ const getCategoryPerformance = async (username) => {
             
             // First, try to get category from database
             const dbCategory = quizCategoryMap[report.quizName];
-            if (dbCategory && dbCategory.trim() !== '') {
+            if (dbCategory && dbCategory.trim() !== "") {
                 category = dbCategory;
             } else {
                 // Fallback to name-based detection
@@ -777,21 +777,20 @@ export const getUserAchievementsEndpoint = async (req, res) => {
 
 // Get all available categories from database
 export const getAllCategories = async (req, res) => {
-    logger.info('Fetching all available categories');
+    logger.info("Fetching all available categories");
     try {
         // Get all unique categories from quizzes
-        const categories = await Quiz.distinct('category', { category: { $exists: true, $ne: null, $ne: '' } });
+        const categories = await Quiz.distinct("category", { category: { $exists: true, $ne: null, $nin: [""] } });
         
         // Sort categories alphabetically
         const sortedCategories = categories.sort();
-        
         logger.info(`Successfully fetched ${sortedCategories.length} categories`);
         res.json({
             categories: sortedCategories,
             count: sortedCategories.length
         });
     } catch (error) {
-        logger.error({ message: 'Error fetching categories', error: error.message, stack: error.stack });
+        logger.error({ message: "Error fetching categories", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Error fetching categories", error: error.message });
     }
 };
