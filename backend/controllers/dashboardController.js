@@ -1,51 +1,53 @@
-import UserQuiz from '../models/User.js';
-import Quiz from '../models/Quiz.js';
-import Report from '../models/Report.js';
-import XPLog from '../models/XPLog.js';
+import UserQuiz from "../models/User.js";
+import Quiz from "../models/Quiz.js";
+import Report from "../models/Report.js";
+import logger from "../utils/logger.js";
 
 // Achievement system data
 const ACHIEVEMENTS = {
-    'streak_3': { title: '🔥 3-Day Streak', description: 'Completed quizzes for 3 consecutive days', rarity: 'common' },
-    'streak_7': { title: '🔥 7-Day Streak', description: 'Completed quizzes for 7 consecutive days', rarity: 'rare' },
-    'streak_14': { title: '🔥 2-Week Warrior', description: 'Completed quizzes for 14 consecutive days', rarity: 'epic' },
-    'streak_30': { title: '🔥 Monthly Master', description: 'Completed quizzes for 30 consecutive days', rarity: 'legendary' },
-    'quizzes_10': { title: '📚 Quiz Explorer', description: 'Completed 10 quizzes', rarity: 'common' },
-    'quizzes_50': { title: '📚 Knowledge Seeker', description: 'Completed 50 quizzes', rarity: 'rare' },
-    'quizzes_100': { title: '📚 Quiz Master', description: 'Completed 100 quizzes', rarity: 'epic' },
-    'quizzes_250': { title: '📚 Quiz Legend', description: 'Completed 250 quizzes', rarity: 'legendary' },
-    'score_80': { title: '🎯 High Scorer', description: 'Achieved 80%+ average score', rarity: 'rare' },
-    'score_90': { title: '🎯 Expert Scorer', description: 'Achieved 90%+ average score', rarity: 'epic' },
-    'score_95': { title: '🎯 Perfect Scorer', description: 'Achieved 95%+ average score', rarity: 'legendary' },
-    'category_math': { title: '🧮 Math Genius', description: 'Achieved 85%+ average in Mathematics category', rarity: 'rare' },
-    'category_science': { title: '🔬 Science Expert', description: 'Achieved 85%+ average in Science category', rarity: 'rare' },
-    'category_history': { title: '📜 History Buff', description: 'Achieved 85%+ average in History category', rarity: 'rare' },
-    'category_literature': { title: '📚 Literature Scholar', description: 'Achieved 85%+ average in Literature category', rarity: 'rare' },
-    'category_geography': { title: '🌍 Geography Master', description: 'Achieved 85%+ average in Geography category', rarity: 'rare' },
-    'category_programming': { title: '💻 Code Wizard', description: 'Achieved 85%+ average in Programming category', rarity: 'epic' },
-    'category_sports': { title: '⚽ Sports Fanatic', description: 'Achieved 85%+ average in Sports category', rarity: 'rare' },
-    'category_entertainment': { title: '🎬 Entertainment Expert', description: 'Achieved 85%+ average in Entertainment category', rarity: 'rare' },
-    'category_art': { title: '🎨 Art Connoisseur', description: 'Achieved 85%+ average in Art category', rarity: 'rare' },
-    'category_food': { title: '🍳 Culinary Master', description: 'Achieved 85%+ average in Food & Cooking category', rarity: 'rare' },
-    'category_nature': { title: '🌿 Nature Lover', description: 'Achieved 85%+ average in Nature category', rarity: 'rare' },
-    'category_business': { title: '💼 Business Pro', description: 'Achieved 85%+ average in Business category', rarity: 'epic' },
-    'category_health': { title: '⚕️ Health Guru', description: 'Achieved 85%+ average in Health & Medicine category', rarity: 'rare' },
-    'perfect_10': { title: '💯 Perfect Ten', description: 'Scored 100% on 10 quizzes', rarity: 'epic' },
-    'early_bird': { title: '🌅 Early Bird', description: 'Completed 5+ quizzes before 8 AM', rarity: 'rare' },
-    'night_owl': { title: '🦉 Night Owl', description: 'Completed 5+ quizzes after 10 PM', rarity: 'rare' },
-    'level_10': { title: '⭐ Rising Star', description: 'Reached level 10', rarity: 'rare' },
-    'level_25': { title: '⭐ Shining Star', description: 'Reached level 25', rarity: 'epic' },
-    'level_50': { title: '⭐ Legendary Star', description: 'Reached level 50', rarity: 'legendary' }
+    "streak_3": { title: "🔥 3-Day Streak", description: "Completed quizzes for 3 consecutive days", rarity: "common" },
+    "streak_7": { title: "🔥 7-Day Streak", description: "Completed quizzes for 7 consecutive days", rarity: "rare" },
+    "streak_14": { title: "🔥 2-Week Warrior", description: "Completed quizzes for 14 consecutive days", rarity: "epic" },
+    "streak_30": { title: "🔥 Monthly Master", description: "Completed quizzes for 30 consecutive days", rarity: "legendary" },
+    "quizzes_10": { title: "📚 Quiz Explorer", description: "Completed 10 quizzes", rarity: "common" },
+    "quizzes_50": { title: "📚 Knowledge Seeker", description: "Completed 50 quizzes", rarity: "rare" },
+    "quizzes_100": { title: "📚 Quiz Master", description: "Completed 100 quizzes", rarity: "epic" },
+    "quizzes_250": { title: "📚 Quiz Legend", description: "Completed 250 quizzes", rarity: "legendary" },
+    "score_80": { title: "🎯 High Scorer", description: "Achieved 80%+ average score", rarity: "rare" },
+    "score_90": { title: "🎯 Expert Scorer", description: "Achieved 90%+ average score", rarity: "epic" },
+    "score_95": { title: "🎯 Perfect Scorer", description: "Achieved 95%+ average score", rarity: "legendary" },
+    "category_math": { title: "🧮 Math Genius", description: "Achieved 85%+ average in Mathematics category", rarity: "rare" },
+    "category_science": { title: "🔬 Science Expert", description: "Achieved 85%+ average in Science category", rarity: "rare" },
+    "category_history": { title: "📜 History Buff", description: "Achieved 85%+ average in History category", rarity: "rare" },
+    "category_literature": { title: "📚 Literature Scholar", description: "Achieved 85%+ average in Literature category", rarity: "rare" },
+    "category_geography": { title: "🌍 Geography Master", description: "Achieved 85%+ average in Geography category", rarity: "rare" },
+    "category_programming": { title: "💻 Code Wizard", description: "Achieved 85%+ average in Programming category", rarity: "epic" },
+    "category_sports": { title: "⚽ Sports Fanatic", description: "Achieved 85%+ average in Sports category", rarity: "rare" },
+    "category_entertainment": { title: "🎬 Entertainment Expert", description: "Achieved 85%+ average in Entertainment category", rarity: "rare" },
+    "category_art": { title: "🎨 Art Connoisseur", description: "Achieved 85%+ average in Art category", rarity: "rare" },
+    "category_food": { title: "🍳 Culinary Master", description: "Achieved 85%+ average in Food & Cooking category", rarity: "rare" },
+    "category_nature": { title: "🌿 Nature Lover", description: "Achieved 85%+ average in Nature category", rarity: "rare" },
+    "category_business": { title: "💼 Business Pro", description: "Achieved 85%+ average in Business category", rarity: "epic" },
+    "category_health": { title: "⚕️ Health Guru", description: "Achieved 85%+ average in Health & Medicine category", rarity: "rare" },
+    "perfect_10": { title: "💯 Perfect Ten", description: "Scored 100% on 10 quizzes", rarity: "epic" },
+    "early_bird": { title: "🌅 Early Bird", description: "Completed 5+ quizzes before 8 AM", rarity: "rare" },
+    "night_owl": { title: "🦉 Night Owl", description: "Completed 5+ quizzes after 10 PM", rarity: "rare" },
+    "level_10": { title: "⭐ Rising Star", description: "Reached level 10", rarity: "rare" },
+    "level_25": { title: "⭐ Shining Star", description: "Reached level 25", rarity: "epic" },
+    "level_50": { title: "⭐ Legendary Star", description: "Reached level 50", rarity: "legendary" }
 };
 
 // Get comprehensive dashboard data for a user
 export const getDashboardData = async (req, res) => {
+    logger.info(`Fetching dashboard data for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
-        const { timeRange = 'week' } = req.query; // week, month, year
+        const { timeRange = "week" } = req.query; // week, month, year
 
         // Get user data
         const user = await UserQuiz.findById(userId);
         if (!user) {
+            logger.warn(`User not found with ID: ${userId}`);
             return res.status(404).json({ message: "User not found" });
         }
 
@@ -95,6 +97,7 @@ export const getDashboardData = async (req, res) => {
         // Get learning streak data
         const streakData = await getStreakData(user.name);
 
+        logger.info(`Successfully fetched dashboard data for user ${userId}`);
         res.json({
             totalQuizzes,
             completedQuizzes,
@@ -111,8 +114,8 @@ export const getDashboardData = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        res.status(500).json({ message: 'Error fetching dashboard data', error: error.message });
+        logger.error({ message: `Error fetching dashboard data for user ${req.params.userId}`, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Error fetching dashboard data", error: error.message });
     }
 };
 
@@ -150,7 +153,7 @@ const calculateStreak = async (username) => {
 
         return streak;
     } catch (error) {
-        console.error('Error calculating streak:', error);
+        logger.error({ message: `Error calculating streak for user ${username}`, error: error.message, stack: error.stack });
         return 0;
     }
 };
@@ -158,7 +161,7 @@ const calculateStreak = async (username) => {
 // Get weekly progress data
 const getWeeklyProgress = async (username, timeRange) => {
     try {
-        const days = timeRange === 'year' ? 365 : timeRange === 'month' ? 30 : 7;
+        const days = timeRange === "year" ? 365 : timeRange === "month" ? 30 : 7;
         const progress = [];
         const today = new Date();
         const oneDayMs = 24 * 60 * 60 * 1000;
@@ -182,7 +185,7 @@ const getWeeklyProgress = async (username, timeRange) => {
 
         return progress;
     } catch (error) {
-        console.error('Error getting weekly progress:', error);
+        logger.error({ message: `Error getting weekly progress for user ${username}`, error: error.message, stack: error.stack });
         return Array(7).fill(0);
     }
 };
@@ -194,75 +197,75 @@ const getCategoryPerformance = async (username) => {
         const categoryStats = {};
 
         reports.forEach(report => {
-            let category = 'Other';
+            let category = "Other";
             const quizName = report.quizName.toLowerCase();
             
             // Use same enhanced category detection logic
-            if (quizName.includes('science') || quizName.includes('biology') || quizName.includes('chemistry') || 
-                quizName.includes('physics') || quizName.includes('anatomy') || quizName.includes('botany') || 
-                quizName.includes('zoology') || quizName.includes('genetics') || quizName.includes('ecology')) {
-                category = 'Science';
-            } else if (quizName.includes('math') || quizName.includes('algebra') || quizName.includes('geometry') || 
-                       quizName.includes('arithmetic') || quizName.includes('calculus') || quizName.includes('statistics') || 
-                       quizName.includes('trigonometry') || quizName.includes('number') || quizName.includes('equation')) {
-                category = 'Mathematics';
-            } else if (quizName.includes('history') || quizName.includes('historical') || quizName.includes('ancient') || 
-                       quizName.includes('world war') || quizName.includes('civilization') || quizName.includes('empire') || 
-                       quizName.includes('revolution') || quizName.includes('medieval') || quizName.includes('dynasty')) {
-                category = 'History';
-            } else if (quizName.includes('literature') || quizName.includes('english') || quizName.includes('reading') || 
-                       quizName.includes('poetry') || quizName.includes('novel') || quizName.includes('shakespeare') || 
-                       quizName.includes('writing') || quizName.includes('grammar') || quizName.includes('author')) {
-                category = 'Literature';
-            } else if (quizName.includes('geography') || quizName.includes('country') || quizName.includes('capital') || 
-                       quizName.includes('continent') || quizName.includes('ocean') || quizName.includes('mountain') || 
-                       quizName.includes('river') || quizName.includes('city') || quizName.includes('flag')) {
-                category = 'Geography';
-            } else if (quizName.includes('programming') || quizName.includes('coding') || quizName.includes('javascript') || 
-                       quizName.includes('python') || quizName.includes('html') || quizName.includes('css') || 
-                       quizName.includes('react') || quizName.includes('node') || quizName.includes('database') || 
-                       quizName.includes('algorithm') || quizName.includes('software') || quizName.includes('computer')) {
-                category = 'Programming';
-            } else if (quizName.includes('sport') || quizName.includes('football') || quizName.includes('basketball') || 
-                       quizName.includes('soccer') || quizName.includes('tennis') || quizName.includes('cricket') || 
-                       quizName.includes('baseball') || quizName.includes('olympics') || quizName.includes('athlete')) {
-                category = 'Sports';
-            } else if (quizName.includes('movie') || quizName.includes('film') || quizName.includes('music') || 
-                       quizName.includes('celebrity') || quizName.includes('tv') || quizName.includes('show') || 
-                       quizName.includes('actor') || quizName.includes('singer') || quizName.includes('band')) {
-                category = 'Entertainment';
-            } else if (quizName.includes('art') || quizName.includes('painting') || quizName.includes('artist') || 
-                       quizName.includes('sculpture') || quizName.includes('museum') || quizName.includes('design') || 
-                       quizName.includes('color') || quizName.includes('draw')) {
-                category = 'Art';
-            } else if (quizName.includes('food') || quizName.includes('cooking') || quizName.includes('recipe') || 
-                       quizName.includes('cuisine') || quizName.includes('restaurant') || quizName.includes('ingredient') || 
-                       quizName.includes('dish') || quizName.includes('nutrition')) {
-                category = 'Food & Cooking';
-            } else if (quizName.includes('nature') || quizName.includes('animal') || quizName.includes('plant') || 
-                       quizName.includes('bird') || quizName.includes('tree') || quizName.includes('flower') || 
-                       quizName.includes('wildlife') || quizName.includes('environment')) {
-                category = 'Nature';
-            } else if (quizName.includes('business') || quizName.includes('economics') || quizName.includes('finance') || 
-                       quizName.includes('marketing') || quizName.includes('management') || quizName.includes('investment') || 
-                       quizName.includes('accounting') || quizName.includes('entrepreneur')) {
-                category = 'Business';
-            } else if (quizName.includes('health') || quizName.includes('medical') || quizName.includes('medicine') || 
-                       quizName.includes('doctor') || quizName.includes('disease') || quizName.includes('fitness') || 
-                       quizName.includes('nutrition') || quizName.includes('wellness')) {
-                category = 'Health & Medicine';
+            if (quizName.includes("science") || quizName.includes("biology") || quizName.includes("chemistry") ||
+                quizName.includes("physics") || quizName.includes("anatomy") || quizName.includes("botany") ||
+                quizName.includes("zoology") || quizName.includes("genetics") || quizName.includes("ecology")) {
+                category = "Science";
+            } else if (quizName.includes("math") || quizName.includes("algebra") || quizName.includes("geometry") ||
+                       quizName.includes("arithmetic") || quizName.includes("calculus") || quizName.includes("statistics") ||
+                       quizName.includes("trigonometry") || quizName.includes("number") || quizName.includes("equation")) {
+                category = "Mathematics";
+            } else if (quizName.includes("history") || quizName.includes("historical") || quizName.includes("ancient") ||
+                       quizName.includes("world war") || quizName.includes("civilization") || quizName.includes("empire") ||
+                       quizName.includes("revolution") || quizName.includes("medieval") || quizName.includes("dynasty")) {
+                category = "History";
+            } else if (quizName.includes("literature") || quizName.includes("english") || quizName.includes("reading") ||
+                       quizName.includes("poetry") || quizName.includes("novel") || quizName.includes("shakespeare") ||
+                       quizName.includes("writing") || quizName.includes("grammar") || quizName.includes("author")) {
+                category = "Literature";
+            } else if (quizName.includes("geography") || quizName.includes("country") || quizName.includes("capital") ||
+                       quizName.includes("continent") || quizName.includes("ocean") || quizName.includes("mountain") ||
+                       quizName.includes("river") || quizName.includes("city") || quizName.includes("flag")) {
+                category = "Geography";
+            } else if (quizName.includes("programming") || quizName.includes("coding") || quizName.includes("javascript") ||
+                       quizName.includes("python") || quizName.includes("html") || quizName.includes("css") ||
+                       quizName.includes("react") || quizName.includes("node") || quizName.includes("database") ||
+                       quizName.includes("algorithm") || quizName.includes("software") || quizName.includes("computer")) {
+                category = "Programming";
+            } else if (quizName.includes("sport") || quizName.includes("football") || quizName.includes("basketball") ||
+                       quizName.includes("soccer") || quizName.includes("tennis") || quizName.includes("cricket") ||
+                       quizName.includes("baseball") || quizName.includes("olympics") || quizName.includes("athlete")) {
+                category = "Sports";
+            } else if (quizName.includes("movie") || quizName.includes("film") || quizName.includes("music") ||
+                       quizName.includes("celebrity") || quizName.includes("tv") || quizName.includes("show") ||
+                       quizName.includes("actor") || quizName.includes("singer") || quizName.includes("band")) {
+                category = "Entertainment";
+            } else if (quizName.includes("art") || quizName.includes("painting") || quizName.includes("artist") ||
+                       quizName.includes("sculpture") || quizName.includes("museum") || quizName.includes("design") ||
+                       quizName.includes("color") || quizName.includes("draw")) {
+                category = "Art";
+            } else if (quizName.includes("food") || quizName.includes("cooking") || quizName.includes("recipe") ||
+                       quizName.includes("cuisine") || quizName.includes("restaurant") || quizName.includes("ingredient") ||
+                       quizName.includes("dish") || quizName.includes("nutrition")) {
+                category = "Food & Cooking";
+            } else if (quizName.includes("nature") || quizName.includes("animal") || quizName.includes("plant") ||
+                       quizName.includes("bird") || quizName.includes("tree") || quizName.includes("flower") ||
+                       quizName.includes("wildlife") || quizName.includes("environment")) {
+                category = "Nature";
+            } else if (quizName.includes("business") || quizName.includes("economics") || quizName.includes("finance") ||
+                       quizName.includes("marketing") || quizName.includes("management") || quizName.includes("investment") ||
+                       quizName.includes("accounting") || quizName.includes("entrepreneur")) {
+                category = "Business";
+            } else if (quizName.includes("health") || quizName.includes("medical") || quizName.includes("medicine") ||
+                       quizName.includes("doctor") || quizName.includes("disease") || quizName.includes("fitness") ||
+                       quizName.includes("nutrition") || quizName.includes("wellness")) {
+                category = "Health & Medicine";
             } else {
                 // Dynamic category creation
-                const words = quizName.split(' ');
+                const words = quizName.split(" ");
                 const potentialCategory = words.find(word => 
                     word.length > 3 && 
-                    !['quiz', 'test', 'the', 'and', 'for', 'with', 'about'].includes(word)
+                    !["quiz", "test", "the", "and", "for", "with", "about"].includes(word)
                 );
                 
                 if (potentialCategory) {
                     category = potentialCategory.charAt(0).toUpperCase() + potentialCategory.slice(1);
                 } else {
-                    category = 'General';
+                    category = "General";
                 }
             }
 
@@ -285,19 +288,19 @@ const getCategoryPerformance = async (username) => {
         // Add default categories if none exist
         if (Object.keys(categoryPerformance).length === 0) {
             return {
-                'General': 0,
-                'Science': 0,
-                'Mathematics': 0,
-                'History': 0,
-                'Literature': 0,
-                'Geography': 0,
-                'Programming': 0
+                "General": 0,
+                "Science": 0,
+                "Mathematics": 0,
+                "History": 0,
+                "Literature": 0,
+                "Geography": 0,
+                "Programming": 0
             };
         }
 
         return categoryPerformance;
     } catch (error) {
-        console.error('Error getting category performance:', error);
+        logger.error({ message: `Error getting category performance for user ${username}`, error: error.message, stack: error.stack });
         return {};
     }
 };
@@ -305,7 +308,7 @@ const getCategoryPerformance = async (username) => {
 // Get study time data
 const getStudyTimeData = async (username, timeRange) => {
     try {
-        const days = timeRange === 'year' ? 365 : timeRange === 'month' ? 30 : 7;
+        const days = timeRange === "year" ? 365 : timeRange === "month" ? 30 : 7;
         const labels = [];
         const data = [];
         const today = new Date();
@@ -321,10 +324,10 @@ const getStudyTimeData = async (username, timeRange) => {
                 createdAt: { $gte: startOfDay, $lte: endOfDay }
             });
 
-            labels.push(date.toLocaleDateString('en-US', { 
-                weekday: timeRange === 'week' ? 'short' : undefined,
-                month: timeRange !== 'week' ? 'short' : undefined,
-                day: 'numeric'
+            labels.push(date.toLocaleDateString("en-US", {
+                weekday: timeRange === "week" ? "short" : undefined,
+                month: timeRange !== "week" ? "short" : undefined,
+                day: "numeric"
             }));
 
             // Estimate study time (assuming 2 minutes per quiz on average)
@@ -333,7 +336,7 @@ const getStudyTimeData = async (username, timeRange) => {
 
         return { labels, data };
     } catch (error) {
-        console.error('Error getting study time data:', error);
+        logger.error({ message: `Error getting study time data for user ${username}`, error: error.message, stack: error.stack });
         return { labels: [], data: [] };
     }
 };
@@ -358,7 +361,7 @@ const getDifficultyStats = async (username) => {
 
         return difficultyStats;
     } catch (error) {
-        console.error('Error getting difficulty stats:', error);
+        logger.error({ message: `Error getting difficulty stats for user ${username}`, error: error.message, stack: error.stack });
         return { Easy: 0, Medium: 0, Hard: 0 };
     }
 };
@@ -381,7 +384,7 @@ const getStreakData = async (username) => {
             });
 
             streakData.push({
-                date: date.toISOString().split('T')[0],
+                date: date.toISOString().split("T")[0],
                 active: reports.length > 0,
                 count: reports.length
             });
@@ -389,38 +392,27 @@ const getStreakData = async (username) => {
 
         return streakData;
     } catch (error) {
-        console.error('Error getting streak data:', error);
+        logger.error({ message: `Error getting streak data for user ${username}`, error: error.message, stack: error.stack });
         return [];
     }
 };
 
-// Helper function to get badge descriptions
-const getBadgeDescription = (badge) => {
-    const descriptions = {
-        'Beginner': 'Completed your first quiz',
-        'Quiz Master': 'Completed 10 quizzes',
-        'Streak Champion': 'Maintained a 7-day streak',
-        'High Achiever': 'Scored 90%+ on a quiz',
-        'Knowledge Seeker': 'Completed 50 quizzes',
-        'Learning Enthusiast': 'Active for 30 days',
-        'Perfect Score': 'Got 100% on a quiz'
-    };
-    return descriptions[badge] || 'Achievement unlocked!';
-};
 
 // Get leaderboard position for user
 export const getUserLeaderboardPosition = async (req, res) => {
+    logger.info(`Fetching leaderboard position for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
         
         // Get all users sorted by XP
         const users = await UserQuiz.find({})
             .sort({ xp: -1 })
-            .select('_id name xp');
+            .select("_id name xp");
 
         const position = users.findIndex(user => user._id.toString() === userId) + 1;
         const totalUsers = users.length;
 
+        logger.info(`Successfully fetched leaderboard position for user ${userId}: ${position}/${totalUsers}`);
         res.json({
             position,
             totalUsers,
@@ -428,8 +420,8 @@ export const getUserLeaderboardPosition = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error getting leaderboard position:', error);
-        res.status(500).json({ message: 'Error getting leaderboard position', error: error.message });
+        logger.error({ message: `Error getting leaderboard position for user ${req.params.userId}`, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Error getting leaderboard position", error: error.message });
     }
 };
 
@@ -450,102 +442,102 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
     // Enhanced category detection with dynamic category creation
     const categoryScores = {};
     reports.forEach(report => {
-        let category = 'Other'; // Default for unmatched categories
+        let category = "Other"; // Default for unmatched categories
         const quizName = report.quizName.toLowerCase();
         
         // Science categories
-        if (quizName.includes('science') || quizName.includes('biology') || quizName.includes('chemistry') || 
-            quizName.includes('physics') || quizName.includes('anatomy') || quizName.includes('botany') || 
-            quizName.includes('zoology') || quizName.includes('genetics') || quizName.includes('ecology')) {
-            category = 'Science';
+        if (quizName.includes("science") || quizName.includes("biology") || quizName.includes("chemistry") ||
+            quizName.includes("physics") || quizName.includes("anatomy") || quizName.includes("botany") ||
+            quizName.includes("zoology") || quizName.includes("genetics") || quizName.includes("ecology")) {
+            category = "Science";
         }
         // Math categories
-        else if (quizName.includes('math') || quizName.includes('algebra') || quizName.includes('geometry') || 
-                 quizName.includes('arithmetic') || quizName.includes('calculus') || quizName.includes('statistics') || 
-                 quizName.includes('trigonometry') || quizName.includes('number') || quizName.includes('equation')) {
-            category = 'Mathematics';
+        else if (quizName.includes("math") || quizName.includes("algebra") || quizName.includes("geometry") ||
+                 quizName.includes("arithmetic") || quizName.includes("calculus") || quizName.includes("statistics") ||
+                 quizName.includes("trigonometry") || quizName.includes("number") || quizName.includes("equation")) {
+            category = "Mathematics";
         }
         // History categories
-        else if (quizName.includes('history') || quizName.includes('historical') || quizName.includes('ancient') || 
-                 quizName.includes('world war') || quizName.includes('civilization') || quizName.includes('empire') || 
-                 quizName.includes('revolution') || quizName.includes('medieval') || quizName.includes('dynasty')) {
-            category = 'History';
+        else if (quizName.includes("history") || quizName.includes("historical") || quizName.includes("ancient") ||
+                 quizName.includes("world war") || quizName.includes("civilization") || quizName.includes("empire") ||
+                 quizName.includes("revolution") || quizName.includes("medieval") || quizName.includes("dynasty")) {
+            category = "History";
         }
         // Literature categories
-        else if (quizName.includes('literature') || quizName.includes('english') || quizName.includes('reading') || 
-                 quizName.includes('poetry') || quizName.includes('novel') || quizName.includes('shakespeare') || 
-                 quizName.includes('writing') || quizName.includes('grammar') || quizName.includes('author')) {
-            category = 'Literature';
+        else if (quizName.includes("literature") || quizName.includes("english") || quizName.includes("reading") ||
+                 quizName.includes("poetry") || quizName.includes("novel") || quizName.includes("shakespeare") ||
+                 quizName.includes("writing") || quizName.includes("grammar") || quizName.includes("author")) {
+            category = "Literature";
         }
         // Geography categories
-        else if (quizName.includes('geography') || quizName.includes('country') || quizName.includes('capital') || 
-                 quizName.includes('continent') || quizName.includes('ocean') || quizName.includes('mountain') || 
-                 quizName.includes('river') || quizName.includes('city') || quizName.includes('flag')) {
-            category = 'Geography';
+        else if (quizName.includes("geography") || quizName.includes("country") || quizName.includes("capital") ||
+                 quizName.includes("continent") || quizName.includes("ocean") || quizName.includes("mountain") ||
+                 quizName.includes("river") || quizName.includes("city") || quizName.includes("flag")) {
+            category = "Geography";
         }
         // Programming/Technology categories
-        else if (quizName.includes('programming') || quizName.includes('coding') || quizName.includes('javascript') || 
-                 quizName.includes('python') || quizName.includes('html') || quizName.includes('css') || 
-                 quizName.includes('react') || quizName.includes('node') || quizName.includes('database') || 
-                 quizName.includes('algorithm') || quizName.includes('software') || quizName.includes('computer')) {
-            category = 'Programming';
+        else if (quizName.includes("programming") || quizName.includes("coding") || quizName.includes("javascript") ||
+                 quizName.includes("python") || quizName.includes("html") || quizName.includes("css") ||
+                 quizName.includes("react") || quizName.includes("node") || quizName.includes("database") ||
+                 quizName.includes("algorithm") || quizName.includes("software") || quizName.includes("computer")) {
+            category = "Programming";
         }
         // Sports categories
-        else if (quizName.includes('sport') || quizName.includes('football') || quizName.includes('basketball') || 
-                 quizName.includes('soccer') || quizName.includes('tennis') || quizName.includes('cricket') || 
-                 quizName.includes('baseball') || quizName.includes('olympics') || quizName.includes('athlete')) {
-            category = 'Sports';
+        else if (quizName.includes("sport") || quizName.includes("football") || quizName.includes("basketball") ||
+                 quizName.includes("soccer") || quizName.includes("tennis") || quizName.includes("cricket") ||
+                 quizName.includes("baseball") || quizName.includes("olympics") || quizName.includes("athlete")) {
+            category = "Sports";
         }
         // Entertainment categories
-        else if (quizName.includes('movie') || quizName.includes('film') || quizName.includes('music') || 
-                 quizName.includes('celebrity') || quizName.includes('tv') || quizName.includes('show') || 
-                 quizName.includes('actor') || quizName.includes('singer') || quizName.includes('band')) {
-            category = 'Entertainment';
+        else if (quizName.includes("movie") || quizName.includes("film") || quizName.includes("music") ||
+                 quizName.includes("celebrity") || quizName.includes("tv") || quizName.includes("show") ||
+                 quizName.includes("actor") || quizName.includes("singer") || quizName.includes("band")) {
+            category = "Entertainment";
         }
         // Art categories
-        else if (quizName.includes('art') || quizName.includes('painting') || quizName.includes('artist') || 
-                 quizName.includes('sculpture') || quizName.includes('museum') || quizName.includes('design') || 
-                 quizName.includes('color') || quizName.includes('draw')) {
-            category = 'Art';
+        else if (quizName.includes("art") || quizName.includes("painting") || quizName.includes("artist") ||
+                 quizName.includes("sculpture") || quizName.includes("museum") || quizName.includes("design") ||
+                 quizName.includes("color") || quizName.includes("draw")) {
+            category = "Art";
         }
         // Food categories
-        else if (quizName.includes('food') || quizName.includes('cooking') || quizName.includes('recipe') || 
-                 quizName.includes('cuisine') || quizName.includes('restaurant') || quizName.includes('ingredient') || 
-                 quizName.includes('dish') || quizName.includes('nutrition')) {
-            category = 'Food & Cooking';
+        else if (quizName.includes("food") || quizName.includes("cooking") || quizName.includes("recipe") ||
+                 quizName.includes("cuisine") || quizName.includes("restaurant") || quizName.includes("ingredient") ||
+                 quizName.includes("dish") || quizName.includes("nutrition")) {
+            category = "Food & Cooking";
         }
         // Nature categories
-        else if (quizName.includes('nature') || quizName.includes('animal') || quizName.includes('plant') || 
-                 quizName.includes('bird') || quizName.includes('tree') || quizName.includes('flower') || 
-                 quizName.includes('wildlife') || quizName.includes('environment')) {
-            category = 'Nature';
+        else if (quizName.includes("nature") || quizName.includes("animal") || quizName.includes("plant") ||
+                 quizName.includes("bird") || quizName.includes("tree") || quizName.includes("flower") ||
+                 quizName.includes("wildlife") || quizName.includes("environment")) {
+            category = "Nature";
         }
         // Business categories
-        else if (quizName.includes('business') || quizName.includes('economics') || quizName.includes('finance') || 
-                 quizName.includes('marketing') || quizName.includes('management') || quizName.includes('investment') || 
-                 quizName.includes('accounting') || quizName.includes('entrepreneur')) {
-            category = 'Business';
+        else if (quizName.includes("business") || quizName.includes("economics") || quizName.includes("finance") ||
+                 quizName.includes("marketing") || quizName.includes("management") || quizName.includes("investment") ||
+                 quizName.includes("accounting") || quizName.includes("entrepreneur")) {
+            category = "Business";
         }
         // Health categories
-        else if (quizName.includes('health') || quizName.includes('medical') || quizName.includes('medicine') || 
-                 quizName.includes('doctor') || quizName.includes('disease') || quizName.includes('fitness') || 
-                 quizName.includes('nutrition') || quizName.includes('wellness')) {
-            category = 'Health & Medicine';
+        else if (quizName.includes("health") || quizName.includes("medical") || quizName.includes("medicine") ||
+                 quizName.includes("doctor") || quizName.includes("disease") || quizName.includes("fitness") ||
+                 quizName.includes("nutrition") || quizName.includes("wellness")) {
+            category = "Health & Medicine";
         }
         // Dynamic category creation for unmatched quizzes
         else {
             // Extract potential category from quiz name
-            const words = quizName.split(' ');
+            const words = quizName.split(" ");
             const potentialCategory = words.find(word => 
                 word.length > 3 && 
-                !['quiz', 'test', 'the', 'and', 'for', 'with', 'about'].includes(word)
+                !["quiz", "test", "the", "and", "for", "with", "about"].includes(word)
             );
             
             if (potentialCategory) {
                 // Capitalize first letter and create dynamic category
                 category = potentialCategory.charAt(0).toUpperCase() + potentialCategory.slice(1);
             } else {
-                category = 'General';
+                category = "General";
             }
         }
         
@@ -558,43 +550,43 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
         let unlocked = false;
         
         // Streak achievements
-        if (key.startsWith('streak_')) {
-            const required = parseInt(key.split('_')[1]);
+        if (key.startsWith("streak_")) {
+            const required = parseInt(key.split("_")[1]);
             unlocked = currentStreak >= required;
         }
         
         // Quiz count achievements
-        else if (key.startsWith('quizzes_')) {
-            const required = parseInt(key.split('_')[1]);
+        else if (key.startsWith("quizzes_")) {
+            const required = parseInt(key.split("_")[1]);
             unlocked = totalQuizzes >= required;
         }
         
         // Score achievements
-        else if (key.startsWith('score_')) {
-            const required = parseInt(key.split('_')[1]);
+        else if (key.startsWith("score_")) {
+            const required = parseInt(key.split("_")[1]);
             unlocked = averageScore >= required;
         }
         
         // Category achievements
-        else if (key.startsWith('category_')) {
-            const categoryKey = key.split('_')[1];
+        else if (key.startsWith("category_")) {
+            const categoryKey = key.split("_")[1];
             let categoryName;
             
             // Map achievement keys to actual category names
             switch(categoryKey) {
-                case 'math': categoryName = 'Mathematics'; break;
-                case 'science': categoryName = 'Science'; break;
-                case 'history': categoryName = 'History'; break;
-                case 'literature': categoryName = 'Literature'; break;
-                case 'geography': categoryName = 'Geography'; break;
-                case 'programming': categoryName = 'Programming'; break;
-                case 'sports': categoryName = 'Sports'; break;
-                case 'entertainment': categoryName = 'Entertainment'; break;
-                case 'art': categoryName = 'Art'; break;
-                case 'food': categoryName = 'Food & Cooking'; break;
-                case 'nature': categoryName = 'Nature'; break;
-                case 'business': categoryName = 'Business'; break;
-                case 'health': categoryName = 'Health & Medicine'; break;
+                case "math": categoryName = "Mathematics"; break;
+                case "science": categoryName = "Science"; break;
+                case "history": categoryName = "History"; break;
+                case "literature": categoryName = "Literature"; break;
+                case "geography": categoryName = "Geography"; break;
+                case "programming": categoryName = "Programming"; break;
+                case "sports": categoryName = "Sports"; break;
+                case "entertainment": categoryName = "Entertainment"; break;
+                case "art": categoryName = "Art"; break;
+                case "food": categoryName = "Food & Cooking"; break;
+                case "nature": categoryName = "Nature"; break;
+                case "business": categoryName = "Business"; break;
+                case "health": categoryName = "Health & Medicine"; break;
                 default: categoryName = categoryKey;
             }
             
@@ -608,18 +600,18 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
         }
         
         // Perfect score achievements
-        else if (key === 'perfect_10') {
+        else if (key === "perfect_10") {
             unlocked = perfectScores >= 10;
         }
         
         // Level achievements
-        else if (key.startsWith('level_')) {
-            const required = parseInt(key.split('_')[1]);
+        else if (key.startsWith("level_")) {
+            const required = parseInt(key.split("_")[1]);
             unlocked = userLevel >= required;
         }
         
         // Time-based achievements
-        else if (key === 'early_bird') {
+        else if (key === "early_bird") {
             // Check if user has completed quizzes before 8 AM
             const earlyReports = reports.filter(report => {
                 const hour = new Date(report.createdAt).getHours();
@@ -627,7 +619,7 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
             });
             unlocked = earlyReports.length >= 5; // At least 5 early morning quizzes
         }
-        else if (key === 'night_owl') {
+        else if (key === "night_owl") {
             // Check if user has completed quizzes after 10 PM
             const lateReports = reports.filter(report => {
                 const hour = new Date(report.createdAt).getHours();
@@ -662,49 +654,49 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
 const getAchievementProgress = (achievementKey, stats) => {
     const { totalQuizzes, averageScore, currentStreak, perfectScores, userLevel, reports, categoryScores } = stats;
     
-    if (achievementKey.startsWith('streak_')) {
-        const required = parseInt(achievementKey.split('_')[1]);
+    if (achievementKey.startsWith("streak_")) {
+        const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (currentStreak / required) * 100);
     }
     
-    if (achievementKey.startsWith('quizzes_')) {
-        const required = parseInt(achievementKey.split('_')[1]);
+    if (achievementKey.startsWith("quizzes_")) {
+        const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (totalQuizzes / required) * 100);
     }
     
-    if (achievementKey.startsWith('score_')) {
-        const required = parseInt(achievementKey.split('_')[1]);
+    if (achievementKey.startsWith("score_")) {
+        const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (averageScore / required) * 100);
     }
     
-    if (achievementKey === 'perfect_10') {
+    if (achievementKey === "perfect_10") {
         return Math.min(100, (perfectScores / 10) * 100);
     }
     
-    if (achievementKey.startsWith('level_')) {
-        const required = parseInt(achievementKey.split('_')[1]);
+    if (achievementKey.startsWith("level_")) {
+        const required = parseInt(achievementKey.split("_")[1]);
         return Math.min(100, (userLevel / required) * 100);
     }
     
-    if (achievementKey.startsWith('category_') && categoryScores) {
-        const categoryKey = achievementKey.split('_')[1];
+    if (achievementKey.startsWith("category_") && categoryScores) {
+        const categoryKey = achievementKey.split("_")[1];
         let categoryName;
         
         // Map achievement keys to actual category names
         switch(categoryKey) {
-            case 'math': categoryName = 'Mathematics'; break;
-            case 'science': categoryName = 'Science'; break;
-            case 'history': categoryName = 'History'; break;
-            case 'literature': categoryName = 'Literature'; break;
-            case 'geography': categoryName = 'Geography'; break;
-            case 'programming': categoryName = 'Programming'; break;
-            case 'sports': categoryName = 'Sports'; break;
-            case 'entertainment': categoryName = 'Entertainment'; break;
-            case 'art': categoryName = 'Art'; break;
-            case 'food': categoryName = 'Food & Cooking'; break;
-            case 'nature': categoryName = 'Nature'; break;
-            case 'business': categoryName = 'Business'; break;
-            case 'health': categoryName = 'Health & Medicine'; break;
+            case "math": categoryName = "Mathematics"; break;
+            case "science": categoryName = "Science"; break;
+            case "history": categoryName = "History"; break;
+            case "literature": categoryName = "Literature"; break;
+            case "geography": categoryName = "Geography"; break;
+            case "programming": categoryName = "Programming"; break;
+            case "sports": categoryName = "Sports"; break;
+            case "entertainment": categoryName = "Entertainment"; break;
+            case "art": categoryName = "Art"; break;
+            case "food": categoryName = "Food & Cooking"; break;
+            case "nature": categoryName = "Nature"; break;
+            case "business": categoryName = "Business"; break;
+            case "health": categoryName = "Health & Medicine"; break;
             default: categoryName = categoryKey;
         }
         
@@ -715,7 +707,7 @@ const getAchievementProgress = (achievementKey, stats) => {
         return Math.min(100, (categoryAvg / 85) * 100);
     }
     
-    if (achievementKey === 'early_bird' && reports) {
+    if (achievementKey === "early_bird" && reports) {
         const earlyReports = reports.filter(report => {
             const hour = new Date(report.createdAt).getHours();
             return hour < 8;
@@ -723,7 +715,7 @@ const getAchievementProgress = (achievementKey, stats) => {
         return Math.min(100, (earlyReports.length / 5) * 100);
     }
     
-    if (achievementKey === 'night_owl' && reports) {
+    if (achievementKey === "night_owl" && reports) {
         const lateReports = reports.filter(report => {
             const hour = new Date(report.createdAt).getHours();
             return hour >= 22;
@@ -736,10 +728,12 @@ const getAchievementProgress = (achievementKey, stats) => {
 
 // Get user achievements endpoint
 export const getUserAchievementsEndpoint = async (req, res) => {
+    logger.info(`Fetching achievements for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
         const user = await UserQuiz.findById(userId);
         if (!user) {
+            logger.warn(`User not found with ID: ${userId} when fetching achievements`);
             return res.status(404).json({ message: "User not found" });
         }
         
@@ -748,9 +742,10 @@ export const getUserAchievementsEndpoint = async (req, res) => {
         
         const achievements = await getUserAchievements(user.name, user, reports, currentStreak);
         
+        logger.info(`Successfully fetched ${achievements.unlocked.length} unlocked achievements for user ${userId}`);
         res.json(achievements);
     } catch (error) {
-        console.error('Error fetching achievements:', error);
-        res.status(500).json({ message: 'Error fetching achievements', error: error.message });
+        logger.error({ message: `Error fetching achievements for user ${req.params.userId}`, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Error fetching achievements", error: error.message });
     }
 };

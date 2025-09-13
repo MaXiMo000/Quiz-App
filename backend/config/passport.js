@@ -120,7 +120,7 @@ passport.use(
                     const loginBonusXP = 50;
                     user.xp += loginBonusXP;
                     user.totalXP = (user.totalXP || 0) + loginBonusXP;
-                    await new XPLog({ user: user._id, xp: loginBonusXP, source: 'login' }).save();
+                    await new XPLog({ user: user._id, xp: loginBonusXP, source: "login" }).save();
 
                     // ✅ Level-up logic (keep total XP, only subtract current level XP)
                     let currentLevelXP = user.xp;

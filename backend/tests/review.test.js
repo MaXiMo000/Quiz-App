@@ -1,8 +1,18 @@
 import mongoose from "mongoose";
 import request from "supertest";
+
+jest.mock('redis', () => ({
+  createClient: jest.fn(() => ({
+    on: jest.fn(),
+    connect: jest.fn().mockResolvedValue(null),
+    get: jest.fn().mockResolvedValue(null),
+    set: jest.fn().mockResolvedValue('OK'),
+    scan: jest.fn().mockResolvedValue({ cursor: 0, keys: [] }),
+    flushDb: jest.fn().mockResolvedValue('OK'),
+  })),
+}));
 import express from "express";
 import reviewRoutes from "../routes/reviewRoutes.js";
-import { verifyToken } from "../middleware/auth.js";
 import User from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import ReviewSchedule from "../models/ReviewSchedule.js";
@@ -20,32 +30,10 @@ app.use(express.json());
 app.use("/api/reviews", reviewRoutes);
 
 describe("Review Routes", () => {
-  let quiz;
-  let user;
-
-  beforeAll(async () => {
-    const MONGO_URI = "mongodb://127.0.0.1:27017/testdb_reviews";
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    user = await User.create({
-      _id: "60c72b9f9b1d8c001f8e4a3b",
-      name: "Test User",
-      email: "test@example.com",
-      password: "password",
-    });
-
-    quiz = await Quiz.create({
-      title: "Test Quiz",
-      questions: [{ _id: new mongoose.Types.ObjectId(), question: "Test Question" }],
-    });
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.db.dropDatabase();
-    await mongoose.connection.close();
+  afterEach(async () => {
+    await User.deleteMany({});
+    await Quiz.deleteMany({});
+    await ReviewSchedule.deleteMany({});
   });
 
   describe("GET /api/reviews", () => {
@@ -58,6 +46,18 @@ describe("Review Routes", () => {
 
   describe("POST /api/reviews/update", () => {
     it("should update the review schedule", async () => {
+      const user = await User.create({
+        _id: "60c72b9f9b1d8c001f8e4a3b",
+        name: "Test User",
+        email: "test@example.com",
+        password: "password",
+      });
+
+      const quiz = await Quiz.create({
+        title: "Test Quiz",
+        questions: [{ _id: new mongoose.Types.ObjectId(), question: "Test Question", correctAnswer: "A" }],
+      });
+
       const res = await request(app).post("/api/reviews/update").send({
         quizId: quiz._id,
         questionId: quiz.questions[0]._id,

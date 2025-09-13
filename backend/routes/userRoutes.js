@@ -2,6 +2,7 @@ import express from "express";
 import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/auth.js";
 import mongoose from "mongoose";
+import { validate, registerSchema, loginSchema } from "../middleware/validation.js";
 
 import passport from "passport";
 import "../config/passport.js";
@@ -9,8 +10,8 @@ import UserQuiz from "../models/User.js"; // Assuming you have a User model
 
 const router = express.Router();
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/register", validate(registerSchema), registerUser);
+router.post("/login", validate(loginSchema), loginUser);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
@@ -59,7 +60,7 @@ router.get("/me", verifyToken, async (req, res) => {
         }
 
         // Now get user without password
-        const user = await UserQuiz.findById(req.user.id).select('-password');
+        const user = await UserQuiz.findById(req.user.id).select("-password");
         console.log("✅ User found (without password):", user?.email);
         
         res.json({
@@ -87,7 +88,7 @@ router.get("/:id", verifyToken, async (req, res) => {
     try {
         const user = await UserQuiz.findById(req.params.id);
         res.json(user);
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: "User not found" });
     }
 });
