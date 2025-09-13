@@ -559,7 +559,7 @@ function calculateStrengths(reports) {
     });
 
     return Object.entries(categoryStats)
-        .filter(([_, stats]) => stats.count >= 2 && (stats.correct / stats.total) >= 0.75)
+        .filter(([, stats]) => stats.count >= 2 && (stats.correct / stats.total) >= 0.75)
         .map(([category, stats]) => ({
             category,
             averageScore: Math.round((stats.correct / stats.total) * 100),
@@ -582,7 +582,7 @@ function calculateWeaknesses(reports) {
     });
 
     return Object.entries(categoryStats)
-        .filter(([_, stats]) => stats.count >= 2 && (stats.correct / stats.total) < 0.65)
+        .filter(([, stats]) => stats.count >= 2 && (stats.correct / stats.total) < 0.65)
         .map(([category, stats]) => ({
             category,
             averageScore: Math.round((stats.correct / stats.total) * 100),
@@ -592,7 +592,7 @@ function calculateWeaknesses(reports) {
         .sort((a, b) => a.averageScore - b.averageScore);
 }
 
-function generateStudyRecommendations(reports, user) {
+function generateStudyRecommendations(reports) {
     const recommendations = [];
 
     // Time-based recommendations
@@ -608,8 +608,8 @@ function generateStudyRecommendations(reports, user) {
     });
 
     const bestHour = Object.entries(hourStats)
-        .filter(([_, stats]) => stats.count >= 2)
-        .sort(([_, a], [__, b]) => (b.correct / b.total) - (a.correct / a.total))[0];
+        .filter(([, stats]) => stats.count >= 2)
+        .sort(([, a], [, b]) => (b.correct / b.total) - (a.correct / a.total))[0];
 
     if (bestHour) {
         const hour = parseInt(bestHour[0]);
