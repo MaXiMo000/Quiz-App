@@ -196,76 +196,91 @@ const getCategoryPerformance = async (username) => {
         const reports = await Report.find({ username });
         const categoryStats = {};
 
+        // Get all unique quiz names from reports
+        const quizNames = [...new Set(reports.map(report => report.quizName))];
+        
+        // Fetch quiz categories from database
+        const quizzes = await Quiz.find({ title: { $in: quizNames } }).select('title category');
+        const quizCategoryMap = {};
+        quizzes.forEach(quiz => {
+            quizCategoryMap[quiz.title] = quiz.category;
+        });
+
         reports.forEach(report => {
-            let category = "Other";
-            const quizName = report.quizName.toLowerCase();
+            let category = "General"; // Default fallback
             
-            // Use same enhanced category detection logic
-            if (quizName.includes("science") || quizName.includes("biology") || quizName.includes("chemistry") ||
-                quizName.includes("physics") || quizName.includes("anatomy") || quizName.includes("botany") ||
-                quizName.includes("zoology") || quizName.includes("genetics") || quizName.includes("ecology")) {
-                category = "Science";
-            } else if (quizName.includes("math") || quizName.includes("algebra") || quizName.includes("geometry") ||
-                       quizName.includes("arithmetic") || quizName.includes("calculus") || quizName.includes("statistics") ||
-                       quizName.includes("trigonometry") || quizName.includes("number") || quizName.includes("equation")) {
-                category = "Mathematics";
-            } else if (quizName.includes("history") || quizName.includes("historical") || quizName.includes("ancient") ||
-                       quizName.includes("world war") || quizName.includes("civilization") || quizName.includes("empire") ||
-                       quizName.includes("revolution") || quizName.includes("medieval") || quizName.includes("dynasty")) {
-                category = "History";
-            } else if (quizName.includes("literature") || quizName.includes("english") || quizName.includes("reading") ||
-                       quizName.includes("poetry") || quizName.includes("novel") || quizName.includes("shakespeare") ||
-                       quizName.includes("writing") || quizName.includes("grammar") || quizName.includes("author")) {
-                category = "Literature";
-            } else if (quizName.includes("geography") || quizName.includes("country") || quizName.includes("capital") ||
-                       quizName.includes("continent") || quizName.includes("ocean") || quizName.includes("mountain") ||
-                       quizName.includes("river") || quizName.includes("city") || quizName.includes("flag")) {
-                category = "Geography";
-            } else if (quizName.includes("programming") || quizName.includes("coding") || quizName.includes("javascript") ||
-                       quizName.includes("python") || quizName.includes("html") || quizName.includes("css") ||
-                       quizName.includes("react") || quizName.includes("node") || quizName.includes("database") ||
-                       quizName.includes("algorithm") || quizName.includes("software") || quizName.includes("computer")) {
-                category = "Programming";
-            } else if (quizName.includes("sport") || quizName.includes("football") || quizName.includes("basketball") ||
-                       quizName.includes("soccer") || quizName.includes("tennis") || quizName.includes("cricket") ||
-                       quizName.includes("baseball") || quizName.includes("olympics") || quizName.includes("athlete")) {
-                category = "Sports";
-            } else if (quizName.includes("movie") || quizName.includes("film") || quizName.includes("music") ||
-                       quizName.includes("celebrity") || quizName.includes("tv") || quizName.includes("show") ||
-                       quizName.includes("actor") || quizName.includes("singer") || quizName.includes("band")) {
-                category = "Entertainment";
-            } else if (quizName.includes("art") || quizName.includes("painting") || quizName.includes("artist") ||
-                       quizName.includes("sculpture") || quizName.includes("museum") || quizName.includes("design") ||
-                       quizName.includes("color") || quizName.includes("draw")) {
-                category = "Art";
-            } else if (quizName.includes("food") || quizName.includes("cooking") || quizName.includes("recipe") ||
-                       quizName.includes("cuisine") || quizName.includes("restaurant") || quizName.includes("ingredient") ||
-                       quizName.includes("dish") || quizName.includes("nutrition")) {
-                category = "Food & Cooking";
-            } else if (quizName.includes("nature") || quizName.includes("animal") || quizName.includes("plant") ||
-                       quizName.includes("bird") || quizName.includes("tree") || quizName.includes("flower") ||
-                       quizName.includes("wildlife") || quizName.includes("environment")) {
-                category = "Nature";
-            } else if (quizName.includes("business") || quizName.includes("economics") || quizName.includes("finance") ||
-                       quizName.includes("marketing") || quizName.includes("management") || quizName.includes("investment") ||
-                       quizName.includes("accounting") || quizName.includes("entrepreneur")) {
-                category = "Business";
-            } else if (quizName.includes("health") || quizName.includes("medical") || quizName.includes("medicine") ||
-                       quizName.includes("doctor") || quizName.includes("disease") || quizName.includes("fitness") ||
-                       quizName.includes("nutrition") || quizName.includes("wellness")) {
-                category = "Health & Medicine";
+            // First, try to get category from database
+            const dbCategory = quizCategoryMap[report.quizName];
+            if (dbCategory && dbCategory.trim() !== '') {
+                category = dbCategory;
             } else {
-                // Dynamic category creation
-                const words = quizName.split(" ");
-                const potentialCategory = words.find(word => 
-                    word.length > 3 && 
-                    !["quiz", "test", "the", "and", "for", "with", "about"].includes(word)
-                );
+                // Fallback to name-based detection
+                const quizName = report.quizName.toLowerCase();
                 
-                if (potentialCategory) {
-                    category = potentialCategory.charAt(0).toUpperCase() + potentialCategory.slice(1);
+                if (quizName.includes("science") || quizName.includes("biology") || quizName.includes("chemistry") ||
+                    quizName.includes("physics") || quizName.includes("anatomy") || quizName.includes("botany") ||
+                    quizName.includes("zoology") || quizName.includes("genetics") || quizName.includes("ecology")) {
+                    category = "Science";
+                } else if (quizName.includes("math") || quizName.includes("algebra") || quizName.includes("geometry") ||
+                           quizName.includes("arithmetic") || quizName.includes("calculus") || quizName.includes("statistics") ||
+                           quizName.includes("trigonometry") || quizName.includes("number") || quizName.includes("equation")) {
+                    category = "Mathematics";
+                } else if (quizName.includes("history") || quizName.includes("historical") || quizName.includes("ancient") ||
+                           quizName.includes("world war") || quizName.includes("civilization") || quizName.includes("empire") ||
+                           quizName.includes("revolution") || quizName.includes("medieval") || quizName.includes("dynasty")) {
+                    category = "History";
+                } else if (quizName.includes("literature") || quizName.includes("english") || quizName.includes("reading") ||
+                           quizName.includes("poetry") || quizName.includes("novel") || quizName.includes("shakespeare") ||
+                           quizName.includes("writing") || quizName.includes("grammar") || quizName.includes("author")) {
+                    category = "Literature";
+                } else if (quizName.includes("geography") || quizName.includes("country") || quizName.includes("capital") ||
+                           quizName.includes("continent") || quizName.includes("ocean") || quizName.includes("mountain") ||
+                           quizName.includes("river") || quizName.includes("city") || quizName.includes("flag")) {
+                    category = "Geography";
+                } else if (quizName.includes("programming") || quizName.includes("coding") || quizName.includes("javascript") ||
+                           quizName.includes("python") || quizName.includes("html") || quizName.includes("css") ||
+                           quizName.includes("react") || quizName.includes("node") || quizName.includes("database") ||
+                           quizName.includes("algorithm") || quizName.includes("software") || quizName.includes("computer")) {
+                    category = "Programming";
+                } else if (quizName.includes("sport") || quizName.includes("football") || quizName.includes("basketball") ||
+                           quizName.includes("soccer") || quizName.includes("tennis") || quizName.includes("cricket") ||
+                           quizName.includes("baseball") || quizName.includes("olympics") || quizName.includes("athlete")) {
+                    category = "Sports";
+                } else if (quizName.includes("movie") || quizName.includes("film") || quizName.includes("music") ||
+                           quizName.includes("celebrity") || quizName.includes("tv") || quizName.includes("show") ||
+                           quizName.includes("actor") || quizName.includes("singer") || quizName.includes("band")) {
+                    category = "Entertainment";
+                } else if (quizName.includes("art") || quizName.includes("painting") || quizName.includes("artist") ||
+                           quizName.includes("sculpture") || quizName.includes("museum") || quizName.includes("design") ||
+                           quizName.includes("color") || quizName.includes("draw")) {
+                    category = "Art";
+                } else if (quizName.includes("food") || quizName.includes("cooking") || quizName.includes("recipe") ||
+                           quizName.includes("cuisine") || quizName.includes("restaurant") || quizName.includes("ingredient") ||
+                           quizName.includes("dish") || quizName.includes("nutrition")) {
+                    category = "Food & Cooking";
+                } else if (quizName.includes("nature") || quizName.includes("animal") || quizName.includes("plant") ||
+                           quizName.includes("bird") || quizName.includes("tree") || quizName.includes("flower") ||
+                           quizName.includes("wildlife") || quizName.includes("environment")) {
+                    category = "Nature";
+                } else if (quizName.includes("business") || quizName.includes("economics") || quizName.includes("finance") ||
+                           quizName.includes("marketing") || quizName.includes("management") || quizName.includes("investment") ||
+                           quizName.includes("accounting") || quizName.includes("entrepreneur")) {
+                    category = "Business";
+                } else if (quizName.includes("health") || quizName.includes("medical") || quizName.includes("medicine") ||
+                           quizName.includes("doctor") || quizName.includes("disease") || quizName.includes("fitness") ||
+                           quizName.includes("nutrition") || quizName.includes("wellness")) {
+                    category = "Health & Medicine";
                 } else {
-                    category = "General";
+                    // Dynamic category creation from quiz name
+                    const words = quizName.split(" ");
+                    const potentialCategory = words.find(word => 
+                        word.length > 3 && 
+                        !["quiz", "test", "the", "and", "for", "with", "about"].includes(word)
+                    );
+                    
+                    if (potentialCategory) {
+                        category = potentialCategory.charAt(0).toUpperCase() + potentialCategory.slice(1);
+                    }
                 }
             }
 
@@ -285,8 +300,18 @@ const getCategoryPerformance = async (username) => {
             );
         });
 
+        // Sort categories by performance (highest first) and limit to top 10
+        const sortedCategories = Object.entries(categoryPerformance)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 10);
+
+        const finalCategoryPerformance = {};
+        sortedCategories.forEach(([category, score]) => {
+            finalCategoryPerformance[category] = score;
+        });
+
         // Add default categories if none exist
-        if (Object.keys(categoryPerformance).length === 0) {
+        if (Object.keys(finalCategoryPerformance).length === 0) {
             return {
                 "General": 0,
                 "Science": 0,
@@ -298,7 +323,7 @@ const getCategoryPerformance = async (username) => {
             };
         }
 
-        return categoryPerformance;
+        return finalCategoryPerformance;
     } catch (error) {
         logger.error({ message: `Error getting category performance for user ${username}`, error: error.message, stack: error.stack });
         return {};
@@ -747,5 +772,26 @@ export const getUserAchievementsEndpoint = async (req, res) => {
     } catch (error) {
         logger.error({ message: `Error fetching achievements for user ${req.params.userId}`, error: error.message, stack: error.stack });
         res.status(500).json({ message: "Error fetching achievements", error: error.message });
+    }
+};
+
+// Get all available categories from database
+export const getAllCategories = async (req, res) => {
+    logger.info('Fetching all available categories');
+    try {
+        // Get all unique categories from quizzes
+        const categories = await Quiz.distinct('category', { category: { $exists: true, $ne: null, $ne: '' } });
+        
+        // Sort categories alphabetically
+        const sortedCategories = categories.sort();
+        
+        logger.info(`Successfully fetched ${sortedCategories.length} categories`);
+        res.json({
+            categories: sortedCategories,
+            count: sortedCategories.length
+        });
+    } catch (error) {
+        logger.error({ message: 'Error fetching categories', error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Error fetching categories", error: error.message });
     }
 };
