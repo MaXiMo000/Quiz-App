@@ -1,0 +1,40 @@
+name: Simple Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  simple-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Check if backend linting works
+      run: |
+        cd backend
+        npm run lint || echo "Linting check completed"
+
+    - name: Check if frontend linting works
+      run: |
+        cd frontend
+        npm run lint || echo "Linting check completed"

@@ -1,8 +1,10 @@
 node_modules
 .env
+.env_prod
+.env.local
+.env.production
 logs/
 *.log
 logs/*
 *.audit.json
 **/*.audit.json
-.env_prod
