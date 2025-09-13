@@ -36,3 +36,12 @@ export const quizLimiter = rateLimit({
         error: "Too many quiz requests, please slow down."
     }
 });
+
+export const roleUpdateLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 20, // Limit each IP to 20 role update requests per minute
+    message: {
+        error: "Too many role update requests, please slow down."
+    },
+    skipSuccessfulRequests: true, // Don't count successful requests
+});

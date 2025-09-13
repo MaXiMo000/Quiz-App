@@ -207,22 +207,18 @@ async function handleApiRequest(request) {
         }
         
         if (request.url.includes('/api/users/me')) {
-            // Try to get cached user data from localStorage
-            try {
-                const userData = localStorage.getItem('user');
-                if (userData) {
-                    const user = JSON.parse(userData);
-                    return new Response(JSON.stringify({
-                        ...user,
-                        offline: true,
-                        message: 'Offline mode - using cached user data'
-                    }), {
-                        status: 200,
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                }
-            } catch {
-                // Fallback if localStorage fails
+            // Try to get cached user data from cache
+            const cachedResponse = await caches.match(request);
+            if (cachedResponse) {
+                const userData = await cachedResponse.json();
+                return new Response(JSON.stringify({
+                    ...userData,
+                    offline: true,
+                    message: 'Offline mode - using cached user data'
+                }), {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' }
+                });
             }
             
             return new Response(JSON.stringify({
@@ -332,6 +328,33 @@ async function handleApiRequest(request) {
                 message: 'Analytics data cached locally.',
                 cached: true,
                 analytics: {}
+            }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+        
+        if (request.url.includes('/api/intelligence/analytics')) {
+            return new Response(JSON.stringify({
+                error: 'Offline',
+                message: 'Intelligence analytics data cached locally.',
+                cached: true,
+                overview: {
+                    totalQuizzes: 0,
+                    averageScore: 0,
+                    totalTimeSpent: 0,
+                    improvementRate: 0
+                },
+                trends: [],
+                predictions: {},
+                strengths: [],
+                weaknesses: [],
+                studyRecommendations: [],
+                optimalStudyTime: null,
+                advanced: {
+                    learningAnalytics: [],
+                    cognitiveMetrics: []
+                }
             }), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
@@ -569,9 +592,28 @@ async function cacheQuizData(quizData) {
 // Helper functions for IndexedDB operations (Enhanced for better offline support)
 async function getStoredSubmissions() {
     try {
-        // Simple localStorage fallback for now - can be enhanced with IndexedDB
-        const stored = localStorage.getItem('offline-quiz-submissions');
-        return stored ? JSON.parse(stored) : [];
+        // Use IndexedDB for service worker storage
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('QuizAppOffline', 1);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                const db = request.result;
+                const transaction = db.transaction(['submissions'], 'readonly');
+                const store = transaction.objectStore('submissions');
+                const getAllRequest = store.getAll();
+                
+                getAllRequest.onsuccess = () => resolve(getAllRequest.result || []);
+                getAllRequest.onerror = () => reject(getAllRequest.error);
+            };
+            
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains('submissions')) {
+                    db.createObjectStore('submissions', { keyPath: 'id' });
+                }
+            };
+        });
     } catch (error) {
         console.error('Failed to get stored submissions:', error);
         return [];
@@ -580,10 +622,20 @@ async function getStoredSubmissions() {
 
 async function removeStoredSubmission(id) {
     try {
-        const submissions = await getStoredSubmissions();
-        const filtered = submissions.filter(sub => sub.id !== id);
-        localStorage.setItem('offline-quiz-submissions', JSON.stringify(filtered));
-        return true;
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('QuizAppOffline', 1);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                const db = request.result;
+                const transaction = db.transaction(['submissions'], 'readwrite');
+                const store = transaction.objectStore('submissions');
+                const deleteRequest = store.delete(id);
+                
+                deleteRequest.onsuccess = () => resolve(true);
+                deleteRequest.onerror = () => reject(deleteRequest.error);
+            };
+        });
     } catch (error) {
         console.error('Failed to remove stored submission:', error);
         return false;
@@ -592,8 +644,27 @@ async function removeStoredSubmission(id) {
 
 async function getStoredChatMessages() {
     try {
-        const stored = localStorage.getItem('offline-chat-messages');
-        return stored ? JSON.parse(stored) : [];
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('QuizAppOffline', 1);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                const db = request.result;
+                const transaction = db.transaction(['chatMessages'], 'readonly');
+                const store = transaction.objectStore('chatMessages');
+                const getAllRequest = store.getAll();
+                
+                getAllRequest.onsuccess = () => resolve(getAllRequest.result || []);
+                getAllRequest.onerror = () => reject(getAllRequest.error);
+            };
+            
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains('chatMessages')) {
+                    db.createObjectStore('chatMessages', { keyPath: 'id' });
+                }
+            };
+        });
     } catch (error) {
         console.error('Failed to get stored chat messages:', error);
         return [];
@@ -602,10 +673,20 @@ async function getStoredChatMessages() {
 
 async function removeStoredChatMessage(id) {
     try {
-        const messages = await getStoredChatMessages();
-        const filtered = messages.filter(msg => msg.id !== id);
-        localStorage.setItem('offline-chat-messages', JSON.stringify(filtered));
-        return true;
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('QuizAppOffline', 1);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                const db = request.result;
+                const transaction = db.transaction(['chatMessages'], 'readwrite');
+                const store = transaction.objectStore('chatMessages');
+                const deleteRequest = store.delete(id);
+                
+                deleteRequest.onsuccess = () => resolve(true);
+                deleteRequest.onerror = () => reject(deleteRequest.error);
+            };
+        });
     } catch (error) {
         console.error('Failed to remove stored chat message:', error);
         return false;
