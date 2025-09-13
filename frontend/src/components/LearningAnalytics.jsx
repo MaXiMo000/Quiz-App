@@ -140,7 +140,7 @@ const LearningAnalytics = ({ user }) => {
                         
                         return (
                             <motion.div 
-                                key={index}
+                                key={`trend-${trend.day}-${index}`}
                                 className={`trend-bar ${!hasData ? 'no-data' : ''}`}
                                 initial={{ height: 0 }}
                                 animate={{ height: `${barHeight}%` }}
@@ -237,7 +237,7 @@ const LearningAnalytics = ({ user }) => {
                         <h4>💡 Personalized Study Tips</h4>
                         {studyRecommendations.map((rec, index) => (
                             <motion.div 
-                                key={index}
+                                key={`study-tip-${rec.title}-${index}`}
                                 className="tip-card"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -255,7 +255,7 @@ const LearningAnalytics = ({ user }) => {
                         <div className="strengths-section">
                             <h4>💪 Your Strengths</h4>
                             {strengths.map((strength, index) => (
-                                <div key={index} className="strength-item">
+                                <div key={`strength-${strength.category}-${index}`} className="strength-item">
                                     <span className="category-name">{strength.category}</span>
                                     <span className="category-score">{strength.averageScore}%</span>
                                     <div className="category-bar">
@@ -273,7 +273,7 @@ const LearningAnalytics = ({ user }) => {
                         <div className="weaknesses-section">
                             <h4>📚 Areas to Improve</h4>
                             {weaknesses.map((weakness, index) => (
-                                <div key={index} className="weakness-item">
+                                <div key={`weakness-${weakness.category}-${index}`} className="weakness-item">
                                     <span className="category-name">{weakness.category}</span>
                                     <span className="category-score">{weakness.averageScore}%</span>
                                     <span className="improvement-needed">+{weakness.improvementNeeded}% needed</span>

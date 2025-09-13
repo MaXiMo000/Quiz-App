@@ -30,6 +30,7 @@ const TakeQuiz = () => {
     const [isQuizInitialized, setIsQuizInitialized] = useState(false);
     const [autoSubmitReason, setAutoSubmitReason] = useState(null);
     const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
     const autoSubmitRef = useRef(false);
     const isSubmittingRef = useRef(false);
     const autoSubmitQuizRef = useRef(null);
@@ -42,21 +43,48 @@ const TakeQuiz = () => {
     const optionLetters = useMemo(() => ["A", "B", "C", "D"], []);
     const currentQ = useMemo(() => quiz?.questions?.[currentQuestion], [quiz, currentQuestion]);
 
-    useEffect(() => {
-        const fetchQuiz = async () => {
-            try {
-                const res = await axios.get(`/api/quizzes/${id}`);
+    const fetchQuiz = useCallback(async (isRetry = false) => {
+        try {
+            setLoading(true);
+            if (isRetry) {
+                setError("");
+                setRetryCount(prev => prev + 1);
+            }
+            
+            const res = await axios.get(`/api/quizzes/${id}`);
+            if (res.data && res.data.questions && res.data.questions.length > 0) {
                 setQuiz(res.data);
                 setTimeLeft(res.data.duration * 60);
-            } catch (error) {
-                console.error("Error fetching quiz:", error);
-                setError("Error fetching quiz. Try again later.");
-            } finally {
-                setLoading(false);
+                setError("");
+                setRetryCount(0);
+            } else {
+                setError("Quiz data is incomplete or invalid.");
             }
-        };
+        } catch (error) {
+            console.error("Error fetching quiz:", error);
+            if (error.code === 'NETWORK_ERROR' || error.message.includes('Network Error')) {
+                if (retryCount < 3) {
+                    setError(`Network error. Retrying... (${retryCount + 1}/3)`);
+                    setTimeout(() => fetchQuiz(true), 2000);
+                    return;
+                } else {
+                    setError("Network error. Please check your connection and try again.");
+                }
+            } else if (error.response?.status === 404) {
+                setError("Quiz not found. It may have been deleted or the link is invalid.");
+            } else if (error.response?.status === 500) {
+                setError("Server error. Please try again later.");
+            } else {
+                setError("Error fetching quiz. Please try again later.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    }, [id, retryCount]);
+
+    useEffect(() => {
         fetchQuiz();
-    }, [id]);
+    }, [fetchQuiz]);
 
     // Define exitFullScreen early to avoid circular dependency
     const exitFullScreen = useCallback(() => {
@@ -629,8 +657,37 @@ const TakeQuiz = () => {
     };
 
     if (loading) return <Spinner message="Loading quiz..." />;
-    if (error) return <p className="error-message">{error}</p>;
+    if (error) return (
+        <div className="error-container">
+            <p className="error-message">{error}</p>
+            {error.includes('Network error') && retryCount < 3 && (
+                <button 
+                    className="retry-button"
+                    onClick={() => fetchQuiz(true)}
+                    disabled={loading}
+                >
+                    {loading ? 'Retrying...' : 'Retry'}
+                </button>
+            )}
+            {error.includes('Network error') && retryCount >= 3 && (
+                <button 
+                    className="retry-button"
+                    onClick={() => {
+                        setRetryCount(0);
+                        fetchQuiz(true);
+                    }}
+                    disabled={loading}
+                >
+                    Try Again
+                </button>
+            )}
+        </div>
+    );
     if (isAutoSubmitting) return <Spinner message="Auto-submitting quiz..." />;
+    
+    // Add null checks for quiz data
+    if (!quiz) return <Spinner message="Loading quiz data..." />;
+    if (!currentQ) return <Spinner message="Loading question..." />;
 
     return (
         <div className="quiz-container">

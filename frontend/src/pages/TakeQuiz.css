@@ -37,6 +37,104 @@
     box-sizing: border-box;
 }
 
+/* ✨ Error Container ✨ */
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    margin: var(--space-xl) auto;
+    padding: 3rem;
+    background: var(--quiz-glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--text-color);
+    border-radius: 2.5rem;
+    border: 2px solid var(--quiz-border);
+    box-shadow: var(--quiz-shadow-xl);
+    position: relative;
+    overflow: hidden;
+    min-height: 50vh;
+    transform: translateZ(0);
+    will-change: auto;
+    box-sizing: border-box;
+}
+
+.error-message {
+    font-size: 1.2rem;
+    color: #e53e3e;
+    margin-bottom: 2rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.retry-button {
+    background: var(--quiz-gradient-1);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    min-width: 150px;
+}
+
+.retry-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.retry-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ✨ Fullscreen Buttons ✨ */
+.exit-fullscreen-btn,
+.enter-fullscreen-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.exit-fullscreen-btn:hover,
+.enter-fullscreen-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.enter-fullscreen-btn {
+    background: var(--quiz-gradient-1);
+    color: white;
+}
+
+.enter-fullscreen-btn:hover {
+    background: var(--quiz-gradient-2);
+}
+
 @keyframes containerSlideIn {
     from { 
         opacity: 0; 
