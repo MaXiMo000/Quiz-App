@@ -21,9 +21,9 @@ const FriendsSystem = () => {
         fetchFriends();
         fetchPendingRequests();
         fetchBlockedUsers();
-    }, []);
+    }, [fetchFriends, fetchPendingRequests, fetchBlockedUsers]);
 
-    const fetchFriends = async () => {
+    const fetchFriends = useCallback(async () => {
         try {
             const response = await axios.get('/api/social/friends');
             setFriends(response.data.friends);
@@ -31,25 +31,25 @@ const FriendsSystem = () => {
             console.error('Error fetching friends:', error);
             showError('Failed to load friends');
         }
-    };
+    }, [showError]);
 
-    const fetchPendingRequests = async () => {
+    const fetchPendingRequests = useCallback(async () => {
         try {
             const response = await axios.get('/api/social/friends/requests');
             setPendingRequests(response.data);
         } catch (error) {
             console.error('Error fetching requests:', error);
         }
-    };
+    }, []);
 
-    const fetchBlockedUsers = async () => {
+    const fetchBlockedUsers = useCallback(async () => {
         try {
             const response = await axios.get('/api/social/blocked');
             setBlockedUsers(response.data.blockedUsers);
         } catch (error) {
             console.error('Error fetching blocked users:', error);
         }
-    };
+    }, []);
 
     const searchUsers = useCallback(async () => {
         if (searchQuery.length < 2) {
@@ -67,7 +67,7 @@ const FriendsSystem = () => {
         } finally {
             setLoading(false);
         }
-    }, [searchQuery]);
+    }, [searchQuery, showError]);
 
     const sendFriendRequest = async (recipientId) => {
         try {
