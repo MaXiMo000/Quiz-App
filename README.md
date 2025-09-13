@@ -243,7 +243,32 @@ A powerful admin dashboard providing full control of platform operations:
 * **Performance**: Optimized CSS animations, hardware acceleration, reduced backdrop-filter usage
 * **Animation Framework**: Simplified framer-motion with performance-first approach
 * **Caching Strategy**: Intelligent service worker caching with network-first and cache-first strategies
+* **Redis Caching**: Production-ready Redis Cloud integration for session management and data caching
+* **Logging System**: Environment-aware logging with file storage (dev) and console output (production)
 * **Deployment**: Render with optimized caching strategies
+
+---
+
+## 🚀 **NEW: Production-Ready Infrastructure**
+
+### ⚡ **Redis Cloud Caching System**
+- **Session Management**: Redis-based session storage for production scalability
+- **Memory Store Fallback**: Automatic fallback to MemoryStore in development
+- **Production Optimization**: No memory leaks, scales across multiple processes
+- **Real-time Caching**: Fast data retrieval and session persistence
+
+### 📊 **Smart Logging System**
+- **Environment Detection**: Automatically switches between file and console logging
+- **Development**: Logs saved to `logs/` folder + console output
+- **Production**: Console-only logging (Render dashboard integration)
+- **Log Levels**: `info` (dev) / `warn` (production) for optimal performance
+- **Structured Logging**: JSON format with timestamps and context
+
+### 🧪 **Enhanced Testing & Quality**
+- **Dynamic Category Detection**: Real-time quiz categorization from database
+- **Subject Performance Analytics**: Dynamic chart generation with actual category names
+- **Production Logging**: Render-compatible logging without file system dependencies
+- **Error Handling**: Comprehensive error tracking and user-friendly messages
 
 ---
 
@@ -269,16 +294,36 @@ npm install
 Create a `.env` file in the `backend` folder with:
 
 ```env
+# Database
 MONGO_URI=your_mongodb_uri
-PORT=5000
+
+# Server Configuration
+PORT=4000
+NODE_ENV=development
+LOG_LEVEL=info
+
+# AI Services
 TOGETHER_AI_API_KEY=your_ai_key
 GEMINI_API_KEY=your_gemini_api_key
+
+# Authentication
 JWT_SECRET=your_jwt_secret
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=http://localhost:4000/auth/google/callback
-FRONTEND_URL=http://localhost:5173
+GOOGLE_CALLBACK_URL=http://localhost:4000/api/users/google/callback
 GOOGLE_SECRET=your_google_secret
+
+# URLs
+BACKEND_URL=http://localhost:4000
+FRONTEND_URL=http://localhost:5173
+
+# Redis Cloud (Production Caching)
+REDIS_HOST=your_redis_host
+REDIS_PORT=your_redis_port
+REDIS_PASSWORD=your_redis_password
+REDIS_DB=0
+REDIS_SSL=true
+REDIS_URL=redis://default:password@host:port
 ```
 
 Start the backend server:
@@ -286,6 +331,29 @@ Start the backend server:
 ```bash
 npm start
 ```
+
+### 🚀 **Production Deployment (Render)**
+
+For production deployment on Render, set these environment variables:
+
+```env
+# Production Environment
+NODE_ENV=production
+LOG_LEVEL=warn
+RENDER=true
+
+# Your existing variables...
+MONGO_URI=your_production_mongodb_uri
+REDIS_URL=your_redis_cloud_url
+JWT_SECRET=your_production_jwt_secret
+# ... etc
+```
+
+**Key Production Features:**
+- ✅ **Redis Session Storage**: No MemoryStore warnings
+- ✅ **Console Logging**: Logs appear in Render dashboard
+- ✅ **Dynamic Categories**: Real-time quiz categorization
+- ✅ **Optimized Performance**: Production-ready caching and logging
 
 ### 💻 Frontend Setup
 
