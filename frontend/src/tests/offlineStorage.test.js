@@ -15,6 +15,10 @@ describe('Offline Storage', () => {
       value: mockLocalStorage,
       writable: true,
     })
+    Object.defineProperty(global, 'localStorage', {
+      value: mockLocalStorage,
+      writable: true,
+    })
     vi.clearAllMocks()
   })
 
@@ -23,7 +27,7 @@ describe('Offline Storage', () => {
       try {
         localStorage.setItem(`offline_${key}`, JSON.stringify(data))
         return true
-      } catch (error) {
+      } catch {
         return false
       }
     }
@@ -38,7 +42,7 @@ describe('Offline Storage', () => {
       try {
         const data = localStorage.getItem(`offline_${key}`)
         return data ? JSON.parse(data) : null
-      } catch (error) {
+      } catch {
         return null
       }
     }
@@ -54,7 +58,7 @@ describe('Offline Storage', () => {
         const keys = Object.keys(localStorage).filter(key => key.startsWith('offline_'))
         keys.forEach(key => localStorage.removeItem(key))
         return true
-      } catch (error) {
+      } catch {
         return false
       }
     }

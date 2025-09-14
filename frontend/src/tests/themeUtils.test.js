@@ -11,6 +11,10 @@ describe('Theme Utilities', () => {
       value: { getItem: mockGetItem },
       writable: true,
     })
+    Object.defineProperty(global, 'localStorage', {
+      value: { getItem: mockGetItem },
+      writable: true,
+    })
 
     expect(getTheme()).toBe('dark')
   })
@@ -23,6 +27,10 @@ describe('Theme Utilities', () => {
     // Mock localStorage
     const mockSetItem = vi.fn()
     Object.defineProperty(window, 'localStorage', {
+      value: { setItem: mockSetItem },
+      writable: true,
+    })
+    Object.defineProperty(global, 'localStorage', {
       value: { setItem: mockSetItem },
       writable: true,
     })

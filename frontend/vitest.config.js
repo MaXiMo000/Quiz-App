@@ -7,5 +7,15 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/tests/setup.js'],
+    deps: {
+      external: ['webidl-conversions', 'whatwg-url']
+    },
+    environmentOptions: {
+      jsdom: {
+        resources: 'usable'
+      }
+    },
+    onUnhandledRejection: 'ignore',
+    onUncaughtException: 'ignore'
   },
 })

@@ -50,7 +50,7 @@ describe('PWA Utilities', () => {
         try {
           const registration = await navigator.serviceWorker.register('/sw.js')
           return registration
-        } catch (error) {
+        } catch {
           return null
         }
       }

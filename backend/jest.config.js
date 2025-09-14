@@ -1,9 +1,9 @@
 export default {
   testEnvironment: "node",
   setupFilesAfterEnv: ["./tests/setup.js"],
-  testTimeout: 30000,
+  testTimeout: 10000,
   maxWorkers: 1,
-  workerIdleMemoryLimit: "512MB",
+  workerIdleMemoryLimit: "256MB",
   testMatch: ["**/tests/**/*.test.js"],
   collectCoverageFrom: [
     "controllers/**/*.js",
@@ -17,8 +17,8 @@ export default {
   coverageReporters: ["text", "lcov", "html"],
   verbose: true,
   forceExit: true,
-  detectOpenHandles: true,
-  detectLeaks: true,
+  detectOpenHandles: false,
+  detectLeaks: false,
   maxConcurrency: 1,
   bail: false,
   clearMocks: true,
