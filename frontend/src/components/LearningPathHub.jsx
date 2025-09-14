@@ -22,21 +22,19 @@ const LearningPathHub = () => {
     const [selectedNode, setSelectedNode] = useState(null);
     const svgRef = useRef(null);
 
-    useEffect(() => {
-        loadInitialData();
-    }, [loadInitialData]);
+    const loadLearningPaths = useCallback(async () => {
+        try {
+            const params = new URLSearchParams();
+            if (filters.category) params.append('category', filters.category);
+            if (filters.level) params.append('level', filters.level);
+            if (filters.search) params.append('search', filters.search);
 
-    useEffect(() => {
-        if (activeTab === 'explore') {
-            loadLearningPaths();
-        } else if (activeTab === 'my-paths') {
-            loadMyPaths();
-        } else if (activeTab === 'analytics') {
-            loadAnalytics();
-        } else if (activeTab === 'competencies') {
-            loadCompetencies();
+            const response = await axios.get(`/api/learning-paths?${params}`);
+            setLearningPaths(response.data.paths);
+        } catch (error) {
+            console.error('Error loading learning paths:', error);
         }
-    }, [activeTab, filters, loadLearningPaths]); // Dependencies are stable - activeTab and filters are state variables
+    }, [filters]);
 
     const loadInitialData = useCallback(async () => {
         try {
@@ -52,19 +50,21 @@ const LearningPathHub = () => {
         }
     }, [loadLearningPaths]);
 
-    const loadLearningPaths = useCallback(async () => {
-        try {
-            const params = new URLSearchParams();
-            if (filters.category) params.append('category', filters.category);
-            if (filters.level) params.append('level', filters.level);
-            if (filters.search) params.append('search', filters.search);
+    useEffect(() => {
+        loadInitialData();
+    }, [loadInitialData]);
 
-            const response = await axios.get(`/api/learning-paths?${params}`);
-            setLearningPaths(response.data.paths);
-        } catch (error) {
-            console.error('Error loading learning paths:', error);
+    useEffect(() => {
+        if (activeTab === 'explore') {
+            loadLearningPaths();
+        } else if (activeTab === 'my-paths') {
+            loadMyPaths();
+        } else if (activeTab === 'analytics') {
+            loadAnalytics();
+        } else if (activeTab === 'competencies') {
+            loadCompetencies();
         }
-    }, [filters]);
+    }, [activeTab, filters, loadLearningPaths]); // Dependencies are stable - activeTab and filters are state variables
 
     const loadMyPaths = async () => {
         try {

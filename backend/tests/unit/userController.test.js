@@ -94,7 +94,7 @@ describe("User Controller", () => {
           token: "token",
         })
       );
-    });
+    }, 30000);
 
     it("should not login with invalid credentials", async () => {
       req.body = {

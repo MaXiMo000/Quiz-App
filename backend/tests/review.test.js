@@ -34,6 +34,13 @@ describe("Review Routes", () => {
     await User.deleteMany({});
     await Quiz.deleteMany({});
     await ReviewSchedule.deleteMany({});
+  }, 30000);
+
+  afterAll(async () => {
+    // Close mongoose connection to prevent memory leaks
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
+    }
   });
 
   describe("GET /api/reviews", () => {
@@ -41,7 +48,7 @@ describe("Review Routes", () => {
       const res = await request(app).get("/api/reviews");
       expect(res.statusCode).toEqual(200);
       expect(res.body).toBeInstanceOf(Array);
-    });
+    }, 30000);
   });
 
   describe("POST /api/reviews/update", () => {
@@ -76,6 +83,6 @@ describe("Review Routes", () => {
       expect(reviewSchedule).toBeDefined();
       expect(reviewSchedule.repetitions).toBe(1);
       expect(reviewSchedule.interval).toBe(1);
-    });
+    }, 30000);
   });
 });

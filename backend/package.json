@@ -11,7 +11,9 @@
     "url": "https://github.com/MaXiMo000/Quiz-App"
   },
   "scripts": {
-    "test": "jest",
+    "test": "npx jest --maxWorkers=1",
+    "test:watch": "npx jest --watch --maxWorkers=1",
+    "test:coverage": "npx jest --coverage --maxWorkers=1",
     "start": "node --require dotenv/config server.js",
     "lint": "eslint ."
   },

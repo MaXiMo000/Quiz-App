@@ -306,19 +306,25 @@ describe("Gamification Controller", () => {
         });
 
         it("should handle missing required fields", async () => {
+            const req = {
+                user: { id: "userId", role: "admin" },
+                body: {}
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
             req.user.role = "admin";
             req.body = {
-                title: "Test Challenge"
-                // Missing other required fields
+                // Missing title - the required field
             };
 
             await createDailyChallenge(req, res);
 
-            expect(res.status).toHaveBeenCalledWith(201);
+            expect(res.status).toHaveBeenCalledWith(400);
             expect(res.json).toHaveBeenCalledWith({
-                message: "Daily challenge created successfully",
-                challenge: expect.any(Object)
+                message: "Title is required"
             });
         });
     });

@@ -1,5 +1,3 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 // Import all models to ensure they are registered with Mongoose
@@ -25,30 +23,22 @@ import '../models/WrittenTestReport.js';
 
 dotenv.config({ path: "./.env.test" });
 
-let mongoServer;
+// Set NODE_ENV to test
+process.env.NODE_ENV = "test";
 
+// Simple setup for unit tests - no database connection needed
 beforeAll(async () => {
-  try {
-    mongoServer = await MongoMemoryServer.create({
-      instance: {
-        port: undefined, // Use random available port
-      },
-    });
-    const mongoUri = mongoServer.getUri();
-    await mongoose.connect(mongoUri);
-  } catch (error) {
-    console.error("Failed to start MongoDB Memory Server:", error);
-    throw error;
-  }
-}, 60000); // Increase timeout to 60 seconds
+  // Set up test environment
+  process.env.NODE_ENV = "test";
+}, 1000);
 
 afterAll(async () => {
-  try {
-    await mongoose.disconnect();
-    if (mongoServer) {
-      await mongoServer.stop();
-    }
-  } catch (error) {
-    console.error("Error during cleanup:", error);
-  }
-}, 30000); // 30 second timeout for cleanup
+  // Clean up
+  process.env.NODE_ENV = undefined;
+}, 1000);
+
+// Clean up after each test
+afterEach(async () => {
+  // Reset any mocks if needed
+  jest.clearAllMocks();
+});

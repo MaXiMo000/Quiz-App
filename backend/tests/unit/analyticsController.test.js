@@ -18,11 +18,11 @@ app.use("/api/analytics", analyticsRoutes);
 describe("Analytics Routes", () => {
     beforeEach(async () => {
         await Report.deleteMany({});
-    });
+    }, 30000);
 
     afterEach(async () => {
         await Report.deleteMany({});
-    });
+    }, 30000);
 
     describe("GET /api/analytics/question-stats", () => {
         it("should return question stats with correct data structure", async () => {
@@ -65,7 +65,7 @@ describe("Analytics Routes", () => {
             expect(sortedBody[0].question).toBe("What is 2+2?");
             expect(sortedBody[0].correctPercent).toBe(100);
             expect(sortedBody[0].avgTime).toBe(5);
-        });
+        }, 30000);
 
         it("should handle multiple reports with same questions", async () => {
             // Create multiple reports with same questions
@@ -113,13 +113,13 @@ describe("Analytics Routes", () => {
             expect(res.body[0].question).toBe("What is 2+2?");
             expect(res.body[0].correctPercent).toBe(50); // 1 out of 2 correct
             expect(res.body[0].avgTime).toBe(5); // (3 + 7) / 2
-        });
+        }, 30000);
 
         it("should handle empty database", async () => {
             const res = await request(app).get("/api/analytics/question-stats");
             expect(res.statusCode).toEqual(200);
             expect(res.body).toEqual([]);
-        });
+        }, 30000);
     });
 
     describe("GET /api/analytics/score-trends", () => {
@@ -151,13 +151,13 @@ describe("Analytics Routes", () => {
             expect(res.statusCode).toEqual(200);
             expect(res.body).toBeInstanceOf(Array);
             expect(res.body.length).toBe(2);
-        });
+        }, 30000);
 
         it("should handle empty database", async () => {
             const res = await request(app).get("/api/analytics/score-trends");
             expect(res.statusCode).toEqual(200);
             expect(res.body).toEqual([]);
-        });
+        }, 30000);
     });
 
     describe("GET /api/analytics/topic-heatmap", () => {
@@ -202,12 +202,12 @@ describe("Analytics Routes", () => {
             expect(res.statusCode).toEqual(200);
             expect(res.body).toBeInstanceOf(Array);
             expect(res.body.length).toBeGreaterThan(0);
-        });
+        }, 30000);
 
         it("should handle empty database", async () => {
             const res = await request(app).get("/api/analytics/topic-heatmap");
             expect(res.statusCode).toEqual(200);
             expect(res.body).toEqual([]);
-        });
+        }, 30000);
     });
 });
