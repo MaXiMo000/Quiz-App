@@ -6,9 +6,31 @@ jest.mock("../../models/StudyGroup.js", () => {
     const mockStudyGroup = jest.fn().mockImplementation((data) => ({
         ...data,
         _id: "groupId",
-        save: jest.fn().mockResolvedValue(true),
+        save: jest.fn().mockResolvedValue({
+            _id: "groupId",
+            name: data.name,
+            description: data.description,
+            isPrivate: data.isPrivate,
+            maxMembers: data.maxMembers,
+            category: data.category,
+            tags: data.tags,
+            creator: data.creator,
+            members: data.members,
+            activities: data.activities
+        }),
         populate: jest.fn().mockReturnThis(),
-        toObject: jest.fn().mockReturnValue(data),
+        toObject: jest.fn().mockReturnValue({
+            _id: "groupId",
+            name: data.name,
+            description: data.description,
+            isPrivate: data.isPrivate,
+            maxMembers: data.maxMembers,
+            category: data.category,
+            tags: data.tags,
+            creator: data.creator,
+            members: data.members,
+            activities: data.activities
+        }),
     }));
 
     mockStudyGroup.findById = jest.fn();
@@ -16,6 +38,46 @@ jest.mock("../../models/StudyGroup.js", () => {
     mockStudyGroup.findOne = jest.fn();
     mockStudyGroup.findByIdAndUpdate = jest.fn();
     mockStudyGroup.findByIdAndDelete = jest.fn();
+    mockStudyGroup.create = jest.fn().mockResolvedValue({
+        _id: "groupId",
+        name: "JavaScript Study Group",
+        description: "Learning JavaScript together",
+        isPrivate: false,
+        maxMembers: 20,
+        creator: "60c72b9f9b1d8c001f8e4a3a",
+        members: [{
+            user: "60c72b9f9b1d8c001f8e4a3a",
+            role: "admin",
+            joinedAt: new Date()
+        }],
+        activities: [{
+            type: "member_joined",
+            user: "60c72b9f9b1d8c001f8e4a3a",
+            details: { message: "Study group created" },
+            timestamp: new Date()
+        }],
+        save: jest.fn().mockResolvedValue(true),
+        populate: jest.fn().mockReturnThis(),
+        toObject: jest.fn().mockReturnValue({
+            _id: "groupId",
+            name: "JavaScript Study Group",
+            description: "Learning JavaScript together",
+            isPrivate: false,
+            maxMembers: 20,
+            creator: "60c72b9f9b1d8c001f8e4a3a",
+            members: [{
+                user: "60c72b9f9b1d8c001f8e4a3a",
+                role: "admin",
+                joinedAt: new Date()
+            }],
+            activities: [{
+                type: "member_joined",
+                user: "60c72b9f9b1d8c001f8e4a3a",
+                details: { message: "Study group created" },
+                timestamp: new Date()
+            }]
+        })
+    });
 
     return {
         __esModule: true,
@@ -102,12 +164,83 @@ describe("Study Group Controller - Working", () => {
         UserQuiz.findById.mockResolvedValue(mockUser);
         UserQuiz.findByIdAndUpdate.mockResolvedValue(mockUser);
 
+        // Mock the StudyGroup constructor to return a proper instance
+        const mockStudyGroupInstance = {
+            _id: "groupId",
+            name: "JavaScript Study Group",
+            description: "Learning JavaScript together",
+            isPrivate: false,
+            maxMembers: 20,
+            creator: "60c72b9f9b1d8c001f8e4a3a",
+            members: [{
+                user: "60c72b9f9b1d8c001f8e4a3a",
+                role: "admin",
+                joinedAt: new Date()
+            }],
+            activities: [{
+                type: "member_joined",
+                user: "60c72b9f9b1d8c001f8e4a3a",
+                details: { message: "Study group created" },
+                timestamp: new Date()
+            }],
+            save: jest.fn().mockResolvedValue({
+                _id: "groupId",
+                name: "JavaScript Study Group",
+                description: "Learning JavaScript together",
+                isPrivate: false,
+                maxMembers: 20,
+                creator: "60c72b9f9b1d8c001f8e4a3a",
+                members: [{
+                    user: "60c72b9f9b1d8c001f8e4a3a",
+                    role: "admin",
+                    joinedAt: new Date()
+                }],
+                activities: [{
+                    type: "member_joined",
+                    user: "60c72b9f9b1d8c001f8e4a3a",
+                    details: { message: "Study group created" },
+                    timestamp: new Date()
+                }]
+            })
+        };
+
+        // Reset the mock implementation for this test
+        StudyGroup.mockImplementation((data) => ({
+            ...data,
+            _id: "groupId",
+            save: jest.fn().mockResolvedValue({
+                _id: "groupId",
+                name: data.name,
+                description: data.description,
+                isPrivate: data.isPrivate,
+                maxMembers: data.maxMembers,
+                category: data.category,
+                tags: data.tags,
+                creator: data.creator,
+                members: data.members,
+                activities: data.activities
+            }),
+            populate: jest.fn().mockReturnThis(),
+            toObject: jest.fn().mockReturnValue({
+                _id: "groupId",
+                name: data.name,
+                description: data.description,
+                isPrivate: data.isPrivate,
+                maxMembers: data.maxMembers,
+                category: data.category,
+                tags: data.tags,
+                creator: data.creator,
+                members: data.members,
+                activities: data.activities
+            })
+        }));
+
         const res = await request(app)
             .post("/api/study-groups")
             .send({
                 name: "JavaScript Study Group",
                 description: "Learning JavaScript together",
-                isPublic: true,
+                isPrivate: false,
                 maxMembers: 20
             });
 

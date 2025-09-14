@@ -62,6 +62,9 @@ jest.mock("../../services/analyticsService.js", () => ({
     trackCognitiveMetrics: jest.fn(),
 }));
 
+// Import the mocked functions
+import { trackLearningAnalytics, trackCognitiveMetrics } from "../../services/analyticsService.js";
+
 // Mock the verifyToken middleware
 jest.mock("../../middleware/auth.js", () => ({
     verifyToken: (req, res, next) => {
@@ -171,8 +174,6 @@ describe("Intelligence Controller", () => {
 
     describe("trackUserPerformance", () => {
         it("should track user performance and update analytics", async () => {
-            const { trackLearningAnalytics, trackCognitiveMetrics } = require("../../services/analyticsService.js");
-
             trackLearningAnalytics.mockResolvedValue(true);
             trackCognitiveMetrics.mockResolvedValue(true);
 

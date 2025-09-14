@@ -7,7 +7,7 @@ import logger from "../utils/logger.js";
 dotenv.config();
 
 // Only throw error in production, allow tests to run without API key
-if (!process.env.GEMINI_API_KEY && process.env.NODE_ENV !== 'test') {
+if (!process.env.GEMINI_API_KEY && process.env.NODE_ENV !== "test") {
     throw new Error("🚫 GEMINI_API_KEY is missing from .env file!");
 }
 
@@ -16,7 +16,7 @@ const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GE
 const generateFromGemini = async (prompt) => {
     if (!genAI) {
         // In test environment, return mock response
-        if (process.env.NODE_ENV === 'test') {
+        if (process.env.NODE_ENV === "test") {
             return "Score: 8\nFeedback: Good answer";
         }
         throw new Error("Gemini AI not initialized - API key missing");

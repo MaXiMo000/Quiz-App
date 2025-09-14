@@ -14,8 +14,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run --reporter=verbose",
+    "test:watch": "vitest",
+    "test:ci": "vitest run --reporter=verbose --no-coverage --run --bail=1"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

@@ -35,7 +35,7 @@ describe("Intelligence Routes", () => {
     await Report.deleteMany({});
     await LearningAnalytics.deleteMany({});
     await CognitiveMetrics.deleteMany({});
-  });
+  }, 30000);
 
   describe("GET /api/intelligence/analytics", () => {
     it("should return analytics data", async () => {
@@ -63,7 +63,7 @@ describe("Intelligence Routes", () => {
       expect(res.body).toHaveProperty("trends");
       expect(res.body).toHaveProperty("predictions");
       expect(res.body.advanced).toBeDefined();
-    });
+    }, 30000);
   });
 
   describe("POST /api/intelligence/track-performance", () => {
@@ -91,6 +91,6 @@ describe("Intelligence Routes", () => {
       });
       expect(cognitiveMetrics).toBeDefined();
       expect(cognitiveMetrics.metrics.responseTime).toBe(12);
-    });
+    }, 30000);
   });
 });

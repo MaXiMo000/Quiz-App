@@ -1,81 +1,79 @@
-// Simple validation tests
+import { describe, it, expect } from 'vitest'
+import {
+  isValidEmail,
+  isValidPassword,
+  isValidQuizTitle,
+  isValidQuestion,
+  isValidAnswer,
+  isValidScore,
+  sanitizeInput
+} from '../utils/validation'
+
 describe('Validation Functions', () => {
-  it('should validate email format', () => {
-    const validateEmail = (email) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      return emailRegex.test(email)
-    }
-
-    expect(validateEmail('test@example.com')).toBe(true)
-    expect(validateEmail('user.name@domain.co.uk')).toBe(true)
-    expect(validateEmail('invalid-email')).toBe(false)
-    expect(validateEmail('test@')).toBe(false)
-    expect(validateEmail('@example.com')).toBe(false)
+  it('should validate email addresses', () => {
+    expect(isValidEmail('test@example.com')).toBe(true)
+    expect(isValidEmail('user.name@domain.co.uk')).toBe(true)
+    expect(isValidEmail('invalid-email')).toBe(false)
+    expect(isValidEmail('@domain.com')).toBe(false)
+    expect(isValidEmail('test@')).toBe(false)
+    expect(isValidEmail('')).toBe(false)
   })
 
-  it('should validate password strength', () => {
-    const validatePassword = (password) => {
-      return password.length >= 8 &&
-             /[A-Z]/.test(password) &&
-             /[a-z]/.test(password) &&
-             /[0-9]/.test(password)
-    }
-
-    expect(validatePassword('Password123')).toBe(true)
-    expect(validatePassword('password123')).toBe(false) // no uppercase
-    expect(validatePassword('PASSWORD123')).toBe(false) // no lowercase
-    expect(validatePassword('Password')).toBe(false) // no number
-    expect(validatePassword('Pass1')).toBe(false) // too short
+  it('should validate passwords', () => {
+    expect(isValidPassword('Password123')).toBe(true)
+    expect(isValidPassword('MySecure1')).toBe(true)
+    expect(isValidPassword('weak')).toBe(false)
+    expect(isValidPassword('password')).toBe(false)
+    expect(isValidPassword('PASSWORD')).toBe(false)
+    expect(isValidPassword('12345678')).toBe(false)
+    expect(isValidPassword('')).toBe(false)
   })
 
-  it('should validate username', () => {
-    const validateUsername = (username) => {
-      return username.length >= 3 &&
-             username.length <= 20 &&
-             /^[a-zA-Z0-9_]+$/.test(username)
-    }
-
-    expect(validateUsername('testuser')).toBe(true)
-    expect(validateUsername('test_user')).toBe(true)
-    expect(validateUsername('test123')).toBe(true)
-    expect(validateUsername('ab')).toBe(false) // too short
-    expect(validateUsername('a'.repeat(21))).toBe(false) // too long
-    expect(validateUsername('test-user')).toBe(false) // invalid character
+  it('should validate quiz titles', () => {
+    expect(isValidQuizTitle('My Quiz')).toBe(true)
+    expect(isValidQuizTitle('A'.repeat(50))).toBe(true)
+    expect(isValidQuizTitle('A'.repeat(100))).toBe(true)
+    expect(isValidQuizTitle('AB')).toBe(false)
+    expect(isValidQuizTitle('A'.repeat(101))).toBe(false)
+    expect(isValidQuizTitle('')).toBe(false)
+    expect(isValidQuizTitle('   ')).toBe(false)
   })
 
-  it('should validate quiz data', () => {
-    const validateQuiz = (quiz) => {
-      return !!(quiz.title &&
-             quiz.title.length > 0 &&
-             quiz.questions &&
-             Array.isArray(quiz.questions) &&
-             quiz.questions.length > 0)
-    }
-
-    const validQuiz = {
-      title: 'Test Quiz',
-      questions: [{ question: 'What is 2+2?', options: ['3', '4', '5'], correctAnswer: '4' }]
-    }
-
-    const invalidQuiz = {
-      title: '',
-      questions: []
-    }
-
-    expect(validateQuiz(validQuiz)).toBe(true)
-    expect(validateQuiz(invalidQuiz)).toBe(false)
+  it('should validate questions', () => {
+    expect(isValidQuestion('What is the capital of France?')).toBe(true)
+    expect(isValidQuestion('A'.repeat(50))).toBe(true)
+    expect(isValidQuestion('A'.repeat(500))).toBe(true)
+    expect(isValidQuestion('Short')).toBe(false)
+    expect(isValidQuestion('A'.repeat(501))).toBe(false)
+    expect(isValidQuestion('')).toBe(false)
+    expect(isValidQuestion('   ')).toBe(false)
   })
 
-  it('should validate score range', () => {
-    const validateScore = (score, maxScore) => {
-      return score >= 0 && score <= maxScore && Number.isInteger(score)
-    }
+  it('should validate answers', () => {
+    expect(isValidAnswer('Paris')).toBe(true)
+    expect(isValidAnswer('A'.repeat(50))).toBe(true)
+    expect(isValidAnswer('A'.repeat(200))).toBe(true)
+    expect(isValidAnswer('')).toBe(false)
+    expect(isValidAnswer('   ')).toBe(false)
+    expect(isValidAnswer('A'.repeat(201))).toBe(false)
+  })
 
-    expect(validateScore(8, 10)).toBe(true)
-    expect(validateScore(0, 10)).toBe(true)
-    expect(validateScore(10, 10)).toBe(true)
-    expect(validateScore(-1, 10)).toBe(false)
-    expect(validateScore(11, 10)).toBe(false)
-    expect(validateScore(8.5, 10)).toBe(false) // not integer
+  it('should validate scores', () => {
+    expect(isValidScore(85)).toBe(true)
+    expect(isValidScore(0)).toBe(true)
+    expect(isValidScore(100)).toBe(true)
+    expect(isValidScore(-1)).toBe(false)
+    expect(isValidScore(101)).toBe(false)
+    expect(isValidScore('85')).toBe(false)
+    expect(isValidScore(null)).toBe(false)
+  })
+
+  it('should sanitize input', () => {
+    expect(sanitizeInput('Hello World')).toBe('Hello World')
+    expect(sanitizeInput('<script>alert("xss")</script>')).toBe('scriptalert("xss")/script')
+    expect(sanitizeInput('  spaced  ')).toBe('spaced')
+    expect(sanitizeInput(123)).toBe('')
+    expect(sanitizeInput(null)).toBe('')
+    expect(sanitizeInput(undefined)).toBe('')
   })
 })
