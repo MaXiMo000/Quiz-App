@@ -1,5 +1,30 @@
 // Simple theme utilities tests
 describe('Theme Utilities', () => {
+  beforeEach(() => {
+    // Clear all mocks before each test
+    vi.clearAllMocks()
+
+    // Reset localStorage mock
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    })
+
+    Object.defineProperty(global, 'localStorage', {
+      value: {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    })
+  })
   it('should get theme from localStorage', () => {
     const getTheme = () => {
       return localStorage.getItem('theme') || 'light'
@@ -62,9 +87,22 @@ describe('Theme Utilities', () => {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     }
 
-    // Mock window.matchMedia
-    window.matchMedia = vi.fn().mockReturnValue({
+    // Mock window.matchMedia with proper setup
+    const mockMatchMedia = vi.fn().mockReturnValue({
       matches: true,
+      media: '(prefers-color-scheme: dark)',
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })
+
+    // Ensure window.matchMedia is properly mocked
+    Object.defineProperty(window, 'matchMedia', {
+      value: mockMatchMedia,
+      writable: true,
     })
 
     expect(getSystemTheme()).toBe('dark')

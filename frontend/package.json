@@ -16,7 +16,7 @@
     "preview": "vite preview",
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest",
-    "test:ci": "vitest run --reporter=verbose --no-coverage"
+    "test:ci": "vitest run --reporter=verbose --no-coverage --run --bail=1"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

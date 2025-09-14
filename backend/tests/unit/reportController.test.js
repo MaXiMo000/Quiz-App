@@ -206,11 +206,15 @@ describe("Report Controller", () => {
             badges: []
         });
 
-        // Mock the Report constructor to throw an error
-        const ReportConstructor = require("../../models/Report.js").default;
-        ReportConstructor.mockImplementation(() => {
-            throw new Error("Database error");
+        // Mock Quiz.findOne to return a quiz
+        Quiz.findOne.mockResolvedValue({
+            _id: "quizId",
+            title: "Test Quiz",
+            questions: []
         });
+
+        // Mock the Report save method to throw an error
+        Report.prototype.save = jest.fn().mockRejectedValue(new Error("Database error"));
 
         await createReport(req, res);
 
