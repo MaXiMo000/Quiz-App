@@ -365,14 +365,19 @@ export const createDailyChallenge = async (req, res) => {
         } = req.body;
 
 
+        // Validate required fields
+        if (!title) {
+            return res.status(400).json({ message: "Title is required" });
+        }
+
         const challenge = new DailyChallenge({
             title,
-            description,
-            type,
-            parameters,
-            rewards,
-            startDate: new Date(startDate),
-            endDate: new Date(endDate),
+            description: description || "Daily challenge",
+            type: type || "quiz",
+            parameters: parameters || {},
+            rewards: rewards || { xp: 100 },
+            startDate: startDate ? new Date(startDate) : new Date(),
+            endDate: endDate ? new Date(endDate) : new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
             quizzes: quizzes || [],  // Include quizzes array
             timeLimit: timeLimit || 300,  // Default 5 minutes
             isActive: true,

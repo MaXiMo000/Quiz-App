@@ -198,11 +198,6 @@ describe("Intelligence Controller", () => {
         });
 
         it("should handle missing required fields", async () => {
-            const { trackLearningAnalytics, trackCognitiveMetrics } = require("../../services/analyticsService.js");
-
-            trackLearningAnalytics.mockRejectedValue(new Error("Missing fields"));
-            trackCognitiveMetrics.mockRejectedValue(new Error("Missing fields"));
-
             req.body = {
                 quizId: "quizId"
                 // Missing other required fields
@@ -210,9 +205,9 @@ describe("Intelligence Controller", () => {
 
             await trackUserPerformance(req, res);
 
-            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.status).toHaveBeenCalledWith(400);
             expect(res.json).toHaveBeenCalledWith({
-                error: "Server error"
+                error: "Missing required fields: quizId, score, totalQuestions, and timeSpent are required"
             });
         });
     });

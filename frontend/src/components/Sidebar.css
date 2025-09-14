@@ -307,9 +307,45 @@
 
     .sidebar.open {
         transform: translateX(0);
-        z-index: 1201;
+        z-index: 1202 !important;
         box-shadow: 0 0 24px rgba(0,0,0,0.18);
         padding-bottom: 72px;
+    }
+
+    /* Override global user-select rules for sidebar on mobile */
+    .sidebar *,
+    .sidebar.open * {
+        -webkit-user-select: auto !important;
+        -moz-user-select: auto !important;
+        -ms-user-select: auto !important;
+        user-select: auto !important;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+        -webkit-touch-callout: default !important;
+    }
+
+    /* Ensure sidebar elements are clickable on mobile */
+    .sidebar button,
+    .sidebar a,
+    .sidebar input,
+    .sidebar select,
+    .sidebar textarea,
+    .sidebar [onclick],
+    .sidebar [role="button"],
+    .sidebar.open button,
+    .sidebar.open a,
+    .sidebar.open input,
+    .sidebar.open select,
+    .sidebar.open textarea,
+    .sidebar.open [onclick],
+    .sidebar.open [role="button"] {
+        pointer-events: auto !important;
+        user-select: auto !important;
+        cursor: pointer !important;
+        -webkit-user-select: auto !important;
+        -moz-user-select: auto !important;
+        -ms-user-select: auto !important;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+        -webkit-touch-callout: default !important;
     }
 
     .sidebar-overlay {
@@ -319,7 +355,7 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
+        z-index: 998;
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
@@ -690,7 +726,7 @@
     height: 100vh;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
-    z-index: 999;
+    z-index: 998;
     display: none;
 }
 
@@ -713,16 +749,84 @@
         user-select: none;
     }
 
-    /* Disable all interactive elements when sidebar is open */
-    body.sidebar-open button,
-    body.sidebar-open a,
-    body.sidebar-open input,
-    body.sidebar-open select,
-    body.sidebar-open textarea,
-    body.sidebar-open [onclick],
-    body.sidebar-open [role="button"] {
+    /* Disable all interactive elements when sidebar is open - EXCEPT sidebar content */
+    body.sidebar-open .main-content button,
+    body.sidebar-open .main-content a,
+    body.sidebar-open .main-content input,
+    body.sidebar-open .main-content select,
+    body.sidebar-open .main-content textarea,
+    body.sidebar-open .main-content [onclick],
+    body.sidebar-open .main-content [role="button"],
+    body.sidebar-open .content button,
+    body.sidebar-open .content a,
+    body.sidebar-open .content input,
+    body.sidebar-open .content select,
+    body.sidebar-open .content textarea,
+    body.sidebar-open .content [onclick],
+    body.sidebar-open .content [role="button"],
+    body.sidebar-open main button,
+    body.sidebar-open main a,
+    body.sidebar-open main input,
+    body.sidebar-open main select,
+    body.sidebar-open main textarea,
+    body.sidebar-open main [onclick],
+    body.sidebar-open main [role="button"],
+    body.sidebar-open .page-content button,
+    body.sidebar-open .page-content a,
+    body.sidebar-open .page-content input,
+    body.sidebar-open .page-content select,
+    body.sidebar-open .page-content textarea,
+    body.sidebar-open .page-content [onclick],
+    body.sidebar-open .page-content [role="button"] {
         pointer-events: none !important;
         user-select: none !important;
+    }
+
+    /* Ensure sidebar content remains interactive */
+    body.sidebar-open .sidebar button,
+    body.sidebar-open .sidebar a,
+    body.sidebar-open .sidebar input,
+    body.sidebar-open .sidebar select,
+    body.sidebar-open .sidebar textarea,
+    body.sidebar-open .sidebar [onclick],
+    body.sidebar-open .sidebar [role="button"] {
+        pointer-events: auto !important;
+        user-select: auto !important;
+    }
+
+    /* Additional specific rules for sidebar elements */
+    .sidebar button,
+    .sidebar a,
+    .sidebar input,
+    .sidebar select,
+    .sidebar textarea,
+    .sidebar [onclick],
+    .sidebar [role="button"] {
+        pointer-events: auto !important;
+        user-select: auto !important;
+        cursor: pointer !important;
+        -webkit-user-select: auto !important;
+        -moz-user-select: auto !important;
+        -ms-user-select: auto !important;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+        -webkit-touch-callout: default !important;
+    }
+
+    /* Ensure sidebar itself is interactive */
+    .sidebar {
+        pointer-events: auto !important;
+    }
+
+    .sidebar.open {
+        pointer-events: auto !important;
+        z-index: 1202 !important;
+    }
+
+    /* Force sidebar to be above everything on mobile */
+    @media (max-width: 768px) {
+        .sidebar.open {
+            z-index: 9999 !important;
+        }
     }
 
     /* Allow interaction with sidebar overlay for closing */
@@ -760,13 +864,13 @@
         width: 300px;
         padding: var(--space-xl) var(--space-lg);
         box-shadow: 8px 0 32px rgba(0, 0, 0, 0.3);
-        /* Ensure sidebar is behind mobile nav */
+        /* Ensure sidebar is above overlay but below close button */
         z-index: 1000;
-
     }
 
     .sidebar.open {
         transform: translateX(0);
+        z-index: 1202 !important; /* Higher than close button */
     }
 
     .close-btn-sidebar {
@@ -787,7 +891,7 @@
         color: #8B4513;
         border: 2px solid rgba(139,69,19,0.12);
         box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-        z-index: 1200;
+        z-index: 1203;
         transition: transform 0.3s cubic-bezier(0.77,0,0.175,1), opacity 0.2s;
         overflow: hidden;
     }
