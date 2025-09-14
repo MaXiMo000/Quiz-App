@@ -7,11 +7,6 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/tests/setup.js'],
-    server: {
-      deps: {
-        external: ['webidl-conversions', 'whatwg-url']
-      }
-    },
     environmentOptions: {
       jsdom: {
         resources: 'usable',
@@ -19,20 +14,34 @@ export default defineConfig({
         url: 'http://localhost:3000'
       }
     },
+    // Suppress unhandled errors and rejections
     onUnhandledRejection: 'ignore',
     onUncaughtException: 'ignore',
-    // Use threads pool instead of forks for better compatibility
+    // Use single thread to avoid JSDOM issues
     pool: 'threads',
     poolOptions: {
       threads: {
         singleThread: true
       }
     },
-    // Add test timeout
     testTimeout: 10000,
-    // Disable coverage for CI to reduce overhead
     coverage: {
       enabled: false
-    }
+    },
+    // Use default reporter instead of deprecated basic
+    reporters: [
+      [
+        "default",
+        {
+          "summary": false
+        }
+      ]
+    ]
   },
+  define: {
+    global: 'globalThis'
+  },
+  optimizeDeps: {
+    exclude: ['webidl-conversions', 'whatwg-url']
+  }
 })

@@ -1,4 +1,6 @@
-// Simple theme utilities tests
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { getTheme, setTheme, toggleTheme, isValidTheme, getSystemTheme } from '../utils/themeUtils'
+
 describe('Theme Utilities', () => {
   beforeEach(() => {
     // Clear all mocks before each test
@@ -25,11 +27,8 @@ describe('Theme Utilities', () => {
       writable: true,
     })
   })
-  it('should get theme from localStorage', () => {
-    const getTheme = () => {
-      return localStorage.getItem('theme') || 'light'
-    }
 
+  it('should get theme from localStorage', () => {
     // Mock localStorage
     const mockGetItem = vi.fn().mockReturnValue('dark')
     Object.defineProperty(window, 'localStorage', {
@@ -45,10 +44,6 @@ describe('Theme Utilities', () => {
   })
 
   it('should set theme in localStorage', () => {
-    const setTheme = (theme) => {
-      localStorage.setItem('theme', theme)
-    }
-
     // Mock localStorage
     const mockSetItem = vi.fn()
     Object.defineProperty(window, 'localStorage', {
@@ -65,28 +60,19 @@ describe('Theme Utilities', () => {
   })
 
   it('should toggle theme', () => {
-    const toggleTheme = (currentTheme) => {
-      return currentTheme === 'light' ? 'dark' : 'light'
-    }
-
     expect(toggleTheme('light')).toBe('dark')
     expect(toggleTheme('dark')).toBe('light')
   })
 
   it('should validate theme', () => {
-    const validThemes = ['light', 'dark']
-    const isValidTheme = (theme) => validThemes.includes(theme)
-
     expect(isValidTheme('light')).toBe(true)
     expect(isValidTheme('dark')).toBe(true)
+    expect(isValidTheme('Default')).toBe(true)
+    expect(isValidTheme('Galaxy')).toBe(true)
     expect(isValidTheme('blue')).toBe(false)
   })
 
   it('should get system theme preference', () => {
-    const getSystemTheme = () => {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    }
-
     // Mock window.matchMedia with proper setup
     const mockMatchMedia = vi.fn().mockReturnValue({
       matches: true,

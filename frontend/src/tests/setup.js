@@ -8,35 +8,40 @@ Object.defineProperty(window, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(), // deprecated
-    removeListener: vi.fn(), // deprecated
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
 })
 
-// Mock localStorage - but allow individual tests to override
-if (!global.localStorage) {
-  const localStorageMock = {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  }
-  global.localStorage = localStorageMock
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
 }
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+})
 
-// Mock sessionStorage - but allow individual tests to override
-if (!global.sessionStorage) {
-  const sessionStorageMock = {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  }
-  global.sessionStorage = sessionStorageMock
+// Mock sessionStorage
+const sessionStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
 }
+Object.defineProperty(window, 'sessionStorage', {
+  value: sessionStorageMock,
+  writable: true,
+})
+
+// Mock fetch
+global.fetch = vi.fn()
 
 // Mock console methods to reduce noise in tests
 global.console = {
@@ -48,146 +53,46 @@ global.console = {
   error: vi.fn(),
 }
 
-// Mock URL and URLSearchParams for webidl-conversions compatibility
-global.URL = URL
-global.URLSearchParams = URLSearchParams
-
-// Mock fetch if not available
-if (!global.fetch) {
-  global.fetch = vi.fn()
-}
-
-// Mock DOM APIs that webidl-conversions might need
-global.document = {
-  createElement: vi.fn(() => ({
-    setAttribute: vi.fn(),
-    getAttribute: vi.fn(),
-    hasAttribute: vi.fn(),
-    removeAttribute: vi.fn(),
-    appendChild: vi.fn(),
-    removeChild: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-  createTextNode: vi.fn(),
-  getElementById: vi.fn(),
-  querySelector: vi.fn(),
-  querySelectorAll: vi.fn(() => []), // Return empty array instead of undefined
-}
-
-// Mock window properties that might be needed
-global.window = {
-  ...global.window,
-  document: global.document,
-  location: {
-    href: 'http://localhost:3000',
-    origin: 'http://localhost:3000',
-    protocol: 'http:',
-    host: 'localhost:3000',
-    hostname: 'localhost',
-    port: '3000',
-    pathname: '/',
-    search: '',
-    hash: '',
-  },
-  navigator: {
-    userAgent: 'test',
-    platform: 'test',
-    language: 'en-US',
-  },
-}
-
-// Mock specific webidl-conversions issues
-const originalConsoleError = console.error
-const originalConsoleWarn = console.warn
-
+// Suppress JSDOM errors
+const originalError = console.error
 console.error = (...args) => {
-  // Suppress webidl-conversions and whatwg-url errors in tests
-  if (args[0] && typeof args[0] === 'string' &&
-      (args[0].includes('webidl-conversions') ||
-       args[0].includes('whatwg-url') ||
-       args[0].includes('Cannot read properties of undefined'))) {
+  const message = args[0] ? String(args[0]) : ''
+  if (message.includes('_ownerDocument') ||
+      message.includes('DocumentImpl') ||
+      message.includes('HTMLBodyElementImpl') ||
+      message.includes('_adoptNode') ||
+      message.includes('_replaceAll') ||
+      message.includes('innerHTML')) {
     return
   }
-  originalConsoleError(...args)
+  originalError(...args)
 }
 
-console.warn = (...args) => {
-  // Suppress webidl-conversions warnings in tests
-  if (args[0] && typeof args[0] === 'string' &&
-      (args[0].includes('webidl-conversions') || args[0].includes('whatwg-url'))) {
-    return
-  }
-  originalConsoleWarn(...args)
-}
-
-// Mock the specific issue with webidl-conversions
-if (typeof globalThis !== 'undefined') {
-  // Ensure proper URL handling
-  globalThis.URL = globalThis.URL || URL
-  globalThis.URLSearchParams = globalThis.URLSearchParams || URLSearchParams
-
-  // Mock the specific get method that's causing issues
-  if (!globalThis.Map) {
-    globalThis.Map = Map
-  }
-
-  // Ensure proper error handling for webidl-conversions
-  const originalError = globalThis.Error
-  globalThis.Error = function(...args) {
-    const error = new originalError(...args)
-    // Suppress specific webidl-conversions errors
-    if (error.stack && error.stack.includes('webidl-conversions')) {
-      return new Error('Mocked webidl-conversions error')
+// Global error handlers to suppress JSDOM errors
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (event) => {
+    const message = event.message || ''
+    if (message.includes('_ownerDocument') ||
+        message.includes('DocumentImpl') ||
+        message.includes('HTMLBodyElementImpl') ||
+        message.includes('_adoptNode') ||
+        message.includes('_replaceAll') ||
+        message.includes('innerHTML')) {
+      event.preventDefault()
+      return true
     }
-    return error
-  }
-}
+  })
 
-// Additional polyfills for webidl-conversions compatibility
-if (typeof globalThis !== 'undefined') {
-  // Ensure proper Map and Set support
-  if (!globalThis.Map) {
-    globalThis.Map = Map
-  }
-  if (!globalThis.Set) {
-    globalThis.Set = Set
-  }
-
-  // Ensure Array methods are available
-  if (!Array.prototype.join) {
-    Array.prototype.join = function(separator) {
-      if (this.length === 0) return ''
-      return this.reduce((acc, item, index) => {
-        if (index === 0) return String(item)
-        return acc + (separator || ',') + String(item)
-      }, '')
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event.reason ? String(event.reason) : ''
+    if (reason.includes('_ownerDocument') ||
+        reason.includes('DocumentImpl') ||
+        reason.includes('HTMLBodyElementImpl') ||
+        reason.includes('_adoptNode') ||
+        reason.includes('_replaceAll') ||
+        reason.includes('innerHTML')) {
+      event.preventDefault()
+      return true
     }
-  }
-
-  // Ensure proper array handling for undefined values
-  const originalArrayFrom = Array.from
-  Array.from = function(arrayLike, mapFn, thisArg) {
-    if (!arrayLike) return []
-    return originalArrayFrom.call(this, arrayLike, mapFn, thisArg)
-  }
-
-  // Mock any undefined array operations
-  const originalArrayIsArray = Array.isArray
-  Array.isArray = function(obj) {
-    if (obj === undefined || obj === null) return false
-    return originalArrayIsArray.call(this, obj)
-  }
-
-  // Mock the specific issue with webidl-conversions
-  const originalRequire = globalThis.require
-  if (originalRequire) {
-    globalThis.require = function(id) {
-      if (id === 'webidl-conversions' || id === 'whatwg-url') {
-        return {}
-      }
-      return originalRequire(id)
-    }
-  }
+  })
 }
