@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import axios from '../utils/axios';
 import config from '../config/config';
@@ -8,6 +9,7 @@ import { useNotification } from '../hooks/useNotification';
 import './RealTimeQuiz.css';
 
 const RealTimeQuiz = () => {
+    const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
     const [socketAuthenticated, setSocketAuthenticated] = useState(false); // Force re-render when auth completes
     const [gameState, setGameState] = useState('menu'); // menu, creating, lobby, playing, results
@@ -437,6 +439,21 @@ const RealTimeQuiz = () => {
         });
     };
 
+    const createCollaborativeRoom = async () => {
+        if (!selectedQuiz) {
+            showError('Please select a quiz first');
+            return;
+        }
+
+        const response = await axios.post('/api/collaborative/sessions', {
+            quizId: selectedQuiz._id,
+            settings: { ...roomSettings, mode: 'collaborative' }
+        });
+
+        const { session } = response.data;
+        navigate(`/collaborative-quiz/${session.roomId}`);
+    };
+
     const joinRoom = async (roomId) => {
         // If no socket or not authenticated, connect first
         if (!socket || !socketAuthenticated) {
@@ -689,7 +706,16 @@ const RealTimeQuiz = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            {isLoadingQuizzes ? 'Loading...' : 'Create Room 🚀'}
+                            {isLoadingQuizzes ? 'Loading...' : 'Create Competitive Room 🚀'}
+                        </motion.button>
+                        <motion.button
+                            className="create-room-btn collaborative"
+                            onClick={createCollaborativeRoom}
+                            disabled={!selectedQuiz || isLoadingQuizzes}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            {isLoadingQuizzes ? 'Loading...' : 'Create Collaborative Room 🤝'}
                         </motion.button>
                     </div>
                 </motion.div>

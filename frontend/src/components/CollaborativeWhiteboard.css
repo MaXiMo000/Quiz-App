@@ -1,0 +1,65 @@
+.whiteboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.color-picker {
+    display: flex;
+    gap: 5px;
+}
+
+.color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+
+.color-swatch.active {
+    border-color: #007bff;
+    transform: scale(1.2);
+}
+
+.brush-size-picker, .tool-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tool-picker button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.tool-picker button.active {
+    background: #007bff;
+    color: #fff;
+}
+
+canvas {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+}

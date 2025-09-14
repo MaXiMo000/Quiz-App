@@ -36,6 +36,7 @@ import gamificationRoutes from "./routes/gamificationRoutes.js";
 import aiStudyBuddyRoutes from "./routes/aiStudyBuddyRoutes.js";
 import realTimeQuizRoutes from "./routes/realTimeQuizRoutes.js";
 import { initializeRealTimeQuiz } from "./controllers/realTimeQuizController.js";
+import { initializeCollaborativeQuiz } from "./services/collaborativeQuizService.js";
 
 // Phase 5: Advanced Learning Path Engine
 import learningPathRoutes from "./routes/learningPathRoutes.js";
@@ -266,6 +267,7 @@ app.use("/api/gamification", gamificationRoutes);
 // Phase 4: Next-Gen Features
 app.use("/api/ai-study-buddy", aiStudyBuddyRoutes);
 app.use("/api/real-time-quiz", realTimeQuizRoutes);
+app.use('/api/collaborative', collaborativeRoutes);
 
 // Phase 5: Advanced Learning Path Engine
 app.use("/api/learning-paths", learningPathRoutes);
@@ -301,6 +303,7 @@ const startServer = async () => {
 
         // Initialize real-time quiz functionality
         initializeRealTimeQuiz(server);
+        initializeCollaborativeQuiz(server);
 
         server.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);

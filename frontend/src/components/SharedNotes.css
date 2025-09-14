@@ -1,0 +1,53 @@
+.shared-notes {
+  margin-top: 20px;
+}
+
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.note-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.note-title {
+  font-weight: 500;
+}
+
+.note-author {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.new-note-form {
+  display: flex;
+  gap: 10px;
+}
+
+.new-note-form input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.new-note-form button {
+  padding: 8px 12px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.new-note-form button:hover {
+  background-color: #0056b3;
+}

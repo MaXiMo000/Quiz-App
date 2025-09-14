@@ -28,7 +28,7 @@ const studyGroupSchema = new mongoose.Schema({
 
     // Study sessions and activities
     activities: [{
-        type: { type: String, enum: ["quiz_shared", "member_joined", "member_left", "quiz_completed", "challenge_created"] },
+        type: { type: String, enum: ["quiz_shared", "member_joined", "member_left", "quiz_completed", "challenge_created", "session_scheduled"] },
         user: { type: mongoose.Schema.Types.ObjectId, ref: "UserQuiz" },
         details: { type: mongoose.Schema.Types.Mixed },
         timestamp: { type: Date, default: Date.now }
