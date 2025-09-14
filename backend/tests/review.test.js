@@ -36,6 +36,13 @@ describe("Review Routes", () => {
     await ReviewSchedule.deleteMany({});
   });
 
+  afterAll(async () => {
+    // Close mongoose connection to prevent memory leaks
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
+    }
+  });
+
   describe("GET /api/reviews", () => {
     it("should return the review schedule for the user", async () => {
       const res = await request(app).get("/api/reviews");

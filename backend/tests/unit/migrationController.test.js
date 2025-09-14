@@ -1,3 +1,12 @@
+// Mock the AI service first to prevent GEMINI_API_KEY error
+jest.mock("../../services/aiQuestionGenerator.js", () => ({
+    generateFromGemini: jest.fn().mockResolvedValue("Mock AI response"),
+    parseAIResponse: jest.fn().mockReturnValue({ questions: [] }),
+    generateMCQ: jest.fn().mockResolvedValue({ questions: [] }),
+    generateTrueFalse: jest.fn().mockResolvedValue({ questions: [] }),
+    generateAdaptiveQuestions: jest.fn().mockResolvedValue({ questions: [] }),
+}));
+
 import { migrateQuizDifficultyDistribution } from "../../controllers/migrationController.js";
 import Quiz from "../../models/Quiz.js";
 import request from "supertest";

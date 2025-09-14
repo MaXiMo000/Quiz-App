@@ -8,6 +8,7 @@ jest.mock("../../models/StudyGroup.js", () => {
         _id: "groupId",
         save: jest.fn().mockResolvedValue(true),
         populate: jest.fn().mockReturnThis(),
+        toObject: jest.fn().mockReturnValue(data),
     }));
 
     mockStudyGroup.findById = jest.fn();

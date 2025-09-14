@@ -67,6 +67,9 @@ jest.mock("mongoose", () => ({
         ObjectId: {
             isValid: jest.fn().mockReturnValue(true)
         }
+    },
+    connection: {
+        readyState: 1
     }
 }));
 

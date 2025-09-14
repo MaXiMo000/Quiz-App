@@ -198,6 +198,14 @@ describe("Report Controller", () => {
             ],
         };
 
+        // Mock user lookup to return a user
+        UserQuiz.findById.mockResolvedValue({
+            _id: "userId",
+            name: "testuser",
+            totalXP: 100,
+            badges: []
+        });
+
         // Mock the Report constructor to throw an error
         const ReportConstructor = require("../../models/Report.js").default;
         ReportConstructor.mockImplementation(() => {

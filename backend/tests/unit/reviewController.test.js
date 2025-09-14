@@ -215,9 +215,9 @@ describe("Review Controller", () => {
                 .put("/api/review/reviewId")
                 .send({});
 
-            expect(res.statusCode).toBe(500);
+            expect(res.statusCode).toBe(400);
             expect(res.body).toEqual({
-                message: "Internal Server Error"
+                message: "Missing required parameters: quizId, questionId, and quality are required"
             });
         });
     });

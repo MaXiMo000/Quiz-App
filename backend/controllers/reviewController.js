@@ -19,6 +19,13 @@ export const updateReview = async (req, res) => {
     try {
         const userId = req.user.id;
         const { quizId, questionId, quality } = req.body;
+
+        // Validate required parameters
+        if (!quizId || !questionId || !quality) {
+            logger.warn(`Missing required parameters for review update: quizId=${quizId}, questionId=${questionId}, quality=${quality}`);
+            return res.status(400).json({ message: "Missing required parameters: quizId, questionId, and quality are required" });
+        }
+
         const schedule = await updateReviewSchedule(userId, quizId, questionId, quality);
         logger.info(`Successfully updated review schedule for user ${userId}, quiz ${quizId}, question ${questionId}`);
         res.json(schedule);
