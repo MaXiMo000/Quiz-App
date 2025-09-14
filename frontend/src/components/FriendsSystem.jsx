@@ -17,12 +17,6 @@ const FriendsSystem = () => {
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
 
-    useEffect(() => {
-        fetchFriends();
-        fetchPendingRequests();
-        fetchBlockedUsers();
-    }, [fetchFriends, fetchPendingRequests, fetchBlockedUsers]);
-
     const fetchFriends = useCallback(async () => {
         try {
             const response = await axios.get('/api/social/friends');
@@ -68,6 +62,13 @@ const FriendsSystem = () => {
             setLoading(false);
         }
     }, [searchQuery, showError]);
+
+    // Load initial data
+    useEffect(() => {
+        fetchFriends();
+        fetchPendingRequests();
+        fetchBlockedUsers();
+    }, [fetchFriends, fetchPendingRequests, fetchBlockedUsers]);
 
     const sendFriendRequest = async (recipientId) => {
         try {
