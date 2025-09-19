@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const collaborativeSessionSchema = new mongoose.Schema({
   roomId: {
@@ -8,22 +8,22 @@ const collaborativeSessionSchema = new mongoose.Schema({
   },
   host: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserQuiz',
+    ref: "UserQuiz",
     required: true,
   },
   quiz: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Quiz',
+    ref: "Quiz",
     required: true,
   },
   players: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserQuiz',
+    ref: "UserQuiz",
   }],
   status: {
     type: String,
-    enum: ['waiting', 'in_progress', 'finished'],
-    default: 'waiting',
+    enum: ["waiting", "in_progress", "finished"],
+    default: "waiting",
   },
   settings: {
     maxPlayers: {
@@ -42,6 +42,6 @@ const collaborativeSessionSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const CollaborativeSession = mongoose.model('CollaborativeSession', collaborativeSessionSchema);
+const CollaborativeSession = mongoose.model("CollaborativeSession", collaborativeSessionSchema);
 
 export default CollaborativeSession;

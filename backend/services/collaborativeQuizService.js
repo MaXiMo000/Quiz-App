@@ -46,46 +46,99 @@ class CollaborativeQuizSession {
 }
 
 export const initializeCollaborativeQuiz = (server) => {
+    logger.info("Initializing collaborative quiz service...");
+
     const io = new Server(server, {
         path: "/socket.io/collaborative",
         cors: {
             origin: process.env.FRONTEND_URL || "http://localhost:5173",
             methods: ["GET", "POST"],
             credentials: true
-        }
+        },
+        transports: ["polling", "websocket"], // Start with polling, then upgrade to websocket
+        allowEIO3: true,
+        pingTimeout: 120000,  // 2 minutes - match frontend
+        pingInterval: 30000,  // 30 seconds - match frontend
+        upgradeTimeout: 30000,
+        maxHttpBufferSize: 1e6,
+        allowUpgrades: true
+    });
+
+    logger.info("Collaborative quiz service initialized successfully");
+
+    // Add a simple test endpoint
+    io.engine.on("connection_error", (err) => {
+        logger.error("Collaborative quiz connection error:", err);
     });
 
     io.use(async (socket, next) => {
         try {
+            logger.info(`Collaborative quiz: Authenticating socket connection for user ${socket.handshake.auth.token ? "with token" : "without token"}`);
             const token = socket.handshake.auth.token;
             if (!token) {
+                logger.warn("Collaborative quiz: Socket connection failed - No token provided");
                 return next(new Error("Authentication error: Token not provided."));
             }
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const user = await User.findById(decoded.id);
             if (!user) {
+                logger.warn(`Collaborative quiz: Socket connection failed - User not found with ID ${decoded.id}`);
                 return next(new Error("Authentication error: User not found."));
             }
             socket.userId = user._id.toString();
             socket.userInfo = { id: user._id.toString(), name: user.name, avatar: user.name.charAt(0).toUpperCase() };
             userSockets.set(socket.userId, socket.id);
+            logger.info(`Collaborative quiz: User ${user.name} authenticated successfully`);
+
+            // Emit authenticated event to frontend
+            socket.emit("authenticated", socket.userInfo);
+
             next();
         } catch (error) {
+            logger.error("Collaborative quiz: Authentication error:", error);
             next(new Error("Authentication error: Invalid token."));
         }
     });
 
     io.on("connection", (socket) => {
-        logger.info(`User ${socket.userId} connected to collaborative quiz service`);
+        logger.info(`User ${socket.userId} connected to collaborative quiz service via ${socket.conn.transport.name}`);
 
-        socket.on("create_collaborative_room", async ({ quizId, settings }) => {
+        // Handle transport upgrade
+        socket.conn.on("upgrade", () => {
+            logger.info(`User ${socket.userId} upgraded to ${socket.conn.transport.name}`);
+        });
+
+        socket.conn.on("upgradeError", (error) => {
+            logger.warn(`Upgrade error for user ${socket.userId}:`, error);
+        });
+
+        socket.on("disconnect", (reason) => {
+            logger.info(`User ${socket.userId} disconnected from collaborative quiz service: ${reason}`);
+            userSockets.delete(socket.userId);
+        });
+
+        socket.on("error", (error) => {
+            logger.error(`Socket error for user ${socket.userId}:`, error);
+        });
+
+        // Add test event handler
+        socket.on("test_event", (data) => {
+            logger.info(`Test event received from ${socket.userId}:`, data);
+            socket.emit("test_response", { message: "Hello from backend", received: data });
+        });
+
+        socket.on("create_collaborative_room", async ({ quizId, roomId: customRoomId, settings }) => {
+            logger.info(`create_collaborative_room event received from ${socket.userId}, quizId: ${quizId}, customRoomId: ${customRoomId}`);
             try {
                 const quiz = await Quiz.findById(quizId);
                 if (!quiz) {
+                    logger.error(`Quiz not found for ID: ${quizId}`);
                     return socket.emit("error", { message: "Quiz not found" });
                 }
+                logger.info(`Quiz found: ${quiz.title}`);
 
-                const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+                // Use custom roomId if provided, otherwise generate random one
+                const roomId = customRoomId || Math.random().toString(36).substring(2, 8).toUpperCase();
                 const session = new CollaborativeSession({
                     roomId,
                     host: socket.userId,
@@ -102,7 +155,9 @@ export const initializeCollaborativeQuiz = (server) => {
                 socket.join(roomId);
                 socket.currentRoom = roomId;
 
+                logger.info(`Room ${roomId} created successfully, emitting collaborative_room_created event`);
                 socket.emit("collaborative_room_created", { roomId, room: quizSession });
+                logger.info(`collaborative_room_created event emitted to user ${socket.userId}`);
             } catch (error) {
                 logger.error(`Error creating collaborative room: ${error.message}`);
                 socket.emit("error", { message: "Failed to create room" });
@@ -185,15 +240,15 @@ export const initializeCollaborativeQuiz = (server) => {
             }
         });
 
-        socket.on('join_group_notes', ({ groupId }) => {
+        socket.on("join_group_notes", ({ groupId }) => {
             socket.join(groupId);
         });
 
-        socket.on('leave_group_notes', ({ groupId }) => {
+        socket.on("leave_group_notes", ({ groupId }) => {
             socket.leave(groupId);
         });
 
-        socket.on('note_created', async ({ groupId, title, content }) => {
+        socket.on("note_created", async ({ groupId, title, content }) => {
             const note = new CollaborativeNote({
                 title,
                 content,
@@ -201,17 +256,17 @@ export const initializeCollaborativeQuiz = (server) => {
                 createdBy: socket.userId,
             });
             await note.save();
-            io.to(groupId).emit('note_created', note);
+            io.to(groupId).emit("note_created", note);
         });
 
-        socket.on('note_updated', async ({ noteId, content }) => {
+        socket.on("note_updated", async ({ noteId, content }) => {
             const note = await CollaborativeNote.findByIdAndUpdate(noteId, { content }, { new: true });
-            io.to(note.group.toString()).emit('note_updated', note);
+            io.to(note.group.toString()).emit("note_updated", note);
         });
 
-        socket.on('note_deleted', async ({ noteId }) => {
+        socket.on("note_deleted", async ({ noteId }) => {
             const note = await CollaborativeNote.findByIdAndDelete(noteId);
-            io.to(note.group.toString()).emit('note_deleted', noteId);
+            io.to(note.group.toString()).emit("note_deleted", noteId);
         });
 
         socket.on("disconnect", () => {

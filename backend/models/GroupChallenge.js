@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const groupChallengeSchema = new mongoose.Schema({
   title: {
@@ -11,7 +11,7 @@ const groupChallengeSchema = new mongoose.Schema({
   },
   quiz: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Quiz',
+    ref: "Quiz",
     required: true,
   },
   startTime: {
@@ -25,7 +25,7 @@ const groupChallengeSchema = new mongoose.Schema({
   participatingGroups: [{
     groupId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'StudyGroup',
+      ref: "StudyGroup",
     },
     score: {
       type: Number,
@@ -37,13 +37,13 @@ const groupChallengeSchema = new mongoose.Schema({
   }],
   status: {
     type: String,
-    enum: ['upcoming', 'active', 'completed'],
-    default: 'upcoming',
+    enum: ["upcoming", "active", "completed"],
+    default: "upcoming",
   },
 }, {
   timestamps: true,
 });
 
-const GroupChallenge = mongoose.model('GroupChallenge', groupChallengeSchema);
+const GroupChallenge = mongoose.model("GroupChallenge", groupChallengeSchema);
 
 export default GroupChallenge;

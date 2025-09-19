@@ -43,19 +43,41 @@ const CollaborativeWhiteboard = ({ socket }) => {
         }
     }, [socket]);
 
-    const startDrawing = ({ nativeEvent }) => {
-        const { offsetX, offsetY } = nativeEvent;
-        setIsDrawing(true);
-        lastPosition.current = { x: offsetX, y: offsetY };
+    const getEventPos = (e) => {
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        if (e.touches && e.touches[0]) {
+            return {
+                x: (e.touches[0].clientX - rect.left) * scaleX,
+                y: (e.touches[0].clientY - rect.top) * scaleY
+            };
+        } else {
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
     };
 
-    const finishDrawing = () => {
+    const startDrawing = (e) => {
+        e.preventDefault();
+        const pos = getEventPos(e);
+        setIsDrawing(true);
+        lastPosition.current = { x: pos.x, y: pos.y };
+    };
+
+    const finishDrawing = (e) => {
+        e.preventDefault();
         setIsDrawing(false);
     };
 
-    const draw = ({ nativeEvent }) => {
+    const draw = (e) => {
         if (!isDrawing) return;
-        const { offsetX, offsetY } = nativeEvent;
+        e.preventDefault();
+        const pos = getEventPos(e);
         const { x, y } = lastPosition.current;
 
         const context = contextRef.current;
@@ -70,18 +92,22 @@ const CollaborativeWhiteboard = ({ socket }) => {
 
         context.beginPath();
         context.moveTo(x, y);
-        context.lineTo(offsetX, offsetY);
+        context.lineTo(pos.x, pos.y);
         context.stroke();
 
-        socket.emit('whiteboard_draw', { x0: x, y0: y, x1: offsetX, y1: offsetY, color, brushSize, isErasing });
-        lastPosition.current = { x: offsetX, y: offsetY };
+        if (socket) {
+            socket.emit('whiteboard_draw', { x0: x, y0: y, x1: pos.x, y1: pos.y, color, brushSize, isErasing });
+        }
+        lastPosition.current = { x: pos.x, y: pos.y };
     };
 
     const clearCanvas = () => {
         const canvas = canvasRef.current;
         const context = contextRef.current;
         context.clearRect(0, 0, canvas.width, canvas.height);
-        socket.emit('whiteboard_clear');
+        if (socket) {
+            socket.emit('whiteboard_clear');
+        }
     };
 
     return (
@@ -110,6 +136,10 @@ const CollaborativeWhiteboard = ({ socket }) => {
                 onMouseUp={finishDrawing}
                 onMouseMove={draw}
                 onMouseOut={finishDrawing}
+                onTouchStart={startDrawing}
+                onTouchEnd={finishDrawing}
+                onTouchMove={draw}
+                onTouchCancel={finishDrawing}
             />
         </div>
     );

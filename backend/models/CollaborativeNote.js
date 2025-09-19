@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const collaborativeNoteSchema = new mongoose.Schema({
   groupId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'StudyGroup',
+    ref: "StudyGroup",
     required: true,
   },
   title: {
@@ -12,21 +12,21 @@ const collaborativeNoteSchema = new mongoose.Schema({
   },
   content: {
     type: String,
-    default: '',
+    default: "",
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   lastModifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
   },
   editHistory: [{
     editor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
     },
     editedAt: {
       type: Date,
@@ -37,6 +37,6 @@ const collaborativeNoteSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const CollaborativeNote = mongoose.model('CollaborativeNote', collaborativeNoteSchema);
+const CollaborativeNote = mongoose.model("CollaborativeNote", collaborativeNoteSchema);
 
 export default CollaborativeNote;

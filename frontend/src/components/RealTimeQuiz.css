@@ -213,6 +213,25 @@
     background-position: right 12px center;
     background-size: 12px;
     padding-right: 40px;
+    min-height: 44px; /* Better touch target for mobile */
+}
+
+@media (max-width: 768px) {
+    .form-group select {
+        min-height: 48px; /* Larger touch target on mobile */
+        background-position: right 10px center;
+        background-size: 10px;
+        padding-right: 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-group select {
+        min-height: 44px;
+        background-position: right 8px center;
+        background-size: 8px;
+        padding-right: 30px;
+    }
 }
 
 .form-group select option {
@@ -224,14 +243,39 @@
 .real-time-quiz .quiz-info {
     margin-top: 12px !important;
     padding: 20px !important;
-    background: rgba(255, 255, 255, 0.15) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
     border-radius: 12px !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(15px) !important;
     transform: none !important;
-    box-shadow: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+    animation: fadeInUp 0.5s ease-out !important;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.real-time-quiz .quiz-info::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
 }
 
 .real-time-quiz .quiz-info p {
@@ -240,7 +284,7 @@
     color: rgba(255, 255, 255, 0.95) !important;
     word-wrap: break-word !important;
     display: flex !important;
-    align-items: center !important;
+    align-items: baseline !important;
     gap: 8px !important;
     background: none !important;
     border: none !important;
@@ -249,10 +293,32 @@
     text-transform: none !important;
     letter-spacing: normal !important;
     line-height: 1.4 !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+@media (max-width: 768px) {
+    .real-time-quiz .quiz-info p {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+        margin: 6px 0 !important;
+        line-height: 1.4 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .real-time-quiz .quiz-info p {
+        flex-direction: row !important;
+        align-items: baseline !important;
+        gap: 6px !important;
+        margin: 4px 0 !important;
+        line-height: 1.4 !important;
+    }
 }
 
 .real-time-quiz .quiz-info strong {
-    color: white !important;
+    color: rgba(255, 255, 255, 0.98) !important;
     display: inline-block !important;
     min-width: 90px !important;
     font-weight: 600 !important;
@@ -262,22 +328,51 @@
     background-clip: initial !important;
     text-transform: none !important;
     letter-spacing: normal !important;
+    position: relative !important;
+    z-index: 1 !important;
+    line-height: 1.4 !important;
+    vertical-align: baseline !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.real-time-quiz .quiz-info p > *:not(strong) {
+    vertical-align: baseline !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 @media (max-width: 768px) {
     .real-time-quiz .quiz-info {
         padding: 12px !important;
         margin-top: 10px !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(15px) !important;
     }
 
     .real-time-quiz .quiz-info p {
         font-size: 0.85rem !important;
         margin: 4px 0 !important;
+        color: rgba(255, 255, 255, 0.95) !important;
     }
 
     .real-time-quiz .quiz-info strong {
         min-width: 70px !important;
         font-size: 0.85rem !important;
+        color: white !important;
+        line-height: 1.4 !important;
+        vertical-align: baseline !important;
+    }
+
+    .form-group select {
+        font-size: 0.9rem !important;
+        padding: 10px !important;
+    }
+
+    .form-group label {
+        font-size: 0.9rem !important;
     }
 }
 
@@ -441,22 +536,43 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .room-card:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.room-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.room-card:hover::before {
+    left: 100%;
 }
 
 .room-info h4 {
     margin: 0 0 8px 0;
     font-size: 1.2rem;
+    color: white;
+    font-weight: 600;
 }
 
 .room-info p {
     margin: 4px 0;
     opacity: 0.8;
     font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .room-status {
@@ -1246,6 +1362,45 @@
 
     .real-time-quiz .menu-section {
         padding: 20px !important;
+    }
+
+    .real-time-quiz .quiz-info {
+        padding: 10px !important;
+        margin-top: 8px !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(20px) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .real-time-quiz .quiz-info p {
+        font-size: 0.8rem !important;
+        margin: 3px 0 !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 400 !important;
+    }
+
+    .real-time-quiz .quiz-info strong {
+        min-width: 60px !important;
+        font-size: 0.8rem !important;
+        color: rgba(255, 255, 255, 0.95) !important;
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        vertical-align: baseline !important;
+    }
+
+    .form-group select {
+        font-size: 0.85rem !important;
+        padding: 8px !important;
+    }
+
+    .form-group label {
+        font-size: 0.85rem !important;
+    }
+
+    .form-group select option {
+        font-size: 0.8rem !important;
+        padding: 6px 8px !important;
     }
 
     .lobby-header {

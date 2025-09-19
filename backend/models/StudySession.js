@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const studySessionSchema = new mongoose.Schema({
   groupId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'StudyGroup',
+    ref: "StudyGroup",
     required: true,
   },
   title: {
@@ -23,26 +23,26 @@ const studySessionSchema = new mongoose.Schema({
   },
   host: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   participants: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
   }],
   resources: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Quiz', // or other resource types
+    ref: "Quiz", // or other resource types
   }],
   status: {
     type: String,
-    enum: ['scheduled', 'in_progress', 'completed', 'canceled'],
-    default: 'scheduled',
+    enum: ["scheduled", "in_progress", "completed", "canceled"],
+    default: "scheduled",
   },
 }, {
   timestamps: true,
 });
 
-const StudySession = mongoose.model('StudySession', studySessionSchema);
+const StudySession = mongoose.model("StudySession", studySessionSchema);
 
 export default StudySession;

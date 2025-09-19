@@ -37,6 +37,7 @@ import aiStudyBuddyRoutes from "./routes/aiStudyBuddyRoutes.js";
 import realTimeQuizRoutes from "./routes/realTimeQuizRoutes.js";
 import { initializeRealTimeQuiz } from "./controllers/realTimeQuizController.js";
 import { initializeCollaborativeQuiz } from "./services/collaborativeQuizService.js";
+import collaborativeRoutes from "./routes/collaborativeRoutes.js";
 
 // Phase 5: Advanced Learning Path Engine
 import learningPathRoutes from "./routes/learningPathRoutes.js";
@@ -267,7 +268,7 @@ app.use("/api/gamification", gamificationRoutes);
 // Phase 4: Next-Gen Features
 app.use("/api/ai-study-buddy", aiStudyBuddyRoutes);
 app.use("/api/real-time-quiz", realTimeQuizRoutes);
-app.use('/api/collaborative', collaborativeRoutes);
+app.use("/api/collaborative", collaborativeRoutes);
 
 // Phase 5: Advanced Learning Path Engine
 app.use("/api/learning-paths", learningPathRoutes);
@@ -302,14 +303,33 @@ const startServer = async () => {
         const server = createServer(app);
 
         // Initialize real-time quiz functionality
-        initializeRealTimeQuiz(server);
-        initializeCollaborativeQuiz(server);
+        try {
+            initializeRealTimeQuiz(server);
+            console.log("✅ Real-time quiz service initialized");
+        } catch (error) {
+            console.error("❌ Error initializing real-time quiz service:", error);
+        }
+
+        try {
+            initializeCollaborativeQuiz(server);
+            console.log("✅ Collaborative quiz service initialized");
+        } catch (error) {
+            console.error("❌ Error initializing collaborative quiz service:", error);
+        }
 
         server.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);
             console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`);
             console.log("🔄 Real-time quiz rooms enabled with Socket.IO");
             console.log("🤖 AI Study Buddy enabled with Gemini API");
+            console.log("🔗 Collaborative quiz service available at /socket.io/collaborative");
+        });
+
+        server.on("error", (error) => {
+            console.error("❌ Server error:", error);
+            if (error.code === "EADDRINUSE") {
+                console.error(`❌ Port ${PORT} is already in use. Please try a different port.`);
+            }
         });
 
         // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
