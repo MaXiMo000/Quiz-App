@@ -5,6 +5,7 @@ import axios from '../utils/axios';
 import { useNotification } from '../hooks/useNotification';
 import NotificationModal from './NotificationModal';
 import GroupSettingsModal from './GroupSettingsModal';
+import SharedNotes from './SharedNotes';
 import './StudyGroups.css';
 
 // Enhanced Quiz Activity Component
@@ -608,6 +609,17 @@ const StudyGroups = () => {
         }
     };
 
+    const handleJoinChallenge = async (challengeId) => {
+        try {
+            await axios.post(`/api/gamification/challenges/group/${challengeId}/join`, { groupId: selectedGroup._id });
+            showSuccess('Successfully joined the challenge!');
+        } catch (error) {
+            console.error('Error joining challenge:', error);
+            const errorMessage = error.response?.data?.message || 'Failed to join challenge';
+            showError(errorMessage);
+        }
+    };
+
     // Render functions
     const renderMyGroups = () => (
         <motion.div
@@ -708,114 +720,185 @@ const StudyGroups = () => {
         </motion.div>
     );
 
-    const GroupDetailsModal = () => (
-        <AnimatePresence>
-            {selectedGroup && (
-                <motion.div
-                    className="modal-overlay"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => setSelectedGroup(null)}
-                >
+    const GroupDetailsModal = () => {
+        const [activeGroupTab, setActiveGroupTab] = useState('overview');
+        const [groupChallenges, setGroupChallenges] = useState([]);
+        const [studySessions, setStudySessions] = useState([]);
+
+        useEffect(() => {
+            if (!selectedGroup) return;
+
+            if (activeGroupTab === 'challenges') {
+                axios.get('/api/gamification/challenges/group')
+                    .then(res => setGroupChallenges(res.data.challenges))
+                    .catch(err => console.error(err));
+            } else if (activeGroupTab === 'sessions') {
+                axios.get(`/api/study-groups/${selectedGroup._id}/sessions`)
+                    .then(res => setStudySessions(res.data.sessions))
+                    .catch(err => console.error(err));
+            }
+        }, [selectedGroup, activeGroupTab]);
+
+        return (
+            <AnimatePresence>
+                {selectedGroup && (
                     <motion.div
-                        className="modal-content group-details-modal"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        onClick={(e) => e.stopPropagation()}
+                        className="modal-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedGroup(null)}
                     >
-                        <div className="modal-header">
-                            <h2>{selectedGroup.name}</h2>
-                            <button
-                                className="close-btn"
-                                onClick={() => setSelectedGroup(null)}
-                            >
-                                ×
-                            </button>
-                        </div>
-
-                        <div className="group-details-content">
-                            <div className="group-overview">
-                                <div className="group-meta">
-                                    <span>📚 {selectedGroup.category}</span>
-                                    <span>👥 {selectedGroup.members?.length} members</span>
-                                    <span>{selectedGroup.isPrivate ? '🔒 Private' : '🌍 Public'}</span>
-                                </div>
-                                <p>{selectedGroup.description}</p>
+                        <motion.div
+                            className="modal-content group-details-modal"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="modal-header">
+                                <h2>{selectedGroup.name}</h2>
+                                <button
+                                    className="close-btn"
+                                    onClick={() => setSelectedGroup(null)}
+                                >
+                                    ×
+                                </button>
                             </div>
 
-                            <div className="group-members">
-                                <h3>Members</h3>
-                                <div className="members-list">
-                                    {selectedGroup.members?.map((member, index) => (
-                                        <div key={member._id || `member-${index}`} className="member-item">
-                                            <div className="member-avatar">
-                                                {(member.user?.name || 'Unknown')?.charAt(0).toUpperCase()}
-                                            </div>
-                                            <div className="member-info">
-                                                <span className="member-name">{member.user?.name || 'Unknown User'}</span>
-                                                <span className="member-role">{member.role}</span>
-                                            </div>
-                                            <div className="member-stats">
-                                                Level {member.user?.level || 1}
-                                            </div>
+                            <div className="group-details-tabs">
+                                <button className={`tab-button ${activeGroupTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveGroupTab('overview')}>Overview</button>
+                                <button className={`tab-button ${activeGroupTab === 'activities' ? 'active' : ''}`} onClick={() => setActiveGroupTab('activities')}>Activities</button>
+                                <button className={`tab-button ${activeGroupTab === 'members' ? 'active' : ''}`} onClick={() => setActiveGroupTab('members')}>Members</button>
+                                <button className={`tab-button ${activeGroupTab === 'notes' ? 'active' : ''}`} onClick={() => setActiveGroupTab('notes')}>Notes</button>
+                                <button className={`tab-button ${activeGroupTab === 'challenges' ? 'active' : ''}`} onClick={() => setActiveGroupTab('challenges')}>Challenges</button>
+                                <button className={`tab-button ${activeGroupTab === 'sessions' ? 'active' : ''}`} onClick={() => setActiveGroupTab('sessions')}>Sessions</button>
+                            </div>
+
+                            <div className="group-details-content">
+                                {activeGroupTab === 'overview' && (
+                                    <div className="group-overview">
+                                        <div className="group-meta">
+                                            <span>📚 {selectedGroup.category}</span>
+                                            <span>👥 {selectedGroup.members?.length} members</span>
+                                            <span>{selectedGroup.isPrivate ? '🔒 Private' : '🌍 Public'}</span>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                        <p>{selectedGroup.description}</p>
+                                    </div>
+                                )}
+                                {activeGroupTab === 'activities' && (
+                                    <div className="group-activities">
+                                        <h3>Recent Activities</h3>
+                                        <div className="activities-list">
+                                            {selectedGroup.activities?.slice(0, 10).map((activity, index) => {
+                                                if (activity.type === 'quiz_shared' && activity.details?.quizId) {
+                                                    return (
+                                                        <QuizActivity
+                                                            key={`activity-${index}-${activity.timestamp || Date.now()}`}
+                                                            activity={activity}
+                                                            onTakeQuiz={handleQuizClick}
+                                                        />
+                                                    );
+                                                }
 
-                            <div className="group-activities">
-                                <h3>Recent Activities</h3>
-                                <div className="activities-list">
-                                    {selectedGroup.activities?.slice(0, 10).map((activity, index) => {
-                                        if (activity.type === 'quiz_shared' && activity.details?.quizId) {
-                                            return (
-                                                <QuizActivity
-                                                    key={`activity-${index}-${activity.timestamp || Date.now()}`}
-                                                    activity={activity}
-                                                    onTakeQuiz={handleQuizClick}
-                                                />
-                                            );
-                                        }
+                                                return (
+                                                    <div key={`activity-${index}-${activity.timestamp || Date.now()}`}
+                                                        className="activity-item"
+                                                    >
+                                                        <div className="activity-icon">
+                                                            {activity.type === 'member_joined' ? '👋' : '📊'}
+                                                        </div>
+                                                        <div className="activity-details">
+                                                            <span className="activity-message">
+                                                                {activity.details?.message || activity.details}
+                                                            </span>
+                                                            <span className="activity-time">
+                                                                {new Date(activity.timestamp).toLocaleDateString()}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
 
-                                        return (
-                                            <div key={`activity-${index}-${activity.timestamp || Date.now()}`}
-                                                 className="activity-item"
-                                            >
-                                                <div className="activity-icon">
-                                                    {activity.type === 'member_joined' ? '👋' : '📊'}
+                                            {(!selectedGroup.activities || selectedGroup.activities.length === 0) && (
+                                                <div style={{
+                                                    textAlign: 'center',
+                                                    color: 'var(--text-secondary)',
+                                                    padding: '20px',
+                                                    fontSize: '0.9em'
+                                                }}>
+                                                    No recent activities
                                                 </div>
-                                                <div className="activity-details">
-                                                    <span className="activity-message">
-                                                        {activity.details?.message || activity.details}
-                                                    </span>
-                                                    <span className="activity-time">
-                                                        {new Date(activity.timestamp).toLocaleDateString()}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-
-                                    {(!selectedGroup.activities || selectedGroup.activities.length === 0) && (
-                                        <div style={{
-                                            textAlign: 'center',
-                                            color: 'var(--text-secondary)',
-                                            padding: '20px',
-                                            fontSize: '0.9em'
-                                        }}>
-                                            No recent activities
+                                            )}
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
+                                {activeGroupTab === 'members' && (
+                                    <div className="group-members">
+                                        <h3>Members</h3>
+                                        <div className="members-list">
+                                            {selectedGroup.members?.map((member, index) => (
+                                                <div key={member._id || `member-${index}`} className="member-item">
+                                                    <div className="member-avatar">
+                                                        {(member.user?.name || 'Unknown')?.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div className="member-info">
+                                                        <span className="member-name">{member.user?.name || 'Unknown User'}</span>
+                                                        <span className="member-role">{member.role}</span>
+                                                    </div>
+                                                    <div className="member-stats">
+                                                        Level {member.user?.level || 1}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {activeGroupTab === 'notes' && (
+                                    <SharedNotes groupId={selectedGroup._id} />
+                                )}
+                                {activeGroupTab === 'challenges' && (
+                                    <div className="group-challenges">
+                                        <h3>Available Group Challenges</h3>
+                                        {groupChallenges.length > 0 ? (
+                                            <div className="challenges-list">
+                                                {groupChallenges.map(challenge => (
+                                                    <div key={challenge._id} className="challenge-item">
+                                                        <h4>{challenge.title}</h4>
+                                                        <p>{challenge.description}</p>
+                                                        <button onClick={() => handleJoinChallenge(challenge._id)}>Join Challenge</button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>No group challenges available at the moment.</p>
+                                        )}
+                                    </div>
+                                )}
+                                {activeGroupTab === 'sessions' && (
+                                    <div className="group-sessions">
+                                        <h3>Upcoming Study Sessions</h3>
+                                        {studySessions.length > 0 ? (
+                                            <div className="sessions-list">
+                                                {studySessions.map(session => (
+                                                    <div key={session._id} className="session-item">
+                                                        <h4>{session.topic}</h4>
+                                                        <p>Scheduled for: {new Date(session.scheduledTime).toLocaleString()}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>No study sessions scheduled.</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                        </div>
+                        </motion.div>
                     </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
+                )}
+            </AnimatePresence>
+        );
+    }
 
     return (
         <div className="study-groups">

@@ -1,5 +1,8 @@
 import express from "express";
 import {
+    createGroupChallenge,
+    joinGroupChallenge,
+    submitGroupChallengeScore,
     // Daily Challenges
     getCurrentDailyChallenge,
     joinDailyChallenge,
@@ -90,5 +93,10 @@ router.get("/tournaments/history", getTournamentHistory);
 // =================== COMPLETED CHALLENGES & TOURNAMENTS ===================
 router.get("/challenges/completed", getCompletedChallenges);
 router.get("/tournaments/completed", getCompletedTournaments);
+
+// =================== GROUP CHALLENGES ===================
+router.post("/challenges/group/create", createGroupChallenge); // Admin only
+router.post("/challenges/group/:challengeId/join", joinGroupChallenge);
+router.post("/challenges/group/:challengeId/score", submitGroupChallengeScore);
 
 export default router;

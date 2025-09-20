@@ -62,6 +62,7 @@ import StudyGroups from "./components/StudyGroups";
 // Phase 4: Next-Gen Features
 import AIStudyBuddy from "./components/AIStudyBuddy";
 import RealTimeQuiz from "./components/RealTimeQuiz";
+import CollaborativeQuizRoom from "./components/CollaborativeQuizRoom";
 import GamificationHub from "./components/GamificationHub";
 
 // Phase 5: Advanced Learning Path Engine
@@ -181,6 +182,7 @@ const App = () => {
                             {/* Phase 4: Next-Gen Features */}
                             <Route path="/ai-study-buddy" element={<AIStudyBuddy />} />
                             <Route path="/real-time-quiz" element={<RealTimeQuiz />} />
+                            <Route path="/collaborative-quiz/:roomId" element={<CollaborativeQuizRoom />} />
 
                             {/* Phase 5: Advanced Learning Path Engine */}
                             <Route path="/learning-paths" element={<LearningPathHub />} />
