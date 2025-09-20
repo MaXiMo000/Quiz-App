@@ -129,6 +129,10 @@ export const initializeCollaborativeQuiz = (server) => {
 
         socket.on("create_collaborative_room", async ({ quizId, roomId: customRoomId, settings }) => {
             logger.info(`create_collaborative_room event received from ${socket.userId}, quizId: ${quizId}, customRoomId: ${customRoomId}`);
+
+            // Use custom roomId if provided, otherwise generate random one
+            const roomId = customRoomId || Math.random().toString(36).substring(2, 8).toUpperCase();
+
             try {
                 const quiz = await Quiz.findById(quizId);
                 if (!quiz) {
@@ -136,9 +140,6 @@ export const initializeCollaborativeQuiz = (server) => {
                     return socket.emit("error", { message: "Quiz not found" });
                 }
                 logger.info(`Quiz found: ${quiz.title}`);
-
-                // Use custom roomId if provided, otherwise generate random one
-                const roomId = customRoomId || Math.random().toString(36).substring(2, 8).toUpperCase();
                 const session = new CollaborativeSession({
                     roomId,
                     host: socket.userId,
@@ -160,6 +161,54 @@ export const initializeCollaborativeQuiz = (server) => {
                 logger.info(`collaborative_room_created event emitted to user ${socket.userId}`);
             } catch (error) {
                 logger.error(`Error creating collaborative room: ${error.message}`);
+
+                // If it's a duplicate key error, try to join the existing room instead
+                if (error.code === 11000 && error.keyPattern?.roomId) {
+                    logger.info(`Room ${roomId} already exists in database, attempting to join instead`);
+                    try {
+                        // Try to join the existing room
+                        const existingSession = activeSessions.get(roomId);
+                        if (existingSession) {
+                            // Room is active, join it
+                            existingSession.addPlayer(socket.userId, socket.userInfo);
+                            socket.join(roomId);
+                            socket.currentRoom = roomId;
+                            socket.emit("collaborative_room_joined", { roomId, room: existingSession });
+                            logger.info(`User ${socket.userId} joined existing active room ${roomId}`);
+                            return;
+                        } else {
+                            // Room exists in DB but not active, try to load it
+                            const dbSession = await CollaborativeSession.findOne({ roomId });
+                            if (dbSession) {
+                                // Load the room from database
+                                const quiz = await Quiz.findById(dbSession.quiz);
+                                if (quiz) {
+                                    const quizSession = new CollaborativeQuizSession(roomId, dbSession.host, quiz, dbSession.settings);
+                                    // Add all players from database
+                                    for (const playerId of dbSession.players) {
+                                        const player = await User.findById(playerId);
+                                        if (player) {
+                                            quizSession.addPlayer(playerId, {
+                                                name: player.name,
+                                                avatar: player.avatar || player.name.charAt(0).toUpperCase()
+                                            });
+                                        }
+                                    }
+                                    activeSessions.set(roomId, quizSession);
+
+                                    socket.join(roomId);
+                                    socket.currentRoom = roomId;
+                                    socket.emit("collaborative_room_joined", { roomId, room: quizSession });
+                                    logger.info(`User ${socket.userId} joined room ${roomId} loaded from database`);
+                                    return;
+                                }
+                            }
+                        }
+                    } catch (joinError) {
+                        logger.error(`Error joining existing room: ${joinError.message}`);
+                    }
+                }
+
                 socket.emit("error", { message: "Failed to create room" });
             }
         });

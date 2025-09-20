@@ -5,6 +5,7 @@ import config from '../config/config';
 let socket = null;
 let quizzesCache = null;
 let quizzesPromise = null;
+let socketUsers = new Set(); // Track which components are using the socket
 
 /**
  * Returns a singleton socket. If socket already exists and connected, reuse it.
@@ -28,16 +29,19 @@ export function getSocket(token, opts = {}) {
       console.warn('Error cleaning up socket:', e);
     }
     socket = null;
+    socketUsers.clear();
   }
 
-  // Default: start with polling to avoid immediate WS upgrade errors
+  // Use WebSocket with polling fallback for better performance
   const socketOptions = {
     path: '/socket.io/collaborative',
     auth: { token },
-    transports: opts.transports || ['polling'],
+    transports: opts.transports || ['websocket', 'polling'], // Try WebSocket first, fallback to polling
     autoConnect: opts.autoConnect ?? true,
     reconnection: opts.reconnection ?? true,
-    reconnectionAttempts: opts.reconnectionAttempts ?? 10,
+    reconnectionAttempts: opts.reconnectionAttempts ?? 5, // Reduce reconnection attempts
+    reconnectionDelay: 1000, // 1 second delay between reconnections
+    timeout: 20000, // 20 second timeout
     ...opts
   };
 
@@ -107,6 +111,26 @@ export function clearQuizzesCache() {
   quizzesPromise = null;
 }
 
+export function registerSocketUser(componentName) {
+  socketUsers.add(componentName);
+  console.log(`📱 Socket user registered: ${componentName}. Total users: ${socketUsers.size}`);
+}
+
+export function unregisterSocketUser(componentName) {
+  socketUsers.delete(componentName);
+  console.log(`📱 Socket user unregistered: ${componentName}. Total users: ${socketUsers.size}`);
+
+  // If no more users, cleanup socket after a delay
+  if (socketUsers.size === 0) {
+    setTimeout(() => {
+      if (socketUsers.size === 0 && socket) {
+        console.log('🧹 No more socket users, cleaning up socket...');
+        cleanupSocket();
+      }
+    }, 5000); // 5 second delay to allow for quick reconnections
+  }
+}
+
 export function cleanupSocket() {
   if (!socket) return;
   try {
@@ -116,4 +140,5 @@ export function cleanupSocket() {
     console.warn('Error during socket cleanup:', e);
   }
   socket = null;
+  socketUsers.clear();
 }
