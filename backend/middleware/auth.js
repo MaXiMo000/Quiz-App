@@ -19,7 +19,8 @@ export const verifyToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        logger.info("✅ Token decoded successfully:", { id: decoded.id, email: decoded.email });
+        // SECURITY: Only log user ID, not email (PII)
+        logger.info("✅ Token decoded successfully for user:", decoded.id);
         req.user = decoded;
         next();
     } catch (err) {

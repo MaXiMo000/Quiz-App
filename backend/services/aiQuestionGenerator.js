@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateFromGemini } from "../utils/geminiHelper.js";
 
 dotenv.config();
 
@@ -7,37 +7,6 @@ dotenv.config();
 if (!process.env.GEMINI_API_KEY && process.env.NODE_ENV !== "test") {
     throw new Error("🚫 GEMINI_API_KEY is missing from .env file!");
 }
-
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
-
-export const generateFromGemini = async (prompt) => {
-    if (!genAI) {
-        // In test environment, return mock response
-        if (process.env.NODE_ENV === "test") {
-            return JSON.stringify({
-                questions: [
-                    {
-                        question: "What is JavaScript?",
-                        options: ["A programming language", "A database", "A framework", "An operating system"],
-                        correctAnswer: "A",
-                        difficulty: "medium",
-                        category: "Programming"
-                    }
-                ]
-            });
-        }
-        throw new Error("Gemini AI not initialized - API key missing");
-    }
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-
-    const result = await model.generateContent({
-        contents: [{ parts: [{ text: prompt }] }]
-    });
-
-    const raw = result.response.text();
-    return raw;
-};
 
 export const parseAIResponse = (aiText) => {
     try {
@@ -79,7 +48,11 @@ export const generateMCQ = async (topic, numQuestions, difficulty = "any") => {
         No explanation or extra output.
         `;
 
-    const aiText = await generateFromGemini(prompt);
+    // Use premium model first (will auto-fallback to higher quota models if needed)
+    const aiText = await generateFromGemini(prompt, { 
+        preferredModel: "gemini-2.5-pro", // Premium model, falls back to flash-lite if quota exceeded
+        maxRetries: 3 
+    });
     return parseAIResponse(aiText);
 };
 
@@ -107,6 +80,10 @@ export const generateTrueFalse = async (topic, numQuestions) => {
         No explanation or extra output.
         `;
 
-    const aiText = await generateFromGemini(prompt);
+    // Use premium model first (will auto-fallback to higher quota models if needed)
+    const aiText = await generateFromGemini(prompt, { 
+        preferredModel: "gemini-2.5-pro", // Premium model, falls back to flash-lite if quota exceeded
+        maxRetries: 3 
+    });
     return parseAIResponse(aiText);
 };

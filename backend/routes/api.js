@@ -10,6 +10,7 @@ import { cleanupEmptyChallenges, cleanupEmptyTournaments } from "../controllers/
 import reviewRoutes from "./reviewRoutes.js";
 import { verifyToken } from "../middleware/auth.js";
 import cache, { clearCacheByPattern } from "../middleware/cache.js";
+import { aiQuestionLimiter } from "../middleware/rateLimiting.js";
 
 // Quiz Routes
 router.get("/quizzes", verifyToken, cache, getQuizzes);
@@ -20,8 +21,9 @@ router.delete("/quizzes/delete/quiz", verifyToken, clearCacheByPattern("/api/qui
 router.delete("/quizzes/:id/questions/:questionIndex", verifyToken, clearCacheByPattern("/api/quizzes"), deleteQuestion);
 router.post("/quizzes/:id/stats", verifyToken, clearCacheByPattern("/api/quizzes"), updateQuizStats);
 
-router.post("/quizzes/:id/generate-questions", generateQuizQuestions);
-router.post("/adaptive", verifyToken, generateAdaptiveQuestions);
+// 🔒 AI endpoints with rate limiting to prevent spam
+router.post("/quizzes/:id/generate-questions", verifyToken, aiQuestionLimiter, generateQuizQuestions);
+router.post("/adaptive", verifyToken, aiQuestionLimiter, generateAdaptiveQuestions);
 
 // Report Routes
 router.get("/reports", verifyToken, cache, getReports);
