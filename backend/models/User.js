@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
     email:    { type: String, required: true, unique: true },
     password: { type: String, required: false },
     role:     { type: String, enum: ["admin", "user", "premium"], default: "user" },
+    organizationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organization" },
     badges: { type: [String], default: [] },
     xp:       { type: Number, default: 0 },          // total XP
     totalXP: { type: Number, default: 0 },

@@ -14,6 +14,7 @@ const questionSchema = new mongoose.Schema({
 const quizSchema = new mongoose.Schema({
     title:         { type: String, required: true },
     category:      { type: String },
+    organizationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organization" },
     totalMarks:    { type: Number, default: 0 },
     passingMarks:  { type: Number, default: 0 },
     duration:      { type: Number, default: 0 },  // in minutes
