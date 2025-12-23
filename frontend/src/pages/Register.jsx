@@ -10,6 +10,7 @@ const Register = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [organizationId, setOrganizationId] = useState(""); // Optional organization ID
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -20,9 +21,14 @@ const Register = () => {
         e.preventDefault();
         setLoading(true);
         try {
+            const headers = { "Content-Type": "application/json" };
+            if (organizationId) {
+                headers["x-tenant-id"] = organizationId;
+            }
+
             await axios.post(`/api/users/register`,
                 { name, email, password },
-                { headers: { "Content-Type": "application/json" } } // ✅ Fix Content-Type
+                { headers } // ✅ Fix Content-Type & Add Tenant ID
             );
             showSuccess("Registration Successful! Please log in.");
             setTimeout(() => navigate("/login"), 2000);
@@ -60,6 +66,18 @@ const Register = () => {
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Enter your full name"
                             required
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label htmlFor="organizationId">Organization ID (Optional)</label>
+                        <input
+                            id="organizationId"
+                            type="text"
+                            value={organizationId}
+                            onChange={(e) => setOrganizationId(e.target.value)}
+                            placeholder="Enter Organization ID (if applicable)"
                             disabled={loading}
                         />
                     </div>

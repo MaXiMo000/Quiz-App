@@ -10,6 +10,7 @@ import { useNotification } from "../hooks/useNotification";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [organizationId, setOrganizationId] = useState(""); // Optional organization ID
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { changeTheme } = useContext(ThemeContext);
@@ -21,6 +22,16 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
+            // If organizationId is provided, save it to localStorage BEFORE login request so axios interceptor picks it up?
+            // Actually, axios interceptor reads from localStorage. So we should save it first if we want it in headers.
+            // But usually login doesn't need tenant ID unless we want to scope the login.
+            // Let's save it to localStorage if present.
+            if (organizationId) {
+                localStorage.setItem("tenantId", organizationId);
+            } else {
+                localStorage.removeItem("tenantId");
+            }
+
             const res = await axios.post(`/api/users/login`, { email, password }, {
                 headers: { "Content-Type": "application/json" }
             });
@@ -91,6 +102,18 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your password"
                             required
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label htmlFor="organizationId">Organization ID (Optional)</label>
+                        <input
+                            id="organizationId"
+                            type="text"
+                            value={organizationId}
+                            onChange={(e) => setOrganizationId(e.target.value)}
+                            placeholder="Enter Organization ID (if applicable)"
                             disabled={loading}
                         />
                     </div>
