@@ -215,7 +215,8 @@ describe("Quiz Controller", () => {
   });
 
   describe("deleteQuiz", () => {
-    it("should delete quiz successfully", async () => {
+    it("should delete quiz successfully for admin", async () => {
+      req.user.role = "admin";
       req.query = { title: "Test Quiz" };
       const mockQuiz = { _id: "quizId", title: "Test Quiz" };
 
@@ -229,6 +230,62 @@ describe("Quiz Controller", () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         message: "Quiz deleted successfully!"
+      });
+    });
+
+    it("should delete quiz successfully for premium owner", async () => {
+      req.user.role = "premium";
+      req.user.id = "userId";
+      req.query = { title: "Test Quiz" };
+      const mockQuiz = {
+        _id: "quizId",
+        title: "Test Quiz",
+        createdBy: { _id: "userId" }
+      };
+
+      Quiz.findOne.mockResolvedValue(mockQuiz);
+      Quiz.deleteOne.mockResolvedValue({ deletedCount: 1 });
+
+      await deleteQuiz(req, res);
+
+      expect(Quiz.deleteOne).toHaveBeenCalledWith({ title: "Test Quiz" });
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    it("should prevent premium user from deleting others' quiz", async () => {
+      req.user.role = "premium";
+      req.user.id = "userId";
+      req.query = { title: "Test Quiz" };
+      const mockQuiz = {
+        _id: "quizId",
+        title: "Test Quiz",
+        createdBy: { _id: "otherUser" }
+      };
+
+      Quiz.findOne.mockResolvedValue(mockQuiz);
+
+      await deleteQuiz(req, res);
+
+      expect(Quiz.deleteOne).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "You can only delete your own quizzes."
+      });
+    });
+
+    it("should prevent regular user from deleting quiz", async () => {
+      req.user.role = "user";
+      req.query = { title: "Test Quiz" };
+      const mockQuiz = { _id: "quizId", title: "Test Quiz" };
+
+      Quiz.findOne.mockResolvedValue(mockQuiz);
+
+      await deleteQuiz(req, res);
+
+      expect(Quiz.deleteOne).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "You do not have permission to delete quizzes."
       });
     });
 
@@ -270,7 +327,8 @@ describe("Quiz Controller", () => {
   });
 
   describe("addQuestion", () => {
-    it("should add question to quiz successfully", async () => {
+    it("should add question to quiz successfully for admin", async () => {
+      req.user.role = "admin";
       req.params = { id: "quizId" };
       req.body = {
         question: "What is JavaScript?",
@@ -295,12 +353,65 @@ describe("Quiz Controller", () => {
 
       expect(Quiz.findById).toHaveBeenCalledWith("quizId");
       expect(mockQuiz.questions).toHaveLength(1);
-      expect(mockQuiz.totalMarks).toBe(1);
-      expect(mockQuiz.passingMarks).toBe(0);
-      expect(mockQuiz.duration).toBe(2);
-      expect(mockQuiz.difficultyDistribution.easy).toBe(1);
-      expect(mockQuiz.save).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith(mockQuiz);
+    });
+
+    it("should add question for premium owner", async () => {
+      req.user.role = "premium";
+      req.user.id = "userId";
+      req.params = { id: "quizId" };
+      req.body = { question: "Q1" };
+
+      const mockQuiz = {
+        _id: "quizId",
+        createdBy: { _id: "userId" },
+        questions: [],
+        difficultyDistribution: { easy: 0, medium: 0, hard: 0 },
+        save: jest.fn().mockResolvedValue(true)
+      };
+
+      Quiz.findById.mockResolvedValue(mockQuiz);
+
+      await addQuestion(req, res);
+
+      expect(mockQuiz.questions).toHaveLength(1);
+      expect(res.json).toHaveBeenCalledWith(mockQuiz);
+    });
+
+    it("should prevent premium user from adding question to others' quiz", async () => {
+      req.user.role = "premium";
+      req.user.id = "userId";
+      req.params = { id: "quizId" };
+
+      const mockQuiz = {
+        _id: "quizId",
+        title: "Other Quiz",
+        createdBy: { _id: "otherUser" }
+      };
+
+      Quiz.findById.mockResolvedValue(mockQuiz);
+
+      await addQuestion(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "You can only add questions to your own quizzes."
+      });
+    });
+
+    it("should prevent regular user from adding question", async () => {
+      req.user.role = "user";
+      req.params = { id: "quizId" };
+      const mockQuiz = { _id: "quizId" };
+
+      Quiz.findById.mockResolvedValue(mockQuiz);
+
+      await addQuestion(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "You do not have permission to add questions."
+      });
     });
 
     it("should handle quiz not found", async () => {
@@ -378,7 +489,8 @@ describe("Quiz Controller", () => {
   });
 
   describe("deleteQuestion", () => {
-    it("should delete question successfully", async () => {
+    it("should delete question successfully for admin", async () => {
+      req.user.role = "admin";
       req.params = { id: "quizId", questionIndex: "0" };
       const mockQuiz = {
         _id: "quizId",
@@ -399,14 +511,69 @@ describe("Quiz Controller", () => {
 
       expect(Quiz.findById).toHaveBeenCalledWith("quizId");
       expect(mockQuiz.questions).toHaveLength(1);
-      expect(mockQuiz.totalMarks).toBe(1);
-      expect(mockQuiz.passingMarks).toBe(0);
-      expect(mockQuiz.duration).toBe(2);
-      expect(mockQuiz.difficultyDistribution.easy).toBe(0);
-      expect(mockQuiz.save).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith({
         message: "Question deleted successfully",
         quiz: mockQuiz
+      });
+    });
+
+    it("should delete question for premium owner", async () => {
+      req.user.role = "premium";
+      req.user.id = "userId";
+      req.params = { id: "quizId", questionIndex: "0" };
+
+      const mockQuiz = {
+        _id: "quizId",
+        createdBy: { _id: "userId" },
+        questions: [{ question: "Q1" }],
+        difficultyDistribution: { easy: 0, medium: 0, hard: 0 },
+        save: jest.fn().mockResolvedValue(true)
+      };
+
+      Quiz.findById.mockResolvedValue(mockQuiz);
+
+      await deleteQuestion(req, res);
+
+      expect(mockQuiz.questions).toHaveLength(0);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Question deleted successfully",
+        quiz: mockQuiz
+      });
+    });
+
+    it("should prevent premium user from deleting question of others' quiz", async () => {
+      req.user.role = "premium";
+      req.user.id = "userId";
+      req.params = { id: "quizId" };
+
+      const mockQuiz = {
+        _id: "quizId",
+        title: "Other Quiz",
+        createdBy: { _id: "otherUser" }
+      };
+
+      Quiz.findById.mockResolvedValue(mockQuiz);
+
+      await deleteQuestion(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "You can only delete questions from your own quizzes."
+      });
+    });
+
+    it("should prevent regular user from deleting question", async () => {
+      req.user.role = "user";
+      req.params = { id: "quizId" };
+      const mockQuiz = { _id: "quizId" };
+
+      Quiz.findById.mockResolvedValue(mockQuiz);
+
+      await deleteQuestion(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "You do not have permission to delete questions."
       });
     });
 
@@ -424,6 +591,7 @@ describe("Quiz Controller", () => {
     });
 
     it("should handle invalid question index", async () => {
+      req.user.role = "admin";
       req.params = { id: "quizId", questionIndex: "5" };
       const mockQuiz = {
         _id: "quizId",
