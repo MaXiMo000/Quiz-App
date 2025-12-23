@@ -32,6 +32,14 @@ const PremiumQuizzes = () => {
         }
     };
 
+    const isAdminQuiz = (quiz) => {
+        return !quiz.createdBy || !quiz.createdBy._id || quiz.createdBy.name === "admin" || quiz.createdBy.name === "Admin";
+    };
+
+    const handleRestrictedAction = (message) => {
+        showWarning(message);
+    };
+
     useEffect(() => {
         getQuiz();
 
@@ -244,9 +252,9 @@ const PremiumQuizzes = () => {
                         >
                             <div className="premium-badge">
                                 <span>
-                                    👑
+                                    {isAdminQuiz(quiz) ? "🛡️" : "👑"}
                                 </span>
-                                PREMIUM
+                                {isAdminQuiz(quiz) ? "ADMIN QUIZ" : "PREMIUM"}
                             </div>
 
                             <div className="quiz-content">
@@ -280,14 +288,20 @@ const PremiumQuizzes = () => {
                                 >
                                     <button
                                         className="delete-btn premium-delete-btn"
-                                        onClick={() => deleteQuiz(quiz.title)}
+                                        onClick={() => isAdminQuiz(quiz)
+                                            ? handleRestrictedAction("You cannot delete admin quizzes.")
+                                            : deleteQuiz(quiz.title)}
+                                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
                                     >
                                         🗑️ Delete
                                     </button>
 
                                     <button
                                         className="add-ai-btn premium-ai-btn"
-                                        onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
+                                        onClick={() => isAdminQuiz(quiz)
+                                            ? handleRestrictedAction("You cannot add AI questions to admin quizzes.")
+                                            : openAiQuestionModal(quiz._id, quiz.category)}
+                                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
                                     >
                                         <span>
                                             🤖
@@ -297,7 +311,10 @@ const PremiumQuizzes = () => {
 
                                     <button
                                         className="add-question-btn premium-add-btn"
-                                        onClick={() => openAddQuestionModal(quiz._id)}
+                                        onClick={() => isAdminQuiz(quiz)
+                                            ? handleRestrictedAction("You cannot add questions to admin quizzes.")
+                                            : openAddQuestionModal(quiz._id)}
+                                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
                                     >
                                         ➕ Add Question
                                     </button>
