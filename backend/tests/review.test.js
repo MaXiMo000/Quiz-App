@@ -7,8 +7,10 @@ jest.mock("redis", () => ({
     connect: jest.fn().mockResolvedValue(null),
     get: jest.fn().mockResolvedValue(null),
     set: jest.fn().mockResolvedValue("OK"),
-    scan: jest.fn().mockResolvedValue({ cursor: 0, keys: [] }),
+    scan: jest.fn().mockResolvedValue({ cursor: "0", keys: [] }),
+    del: jest.fn().mockResolvedValue(1),
     flushDb: jest.fn().mockResolvedValue("OK"),
+    ping: jest.fn().mockResolvedValue("PONG"),
   })),
 }));
 import express from "express";
