@@ -106,6 +106,32 @@ describe("Quiz Controller", () => {
       expect(res.json).toHaveBeenCalledWith(mockQuizData);
     });
 
+    it("should create a new quiz with organization", async () => {
+      req.user.role = "admin";
+      req.organization = { _id: "orgId" };
+      req.body = {
+        title: "Test Quiz",
+        category: "Programming",
+      };
+
+      const mockQuizData = {
+        _id: "quizId",
+        title: "Test Quiz",
+        category: "Programming",
+        organizationId: "orgId"
+      };
+
+      Quiz.mockImplementation(() => ({
+        ...mockQuizData,
+        save: jest.fn().mockResolvedValue(mockQuizData)
+      }));
+
+      await createQuiz(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(mockQuizData);
+    });
+
     it("should reject non-admin/premium users", async () => {
       req.user.role = "user";
       req.body = {
@@ -167,7 +193,20 @@ describe("Quiz Controller", () => {
 
       await getQuizzes(req, res);
 
-      expect(Quiz.find).toHaveBeenCalledWith();
+      expect(Quiz.find).toHaveBeenCalledWith({});
+      expect(res.json).toHaveBeenCalledWith(mockQuizzes);
+    });
+
+    it("should return quizzes filtered by organization", async () => {
+      req.user.role = "admin";
+      req.organization = { _id: "orgId" };
+      const mockQuizzes = [{ _id: "quiz1" }];
+
+      Quiz.find.mockResolvedValue(mockQuizzes);
+
+      await getQuizzes(req, res);
+
+      expect(Quiz.find).toHaveBeenCalledWith({ organizationId: "orgId" });
       expect(res.json).toHaveBeenCalledWith(mockQuizzes);
     });
 

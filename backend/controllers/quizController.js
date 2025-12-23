@@ -8,21 +8,30 @@ export const getQuizzes = async (req, res) => {
     try {
         const { role, id: userId } = req.user;
 
+        const baseQuery = {};
+        if (req.organization) {
+            baseQuery.organizationId = req.organization._id;
+        }
+
         let quizzes;
         if (role === "admin") {
-        // Admin sees all quizzes
-        quizzes = await Quiz.find();
+            // Admin sees all quizzes (scoped to organization if present)
+            quizzes = await Quiz.find(baseQuery);
         } else if (role === "premium") {
-        // Premium sees their own quizzes and admin's quizzes
-        quizzes = await Quiz.find({
-            $or: [
-            { "createdBy._id": userId },
-            { "createdBy._id": null }
-            ]
-        });
+            // Premium sees their own quizzes and admin's quizzes (scoped to organization)
+            quizzes = await Quiz.find({
+                ...baseQuery,
+                $or: [
+                    { "createdBy._id": userId },
+                    { "createdBy._id": null }
+                ]
+            });
         } else {
-        // Regular users see only admin's quizzes
-        quizzes = await Quiz.find({ "createdBy._id": null });
+            // Regular users see only admin's quizzes (scoped to organization)
+            quizzes = await Quiz.find({
+                ...baseQuery,
+                "createdBy._id": null
+            });
         }
 
         logger.info(`Successfully fetched ${quizzes.length} quizzes for user ${userId}`);
@@ -64,7 +73,8 @@ export const createQuiz = async (req, res) => {
             totalMarks: 0,
             passingMarks: 0,
             questions: [],
-            createdBy
+            createdBy,
+            organizationId: req.organization ? req.organization._id : undefined
         });
 
         const savedQuiz = await newQuiz.save();

@@ -1,4 +1,4 @@
-import { registerUser, loginUser } from "../../controllers/userController.js";
+import { registerUser, loginUser, getAllUsers } from "../../controllers/userController.js";
 import mongoose from "mongoose";
 import User from "../../models/User.js";
 import XPLog from "../../models/XPLog.js";
@@ -123,6 +123,29 @@ describe("User Controller", () => {
       expect(res.json).toHaveBeenCalledWith({
         error: "Invalid credentials",
       });
+    });
+  });
+
+  describe("getAllUsers", () => {
+    it("should return all users", async () => {
+      const mockUsers = [{ name: "User 1" }, { name: "User 2" }];
+      User.find.mockResolvedValue(mockUsers);
+
+      await getAllUsers(req, res);
+
+      expect(User.find).toHaveBeenCalledWith({});
+      expect(res.json).toHaveBeenCalledWith(mockUsers);
+    });
+
+    it("should return users filtered by organization", async () => {
+      req.organization = { _id: "orgId" };
+      const mockUsers = [{ name: "User 1" }];
+      User.find.mockResolvedValue(mockUsers);
+
+      await getAllUsers(req, res);
+
+      expect(User.find).toHaveBeenCalledWith({ organizationId: "orgId" });
+      expect(res.json).toHaveBeenCalledWith(mockUsers);
     });
   });
 });

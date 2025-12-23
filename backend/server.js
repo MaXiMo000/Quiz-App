@@ -20,6 +20,7 @@ import "./config/passport.js";
 import userRoutes from "./routes/userRoutes.js";
 import apiRoutes from "./routes/api.js";
 import requestLogger from "./middleware/requestLogger.js";
+import { tenantMiddleware } from "./middleware/tenantMiddleware.js";
 import errorHandler from "./services/errorHandler.js";
 import writtenTestRoutes from "./routes/writtenTestRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
@@ -98,6 +99,7 @@ const authLimiter = rateLimit({
 // Middlewares
 app.use(express.json({ limit: "10mb" })); // Limit payload size
 app.use(mongoSanitize()); // 🔒 SECURITY: Sanitize user input against NoSQL injection
+app.use(tenantMiddleware); // 🏢 Multi-Tenant Middleware
 
 // Additional CORS middleware to handle edge cases
 app.use((req, res, next) => {

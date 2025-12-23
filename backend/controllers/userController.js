@@ -29,7 +29,8 @@ export const registerUser = async (req, res) => {
         const newUser = new UserQuiz({
             name: name.trim(),
             email: email.toLowerCase().trim(),
-            password: hashedPassword
+            password: hashedPassword,
+            organizationId: req.organization ? req.organization._id : undefined
         });
         await newUser.save();
 
@@ -141,7 +142,11 @@ export const loginUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
     logger.info("Fetching all users");
     try {
-        const users = await UserQuiz.find();
+        const query = {};
+        if (req.organization) {
+            query.organizationId = req.organization._id;
+        }
+        const users = await UserQuiz.find(query);
         logger.info(`Successfully fetched ${users.length} users`);
         res.json(users);
     } catch (error) {
