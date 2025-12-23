@@ -59,7 +59,8 @@ router.get("/me", verifyToken, async (req, res) => {
 
         // Now get user without password
         const user = await UserQuiz.findById(req.user.id).select("-password");
-        logger.info("✅ User found (without password):", user?.email);
+        // SECURITY: Only log user ID, not email (PII)
+        logger.info("✅ User found:", user?._id);
 
         res.json({
             _id: user._id,

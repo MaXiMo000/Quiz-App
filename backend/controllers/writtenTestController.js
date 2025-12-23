@@ -1,7 +1,7 @@
 import WrittenTest from "../models/WrittenTest.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateFromGemini } from "../utils/geminiHelper.js";
 import logger from "../utils/logger.js";
 
 dotenv.config();
@@ -10,26 +10,6 @@ dotenv.config();
 if (!process.env.GEMINI_API_KEY && process.env.NODE_ENV !== "test") {
     throw new Error("🚫 GEMINI_API_KEY is missing from .env file!");
 }
-
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
-
-const generateFromGemini = async (prompt) => {
-    if (!genAI) {
-        // In test environment, return mock response
-        if (process.env.NODE_ENV === "test") {
-            return "Score: 8\nFeedback: Good answer";
-        }
-        throw new Error("Gemini AI not initialized - API key missing");
-    }
-
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro-001" });
-
-    const result = await model.generateContent({
-        contents: [{ parts: [{ text: prompt }] }]
-    });
-
-    return result.response.text();
-};
 
 export async function createWrittenTest(req, res) {
     logger.info(`Creating written test with title: ${req.body.title}`);
@@ -109,7 +89,10 @@ Score: 8
 Feedback: Well-structured answer with key points covered.
 `;
 
-        const geminiResponse = await generateFromGemini(prompt);
+        const geminiResponse = await generateFromGemini(prompt, { 
+            preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+            maxRetries: 3 
+        });
 
         const scoreMatch = geminiResponse.match(/Score\s*[:-]?\s*(\d+)/i);
         const score = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;

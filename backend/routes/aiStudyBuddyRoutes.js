@@ -1,13 +1,11 @@
 import express from "express";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateFromGemini } from "../utils/geminiHelper.js";
 import { verifyToken } from "../middleware/auth.js";
+import { aiLimiter, aiQuestionLimiter } from "../middleware/rateLimiting.js";
 import User from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 
 const router = express.Router();
-
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Study session model for persistence
 const studySessions = new Map(); // userId -> session data
@@ -49,7 +47,7 @@ class StudySession {
 }
 
 // AI Study Buddy - Start session
-router.post("/start-session", verifyToken, async (req, res) => {
+router.post("/start-session", verifyToken, aiLimiter, async (req, res) => {
     try {
         const userId = req.user.id;
         const { preferences = {} } = req.body;
@@ -71,8 +69,6 @@ router.post("/start-session", verifyToken, async (req, res) => {
         studySessions.set(userId, session);
 
         // Generate welcome message based on user data
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-
         const prompt = `You are an AI Study Buddy for a quiz learning platform. Create a personalized welcome message for this user:
 
 User Profile:
@@ -93,8 +89,10 @@ Create a warm, encouraging welcome message that:
 
 Keep it conversational, supportive, and under 200 words.`;
 
-        const result = await model.generateContent(prompt);
-        const welcomeMessage = result.response.text();
+        const welcomeMessage = await generateFromGemini(prompt, { 
+            preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+            maxRetries: 3 
+        });
 
         session.addMessage("assistant", welcomeMessage, { type: "welcome" });
 
@@ -116,7 +114,7 @@ Keep it conversational, supportive, and under 200 words.`;
 });
 
 // AI Study Buddy - Chat
-router.post("/chat", verifyToken, async (req, res) => {
+router.post("/chat", verifyToken, aiLimiter, async (req, res) => {
     try {
         const userId = req.user.id;
         const { message, requestType = "general" } = req.body;
@@ -133,24 +131,22 @@ router.post("/chat", verifyToken, async (req, res) => {
         const user = await User.findById(userId);
 
         // Generate AI response based on request type
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         let response;
         switch (requestType) {
             case "quiz_request":
-                response = await generateQuizResponse(model, session, user, message);
+                response = await generateQuizResponse(session, user, message);
                 break;
             case "explanation":
-                response = await generateExplanationResponse(model, session, user, message);
+                response = await generateExplanationResponse(session, user, message);
                 break;
             case "study_plan":
-                response = await generateStudyPlanResponse(model, session, user, message);
+                response = await generateStudyPlanResponse(session, user, message);
                 break;
             case "weak_areas":
-                response = await generateWeakAreasResponse(model, session, user, message);
+                response = await generateWeakAreasResponse(session, user, message);
                 break;
             default:
-                response = await generateGeneralResponse(model, session, user, message);
+                response = await generateGeneralResponse(session, user, message);
         }
 
         session.addMessage("assistant", response.content, {
@@ -175,7 +171,7 @@ router.post("/chat", verifyToken, async (req, res) => {
 });
 
 // Generate personalized quiz
-router.post("/generate-quiz", verifyToken, async (req, res) => {
+router.post("/generate-quiz", verifyToken, aiQuestionLimiter, async (req, res) => {
     try {
         const userId = req.user.id;
         const { topic, difficulty, questionCount = 5, focusAreas = [] } = req.body;
@@ -187,8 +183,6 @@ router.post("/generate-quiz", verifyToken, async (req, res) => {
             session = new StudySession(userId);
             studySessions.set(userId, session);
         }
-
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
         const prompt = `Generate a personalized quiz for a student with the following profile:
 
@@ -228,14 +222,19 @@ Return ONLY a valid JSON object with this structure:
   ]
 }`;
 
-        const result = await model.generateContent(prompt);
         let quizData;
 
         try {
+            // Generate content with retry logic and fallback models
+            const responseText = await generateFromGemini(prompt, { 
+                preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+                maxRetries: 3 
+            });
+            
             // Clean the response to ensure valid JSON
-            let responseText = result.response.text().trim();
-            responseText = responseText.replace(/```json\n?/, "").replace(/\n?```/, "");
-            quizData = JSON.parse(responseText);
+            let cleanedText = responseText.trim();
+            cleanedText = cleanedText.replace(/```json\n?/, "").replace(/\n?```/, "");
+            quizData = JSON.parse(cleanedText);
         } catch (parseError) {
             console.error("Error parsing AI response:", parseError);
             return res.status(500).json({ message: "Failed to generate quiz format" });
@@ -357,8 +356,6 @@ router.get("/recommendations", verifyToken, async (req, res) => {
         .limit(10)
         .populate("results");
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-
         const prompt = `Analyze this student's profile and provide personalized study recommendations:
 
 Student Profile:
@@ -388,13 +385,17 @@ Format as a JSON array of recommendation objects:
   }
 ]`;
 
-        const result = await model.generateContent(prompt);
         let recommendations;
 
         try {
-            let responseText = result.response.text().trim();
-            responseText = responseText.replace(/```json\n?/, "").replace(/\n?```/, "");
-            recommendations = JSON.parse(responseText);
+            const responseText = await generateFromGemini(prompt, { 
+                preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+                maxRetries: 3 
+            });
+            
+            let cleanedText = responseText.trim();
+            cleanedText = cleanedText.replace(/```json\n?/, "").replace(/\n?```/, "");
+            recommendations = JSON.parse(cleanedText);
         } catch (parseError) {
             console.error("Error parsing recommendations:", parseError);
             // Fallback recommendations
@@ -435,7 +436,7 @@ Format as a JSON array of recommendation objects:
 });
 
 // AI Response Generation Functions
-async function generateQuizResponse(model, session, user, message) {
+async function generateQuizResponse(session, user, message) {
     const prompt = `The student wants a quiz. Based on their message: "${message}"
 
 Student Context:
@@ -451,15 +452,18 @@ Respond encouragingly and ask for specific details:
 
 Keep it conversational and helpful. Offer suggestions based on their weak areas.`;
 
-    const result = await model.generateContent(prompt);
+    const content = await generateFromGemini(prompt, { 
+        preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+        maxRetries: 3 
+    });
 
     return {
-        content: result.response.text(),
+        content,
         actions: ["generate_quiz"]
     };
 }
 
-async function generateExplanationResponse(model, session, user, message) {
+async function generateExplanationResponse(session, user, message) {
     const prompt = `The student needs an explanation for: "${message}"
 
 Student Profile:
@@ -474,15 +478,18 @@ Provide a clear, detailed explanation that:
 
 Adapt the explanation style to their learning preference (${session.learningStyle}).`;
 
-    const result = await model.generateContent(prompt);
+    const content = await generateFromGemini(prompt, { 
+        preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+        maxRetries: 3 
+    });
 
     return {
-        content: result.response.text(),
+        content,
         actions: ["offer_practice", "suggest_related_topics"]
     };
 }
 
-async function generateStudyPlanResponse(model, session, user, message) {
+async function generateStudyPlanResponse(session, user, message) {
     const prompt = `Create a personalized study plan based on: "${message}"
 
 Student Profile:
@@ -500,15 +507,18 @@ Create a structured study plan with:
 
 Make it realistic and achievable for their level.`;
 
-    const result = await model.generateContent(prompt);
+    const content = await generateFromGemini(prompt, { 
+        preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+        maxRetries: 3 
+    });
 
     return {
-        content: result.response.text(),
+        content,
         actions: ["save_study_plan", "set_reminders"]
     };
 }
 
-async function generateWeakAreasResponse(model, session, user, message) {
+async function generateWeakAreasResponse(session, user, message) {
     const prompt = `Help the student with their weak areas. Message: "${message}"
 
 Current Weak Areas: ${session.weakAreas.join(", ") || "None identified yet"}
@@ -523,15 +533,18 @@ Provide:
 
 Be encouraging and specific about how to improve.`;
 
-    const result = await model.generateContent(prompt);
+    const content = await generateFromGemini(prompt, { 
+        preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+        maxRetries: 3 
+    });
 
     return {
-        content: result.response.text(),
+        content,
         actions: ["practice_weak_areas", "track_improvement"]
     };
 }
 
-async function generateGeneralResponse(model, session, user, message) {
+async function generateGeneralResponse(session, user, message) {
     const recentMessages = session.getRecentContext(5);
     const conversationContext = recentMessages
         .map(msg => `${msg.role}: ${msg.content}`)
@@ -560,10 +573,13 @@ Keep responses conversational, under 150 words, and always offer actionable next
 If they ask about generating quizzes, be specific about topics and difficulty levels available.
 If they mention struggling with something, offer targeted help and practice suggestions.`;
 
-    const result = await model.generateContent(prompt);
+    const content = await generateFromGemini(prompt, { 
+        preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+        maxRetries: 3 
+    });
 
     // Analyze the response to suggest relevant actions
-    const responseText = result.response.text().toLowerCase();
+    const responseText = content.toLowerCase();
     const actions = [];
 
     if (responseText.includes("quiz") || responseText.includes("practice")) {
@@ -580,7 +596,7 @@ If they mention struggling with something, offer targeted help and practice sugg
     }
 
     return {
-        content: result.response.text(),
+        content,
         actions: actions.length > 0 ? actions : ["generate_quiz", "explain_concept"]
     };
 }
@@ -754,8 +770,6 @@ router.get("/track-progress", verifyToken, async (req, res) => {
         }
 
         // Generate AI progress report
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         const prompt = `Generate a motivational progress report for this student:
 
 Student Profile:
@@ -777,8 +791,10 @@ Create an encouraging progress report that:
 
 Keep it positive, specific, and under 200 words.`;
 
-        const result = await model.generateContent(prompt);
-        const progressReport = result.response.text();
+        const progressReport = await generateFromGemini(prompt, { 
+            preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
+            maxRetries: 3 
+        });
 
         res.json({
             progressReport,
