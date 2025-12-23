@@ -28,6 +28,9 @@ const delByPattern = async (pattern) => {
             MATCH: pattern,
             COUNT: "100",
         });
+        if (!reply) {
+            break;
+        }
         cursor = reply.cursor;
         if (reply.keys.length > 0) {
             await redisClient.del(reply.keys);
