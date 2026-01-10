@@ -1,6 +1,8 @@
 import StudyGroup from "../models/StudyGroup.js";
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
+import StudySession from '../models/StudySession.js';
+import CollaborativeNote from '../models/CollaborativeNote.js';
 import logger from "../utils/logger.js";
 
 // Create study group
@@ -73,6 +75,142 @@ export const createStudyGroup = async (req, res) => {
 
     } catch (error) {
         logger.error({ message: `Error creating study group by user ${req.user.id}`, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const getStudySessions = async (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const sessions = await StudySession.find({ groupId }).populate('host', 'name');
+        res.json({ sessions });
+    } catch (error) {
+        logger.error(`Error getting study sessions for group ${req.params.groupId}: ${error.message}`);
+        res.status(500).json({ message: 'Failed to get study sessions' });
+    }
+};
+
+// ===================== COLLABORATIVE NOTES =====================
+
+export const createNote = async (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const { title, content } = req.body;
+        const userId = req.user.id;
+
+        const note = new CollaborativeNote({
+            groupId,
+            title,
+            content,
+            createdBy: userId,
+            lastModifiedBy: userId,
+        });
+
+        await note.save();
+        res.status(201).json({ message: 'Note created successfully', note });
+    } catch (error) {
+        logger.error(`Error creating note in group ${req.params.groupId}: ${error.message}`);
+        res.status(500).json({ message: 'Failed to create note' });
+    }
+};
+
+export const getNotes = async (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const notes = await CollaborativeNote.find({ groupId }).populate('lastModifiedBy', 'name');
+        res.json({ notes });
+    } catch (error) {
+        logger.error(`Error getting notes for group ${req.params.groupId}: ${error.message}`);
+        res.status(500).json({ message: 'Failed to get notes' });
+    }
+};
+
+export const updateNote = async (req, res) => {
+    try {
+        const { noteId } = req.params;
+        const { title, content } = req.body;
+        const userId = req.user.id;
+
+        const note = await CollaborativeNote.findById(noteId);
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
+
+        note.title = title || note.title;
+        note.content = content || note.content;
+        note.lastModifiedBy = userId;
+        note.editHistory.push({ editor: userId, editedAt: new Date() });
+
+        await note.save();
+        res.json({ message: 'Note updated successfully', note });
+    } catch (error) {
+        logger.error(`Error updating note ${req.params.noteId}: ${error.message}`);
+        res.status(500).json({ message: 'Failed to update note' });
+    }
+};
+
+export const deleteNote = async (req, res) => {
+    try {
+        const { noteId } = req.params;
+        await CollaborativeNote.findByIdAndDelete(noteId);
+        res.json({ message: 'Note deleted successfully' });
+    } catch (error) {
+        logger.error(`Error deleting note ${req.params.noteId}: ${error.message}`);
+        res.status(500).json({ message: 'Failed to delete note' });
+    }
+};
+
+// Schedule a new study session (admin only)
+export const scheduleSession = async (req, res) => {
+    logger.info(`User ${req.user.id} attempting to schedule a session in group ${req.params.groupId}`);
+    try {
+        const { groupId } = req.params;
+        const { title, description, scheduledTime, duration, resources } = req.body;
+        const userId = req.user.id;
+
+        const studyGroup = await StudyGroup.findById(groupId);
+        if (!studyGroup) {
+            logger.warn(`Study group not found: ${groupId} when scheduling session`);
+            return res.status(404).json({ message: "Study group not found" });
+        }
+
+        // Check if user is admin
+        const member = studyGroup.members.find(member => member.user.toString() === userId);
+        if (!member || member.role !== "admin") {
+            logger.warn(`User ${userId} attempted to schedule a session in group ${groupId} without admin privileges`);
+            return res.status(403).json({ message: "Only admins can schedule sessions" });
+        }
+
+        const session = new StudySession({
+            groupId,
+            title,
+            description,
+            scheduledTime,
+            duration,
+            host: userId,
+            resources: resources || [],
+        });
+
+        await session.save();
+
+        // Add activity to group
+        studyGroup.activities.push({
+            type: "session_scheduled",
+            user: userId,
+            details: {
+                sessionId: session._id,
+                title: session.title,
+                scheduledTime: session.scheduledTime,
+            },
+            timestamp: new Date(),
+        });
+        await studyGroup.save();
+
+        logger.info(`Session ${session._id} scheduled successfully in group ${groupId} by user ${userId}`);
+        res.status(201).json({ message: "Study session scheduled successfully", session });
+
+    } catch (error) {
+        logger.error(`Error scheduling session in group ${req.params.groupId} by user ${req.user.id}: ${error.message}`);
         res.status(500).json({ message: "Server error" });
     }
 };

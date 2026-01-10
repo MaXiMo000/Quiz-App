@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import axios from '../utils/axios';
 import config from '../config/config';
@@ -8,6 +9,7 @@ import { useNotification } from '../hooks/useNotification';
 import './RealTimeQuiz.css';
 
 const RealTimeQuiz = () => {
+    const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
     const [socketAuthenticated, setSocketAuthenticated] = useState(false); // Force re-render when auth completes
     const [gameState, setGameState] = useState('menu'); // menu, creating, lobby, playing, results
@@ -314,7 +316,8 @@ const RealTimeQuiz = () => {
 
         // Show results for a few seconds, then auto-advance
         setTimeout(() => {
-            if (data.questionIndex < roomData.quiz.questionCount - 1) {
+            // Add null checks to prevent errors when roomData is null
+            if (roomData && roomData.quiz && data.questionIndex < roomData.quiz.questionCount - 1) {
                 setGameState('waiting-next');
             }
         }, 5000);
@@ -435,6 +438,21 @@ const RealTimeQuiz = () => {
             quizId: selectedQuiz._id,
             settings: roomSettings
         });
+    };
+
+    const createCollaborativeRoom = async () => {
+        if (!selectedQuiz) {
+            showError('Please select a quiz first');
+            return;
+        }
+
+        const response = await axios.post('/api/collaborative/sessions', {
+            quizId: selectedQuiz._id,
+            settings: { ...roomSettings, mode: 'collaborative' }
+        });
+
+        const { session } = response.data;
+        navigate(`/collaborative-quiz/${session.roomId}`);
     };
 
     const joinRoom = async (roomId) => {
@@ -622,7 +640,7 @@ const RealTimeQuiz = () => {
                                 </option>
                                 {!isLoadingQuizzes && !quizLoadError && quizzes.map(quiz => (
                                     <option key={quiz._id} value={quiz._id}>
-                                        {quiz.title} - {quiz.category} ({quiz.questions?.length || 0} questions)
+                                        {quiz.title.length > 30 ? `${quiz.title.substring(0, 30)}...` : quiz.title} - {quiz.category} ({quiz.questions?.length || 0}q)
                                     </option>
                                 ))}
                             </select>
@@ -689,7 +707,16 @@ const RealTimeQuiz = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            {isLoadingQuizzes ? 'Loading...' : 'Create Room 🚀'}
+                            {isLoadingQuizzes ? 'Loading...' : 'Create Competitive Room 🚀'}
+                        </motion.button>
+                        <motion.button
+                            className="create-room-btn collaborative"
+                            onClick={createCollaborativeRoom}
+                            disabled={!selectedQuiz || isLoadingQuizzes}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            {isLoadingQuizzes ? 'Loading...' : 'Create Collaborative Room 🤝'}
                         </motion.button>
                     </div>
                 </motion.div>
@@ -718,7 +745,6 @@ const RealTimeQuiz = () => {
                                 <motion.div
                                     key={room.id}
                                     className="room-card"
-                                    whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={() => joinRoom(room.id)}
                                 >
@@ -740,75 +766,92 @@ const RealTimeQuiz = () => {
         </div>
     );
 
-    const renderLobby = () => (
-        <div className="quiz-lobby">
-            <div className="lobby-header">
-                <div className="room-info">
-                    <h2>Room: {roomData.id}</h2>
-                    <p>{roomData.quiz.title} • {roomData.quiz.questionCount} questions</p>
-                </div>
-                <button className="leave-btn" onClick={leaveRoom}>
-                    Leave Room
-                </button>
-            </div>
-
-            <div className="lobby-content">
-                <div className="players-section">
-                    <h3>Players ({roomData.playerCount}/{roomData.settings.maxPlayers})</h3>
-                    <div className="players-grid">
-                        {roomData.players.map((player, index) => (
-                            <motion.div
-                                key={player.id}
-                                className={`player-card ${player.id === roomData.hostId ? 'host' : ''}`}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <div className="player-avatar">{player.avatar}</div>
-                                <div className="player-info">
-                                    <div className="player-name">
-                                        {player.name}
-                                        {player.id === roomData.hostId && <span className="host-badge">👑</span>}
-                                    </div>
-                                    <div className="player-level">Level {player.level}</div>
-                                </div>
-                            </motion.div>
-                        ))}
-
-                        {/* Empty slots */}
-                        {Array.from({ length: roomData.settings.maxPlayers - roomData.playerCount }).map((_, index) => (
-                            <div key={`empty-${index}`} className="player-card empty">
-                                <div className="empty-slot">Waiting for player...</div>
-                            </div>
-                        ))}
+    const renderLobby = () => {
+        // Add null check to prevent errors when roomData is null
+        if (!roomData) {
+            return (
+                <div className="quiz-lobby">
+                    <div className="lobby-header">
+                        <div className="room-info">
+                            <h2>Loading room data...</h2>
+                        </div>
+                        <button className="leave-btn" onClick={leaveRoom}>
+                            Leave Room
+                        </button>
                     </div>
-
-                    {!socket && (
-                        <motion.button
-                            className="start-quiz-btn"
-                            onClick={connectSocket}
-                            style={{ background: '#667eea', marginBottom: '10px' }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            Connect to Server 🔌
-                        </motion.button>
-                    )}
-
-                    {roomData && roomData.hostId && socket && socket.userInfo && socketAuthenticated && (
-                        roomData.hostId === socket.userInfo.id
-                    ) && (
-                        <motion.button
-                            className="start-quiz-btn"
-                            onClick={startQuiz}
-                            disabled={roomData.playerCount < 2}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            {roomData.playerCount < 2 ? 'Need at least 2 players' : 'Start Quiz! 🎯'}
-                        </motion.button>
-                    )}
                 </div>
+            );
+        }
+
+        return (
+            <div className="quiz-lobby">
+                <div className="lobby-header">
+                    <div className="room-info">
+                        <h2>Room: {roomData.id}</h2>
+                        <p>{roomData.quiz?.title || 'Unknown Quiz'} • {roomData.quiz?.questionCount || 0} questions</p>
+                    </div>
+                    <button className="leave-btn" onClick={leaveRoom}>
+                        Leave Room
+                    </button>
+                </div>
+
+                <div className="lobby-content">
+                    <div className="players-section">
+                        <h3>Players ({roomData.playerCount || 0}/{roomData.settings?.maxPlayers || 0})</h3>
+                        <div className="players-grid">
+                            {roomData.players?.map((player, index) => (
+                                <motion.div
+                                    key={player.id}
+                                    className={`player-card ${player.id === roomData.hostId ? 'host' : ''}`}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
+                                    <div className="player-avatar">{player.avatar}</div>
+                                    <div className="player-info">
+                                        <div className="player-name">
+                                            {player.name}
+                                            {player.id === roomData.hostId && <span className="host-badge">👑</span>}
+                                        </div>
+                                        <div className="player-level">Level {player.level}</div>
+                                    </div>
+                                </motion.div>
+                            )) || []}
+
+                            {/* Empty slots */}
+                            {Array.from({ length: (roomData.settings?.maxPlayers || 0) - (roomData.playerCount || 0) }).map((_, index) => (
+                                <div key={`empty-${index}`} className="player-card empty">
+                                    <div className="empty-slot">Waiting for player...</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {!socket && (
+                            <motion.button
+                                className="start-quiz-btn"
+                                onClick={connectSocket}
+                                style={{ background: '#667eea', marginBottom: '10px' }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                Connect to Server 🔌
+                            </motion.button>
+                        )}
+
+                        {roomData && roomData.hostId && socket && socket.userInfo && socketAuthenticated && (
+                            roomData.hostId === socket.userInfo.id
+                        ) && (
+                            <motion.button
+                                className="start-quiz-btn"
+                                onClick={startQuiz}
+                                disabled={roomData.playerCount < 2}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                {roomData.playerCount < 2 ? 'Need at least 2 players' : 'Start Quiz! 🎯'}
+                            </motion.button>
+                        )}
+                    </div>
 
                 <div className="chat-section">
                     <h3>Chat</h3>
@@ -841,6 +884,7 @@ const RealTimeQuiz = () => {
             </div>
         </div>
     );
+    };
 
     const renderQuestionPhase = () => (
         <div className="quiz-playing">

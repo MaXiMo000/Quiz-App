@@ -8,6 +8,7 @@ import { getWeeklyXP, getMonthlyXP } from "../controllers/leaderboardController.
 import { runMigration } from "../controllers/migrationController.js";
 import { cleanupEmptyChallenges, cleanupEmptyTournaments } from "../controllers/gamificationController.js";
 import reviewRoutes from "./reviewRoutes.js";
+import collaborativeRoutes from "./collaborativeRoutes.js";
 import { verifyToken } from "../middleware/auth.js";
 import cache, { clearCacheByPattern } from "../middleware/cache.js";
 import { aiQuestionLimiter } from "../middleware/rateLimiting.js";
@@ -51,5 +52,8 @@ router.delete("/tournaments/cleanup-empty", verifyToken, clearCacheByPattern("/a
 
 // Review Routes (Spaced Repetition)
 router.use("/reviews", reviewRoutes);
+
+// Collaborative Routes
+router.use("/collaborative", collaborativeRoutes);
 
 export default router;

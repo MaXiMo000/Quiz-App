@@ -2,6 +2,27 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
+// Import all models to ensure they are registered with Mongoose
+import '../models/User.js';
+import '../models/Quiz.js';
+import '../models/CollaborativeSession.js';
+import '../models/StudyGroup.js';
+import '../models/StudySession.js';
+import '../models/CollaborativeNote.js';
+import '../models/GroupChallenge.js';
+import '../models/DailyChallenge.js';
+import '../models/Tournament.js';
+import '../models/WrittenTest.js';
+import '../models/Report.js';
+import '../models/ReviewSchedule.js';
+import '../models/XPLog.js';
+import '../models/Friend.js';
+import '../models/LearningAnalytics.js';
+import '../models/LearningPath.js';
+import '../models/CognitiveMetrics.js';
+import '../models/WrittenTestReport.js';
+
+
 dotenv.config({ path: "./.env.test" });
 
 // Set NODE_ENV to test

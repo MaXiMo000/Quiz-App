@@ -2,6 +2,7 @@ import DailyChallenge from "../models/DailyChallenge.js";
 import Tournament from "../models/Tournament.js";
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
+import GroupChallenge from '../models/GroupChallenge.js';
 import logger from "../utils/logger.js";
 
 // ===================== DAILY CHALLENGES =====================
@@ -108,6 +109,91 @@ export const getCurrentDailyChallenge = async (req, res) => {
     } catch (error) {
         logger.error({ message: `Error getting daily challenges for user ${req.user.id}`, error: error.message, stack: error.stack });
         res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ===================== GROUP CHALLENGES =====================
+
+export const createGroupChallenge = async (req, res) => {
+    logger.info(`Admin ${req.user.id} attempting to create a group challenge`);
+    try {
+        const userRole = req.user.role;
+        if (userRole !== "admin") {
+            logger.warn(`Non-admin user ${req.user.id} attempted to create a group challenge`);
+            return res.status(403).json({ message: "Only admins can create group challenges" });
+        }
+
+        const { title, description, quizId, startTime, endTime } = req.body;
+
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
+        }
+
+        const groupChallenge = new GroupChallenge({
+            title,
+            description,
+            quiz: quizId,
+            startTime,
+            endTime,
+        });
+
+        await groupChallenge.save();
+
+        logger.info(`Admin ${req.user.id} successfully created group challenge ${groupChallenge._id}`);
+        res.status(201).json({ message: "Group challenge created successfully", groupChallenge });
+
+    } catch (error) {
+        logger.error(`Error creating group challenge by admin ${req.user.id}: ${error.message}`);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const joinGroupChallenge = async (req, res) => {
+    try {
+        const { challengeId } = req.params;
+        const { groupId } = req.body;
+
+        const challenge = await GroupChallenge.findById(challengeId);
+        if (!challenge) {
+            return res.status(404).json({ message: "Challenge not found" });
+        }
+
+        if (challenge.participatingGroups.some(g => g.groupId.toString() === groupId)) {
+            return res.status(400).json({ message: "Group already participating" });
+        }
+
+        challenge.participatingGroups.push({ groupId });
+        await challenge.save();
+        res.json({ message: "Successfully joined challenge", challenge });
+    } catch (error) {
+        logger.error(`Error joining group challenge: ${error.message}`);
+        res.status(500).json({ message: "Failed to join challenge" });
+    }
+};
+
+export const submitGroupChallengeScore = async (req, res) => {
+    try {
+        const { challengeId } = req.params;
+        const { groupId, score } = req.body;
+
+        const challenge = await GroupChallenge.findById(challengeId);
+        if (!challenge) {
+            return res.status(404).json({ message: "Challenge not found" });
+        }
+
+        const group = challenge.participatingGroups.find(g => g.groupId.toString() === groupId);
+        if (!group) {
+            return res.status(400).json({ message: "Group not participating" });
+        }
+
+        group.score = score;
+        group.completedAt = new Date();
+        await challenge.save();
+        res.json({ message: "Score submitted successfully", challenge });
+    } catch (error) {
+        logger.error(`Error submitting group challenge score: ${error.message}`);
+        res.status(500).json({ message: "Failed to submit score" });
     }
 };
 
