@@ -116,6 +116,9 @@ passport.use(
 
                     user.lastLogin = new Date();
 
+                    // Note: IP address will be saved in the callback route handler
+                    // since passport strategy doesn't have direct access to req object
+
                     // ✅ Award XP bonus for Google OAuth users too
                     const loginBonusXP = 50;
                     user.xp += loginBonusXP;

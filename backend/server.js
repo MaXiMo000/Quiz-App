@@ -403,6 +403,38 @@ const startServer = async () => {
                     stack: error.stack
                 });
             });
+
+        // ===================== USER ONLINE STATUS CLEANUP =====================
+        // Mark users as offline if they haven't been seen in 15 minutes
+        // Runs every 5 minutes to keep status accurate
+        cron.schedule("*/5 * * * *", () => {
+            setImmediate(async () => {
+                try {
+                    const UserQuiz = (await import("./models/User.js")).default;
+                    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+
+                    const result = await UserQuiz.updateMany(
+                        {
+                            isOnline: true,
+                            lastSeen: { $lt: fifteenMinutesAgo }
+                        },
+                        {
+                            $set: { isOnline: false }
+                        }
+                    );
+
+                    if (result.modifiedCount > 0) {
+                        logger.debug(`Marked ${result.modifiedCount} users as offline (inactive for 15+ minutes)`);
+                    }
+                } catch (error) {
+                    logger.error({
+                        message: "Error updating user online status",
+                        error: error.message,
+                        stack: error.stack
+                    });
+                }
+            });
+        });
     } catch (err) {
         logger.error({
             message: "Server Startup Error",

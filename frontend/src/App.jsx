@@ -85,6 +85,61 @@ const App = () => {
         }
     }, []);
 
+    // ✅ Handle logout on browser/tab close or visibility change
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                // Use fetch with keepalive for reliable delivery even when page is closing
+                const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+                fetch(`${backendURL}/api/users/logout`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({}),
+                    keepalive: true // Ensures request completes even if page closes
+                }).catch(() => {
+                    // Silently fail - page is closing anyway
+                });
+            }
+        };
+
+        const handleVisibilityChange = async () => {
+            // When tab becomes hidden (user switches tabs or minimizes), update lastSeen
+            if (document.hidden) {
+                const token = localStorage.getItem("token");
+                if (token) {
+                    try {
+                        // Use fetch with keepalive for better reliability
+                        const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+                        await fetch(`${backendURL}/api/users/me`, {
+                            method: "GET",
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            },
+                            keepalive: true
+                        });
+                    } catch (error) {
+                        // Silently fail - this is just a heartbeat update
+                        console.debug("Visibility change heartbeat failed:", error);
+                    }
+                }
+            }
+        };
+
+        // Add event listeners
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
+    }, []);
+
     // ✅ PWA initialization and management
     useEffect(() => {
         // Initialize PWA manager
