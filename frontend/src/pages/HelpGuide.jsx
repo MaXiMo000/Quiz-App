@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Loading from '../components/Loading';
 import './HelpGuide.css';
 
 const HelpGuide = () => {
+    const [loading, setLoading] = useState(true);
     const [activeSection, setActiveSection] = useState('overview');
     const [activeSubSection, setActiveSubSection] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredSections, setFilteredSections] = useState([]);
+
+    React.useEffect(() => {
+        // Simulate loading time for smooth transition
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, []);
 
     const sections = [
         {
@@ -488,13 +498,27 @@ const HelpGuide = () => {
 
     const currentContent = getCurrentContent();
 
+    if (loading) {
+        return <Loading fullScreen={true} />;
+    }
+
     return (
         <div className="help-guide-container">
+            {/* Floating Background Orbs */}
+            <div className="floating-elements">
+                <div className="floating-circle floating-circle-1"></div>
+                <div className="floating-circle floating-circle-2"></div>
+                <div className="floating-circle floating-circle-3"></div>
+                <div className="floating-circle floating-circle-4"></div>
+                <div className="floating-circle floating-circle-5"></div>
+            </div>
+
             <div className="help-guide-header">
                 <motion.h1
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
+                    className="help-title"
                 >
                     📚 QuizNest Help Guide
                 </motion.h1>
