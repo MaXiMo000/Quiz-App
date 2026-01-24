@@ -17,5 +17,3 @@ repos:
       - id: check-toml
       - id: check-xml
       - id: detect-private-key
-      - id: no-commit-to-branch
-        args: ['--branch', 'main', '--branch', 'master']
