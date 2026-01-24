@@ -24,8 +24,18 @@ const USER_SPECIFIC_ENDPOINTS = [
   '/challenges/daily',  // User-specific daily challenge
   '/challenges/status', // User-specific challenge status
   '/challenges/history', // User-specific challenge history
+  '/challenges/',       // Challenge-specific routes (history, etc.)
+  '/challenges/completed', // User-specific completed challenges
   '/tournaments',       // User-specific tournaments (filtered by participation)
   '/tournaments/history', // User-specific tournament history
+  '/tournaments/completed', // User-specific completed tournaments
+  '/study-groups',      // User-specific study groups (user's groups)
+  '/study-groups/',     // Specific study group (user-specific based on membership)
+  '/friends',           // User-specific friends list
+  '/friends/requests',  // User-specific friend requests
+  '/learning-paths',    // User-specific learning paths (progress tracking)
+  '/learning-paths/',   // Specific learning path (user-specific progress)
+  '/competencies/user', // User-specific competencies
 ];
 
 /**

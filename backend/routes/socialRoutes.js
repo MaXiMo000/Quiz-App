@@ -12,6 +12,7 @@ import {
     getBlockedUsers
 } from "../controllers/socialController.js";
 import { verifyToken } from "../middleware/auth.js";
+import cache, { clearCacheByPattern } from "../middleware/cache.js";
 
 const router = express.Router();
 
@@ -19,17 +20,17 @@ const router = express.Router();
 router.use(verifyToken);
 
 // Friend system routes
-router.post("/friends/request", sendFriendRequest);
-router.post("/friends/respond", respondToFriendRequest);
-router.get("/friends", getFriends);
-router.get("/friends/requests", getPendingRequests);
-router.delete("/friends/:friendId", removeFriend);
-router.get("/friends/:friendId/progress", getFriendProgress);
+router.post("/friends/request", clearCacheByPattern("/api/friends"), sendFriendRequest);
+router.post("/friends/respond", clearCacheByPattern("/api/friends"), respondToFriendRequest);
+router.get("/friends", cache, getFriends);
+router.get("/friends/requests", cache, getPendingRequests);
+router.delete("/friends/:friendId", clearCacheByPattern("/api/friends"), removeFriend);
+router.get("/friends/:friendId/progress", cache, getFriendProgress);
 
 // Blocking system routes
-router.post("/users/:userId/block", blockUser);
-router.delete("/users/:userId/block", unblockUser);
-router.get("/blocked", getBlockedUsers);
+router.post("/users/:userId/block", clearCacheByPattern("/api/friends"), blockUser);
+router.delete("/users/:userId/block", clearCacheByPattern("/api/friends"), unblockUser);
+router.get("/blocked", cache, getBlockedUsers);
 
 // User search
 router.get("/users/search", searchUsers);
