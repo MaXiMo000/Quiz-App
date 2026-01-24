@@ -19,11 +19,29 @@ const SpacedRepetition = () => {
     const fetchReviews = async () => {
       try {
         const res = await axios.get("/api/reviews");
-        setReviews(res.data);
+        
+        // Check if response data is an array
+        if (!Array.isArray(res.data)) {
+          console.error("Invalid response format:", res.data);
+          setReviews([]);
+          setLoading(false);
+          fetchingRef.current = false;
+          return;
+        }
+
+        // Filter out reviews with missing question data
+        const validReviews = res.data.filter(review => 
+          review && 
+          review.question && 
+          review.quiz && 
+          review.quiz._id
+        );
+
+        setReviews(validReviews);
 
         // Initialize quiz progress tracking
         const progress = {};
-        res.data.forEach((review) => {
+        validReviews.forEach((review) => {
           const quizId = review.quiz._id;
           if (!progress[quizId]) {
             progress[quizId] = {
@@ -37,6 +55,7 @@ const SpacedRepetition = () => {
         setQuizProgress(progress);
       } catch (error) {
         console.error("Error fetching reviews:", error);
+        setReviews([]);
         // Reset fetching flag on error so user can retry
         fetchingRef.current = false;
       } finally {
@@ -105,13 +124,31 @@ const SpacedRepetition = () => {
     );
   }
 
+  // Safety check for currentReview
+  if (!reviews[currentReviewIndex]) {
+    return (
+      <div className="spaced-repetition">
+        <div className="spaced-repetition-container">
+          <div className="spaced-repetition-header">
+            <h2>🧠 Spaced Repetition</h2>
+            <p>Master your knowledge with scientifically-proven spaced repetition</p>
+          </div>
+          <div className="spaced-repetition-empty">
+            <h2>🎉 All Caught Up!</h2>
+            <p>No reviews available at this time.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentReview = reviews[currentReviewIndex];
-  const question = currentReview.question;
-  const quizId = currentReview.quiz._id;
-  const isFirstTimeForQuiz = quizProgress[quizId]?.isFirstTime !== false;
+  const question = currentReview?.question;
+  const quizId = currentReview?.quiz?._id;
+  const isFirstTimeForQuiz = quizId ? (quizProgress[quizId]?.isFirstTime !== false) : true;
 
   // Handle case where question data is missing
-  if (!question) {
+  if (!question || !quizId) {
     return (
       <div className="spaced-repetition">
         <div className="spaced-repetition-container">
