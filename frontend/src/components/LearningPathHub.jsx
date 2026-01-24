@@ -215,8 +215,9 @@ const LearningPathHub = () => {
                     <motion.div
                         key={path._id}
                         className="path-card"
-                        whileHover={{ scale: 1.02, y: -5 }}
-                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
                     >
                         <div className="path-header">
                             <h3>{path.title}</h3>

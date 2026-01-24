@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+import axios from '../utils/axios';
 import './AIStudyBuddy.css';
 import {
     QuizCreatorModal,
@@ -75,17 +75,13 @@ const AIStudyBuddy = () => {
     const startSession = async () => {
         try {
             setIsLoading(true);
-            const token = localStorage.getItem('token');
             const response = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/start-session`,
+                '/api/ai-study-buddy/start-session',
                 {
                     preferences: {
                         learningStyle: 'visual',
                         difficulty: 'intermediate'
                     }
-                },
-                {
-                    headers: { Authorization: `Bearer ${token}` }
                 }
             );
 
@@ -112,12 +108,8 @@ const AIStudyBuddy = () => {
 
     const loadRecommendations = async () => {
         try {
-            const token = localStorage.getItem('token');
             const response = await axios.get(
-                `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/recommendations`,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
+                '/api/ai-study-buddy/recommendations'
             );
             setRecommendations(response.data.recommendations);
         } catch (error) {
@@ -141,15 +133,11 @@ const AIStudyBuddy = () => {
         setIsTyping(true);
 
         try {
-            const token = localStorage.getItem('token');
             const response = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/chat`,
+                '/api/ai-study-buddy/chat',
                 {
                     message: message,
                     requestType: requestType
-                },
-                {
-                    headers: { Authorization: `Bearer ${token}` }
                 }
             );
 
@@ -186,7 +174,6 @@ const AIStudyBuddy = () => {
     const generateQuiz = async (topic, difficulty = 'medium', questionCount = 5) => {
         try {
             setIsLoading(true);
-            const token = localStorage.getItem('token');
 
             // Validate inputs
             const validDifficulties = ['easy', 'medium', 'hard'];
@@ -208,14 +195,11 @@ const AIStudyBuddy = () => {
             setMessages(prev => [...prev, generatingMessage]);
 
             const response = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/generate-quiz`,
+                '/api/ai-study-buddy/generate-quiz',
                 {
                     topic: topic || 'general knowledge',
                     difficulty: normalizedDifficulty,
                     questionCount: validQuestionCount
-                },
-                {
-                    headers: { Authorization: `Bearer ${token}` }
                 }
             );
 
@@ -247,13 +231,9 @@ const AIStudyBuddy = () => {
 
     const endSession = async () => {
         try {
-            const token = localStorage.getItem('token');
             await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/end-session`,
-                {},
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
+                '/api/ai-study-buddy/end-session',
+                {}
             );
 
             setIsSessionActive(false);
@@ -368,19 +348,15 @@ const AIStudyBuddy = () => {
     const handleSaveStudyPlan = async () => {
         try {
             setIsLoading(true);
-            const token = localStorage.getItem('token');
 
             // Get the last study plan from messages
             const lastMessage = messages[messages.length - 1];
             if (lastMessage && lastMessage.role === 'assistant') {
                 const response = await axios.post(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/save-study-plan`,
+                    '/api/ai-study-buddy/save-study-plan',
                     {
                         studyPlanContent: lastMessage.content,
                         timestamp: new Date()
-                    },
-                    {
-                        headers: { Authorization: `Bearer ${token}` }
                     }
                 );
 
@@ -412,16 +388,12 @@ const AIStudyBuddy = () => {
     const handleSetReminders = async (reminderTime) => {
         try {
             setIsLoading(true);
-            const token = localStorage.getItem('token');
 
             const response = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/set-reminder`,
+                '/api/ai-study-buddy/set-reminder',
                 {
                     reminderText: reminderTime,
                     context: 'study_session'
-                },
-                {
-                    headers: { Authorization: `Bearer ${token}` }
                 }
             );
 
@@ -451,13 +423,9 @@ const AIStudyBuddy = () => {
     const handleTrackImprovement = async () => {
         try {
             setIsLoading(true);
-            const token = localStorage.getItem('token');
 
             const response = await axios.get(
-                `${import.meta.env.VITE_BACKEND_URL}/api/ai-study-buddy/track-progress`,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
+                '/api/ai-study-buddy/track-progress'
             );
 
             const progressMessage = {
@@ -523,12 +491,12 @@ const AIStudyBuddy = () => {
 
     const MessageBubble = ({ message }) => (
         <motion.div
-            className={`message ${message.role}`}
+            className={`message ${message.role} ${message.isError ? 'isError' : ''}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <div className="message-content">
+            <div className={`message-content ${message.isError ? 'error-content' : ''}`}>
                 {message.content}
 
                 {/* Quiz Component */}

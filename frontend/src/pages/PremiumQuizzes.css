@@ -405,6 +405,7 @@ html.premium-quizzes-page .main-content {
     grid-template-rows: auto auto;
     gap: 1rem;
     margin-bottom: 2rem;
+    align-items: stretch;
 }
 
 .quiz-actions button {
@@ -423,6 +424,10 @@ html.premium-quizzes-page .main-content {
     overflow: hidden;
     text-transform: uppercase;
     letter-spacing: 0.3px;
+    min-height: 48px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 .premium-quiz-container .quiz-actions .premium-ai-btn,
@@ -436,15 +441,20 @@ html.premium-quizzes-page .main-content {
     border: 2px solid var(--premium-border) !important;
     transform: none !important;
     margin-top: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    min-height: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 48px !important;
+    height: 100% !important;
     padding: 1rem 1.2rem !important;
     font-size: 0.95rem !important;
     font-weight: 700 !important;
     border-radius: 1rem !important;
     backdrop-filter: none !important;
     box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
 }
 
 .premium-quiz-container .quiz-actions .premium-ai-btn:hover,
@@ -469,14 +479,19 @@ html.premium-quizzes-page .main-content {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
     transform: none !important;
     margin-top: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    min-height: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 48px !important;
+    height: 100% !important;
     padding: 1rem 1.2rem !important;
     font-size: 0.95rem !important;
     font-weight: 700 !important;
     border-radius: 1rem !important;
     backdrop-filter: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
 }
 
 .premium-quiz-container .quiz-actions .delete-btn::before,

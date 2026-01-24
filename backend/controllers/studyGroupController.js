@@ -35,12 +35,7 @@ export const createStudyGroup = async (req, res) => {
                 role: "admin",
                 joinedAt: new Date()
             }],
-            activities: [{
-                type: "member_joined",
-                user: creatorId,
-                details: { message: "Study group created" },
-                timestamp: new Date()
-            }]
+            activities: []
         });
 
         await studyGroup.save();
@@ -111,6 +106,10 @@ export const joinStudyGroup = async (req, res) => {
             return res.status(400).json({ message: "Study group is full" });
         }
 
+        // Get user's name for activity message
+        const user = await UserQuiz.findById(userId).select("name");
+        const userName = user?.name || "Unknown User";
+
         // Add member
         studyGroup.members.push({
             user: userId,
@@ -118,11 +117,11 @@ export const joinStudyGroup = async (req, res) => {
             joinedAt: new Date()
         });
 
-        // Add activity
+        // Add activity with user's name
         studyGroup.activities.push({
             type: "member_joined",
             user: userId,
-            details: { message: "Joined the group" },
+            details: { message: `${userName} joined the group` },
             timestamp: new Date()
         });
 
@@ -183,6 +182,10 @@ export const leaveStudyGroup = async (req, res) => {
             }
         }
 
+        // Get user's name for activity message
+        const user = await UserQuiz.findById(userId).select("name");
+        const userName = user?.name || "Unknown User";
+
         // Remove member
         studyGroup.members.splice(memberIndex, 1);
 
@@ -192,11 +195,11 @@ export const leaveStudyGroup = async (req, res) => {
             logger.info(`Deactivated study group ${groupId} as it has no members left`);
         }
 
-        // Add activity
+        // Add activity with user's name
         studyGroup.activities.push({
             type: "member_left",
             user: userId,
-            details: { message: "Left the group" },
+            details: { message: `${userName} left the group` },
             timestamp: new Date()
         });
 

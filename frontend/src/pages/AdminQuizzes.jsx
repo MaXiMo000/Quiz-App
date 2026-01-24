@@ -10,29 +10,29 @@ import Loading from "../components/Loading";
 
 const AdminQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
-    const [selectedQuizId, setSelectedQuizId] = useState(null); // Track quiz for adding questions
+    const [selectedQuizId, setSelectedQuizId] = useState(null);
     const [aiTopic, setAiTopic] = useState("");
     const [aiNumQuestions, setAiNumQuestions] = useState("");
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+    const navigate = useNavigate();
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
-    // Fetch existing quizzes
     const getQuiz = async () => {
         try {
-            const response = await axios.get('/api/quizzes'); // auto-token
+            const response = await axios.get('/api/quizzes');
             setQuizzes(response.data);
         } catch (error) {
             console.error("Error fetching quizzes:", error);
             setError("Error fetching Quiz. Try again later.");
-        }
-        finally{
+        } finally {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         getQuiz();
 
@@ -44,57 +44,64 @@ const AdminQuizzes = () => {
                 modal.close();
             }
         });
+
+        // Add class to body for CSS targeting
+        document.body.classList.add('admin-quizzes-page');
+        document.documentElement.classList.add('admin-quizzes-page');
+
+        // Cleanup on unmount
+        return () => {
+            document.body.classList.remove('admin-quizzes-page');
+            document.documentElement.classList.remove('admin-quizzes-page');
+        };
     }, []);
 
-    // Function to open Add Question modal
     const openAddQuestionModal = (quizId) => {
-        if (!quizId) {
-            showWarning("Please select a quiz first!");
-            return;
-        }
+        if (!quizId) return showWarning("Please select a quiz first!");
         setSelectedQuizId(quizId);
         document.getElementById("add_question_modal").showModal();
     };
 
-    // ✅ Open AI Question Modal
     const openAiQuestionModal = (quizId, category) => {
         setSelectedQuizId(quizId);
-        setAiTopic(category); // ✅ Auto-fill the topic with the quiz category
-        setAiNumQuestions(5); // ✅ Reset to 5 when opening the modal
+        setAiTopic(category);
+        setAiNumQuestions(5);
         document.getElementById("ai_question_modal").showModal();
     };
 
-    // ✅ Handle AI-Powered Question Generation
     const handleAiSubmit = async (event) => {
         event.preventDefault();
-
         if (!aiTopic || aiNumQuestions <= 0) {
             showWarning("Please enter a valid topic and number of questions.");
             return;
         }
 
+        setIsGeneratingAI(true);
         try {
-            const response = await axios.post(`/api/quizzes/${selectedQuizId}/generate-questions`, {
-                topic: aiTopic,
-                numQuestions: Number(aiNumQuestions)
-            },
-            { headers: { "Content-Type": "application/json" } }
-        );
+            const response = await axios.post(
+                `/api/quizzes/${selectedQuizId}/generate-questions`,
+                {
+                    topic: aiTopic,
+                    numQuestions: Number(aiNumQuestions)
+                },
+                { headers: { "Content-Type": "application/json" } }
+            );
 
-        if (response.status !== 200) {
-            throw new Error(`Error Generating questions: ${response.status}`);
-        }
+            if (response.status !== 200) {
+                throw new Error(`Error Generating questions: ${response.status}`);
+            }
 
-        showSuccess("AI-generated questions added successfully!");
-        document.getElementById("ai_question_modal").close();
-        getQuiz(); // ✅ Refresh the quiz list
+            showSuccess("AI-generated questions added successfully!");
+            document.getElementById("ai_question_modal").close();
+            getQuiz();
         } catch (error) {
             console.error("Error generating AI questions:", error);
             showError("Failed to generate AI questions.");
+        } finally {
+            setIsGeneratingAI(false);
         }
     };
 
-    // Handle Quiz Creation (No totalMarks, passingMarks, or duration input)
     const createQuiz = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -105,17 +112,14 @@ const AdminQuizzes = () => {
 
         try {
             await axios.post('/api/quizzes', quizData);
-
             document.getElementById("create_quiz_modal").close();
             getQuiz();
-            // showSuccess("Quiz created successfully!");
         } catch (error) {
             console.error("Error creating quiz:", error);
             showError("Failed to create quiz. Check API response.");
         }
     };
 
-    // Handle Adding Question
     const addQuestion = async (event) => {
         event.preventDefault();
         if (!selectedQuizId) return showWarning("No quiz selected!");
@@ -135,10 +139,8 @@ const AdminQuizzes = () => {
 
         try {
             await axios.post(`/api/quizzes/${selectedQuizId}/questions`, questionData);
-
             document.getElementById("add_question_modal").close();
             getQuiz();
-            // showSuccess("Question added successfully!");
         } catch (error) {
             console.error("Error adding question:", error);
             showError("Failed to add question. Check API response.");
@@ -146,17 +148,13 @@ const AdminQuizzes = () => {
     };
 
     const deleteQuiz = async (title) => {
-        if (!title) {
-            showWarning("Quiz title is missing!");
-            return;
-        }
+        if (!title) return showWarning("Quiz title is missing!");
 
         try {
             const response = await axios.delete(`/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
-
             if (response.status === 200) {
                 showSuccess("Quiz deleted successfully!");
-                getQuiz(); // ✅ Refresh the quiz list
+                getQuiz();
             }
         } catch (error) {
             console.error("Error deleting quiz:", error);
@@ -202,45 +200,22 @@ const AdminQuizzes = () => {
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                    <motion.span
-                        className="header-icon"
-                        animate={{
-                            rotateY: [0, 360],
-                            scale: [1, 1.1, 1]
-                        }}
-                        transition={{
-                            rotateY: { duration: 4, repeat: Infinity },
-                            scale: { duration: 2, repeat: Infinity }
-                        }}
-                    >
-                        📚
-                    </motion.span>
-                    Manage Quizzes
+                    <span className="header-icon">
+                        🛡️
+                    </span>
+                    Admin Quizzes
                 </motion.h2>
-                <motion.button
+                <button
                     className="create-btn"
                     onClick={() => document.getElementById("create_quiz_modal").showModal()}
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    whileHover={{
-                        scale: 1.05,
-                        boxShadow: "0 10px 30px rgba(34, 197, 94, 0.3)",
-                        y: -2
-                    }}
-                    whileTap={{ scale: 0.95 }}
                 >
-                    <motion.span
-                        animate={{ rotate: [0, 90, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                    >
+                    <span>
                         ➕
-                    </motion.span>
+                    </span>
                     Create Quiz
-                </motion.button>
+                </button>
             </motion.div>
 
-            {/* Quiz List */}
             <motion.div
                 className="quiz-list"
                 initial={{ y: 50, opacity: 0 }}
@@ -248,157 +223,146 @@ const AdminQuizzes = () => {
                 transition={{ duration: 0.6, delay: 0.3 }}
             >
                 <AnimatePresence>
-                    {quizzes.map((quiz, index) => (
+                    {quizzes.length === 0 ? (
                         <motion.div
-                            key={quiz._id}
-                            className="quiz-box"
-                            initial={{ x: -100, opacity: 0, scale: 0.8 }}
-                            animate={{ x: 0, opacity: 1, scale: 1 }}
-                            exit={{ x: 100, opacity: 0, scale: 0.8 }}
-                            transition={{
-                                duration: 0.5,
-                                delay: index * 0.1,
-                                type: "spring",
-                                stiffness: 100
-                            }}
-                            whileHover={{
-                                y: -10,
-                                scale: 1.02,
-                                rotateY: 2,
-                                boxShadow: "0 25px 50px rgba(99, 102, 241, 0.2)"
-                            }}
-                            layout
+                            className="empty-state"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5 }}
                         >
-                            <motion.div className="quiz-content">
-                                <motion.h3
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.5 + index * 0.1 }}
-                                >
-                                    {quiz.title}
-                                </motion.h3>
-
-                                <motion.div
-                                    className="quiz-info"
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.6 + index * 0.1 }}
-                                >
-                                    <motion.p whileHover={{ x: 5 }}>
-                                        <span className="info-icon">🏷️</span>
-                                        Category: {quiz.category}
-                                    </motion.p>
-                                    <motion.p whileHover={{ x: 5 }}>
-                                        <span className="info-icon">⏱️</span>
-                                        Duration: {quiz.duration} minutes
-                                    </motion.p>
-                                    <motion.p whileHover={{ x: 5 }}>
-                                        <span className="info-icon">📊</span>
-                                        Total Marks: {quiz.totalMarks}
-                                    </motion.p>
-                                    <motion.p whileHover={{ x: 5 }}>
-                                        <span className="info-icon">✅</span>
-                                        Passing Marks: {quiz.passingMarks}
-                                    </motion.p>
-                                </motion.div>
-
-                                <motion.div
-                                    className="quiz-actions"
-                                    initial={{ y: 30, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.7 + index * 0.1 }}
-                                >
-                                    <motion.button
-                                        className="delete-btn"
-                                        onClick={() => deleteQuiz(quiz.title)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(239, 68, 68, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        🗑️ Delete
-                                    </motion.button>
-
-                                    <motion.button
-                                        className="add-ai-btn"
-                                        onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(168, 85, 247, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <motion.span
-                                            animate={{ rotate: [0, 360] }}
-                                            transition={{ duration: 3, repeat: Infinity }}
-                                        >
-                                            🤖
-                                        </motion.span>
-                                        AI Questions
-                                    </motion.button>
-
-                                    <motion.button
-                                        className="add-question-btn"
-                                        onClick={() => openAddQuestionModal(quiz._id)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(34, 197, 94, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        ➕ Add Question
-                                    </motion.button>
-
-                                    <motion.button
-                                        className="view-questions-btn"
-                                        onClick={() => navigate(`/admin/quiz/${quiz._id}`)}
-                                        whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(59, 130, 246, 0.3)" }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        📜 View Questions
-                                    </motion.button>
-                                </motion.div>
-
-                                <motion.ul
-                                    className="display-ans"
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    transition={{ delay: 0.8 + index * 0.1 }}
-                                >
-                                    {quiz.questions.map((q, i) => (
-                                        <motion.li
-                                            key={i}
-                                            initial={{ x: -20, opacity: 0 }}
-                                            animate={{ x: 0, opacity: 1 }}
-                                            transition={{ delay: 0.9 + index * 0.1 + i * 0.05 }}
-                                            whileHover={{ x: 10, backgroundColor: "rgba(99, 102, 241, 0.05)" }}
-                                        >
-                                            <strong>Q{i + 1}:</strong> {q.question}
-                                            <br />
-                                            <span className="correct-answer">✅ Answer: {q.correctAnswer}</span>
-                                        </motion.li>
-                                    ))}
-                                </motion.ul>
-                            </motion.div>
-
-                            <div className="quiz-bg-effect"></div>
+                            <div className="empty-icon">📚</div>
+                            <h3>No Quizzes Yet</h3>
+                            <p>Create your first quiz to get started!</p>
                         </motion.div>
-                    ))}
+                    ) : (
+                        quizzes.map((quiz, index) => (
+                            <motion.div
+                                key={quiz._id}
+                                className={`quiz-box ${quiz.createdBy?._id ? 'premium-box' : 'admin-box'}`}
+                                initial={{ x: -100, opacity: 0, scale: 0.9 }}
+                                animate={{ x: 0, opacity: 1, scale: 1 }}
+                                exit={{ x: 100, opacity: 0, scale: 0.9 }}
+                                transition={{
+                                    duration: 0.5,
+                                    delay: index * 0.1,
+                                    type: "spring",
+                                    stiffness: 100
+                                }}
+                                whileHover={{
+                                    y: -8,
+                                    scale: 1.02,
+                                    transition: { duration: 0.2 }
+                                }}
+                            >
+                                {quiz.createdBy?._id ? (
+                                    <div className="premium-badge">
+                                        <span>
+                                            👑
+                                        </span>
+                                        PREMIUM
+                                    </div>
+                                ) : (
+                                    <div className="admin-badge">
+                                        <span>
+                                            ⚡
+                                        </span>
+                                        ADMIN
+                                    </div>
+                                )}
+
+                                <div className="quiz-content">
+                                    <h3>
+                                        {quiz.title}
+                                    </h3>
+
+                                    <div className="quiz-info">
+                                        <p>
+                                            <span className="info-icon">🏷️</span>
+                                            Category: {quiz.category}
+                                        </p>
+                                        <p>
+                                            <span className="info-icon">⏰</span>
+                                            Duration: {quiz.duration} minutes
+                                        </p>
+                                        <p>
+                                            <span className="info-icon">📊</span>
+                                            Total Marks: {quiz.totalMarks}
+                                        </p>
+                                        <p>
+                                            <span className="info-icon">✅</span>
+                                            Passing Marks: {quiz.passingMarks}
+                                        </p>
+                                    </div>
+
+                                    <div className="quiz-actions">
+                                        <button
+                                            className="delete-btn admin-delete-btn"
+                                            onClick={() => deleteQuiz(quiz.title)}
+                                        >
+                                            🗑️ Delete
+                                        </button>
+
+                                        <button
+                                            className="add-ai-btn admin-ai-btn"
+                                            onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
+                                        >
+                                            <span>
+                                                🤖
+                                            </span>
+                                            AI Questions
+                                        </button>
+
+                                        <button
+                                            className="add-question-btn admin-add-btn"
+                                            onClick={() => openAddQuestionModal(quiz._id)}
+                                        >
+                                            ➕ Add Question
+                                        </button>
+
+                                        <button
+                                            className="view-questions-btn admin-view-btn"
+                                            onClick={() => navigate(`/admin/quiz/${quiz._id}`)}
+                                        >
+                                            📜 View Questions
+                                        </button>
+                                    </div>
+
+                                    <ul className={`display-ans ${quiz.createdBy?._id ? 'premium-questions' : 'admin-questions'}`}>
+                                        {quiz.questions.map((q, i) => (
+                                            <li key={i}>
+                                                <div className="question-text">
+                                                    <strong>Q{i + 1}:</strong> {q.question}
+                                                </div>
+                                                <div className={`correct-answer ${quiz.createdBy?._id ? 'premium-answer' : 'admin-answer'}`}>
+                                                    {quiz.createdBy?._id ? '👑' : '⚡'} Answer: {q.options && q.options[['A', 'B', 'C', 'D'].indexOf(q.correctAnswer)] || q.correctAnswer}
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div className={quiz.createdBy?._id ? "premium-bg-effect" : "admin-bg-effect"}></div>
+                            </motion.div>
+                        ))
+                    )}
                 </AnimatePresence>
             </motion.div>
 
             {/* AI Question Generation Modal */}
             <dialog
                 id="ai_question_modal"
-                className="modal"
+                className="modal admin-modal"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) {
                         document.getElementById("ai_question_modal").close();
                     }
                 }}
             >
-                <motion.div
-                    className="modal-box"
-                    initial={{ scale: 0.8, opacity: 0, rotateX: -10 }}
-                    animate={{ scale: 1, opacity: 1, rotateX: 0 }}
-                    transition={{ duration: 0.3, type: "spring" }}
-                >
+                <div className="modal-box admin-modal-box">
                     <form onSubmit={handleAiSubmit}>
                         <button
                             type="button"
-                            className="close-btn"
+                            className="close-btn admin-close"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -408,81 +372,58 @@ const AdminQuizzes = () => {
                             ✕
                         </button>
 
-                        <motion.h3
-                            className="modal-title"
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.1 }}
-                        >
-                            <motion.span
-                                animate={{ rotate: [0, 360] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                            >
+                        <h3 className="modal-title admin-title">
+                            <span>
                                 🤖
-                            </motion.span>
+                            </span>
                             AI Question Generation
-                        </motion.h3>
+                        </h3>
 
-                        <motion.input
+                        <input
                             type="text"
                             name="aiTopic"
                             placeholder="Enter Topic"
                             value={aiTopic}
                             onChange={(e) => setAiTopic(e.target.value)}
                             required
-                            initial={{ x: -20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(168, 85, 247, 0.3)" }}
+                            className="admin-input"
                         />
 
-                        <motion.input
+                        <input
                             type="number"
                             name="aiNumQuestions"
                             placeholder="Number of Questions"
                             value={aiNumQuestions}
                             onChange={(e) => setAiNumQuestions(e.target.value)}
                             required
-                            initial={{ x: 20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(168, 85, 247, 0.3)" }}
+                            className="admin-input"
                         />
 
-                        <motion.button
-                            className="submit-btn"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(168, 85, 247, 0.3)" }}
-                            whileTap={{ scale: 0.95 }}
+                        <button
+                            className="submit-btn admin-submit"
+                            disabled={isGeneratingAI}
                         >
-                            Generate Questions
-                        </motion.button>
+                            {isGeneratingAI ? '⏳ Generating...' : '⚡ Generate Questions'}
+                        </button>
                     </form>
-                </motion.div>
+                </div>
             </dialog>
 
             {/* Create Quiz Modal */}
             <dialog
                 id="create_quiz_modal"
-                className="modal"
+                className="modal admin-modal"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) {
                         document.getElementById("create_quiz_modal").close();
                     }
                 }}
             >
-                <motion.div
-                    className="modal-box"
-                    initial={{ scale: 0.8, opacity: 0, rotateX: -10 }}
-                    animate={{ scale: 1, opacity: 1, rotateX: 0 }}
-                    transition={{ duration: 0.3, type: "spring" }}
-                >
+                <div className="modal-box admin-modal-box">
                     <form onSubmit={createQuiz}>
                         <button
                             type="button"
-                            className="close-btn"
+                            className="close-btn admin-close"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -492,61 +433,42 @@ const AdminQuizzes = () => {
                             ✕
                         </button>
 
-                        <motion.h3
-                            className="modal-title"
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.1 }}
-                        >
-                            <motion.span
-                                animate={{ rotateY: [0, 360] }}
-                                transition={{ duration: 3, repeat: Infinity }}
-                            >
-                                📚
-                            </motion.span>
+                        <h3 className="modal-title admin-title">
+                            <span>
+                                🛡️
+                            </span>
                             Create New Quiz
-                        </motion.h3>
+                        </h3>
 
-                        <motion.input
+                        <input
                             type="text"
                             name="title"
                             placeholder="Enter Quiz Title"
                             required
-                            initial={{ x: -20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(34, 197, 94, 0.3)" }}
+                            className="admin-input"
                         />
 
-                        <motion.input
+                        <input
                             type="text"
                             name="category"
                             placeholder="Enter Quiz Category"
                             required
-                            initial={{ x: 20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(34, 197, 94, 0.3)" }}
+                            className="admin-input"
                         />
 
-                        <motion.button
-                            className="submit-btn"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(34, 197, 94, 0.3)" }}
-                            whileTap={{ scale: 0.95 }}
+                        <button
+                            className="submit-btn admin-submit"
                         >
-                            Create Quiz
-                        </motion.button>
+                            ⚡ Create Quiz
+                        </button>
                     </form>
-                </motion.div>
+                </div>
             </dialog>
 
             {/* Add Question Modal */}
             <dialog
                 id="add_question_modal"
-                className="modal"
+                className="modal admin-modal"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) {
                         document.getElementById("add_question_modal").close();
@@ -554,7 +476,7 @@ const AdminQuizzes = () => {
                 }}
             >
                 <motion.div
-                    className="modal-box"
+                    className="modal-box admin-modal-box"
                     initial={{ scale: 0.8, opacity: 0, rotateX: -10 }}
                     animate={{ scale: 1, opacity: 1, rotateX: 0 }}
                     transition={{ duration: 0.3, type: "spring" }}
@@ -562,7 +484,7 @@ const AdminQuizzes = () => {
                     <form onSubmit={addQuestion} className="question-form">
                         <button
                             type="button"
-                            className="close-btn"
+                            className="close-btn admin-close"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -573,7 +495,7 @@ const AdminQuizzes = () => {
                         </button>
 
                         <motion.h3
-                            className="modal-title"
+                            className="modal-title admin-title"
                             initial={{ y: -20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.1 }}
@@ -585,12 +507,12 @@ const AdminQuizzes = () => {
                             type="text"
                             name="question"
                             placeholder="📝 Enter your question"
-                            className="form-input"
+                            className="form-input admin-input"
                             required
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(99, 102, 241, 0.3)" }}
+                            whileFocus={{ scale: 1.02 }}
                         />
 
                         <motion.div
@@ -603,7 +525,7 @@ const AdminQuizzes = () => {
                                 type="text"
                                 name="optionA"
                                 placeholder="Option A"
-                                className="form-input"
+                                className="form-input admin-input"
                                 required
                                 whileFocus={{ scale: 1.02 }}
                             />
@@ -611,7 +533,7 @@ const AdminQuizzes = () => {
                                 type="text"
                                 name="optionB"
                                 placeholder="Option B"
-                                className="form-input"
+                                className="form-input admin-input"
                                 required
                                 whileFocus={{ scale: 1.02 }}
                             />
@@ -627,7 +549,7 @@ const AdminQuizzes = () => {
                                 type="text"
                                 name="optionC"
                                 placeholder="Option C"
-                                className="form-input"
+                                className="form-input admin-input"
                                 required
                                 whileFocus={{ scale: 1.02 }}
                             />
@@ -635,7 +557,7 @@ const AdminQuizzes = () => {
                                 type="text"
                                 name="optionD"
                                 placeholder="Option D"
-                                className="form-input"
+                                className="form-input admin-input"
                                 required
                                 whileFocus={{ scale: 1.02 }}
                             />
@@ -644,12 +566,12 @@ const AdminQuizzes = () => {
                         <motion.select
                             name="difficulty"
                             defaultValue="medium"
-                            className="form-select"
+                            className="form-select admin-select"
                             required
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.5 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(99, 102, 241, 0.3)" }}
+                            whileFocus={{ scale: 1.02 }}
                         >
                             <option value="easy">🌱 Easy</option>
                             <option value="medium">🌿 Medium</option>
@@ -660,23 +582,23 @@ const AdminQuizzes = () => {
                             type="text"
                             name="correctAnswer"
                             placeholder="✅ Correct Answer (A/B/C/D)"
-                            className="form-input"
+                            className="form-input admin-input"
                             required
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.6 }}
-                            whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(34, 197, 94, 0.3)" }}
+                            whileFocus={{ scale: 1.02 }}
                         />
 
                         <motion.button
-                            className="submit-btn"
+                            className="submit-btn admin-submit"
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.7 }}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(34, 197, 94, 0.3)" }}
+                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            Add Question
+                            ⚡ Add Question
                         </motion.button>
                     </form>
                 </motion.div>
@@ -684,30 +606,44 @@ const AdminQuizzes = () => {
 
             {/* Floating decorative elements */}
             <motion.div
-                className="floating-element floating-1"
+                className="floating-element floating-admin-1"
                 animate={{
-                    y: [0, -20, 0],
-                    x: [0, 10, 0],
+                    y: [0, -25, 0],
+                    x: [0, 15, 0],
                     rotate: [0, 180, 360]
                 }}
                 transition={{
-                    duration: 8,
+                    duration: 10,
                     repeat: Infinity,
                     ease: "easeInOut"
                 }}
             />
             <motion.div
-                className="floating-element floating-2"
+                className="floating-element floating-admin-2"
                 animate={{
-                    y: [0, 15, 0],
-                    x: [0, -15, 0],
+                    y: [0, 20, 0],
+                    x: [0, -20, 0],
                     rotate: [0, -180, -360]
                 }}
                 transition={{
-                    duration: 10,
+                    duration: 12,
                     repeat: Infinity,
                     ease: "easeInOut",
-                    delay: 2
+                    delay: 3
+                }}
+            />
+            <motion.div
+                className="floating-element floating-admin-3"
+                animate={{
+                    y: [0, -30, 0],
+                    x: [0, 25, 0],
+                    scale: [1, 1.3, 1]
+                }}
+                transition={{
+                    duration: 14,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 5
                 }}
             />
 

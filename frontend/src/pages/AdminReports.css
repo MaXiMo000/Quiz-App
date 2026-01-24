@@ -1,0 +1,531 @@
+/* ✨ ULTRA MODERN ADMIN REPORTS PAGE STYLES ✨ */
+.container {
+    min-height: 100vh;
+    background: 
+        radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        linear-gradient(135deg,
+            rgba(15, 15, 35, 0.95) 0%,
+            rgba(26, 26, 46, 0.97) 25%,
+            rgba(22, 33, 62, 0.95) 50%,
+            rgba(30, 20, 60, 0.97) 75%,
+            rgba(15, 15, 35, 0.95) 100%
+        );
+    padding: 3rem 2rem;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: visible;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    animation: pageSlideIn 1s ease-out;
+}
+
+@keyframes pageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ✨ Floating Decorative Orbs ✨ */
+.floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(40px);
+    opacity: 0.6;
+    z-index: 0;
+}
+
+.floating-orb-1 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.4), transparent);
+    top: 10%;
+    left: 5%;
+    animation: floatOrb1 20s ease-in-out infinite;
+}
+
+.floating-orb-2 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent);
+    top: 60%;
+    right: 8%;
+    animation: floatOrb2 25s ease-in-out infinite;
+}
+
+.floating-orb-3 {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent);
+    bottom: 15%;
+    left: 50%;
+    animation: floatOrb3 18s ease-in-out infinite;
+}
+
+@keyframes floatOrb1 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(30px, -40px) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+@keyframes floatOrb2 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-25px, 35px) scale(0.9);
+        opacity: 0.7;
+    }
+}
+
+@keyframes floatOrb3 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translate(20px, -30px) scale(1.15);
+        opacity: 0.6;
+    }
+}
+
+/* ✨ Enhanced Header ✨ */
+.container h1 {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+    font-weight: 800 !important;
+    background: linear-gradient(135deg,
+        #6366f1 0%,
+        #8b5cf6 25%,
+        #d946ef 50%,
+        #8b5cf6 75%,
+        #6366f1 100%) !important;
+    background-size: 300% 300% !important;
+    animation: gradientShift 5s ease-in-out infinite !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    margin: 0 0 3rem 0 !important;
+    text-align: center !important;
+    position: relative !important;
+    letter-spacing: -0.02em !important;
+    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5)) !important;
+    color: transparent !important;
+    display: block !important;
+    line-height: 1.2 !important;
+}
+
+.container h1::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    border-radius: 50px;
+    animation: lineExpand 1s ease-out;
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes lineExpand {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 120px;
+        opacity: 1;
+    }
+}
+
+/* ✨ NEW CLEAN TABLE CONTAINER ✨ */
+.container .table-container {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 70vh;
+    position: relative;
+    width: 100%;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 60px rgba(99, 102, 241, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+}
+
+.table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    border-radius: 24px 24px 0 0;
+}
+
+.table-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba(99, 102, 241, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ✨ NEW CLEAN TABLE STYLES ✨ */
+.container .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: transparent;
+    table-layout: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.container .table-container thead {
+    background: linear-gradient(135deg,
+        rgba(99, 102, 241, 0.15),
+        rgba(139, 92, 246, 0.15));
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.container .table-container th {
+    padding: 1.2rem 1.5rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #f1f5f9;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.3);
+    position: relative;
+    text-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+    white-space: nowrap;
+}
+
+.container .table-container th:nth-child(5),
+.container .table-container th:nth-child(6) {
+    text-align: center;
+}
+
+th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(99, 102, 241, 0.6),
+        transparent);
+    animation: headerShimmer 3s ease-in-out infinite;
+}
+
+@keyframes headerShimmer {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes fadeInRow {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container .table-container tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.container .table-container tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.container .table-container tbody tr:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.container .table-container td {
+    padding: 1.2rem 1.5rem;
+    color: rgba(226, 232, 240, 0.9);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+.container .table-container td:nth-child(5),
+.container .table-container td:nth-child(6) {
+    text-align: center;
+}
+
+.username-cell {
+    font-weight: 600;
+    color: #a5b4fc;
+}
+
+.score-cell {
+    font-weight: 700;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pass-status {
+    text-align: center;
+}
+
+.passed {
+    color: #22c55e;
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.5));
+}
+
+.failed {
+    color: #ef4444;
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.5));
+}
+
+/* ✨ Enhanced Delete Button ✨ */
+.delete-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 4px 15px rgba(239, 68, 68, 0.3),
+        0 0 20px rgba(239, 68, 68, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.delete-btn:hover::before {
+    left: 100%;
+}
+
+.delete-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 
+        0 8px 25px rgba(239, 68, 68, 0.4),
+        0 0 40px rgba(239, 68, 68, 0.2);
+}
+
+.delete-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ✨ Enhanced Error & Empty States ✨ */
+.error-container,
+.no-reports {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    margin: 2rem auto;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        0 0 40px rgba(99, 102, 241, 0.1);
+    max-width: 500px;
+    position: relative;
+    z-index: 1;
+}
+
+.error-container {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.04));
+}
+
+.error-message {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1.5rem;
+}
+
+.no-reports-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.no-reports p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0.5rem 0;
+}
+
+.no-reports-subtitle {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 1rem !important;
+}
+
+/* ✨ Enhanced Scrollbar ✨ */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(139, 92, 246, 0.6));
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+}
+
+/* ✨ Enhanced Mobile Responsiveness ✨ */
+@media (max-width: 1024px) {
+    .container {
+        padding: 2.5rem 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 2rem 1rem;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .container h1 {
+        font-size: clamp(1.6rem, 4vw, 2rem) !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .container .table-container {
+        border-radius: 20px !important;
+        max-height: 60vh !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        width: 100% !important;
+    }
+
+    .container .table-container table {
+        min-width: 800px;
+    }
+    
+    .container .table-container th,
+    .container .table-container td {
+        padding: 1rem 0.75rem;
+        font-size: 0.85rem;
+    }
+    
+    .container .table-container td:nth-child(2) {
+        word-break: break-word;
+    }
+
+    .delete-btn {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .container h1 {
+        font-size: clamp(1.4rem, 4vw, 1.8rem) !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .container .table-container {
+        border-radius: 16px;
+        max-height: 55vh;
+    }
+
+    .container .table-container th,
+    .container .table-container td {
+        padding: 0.875rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .delete-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+}

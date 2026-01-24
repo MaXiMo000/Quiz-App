@@ -28,8 +28,37 @@
     border: 1px solid var(--gamification-border);
     position: relative;
     overflow: visible;
-    /* Ensure child containers can scroll properly */
-    contain: layout;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto;
+}
+
+/* Ensure full-page scrolling when combined with main-content */
+.gamification-hub.main-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    overflow-x: hidden;
+    position: relative !important;
+}
+
+/* Direct body/html rules for better mobile support */
+body.gamification-hub-page,
+html.gamification-hub-page {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Override any App.css main-content restrictions */
+body.gamification-hub-page .main-content,
+html.gamification-hub-page .main-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    min-height: auto !important;
 }
 
 .gamification-hub::before {
@@ -159,26 +188,34 @@
 /* ✨ Hub Navigation Tabs ✨ */
 .hub-tabs {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
     margin-bottom: 2rem;
     background: var(--hover-bg);
-    padding: 0.5rem;
+    padding: 0.75rem;
     border-radius: 15px;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
 }
 
 .tab-button {
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 1.75rem;
     border: none;
     background: transparent;
     color: var(--text-secondary);
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    box-sizing: border-box;
 }
 
 .tab-button::before {
@@ -210,46 +247,62 @@
 }
 
 .admin-create-btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 1.75rem;
     border: none;
     background: var(--gamification-accent);
     color: white;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-weight: 500;
-    margin-left: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
 }
 
 .admin-create-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.5);
 }
 
 .admin-sample-btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 1.75rem;
     border: none;
     background: var(--gamification-warning);
     color: white;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-weight: 500;
-    margin-left: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(255, 167, 38, 0.3);
 }
 
 .admin-sample-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 167, 38, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 167, 38, 0.5);
 }
 
-/* ✨ Tab Content ✨ */
+/* ✨ Tab Content - Full Page Scrolling ✨ */
 .tab-content {
     position: relative;
-    min-height: 400px;
-    /* Ensure proper height calculation for scrolling containers */
-    height: auto;
-    overflow: visible;
+    min-height: auto;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
 }
 
 /* ✨ Loading States ✨ */
@@ -373,46 +426,22 @@
     box-shadow: 0 8px 25px rgba(255, 87, 34, 0.4);
 }
 
-/* ✨ Challenges Container with Enhanced Scrolling ✨ */
+/* ✨ Challenges Container - Full Page Scrolling ✨ */
 .challenges-container {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    max-height: 600px;
-    min-height: 400px;
-    overflow-y: auto;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    overflow-y: visible !important;
     overflow-x: hidden;
-    padding-right: 0.5rem;
+    padding-right: 0;
     padding-bottom: 1rem;
-    /* Force proper scrolling behavior */
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    /* Ensure the container is properly sized and scrollable */
     position: relative;
-    height: auto;
-    /* Add explicit scrolling properties */
-    contain: layout style;
-    overscroll-behavior: contain;
 }
 
-/* Custom Scrollbar */
-.challenges-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.challenges-container::-webkit-scrollbar-track {
-    background: var(--hover-bg);
-    border-radius: 10px;
-}
-
-.challenges-container::-webkit-scrollbar-thumb {
-    background: var(--gamification-primary);
-    border-radius: 10px;
-}
-
-.challenges-container::-webkit-scrollbar-thumb:hover {
-    background: var(--gamification-secondary);
-}
+/* Removed custom scrollbar - using full-page scroll instead */
 
 /* ✨ Daily Challenge Card with 3D Effects ✨ */
 .daily-challenge-card {
@@ -620,6 +649,7 @@
     align-items: center;
     margin-bottom: 1.5rem;
     flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 .completed-section {
@@ -748,6 +778,30 @@
     gap: 0.5rem;
 }
 
+.join-challenge-btn {
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    box-sizing: border-box;
+    background: var(--gamification-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.join-challenge-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
 .join-challenge-btn.reset-continue {
     background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
     box-shadow: 0 4px 15px rgba(255, 167, 38, 0.4);
@@ -792,8 +846,9 @@
 }
 
 .completed-notice {
-    margin-top: 1rem;
-    padding: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    padding: 1.5rem 1.25rem;
     background: linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%);
     border-radius: 12px;
     border: 1px solid rgba(67, 233, 123, 0.2);
@@ -802,8 +857,10 @@
 .completed-notice p {
     margin: 0;
     color: var(--success-color);
-    font-size: 0.9rem;
+    font-size: 1rem;
     text-align: center;
+    line-height: 1.6;
+    padding: 0 0.5rem;
 }
 
 .completed-challenge-card {
@@ -961,52 +1018,71 @@
     border: none;
     border-radius: 12px;
     font-weight: 600;
+    font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    box-sizing: border-box;
 }
 
 .join-btn {
     background: var(--gamification-primary);
     color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .join-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
 }
 
 .continue-btn {
     background: var(--gamification-accent);
     color: white;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
 }
 
 .continue-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.5);
 }
 
 .continue-btn:disabled {
     background: var(--hover-bg);
     color: var(--text-secondary);
     cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
 .delete-btn {
     background: var(--gamification-error);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);
 }
 
 .delete-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 87, 34, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 87, 34, 0.5);
 }
 
 /* Challenge Stats */
@@ -1048,37 +1124,20 @@
     font-weight: 500;
 }
 
-/* ✨ Tournaments Grid with Staggered Animation ✨ */
+/* ✨ Tournaments Grid - Full Page Scrolling ✨ */
 .tournaments-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 1.5rem;
-    max-height: 600px;
-    overflow-y: auto;
-    padding-right: 0.5rem;
-    /* Simple and effective scrolling */
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    overflow-y: visible !important;
+    overflow-x: hidden;
+    padding-right: 0;
 }
 
-/* Custom Scrollbar for Tournaments */
-.tournaments-grid::-webkit-scrollbar {
-    width: 8px;
-}
-
-.tournaments-grid::-webkit-scrollbar-track {
-    background: var(--hover-bg);
-    border-radius: 10px;
-}
-
-.tournaments-grid::-webkit-scrollbar-thumb {
-    background: var(--tournament-gradient);
-    border-radius: 10px;
-}
-
-.tournaments-grid::-webkit-scrollbar-thumb:hover {
-    background: var(--gamification-secondary);
-}
+/* Removed custom scrollbar - using full-page scroll instead */
 
 /* Tournament Card */
 .tournament-card {
@@ -1542,22 +1601,24 @@
     font-size: 0.85rem;
 }
 
-/* ✨ Modal Styles ✨ */
+/* ✨ Enhanced Beautiful Modal Styles ✨ */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
     animation: fadeIn 0.3s ease;
     padding: 1rem;
     box-sizing: border-box;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 @keyframes fadeIn {
@@ -1566,27 +1627,46 @@
 }
 
 .modal-content {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 2rem;
-    max-width: 600px;
+    background: linear-gradient(135deg, rgba(26, 35, 50, 0.95) 0%, rgba(15, 15, 35, 0.98) 100%);
+    border-radius: 24px;
+    padding: 0;
+    max-width: 700px;
     width: 90%;
-    max-height: 85vh;
-    overflow-y: auto;
-    border: 1px solid var(--gamification-border);
-    backdrop-filter: blur(20px);
-    box-shadow: var(--gamification-shadow);
-    animation: slideUp 0.3s ease;
+    max-height: 90vh;
+    overflow: hidden;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    backdrop-filter: blur(30px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(102, 126, 234, 0.2);
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    /* Enhanced scrolling */
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gamification-primary);
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+}
+
+.create-challenge-modal::before {
+    background: var(--challenge-gradient);
+}
+
+.create-tournament-modal::before {
+    background: var(--tournament-gradient);
 }
 
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(2rem) scale(0.95);
+        transform: translateY(3rem) scale(0.95);
     }
     to {
         opacity: 1;
@@ -1598,171 +1678,287 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    padding: 2rem 2.5rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    position: relative;
+}
+
+.create-challenge-modal .modal-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+}
+
+.create-tournament-modal .modal-header {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%);
 }
 
 .modal-header h2 {
     color: var(--text-primary);
     margin: 0;
-    font-size: 1.5rem;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    background: var(--gamification-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: -0.02em;
 }
 
-.modal-close-btn {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: var(--text-secondary);
+.create-challenge-modal .modal-header h2 {
+    background: var(--challenge-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.create-tournament-modal .modal-header h2 {
+    background: var(--tournament-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.close-btn {
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    font-size: 1.8rem;
     cursor: pointer;
     padding: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    font-weight: 300;
+    line-height: 1;
 }
 
-.modal-close-btn:hover {
-    background: var(--hover-bg);
-    color: var(--text-primary);
-    transform: scale(1.1);
+.close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ffffff;
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
 }
 
-/* Form Styles */
+/* ✨ Enhanced Beautiful Form Styles ✨ */
 .create-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
+    padding: 2rem 2.5rem;
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
 }
 
 .form-group label {
     color: var(--text-primary);
-    font-weight: 500;
-    font-size: 0.9rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.3px;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-    padding: 0.75rem;
-    border: 1px solid var(--gamification-border);
-    border-radius: 10px;
-    background: var(--hover-bg);
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-primary);
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    font-family: inherit;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 8px 25px rgba(102, 126, 234, 0.2);
+    transform: translateY(-1px);
 }
 
 .form-group textarea {
-    min-height: 80px;
+    min-height: 100px;
     resize: vertical;
+    line-height: 1.6;
 }
 
 .form-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
-.form-actions {
+.challenge-parameters,
+.tournament-settings,
+.challenge-rewards-form,
+.tournament-prizes-form {
+    background: rgba(102, 126, 234, 0.05);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.challenge-parameters h4,
+.tournament-settings h4,
+.challenge-rewards-form h4,
+.tournament-prizes-form h4 {
+    color: var(--text-primary);
+    margin: 0 0 1.25rem 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: var(--gamification-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-actions {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
-    margin-top: 1rem;
+    padding: 1.5rem 2.5rem;
+    background: rgba(102, 126, 234, 0.05);
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
+    margin-top: auto;
 }
 
 .cancel-btn,
-.submit-btn {
-    padding: 0.75rem 2rem;
+.create-btn {
+    padding: 1rem 2.5rem;
     border: none;
-    border-radius: 10px;
-    font-weight: 500;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 140px;
+    position: relative;
+    overflow: hidden;
 }
 
 .cancel-btn {
-    background: var(--hover-bg);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-secondary);
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .cancel-btn:hover {
-    background: var(--gamification-error);
+    background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
+    border-color: rgba(239, 68, 68, 0.5);
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
 }
 
-.submit-btn {
+.create-btn {
     background: var(--gamification-primary);
     color: white;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.submit-btn:hover:not(:disabled) {
+.create-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+    border-color: rgba(102, 126, 234, 0.5);
 }
 
-.submit-btn:disabled {
-    background: var(--hover-bg);
-    color: var(--text-secondary);
+.create-btn:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.4);
     cursor: not-allowed;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+    transform: none;
 }
 
-/* ✨ Quiz Selection Styles ✨ */
+/* ✨ Enhanced Beautiful Quiz Selection Styles ✨ */
 .quiz-selection {
-    margin: 1.5rem 0;
+    margin: 0;
 }
 
 .quiz-selection h4 {
     color: var(--text-primary);
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
+    margin-bottom: 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: var(--gamification-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .selected-count {
-    color: var(--gamification-primary);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    background: rgba(102, 126, 234, 0.1);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    display: inline-block;
+    color: #43e97b;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, rgba(67, 233, 123, 0.15), rgba(56, 249, 215, 0.15));
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(67, 233, 123, 0.3);
+    box-shadow: 0 4px 15px rgba(67, 233, 123, 0.2);
 }
 
 .scroll-hint {
-    color: var(--text-secondary);
+    color: #ffc107;
     font-size: 0.9rem;
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-    background: rgba(255, 193, 7, 0.1);
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 152, 0, 0.15));
     border-left: 4px solid #ffc107;
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 12px 12px 0;
     font-style: italic;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
 }
 
 .quiz-list {
-    max-height: 300px;
-    overflow: auto;
-    border: 1px solid var(--gamification-border);
-    border-radius: 12px;
-    background: var(--hover-bg);
-    padding: 0.5rem;
+    max-height: 350px;
+    overflow-y: auto;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    backdrop-filter: blur(10px);
     /* Enhanced mobile scrolling */
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
@@ -1771,17 +1967,18 @@
 }
 
 .quiz-list::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .quiz-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
 }
 
 .quiz-list::-webkit-scrollbar-thumb {
     background: var(--gamification-primary);
     border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .quiz-list::-webkit-scrollbar-thumb:hover {
@@ -1791,110 +1988,171 @@
 .quiz-checkbox {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 10px;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 0.5rem;
-    border: 1px solid transparent;
-    background: var(--card-bg);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 0.75rem;
+    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
 .quiz-checkbox:hover {
-    background: var(--gamification-glass);
-    border-color: var(--gamification-border);
-    transform: translateX(4px);
-}
-
-.quiz-checkbox.selected {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+    background: rgba(102, 126, 234, 0.1);
     border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(6px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
 }
 
+.quiz-checkbox.selected {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transform: translateX(6px) scale(1.02);
+}
+
 .quiz-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     accent-color: var(--accent-color);
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .quiz-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.4rem;
 }
 
 .quiz-title {
     color: var(--text-primary);
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.05rem;
+    line-height: 1.4;
 }
 
 .quiz-details {
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
 }
 
 .no-quizzes {
     text-align: center;
     color: var(--text-secondary);
     font-style: italic;
-    padding: 2rem;
-    background: var(--hover-bg);
-    border-radius: 10px;
-    border: 2px dashed var(--gamification-border);
+    padding: 3rem 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 2px dashed rgba(102, 126, 234, 0.3);
+    backdrop-filter: blur(10px);
 }
 
-/* ✨ Game Quiz Modal ✨ */
+.prize-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    transition: all 0.3s ease;
+}
+
+.prize-row:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateX(4px);
+}
+
+.prize-position {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+.prize-inputs {
+    display: flex;
+    gap: 0.75rem;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.prize-inputs input {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* ✨ Enhanced Beautiful Game Quiz Modal ✨ */
 .game-quiz-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.92);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1001;
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(15px);
     animation: fadeIn 0.3s ease;
     padding: 1rem;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .game-quiz-modal {
-    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(26, 35, 50, 0.95) 100%);
-    border-radius: 20px;
-    padding: 2rem;
-    max-width: 900px;
+    background: linear-gradient(135deg, rgba(26, 35, 50, 0.98) 0%, rgba(15, 15, 35, 0.98) 100%);
+    border-radius: 24px;
+    padding: 0;
+    max-width: 950px;
     width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 2px solid var(--gamification-border);
+    max-height: 92vh;
+    overflow: hidden;
+    border: 2px solid rgba(102, 126, 234, 0.4);
     backdrop-filter: blur(30px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5), 0 0 50px rgba(102, 126, 234, 0.25);
     animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     margin: auto;
-    /* Ensure proper scrolling */
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Quiz Header */
+.game-quiz-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gamification-primary);
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+    z-index: 1;
+}
+
+/* Enhanced Quiz Header */
 .quiz-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    padding-right: 60px; /* Space for close button */
-    border-bottom: 2px solid var(--gamification-border);
-    gap: 1rem;
+    margin: 0;
+    padding: 2rem 2.5rem;
+    padding-right: 5.5rem; /* Space for close button (48px + 1.5rem padding) */
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    gap: 1.5rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    position: relative;
 }
 
 .quiz-info {
@@ -1904,23 +2162,28 @@
 
 .quiz-info h3 {
     color: var(--text-primary);
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 800;
+    margin: 0 0 0.75rem 0;
     background: var(--gamification-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    line-height: 1.2;
+    line-height: 1.3;
     word-wrap: break-word;
+    letter-spacing: -0.02em;
+    filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
 }
 
 .quiz-type {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 1rem;
     margin: 0;
-    font-weight: 500;
+    font-weight: 600;
     word-wrap: break-word;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .quiz-stats {
@@ -1929,17 +2192,27 @@
     align-items: flex-end;
     gap: 0.75rem;
     flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 0;
 }
 
 .timer {
     background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
     color: white;
-    padding: 0.4rem 1rem;
-    border-radius: 15px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    padding: 0.75rem 1.5rem;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     animation: pulse 2s infinite;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    min-width: 110px;
+    text-align: center;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 @keyframes pulse {
@@ -1950,21 +2223,30 @@
 .progress {
     background: var(--gamification-accent);
     color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    min-width: 150px;
+    text-align: center;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Progress Bar */
+/* Enhanced Progress Bar */
 .progress-bar {
     width: 100%;
-    height: 6px;
-    background: var(--hover-bg);
-    border-radius: 10px;
-    margin-bottom: 1.5rem;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    margin: 0;
     overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
 }
 
 .progress-fill {
@@ -1987,24 +2269,31 @@
     animation: shimmer 2s infinite;
 }
 
-/* Question Container */
+/* Enhanced Question Container */
 .question-container {
-    margin-bottom: 2rem;
+    margin: 0;
+    padding: 2rem 2.5rem;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
 }
 
 .question-text {
     color: var(--text-primary);
-    font-size: 1.2rem;
-    font-weight: 600;
-    line-height: 1.5;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.6;
     margin: 0 0 2rem 0;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, var(--gamification-glass), rgba(255, 255, 255, 0.03));
-    border-radius: 15px;
-    border: 1px solid var(--gamification-border);
-    backdrop-filter: blur(10px);
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border-radius: 16px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    backdrop-filter: blur(15px);
     word-wrap: break-word;
     hyphens: auto;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.2px;
 }
 
 /* Options Container */
@@ -2098,15 +2387,17 @@
     font-weight: 600;
 }
 
-/* Quiz Navigation */
+/* Enhanced Quiz Navigation */
 .quiz-navigation {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 2px solid var(--gamification-border);
+    margin: 0;
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
     gap: 1rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    backdrop-filter: blur(10px);
 }
 
 .nav-btn {
@@ -2197,30 +2488,34 @@
 /* Close Button */
 .close-quiz-btn {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 44px;
-    height: 44px;
+    top: 2rem;
+    right: 2.5rem;
+    width: 48px;
+    height: 48px;
     border: none;
-    background: rgba(255, 82, 82, 0.1);
-    color: #ff5252;
-    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border-radius: 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     z-index: 10;
-    border: 2px solid rgba(255, 82, 82, 0.2);
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    font-weight: 300;
+    line-height: 1;
+    margin: 0;
 }
 
 .close-quiz-btn:hover {
-    background: #ff5252;
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
+    background: rgba(239, 68, 68, 0.3);
+    color: #ffffff;
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+    border-color: rgba(239, 68, 68, 0.5);
 }
 
 /* ✨ Quiz Modal Mobile Styles ✨ */
@@ -2245,12 +2540,13 @@
 
     .quiz-header {
         flex-direction: column;
-        gap: 0.75rem; /* Reduced gap */
+        gap: 1rem;
         align-items: stretch;
         text-align: left;
-        margin-bottom: 1.2rem; /* Reduced margin */
-        padding-bottom: 0.75rem; /* Reduced padding */
-        padding-right: 50px; /* Space for close button on mobile */
+        margin-bottom: 1.2rem;
+        padding: 1.5rem;
+        padding-right: 4.5rem; /* Space for close button on mobile (40px + 1rem padding) */
+        padding-bottom: 1rem;
     }
 
     .quiz-info {
@@ -2285,27 +2581,30 @@
         order: 2;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
-        gap: 1.5rem;
+        justify-content: flex-end;
+        gap: 0.75rem;
         width: 100%;
+        margin-top: 0;
+        align-self: stretch;
     }
 
     .timer {
-        font-size: 1rem;
-        padding: 0.8rem 1.5rem;
-        min-width: auto;
+        font-size: 0.95rem;
+        padding: 0.7rem 1.2rem;
+        min-width: 100px;
         text-align: center;
         box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
-        flex: 1;
-        max-width: 140px; /* Increased width for better description space */
+        flex: 0 0 auto;
+        white-space: nowrap;
     }
 
     .progress {
         font-size: 0.9rem;
-        padding: 0.6rem 1.2rem;
+        padding: 0.7rem 1.2rem;
         text-align: center;
-        flex: 1;
-        max-width: 160px; /* Increased width for better description space */
+        flex: 0 0 auto;
+        min-width: 130px;
+        white-space: nowrap;
     }
 
     .question-text {
@@ -2370,11 +2669,11 @@
     }
 
     .close-quiz-btn {
-        top: 1rem;
-        right: 1rem;
+        top: 1.5rem;
+        right: 1.5rem;
         width: 40px;
         height: 40px;
-        font-size: 1.2rem;
+        font-size: 1.4rem;
     }
 }
 
@@ -2394,12 +2693,13 @@
     }
 
     .quiz-header {
-        margin-bottom: 0.75rem; /* Reduced margin */
-        padding-bottom: 0.75rem; /* Reduced padding */
-        padding-right: 45px; /* Space for close button on small mobile */
+        margin-bottom: 0.75rem;
+        padding: 1.25rem;
+        padding-right: 4rem; /* Space for close button on small mobile (36px + 0.75rem padding) */
+        padding-bottom: 1rem;
         flex-direction: column;
         align-items: stretch;
-        gap: 0.5rem; /* Smaller gap for tiny screens */
+        gap: 0.75rem;
     }
 
     .quiz-info {
@@ -2432,23 +2732,26 @@
     .quiz-stats {
         flex-direction: row;
         align-items: center;
-        gap: 1rem;
+        gap: 0.6rem;
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-end;
+        margin-top: 0;
     }
 
     .timer {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         padding: 0.6rem 1rem;
-        flex: 1;
-        max-width: 120px; /* Increased width for better space */
+        min-width: 90px;
+        flex: 0 0 auto;
+        white-space: nowrap;
     }
 
     .progress {
         font-size: 0.8rem;
-        padding: 0.5rem 0.8rem;
-        flex: 1;
-        max-width: 140px; /* Increased width for better space */
+        padding: 0.6rem 1rem;
+        min-width: 120px;
+        flex: 0 0 auto;
+        white-space: nowrap;
     }
 
     .progress-bar {
@@ -2513,25 +2816,44 @@
     }
 
     .close-quiz-btn {
-        top: 0.75rem;
-        right: 0.75rem;
+        top: 1.25rem;
+        right: 1.25rem;
         width: 36px;
         height: 36px;
-        font-size: 1.1rem;
+        font-size: 1.3rem;
     }
 }
 
 /* ✨ Mobile Responsive Design ✨ */
 @media (max-width: 768px) {
+    /* Force body/html to allow scrolling */
+    body.gamification-hub-page,
+    html.gamification-hub-page {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        max-height: none !important;
+        position: relative !important;
+    }
+
+    body.gamification-hub-page .main-content,
+    html.gamification-hub-page .main-content {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        min-height: auto !important;
+    }
+
     .gamification-hub {
         padding: 1rem;
         padding-bottom: calc(1rem + 80px); /* Add space for mobile navbar */
         margin: 0.5rem;
         border-radius: 15px;
         overflow: visible !important;
-        /* Allow child elements to scroll */
+        height: auto !important;
+        max-height: none !important;
         position: relative;
-        max-height: none;
     }
 
     .hub-header h2 {
@@ -2544,21 +2866,33 @@
 
     .hub-tabs {
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 0.75rem;
         align-items: center;
+        justify-content: center;
+        padding: 1rem;
     }
 
     .tab-button {
-        padding: 1rem;
+        padding: 1rem 1.5rem;
         text-align: center;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        width: 100%;
+        max-width: 400px;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .admin-create-btn,
     .admin-sample-btn {
-        margin-left: 0;
-        margin-top: 0.5rem;
+        margin: 0;
         width: 100%;
+        max-width: 400px;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Ensure tab content allows scrolling */
@@ -2570,16 +2904,15 @@
         padding-bottom: 20px; /* Add extra padding for mobile navbar */
     }
 
-    /* Enhanced mobile scrolling for challenges - matching tournaments */
+    /* Full-page scrolling for challenges */
     .challenges-container {
-        max-height: 70vh !important;
-        min-height: 400px !important;
-        overflow-y: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+        overflow-y: visible !important;
         overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        scroll-behavior: smooth !important;
-        padding-bottom: calc(1rem + 80px) !important; /* Add space for mobile navbar */
-        padding-right: 0.5rem !important;
+        padding-bottom: 0;
+        padding-right: 0;
     }
 
     .daily-challenge-card {
@@ -2603,6 +2936,15 @@
     .challenge-actions {
         flex-direction: column;
         gap: 1rem;
+        align-items: stretch;
+    }
+
+    .join-btn,
+    .continue-btn,
+    .delete-btn,
+    .join-challenge-btn {
+        width: 100%;
+        min-height: 48px;
     }
 
     .quiz-progress-actions {
@@ -2618,14 +2960,14 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
-    /* Enhanced mobile scrolling for tournaments */
+    /* Full-page scrolling for tournaments */
     .tournaments-grid {
         grid-template-columns: 1fr;
-        max-height: 70vh !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        scroll-behavior: smooth !important;
-        padding-bottom: calc(1rem + 80px) !important; /* Add space for mobile navbar */
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        padding-bottom: 0;
     }
 
     .tournament-card {
@@ -2673,13 +3015,82 @@
     .modal-content {
         width: 95%;
         max-width: none;
-        max-height: 80vh;
-        padding: 1.5rem;
+        max-height: 85vh;
         margin: 0;
+        border-radius: 20px;
         /* Enhanced mobile scrolling */
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
         overscroll-behavior: contain;
+    }
+
+    .modal-header {
+        padding: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .close-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.6rem;
+    }
+
+    .create-form {
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .challenge-parameters,
+    .tournament-settings,
+    .challenge-rewards-form,
+    .tournament-prizes-form {
+        padding: 1.25rem;
+    }
+
+    .modal-actions {
+        padding: 1.25rem 1.5rem;
+        flex-direction: column;
+    }
+
+    .cancel-btn,
+    .create-btn {
+        width: 100%;
+        padding: 1rem 2rem;
+    }
+
+    .quiz-list {
+        max-height: 250px;
+    }
+
+    .prize-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .prize-position {
+        min-width: auto;
+    }
+
+    .prize-inputs {
+        flex-direction: column;
+    }
+
+    .prize-inputs input {
+        width: 100%;
+        min-width: auto;
     }
 
     /* Enhanced mobile quiz list scrolling */
@@ -2727,14 +3138,34 @@
 }
 
 @media (max-width: 480px) {
+    /* Force body/html to allow scrolling on small mobile */
+    body.gamification-hub-page,
+    html.gamification-hub-page {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100vh !important;
+        position: relative !important;
+    }
+
+    body.gamification-hub-page .main-content,
+    html.gamification-hub-page .main-content {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        min-height: auto !important;
+    }
+
     .gamification-hub {
         padding: 0.75rem;
         padding-bottom: calc(0.75rem + 80px); /* Add space for mobile navbar */
         margin: 0.25rem;
         overflow: visible !important;
-        /* Allow child elements to scroll */
+        height: auto !important;
+        max-height: none !important;
         position: relative;
-        max-height: none;
     }
 
     .hub-header h2 {
@@ -2753,9 +3184,41 @@
         font-size: 1.5rem;
     }
 
+    .hub-tabs {
+        padding: 0.75rem;
+        gap: 0.6rem;
+        align-items: center;
+        justify-content: center;
+    }
+
     .tab-button {
-        padding: 0.875rem;
-        font-size: 0.85rem;
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+        min-height: 44px;
+        width: 100%;
+        max-width: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-create-btn,
+    .admin-sample-btn {
+        min-height: 44px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .join-btn,
+    .continue-btn,
+    .delete-btn,
+    .join-challenge-btn {
+        min-height: 44px;
+        font-size: 0.95rem;
     }
 
     .challenge-stats {
@@ -2767,13 +3230,83 @@
     }
 
     .modal-content {
-        padding: 1rem;
-        max-height: 75vh;
+        padding: 0;
+        max-height: 90vh;
         width: 98%;
+        border-radius: 16px;
         /* Enhanced mobile scrolling */
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
         overscroll-behavior: contain;
+    }
+
+    .modal-header {
+        padding: 1.25rem;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .modal-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .close-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.4rem;
+    }
+
+    .create-form {
+        padding: 1.25rem;
+        gap: 1.25rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .challenge-parameters,
+    .tournament-settings,
+    .challenge-rewards-form,
+    .tournament-prizes-form {
+        padding: 1rem;
+    }
+
+    .challenge-parameters h4,
+    .tournament-settings h4,
+    .challenge-rewards-form h4,
+    .tournament-prizes-form h4 {
+        font-size: 1.1rem;
+    }
+
+    .modal-actions {
+        padding: 1rem 1.25rem;
+    }
+
+    .cancel-btn,
+    .create-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .quiz-list {
+        max-height: 200px;
+        padding: 0.75rem;
+    }
+
+    .quiz-checkbox {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .quiz-title {
+        font-size: 0.95rem;
+    }
+
+    .quiz-details {
+        font-size: 0.85rem;
     }
 
     /* Extra mobile optimization for quiz list */
@@ -2810,16 +3343,15 @@
         min-height: auto !important;
     }
 
-    /* Extra mobile optimization for scrolling - matching tournaments */
+    /* Full-page scrolling for challenges and tournaments */
     .challenges-container,
     .tournaments-grid {
-        max-height: 60vh !important;
-        min-height: 300px !important;
-        overflow-y: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+        overflow-y: visible !important;
         overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        scroll-behavior: smooth !important;
-        padding-bottom: calc(1rem + 80px) !important; /* Add space for mobile navbar */
+        padding-bottom: 0;
     }
 }
 
@@ -3056,9 +3588,10 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 0.5rem;
@@ -3066,11 +3599,15 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    white-space: nowrap;
+    min-height: 44px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .view-history-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
 }
 
 .challenge-history-modal {

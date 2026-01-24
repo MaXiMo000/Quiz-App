@@ -23,32 +23,36 @@ export const getCurrentDailyChallenge = async (req, res) => {
 
 
         // Filter challenges based on user participation and 24-hour reset logic
-        const availableChallenges = allActiveChallenges.filter(challenge => {
+        const availableChallenges = [];
+        
+        for (const challenge of allActiveChallenges) {
             const userParticipant = challenge.participants.find(p =>
                 p.user.toString() === userId
             );
 
             // If user hasn't participated, challenge is available
             if (!userParticipant) {
-                return true;
+                availableChallenges.push(challenge);
+                continue;
             }
 
             // If user participated but didn't complete, challenge is available
             if (!userParticipant.completed) {
-                return true;
+                availableChallenges.push(challenge);
+                continue;
             }
 
             // If user completed but it was more than 24 hours ago, challenge is available again
             if (userParticipant.completed && userParticipant.completedAt) {
                 const isMoreThan24HoursAgo = userParticipant.completedAt < twentyFourHoursAgo;
                 if (isMoreThan24HoursAgo) {
-                    return true;
+                    // Reset this participant immediately if not already reset
+                    await resetParticipantIfNeeded(challenge, userId, twentyFourHoursAgo);
+                    availableChallenges.push(challenge);
                 }
-                return false; // Recently completed, not available
+                // Recently completed, not available
             }
-
-            return false;
-        });
+        }
 
 
         // If no challenges exist and user is admin, suggest creating one
@@ -68,35 +72,29 @@ export const getCurrentDailyChallenge = async (req, res) => {
         }
 
         // Get user's progress for each available challenge
-        const challengesWithProgress = availableChallenges.map(challenge => {
+        // Reload challenges to get fresh data after potential resets
+        const freshChallenges = await DailyChallenge.find({
+            _id: { $in: availableChallenges.map(c => c._id) },
+            startDate: { $lte: now },
+            endDate: { $gte: now },
+            isActive: true
+        }).populate("quizzes");
+
+        const challengesWithProgress = freshChallenges.map(challenge => {
             const userProgress = challenge.participants.find(p =>
                 p.user.toString() === userId
             );
 
-            // If user completed more than 24 hours ago, reset their progress data for display
-            let displayProgress = userProgress;
-            let wasReset = false;
-            if (userProgress && userProgress.completed && userProgress.completedAt < twentyFourHoursAgo) {
-                displayProgress = {
-                    progress: 0,
-                    completed: false,
-                    attempts: 0,
-                    completedQuizzes: [],
-                    quizScores: []
-                };
-                wasReset = true;
-            }
-
             return {
                 ...challenge.toObject(),
-                userProgress: displayProgress || {
+                userProgress: userProgress || {
                     progress: 0,
                     completed: false,
                     attempts: 0,
                     completedQuizzes: [],
                     quizScores: []
                 },
-                wasReset: wasReset
+                wasReset: false // Already reset if needed above
             };
         });
 
@@ -643,13 +641,14 @@ export const getAvailableQuizzes = async (req, res) => {
             return res.status(403).json({ message: "Only admins can access this endpoint" });
         }
 
-        // Get all quizzes (remove isActive filter since it might not exist in your Quiz model)
-        const quizzes = await Quiz.find({})
+        // Only get quizzes created by admin (createdBy._id is null)
+        const quizzes = await Quiz.find({ "createdBy._id": null })
             .select("title description category difficulty questions createdBy")
-            .populate("createdBy", "name")
-            .sort({ createdAt: -1 }); // Sort by newest first
+            .lean()
+            .sort({ createdAt: -1 })
+            .exec(); // Sort by newest first
 
-        logger.info(`Admin ${req.user.id} successfully fetched ${quizzes.length} available quizzes`);
+        logger.info(`Admin ${req.user.id} successfully fetched ${quizzes.length} admin quizzes for challenges/tournaments`);
         res.json({ quizzes });
 
     } catch (error) {
@@ -1634,6 +1633,80 @@ export const cleanupEmptyTournaments = async (req, res) => {
 
 // ===================== DAILY CHALLENGE RESET SYSTEM =====================
 
+// Helper function to reset a single participant if needed
+const resetParticipantIfNeeded = async (challenge, userId, twentyFourHoursAgo) => {
+    try {
+        const participantIndex = challenge.participants.findIndex(p =>
+            p.user.toString() === userId
+        );
+
+        if (participantIndex === -1) {
+            return false;
+        }
+
+        const participant = challenge.participants[participantIndex];
+
+        // Check if participant needs reset
+        if (participant.completed &&
+            participant.completedAt &&
+            participant.completedAt < twentyFourHoursAgo) {
+
+            // Preserve old results in historical completions
+            if (!challenge.historicalCompletions) {
+                challenge.historicalCompletions = [];
+            }
+            challenge.historicalCompletions.push({
+                user: participant.user,
+                completedAt: participant.completedAt,
+                progress: participant.progress,
+                attempts: participant.attempts,
+                completedQuizzes: participant.completedQuizzes || [],
+                quizScores: participant.quizScores || [],
+                resetAt: new Date()
+            });
+
+            // Update historical completion stats
+            if (!challenge.stats.totalHistoricalCompletions) {
+                challenge.stats.totalHistoricalCompletions = 0;
+            }
+            challenge.stats.totalHistoricalCompletions += 1;
+
+            // Reset participant data
+            challenge.participants[participantIndex] = {
+                user: participant.user,
+                progress: 0,
+                completed: false,
+                completedAt: null,
+                attempts: 0,
+                completedQuizzes: [],
+                quizScores: []
+            };
+
+            // Recalculate challenge statistics
+            const completedParticipants = challenge.participants.filter(p => p.completed).length;
+            challenge.stats.completionRate = challenge.participants.length > 0
+                ? (completedParticipants / challenge.participants.length) * 100
+                : 0;
+
+            await challenge.save();
+
+            // Also update user's dailyChallenges data
+            await UserQuiz.findByIdAndUpdate(participant.user, {
+                $pull: { "gamification.dailyChallenges.completed": challenge._id },
+                $set: { "gamification.dailyChallenges.current": challenge._id }
+            });
+
+            logger.info(`Reset user ${userId} in challenge "${challenge.title}"`);
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        logger.error({ message: `Error resetting participant ${userId} in challenge ${challenge._id}`, error: error.message, stack: error.stack });
+        return false;
+    }
+};
+
 // Reset daily challenges after 24 hours (automatic system)
 export const resetDailyChallenges = async () => {
     logger.info("Starting daily challenge reset system");
@@ -1643,14 +1716,14 @@ export const resetDailyChallenges = async () => {
 
         logger.info(`Looking for challenges completed before ${twentyFourHoursAgo.toISOString()}`);
 
-        // Find challenges where users completed them more than 24 hours ago
+        // Find ALL active challenges - we'll check each participant individually
+        // MongoDB array queries don't work well for this use case, so we check all active challenges
         const challengesToReset = await DailyChallenge.find({
-            "participants.completed": true,
-            "participants.completedAt": { $lt: twentyFourHoursAgo },
-            isActive: true // Only reset active challenges
-        });
+            isActive: true,
+            "participants.0": { $exists: true } // Only challenges with at least one participant
+        }).populate("participants.user");
 
-        logger.info(`Found ${challengesToReset.length} challenges with participants to reset`);
+        logger.info(`Found ${challengesToReset.length} active challenges to check for reset`);
 
         let totalUsersReset = 0;
         let challengesModified = 0;
