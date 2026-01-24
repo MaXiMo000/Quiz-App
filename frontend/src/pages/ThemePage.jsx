@@ -87,7 +87,14 @@ const themeDescriptions = {
     synthwave:         "Synthwave: neon pink & cyan glow on pitch black.",
     "night-owl":       "Night Owl: nighttime blues with bright highlight colors.",
     "tokyo-night":     "Tokyo Night: moody indigos with neon green accents.",
-    "ayu-light":       "Ayu Light: gentle pastels with punchy orange highlights."
+    "ayu-light":       "Ayu Light: gentle pastels with punchy orange highlights.",
+    "catppuccin-mocha": "Catppuccin Mocha: warm dark theme with soft pastels.",
+    "catppuccin-latte": "Catppuccin Latte: warm light theme with gentle colors.",
+    "rose-pine":       "Rose Pine: elegant dark theme with rose accents.",
+    everforest:        "Everforest: soothing green theme inspired by nature.",
+    kanagawa:          "Kanagawa: Japanese-inspired theme with warm oranges.",
+    "github-dark":     "GitHub Dark: official GitHub dark theme.",
+    "github-light":    "GitHub Light: clean GitHub light theme."
 };
 
 
@@ -114,7 +121,14 @@ const themeLevels = {
   "synthwave": 28,
   "night-owl": 30,
   "tokyo-night": 32,
-  "ayu-light": 34
+  "ayu-light": 34,
+  "catppuccin-mocha": 36,
+  "catppuccin-latte": 38,
+  "rose-pine": 40,
+  "everforest": 42,
+  "kanagawa": 44,
+  "github-dark": 46,
+  "github-light": 48
 };
 
 // Get user's level (assume from localStorage user object)
@@ -143,7 +157,14 @@ const allThemeNames = [
   "synthwave",
   "night-owl",
   "tokyo-night",
-  "ayu-light"
+  "ayu-light",
+  "catppuccin-mocha",
+  "catppuccin-latte",
+  "rose-pine",
+  "everforest",
+  "kanagawa",
+  "github-dark",
+  "github-light"
 ];
 
 return (
