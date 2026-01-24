@@ -57,18 +57,30 @@ const PremiumQuizQuestions = () => {
 
                     <div className="question-list">
                         {quiz.questions.length > 0 ? (
-                            quiz.questions.map((q, index) => (
-                                <div key={index} className="question-box">
-                                    <h3>{index + 1}. {q.question}</h3>
-                                    <ul>
-                                        {q.options.map((option, i) => (
-                                            <li key={i}><strong>{String.fromCharCode(65 + i)}.</strong> {option}</li>
-                                        ))}
-                                    </ul>
-                                    <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
-                                    <button className="delete-btn" onClick={() => deleteQuestion(index)}>🗑️ Delete Question</button>
-                                </div>
-                            ))
+                            quiz.questions.map((q, index) => {
+                                // Check if this is an admin quiz (createdBy._id is null)
+                                const isAdminQuiz = !quiz.createdBy || !quiz.createdBy._id;
+                                
+                                return (
+                                    <div key={index} className="question-box">
+                                        <h3>{index + 1}. {q.question}</h3>
+                                        <ul>
+                                            {q.options.map((option, i) => (
+                                                <li key={i}><strong>{String.fromCharCode(65 + i)}.</strong> {option}</li>
+                                            ))}
+                                        </ul>
+                                        <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
+                                        <button 
+                                            className="delete-btn" 
+                                            onClick={() => deleteQuestion(index)}
+                                            disabled={isAdminQuiz}
+                                            title={isAdminQuiz ? "Cannot delete questions from admin quizzes" : "Delete question"}
+                                        >
+                                            🗑️ Delete Question
+                                        </button>
+                                    </div>
+                                );
+                            })
                         ) : (
                             <p>No questions added yet.</p>
                         )}

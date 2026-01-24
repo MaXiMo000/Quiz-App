@@ -344,9 +344,19 @@
 }
 
 .delete-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
+    background-color: #9ca3af !important;
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+    pointer-events: none;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.delete-btn:disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
 }
 
 /* ✅ Enhanced Loading & Error States */

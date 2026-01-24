@@ -63,7 +63,7 @@ const extractRetryDelay = (error) => {
  * @param {string} prompt - The prompt to send to the model
  * @param {Object} options - Configuration options
  * @param {string} options.preferredModel - Preferred model name (default: gemini-2.5-pro)
- * @param {number} options.maxRetries - Maximum number of retries per model (default: 3)
+ * @param {number} options.maxRetries - Maximum number of retries per model (default: 2 for faster fallback)
  * @param {number} options.baseDelay - Base delay in ms for exponential backoff (default: 1000)
  * @returns {Promise<string>} The generated text response
  */
@@ -88,7 +88,7 @@ export const generateFromGemini = async (prompt, options = {}) => {
 
     const {
         preferredModel = "gemini-2.5-pro", // Default to premium model (will fallback if quota exceeded)
-        maxRetries = 3,
+        maxRetries = 2, // Reduced to 2 retries for faster fallback when quota exceeded
         baseDelay = 1000
     } = options;
 
@@ -137,7 +137,22 @@ export const generateFromGemini = async (prompt, options = {}) => {
                 
                 // Check if it's a rate limit error
                 if (isRateLimitError(error)) {
-                    const retryDelay = extractRetryDelay(error) || (baseDelay * Math.pow(2, attempt));
+                    // PERFORMANCE: Cap retry delay to max 5 seconds for faster fallback
+                    const extractedDelay = extractRetryDelay(error);
+                    const calculatedDelay = baseDelay * Math.pow(2, attempt);
+                    
+                    // PERFORMANCE: If delay is too long (>10s), skip to next model immediately
+                    // Don't waste time retrying if we know quota is exceeded
+                    if (extractedDelay && extractedDelay > 10000) {
+                        logger.warn(`Rate limit exceeded for model ${modelName} - delay too long (${Math.ceil(extractedDelay/1000)}s). Skipping to next model immediately...`);
+                        break; // Skip to next model immediately
+                    }
+                    
+                    // Calculate retry delay (capped at 5 seconds max)
+                    const retryDelay = Math.min(
+                        extractedDelay || calculatedDelay,
+                        5000 // Max 5 seconds - fallback faster instead of waiting long
+                    );
                     
                     // If this is the last attempt on this model, try next model
                     if (attempt === maxRetries - 1) {
