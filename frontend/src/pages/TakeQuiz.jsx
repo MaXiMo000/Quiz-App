@@ -32,6 +32,7 @@ const TakeQuiz = () => {
     const [autoSubmitReason, setAutoSubmitReason] = useState(null);
     const [isQuizCompleted, setIsQuizCompleted] = useState(false);
     const [retryCount, setRetryCount] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const autoSubmitRef = useRef(false);
     const isSubmittingRef = useRef(false);
     const autoSubmitQuizRef = useRef(null);
@@ -309,20 +310,35 @@ const TakeQuiz = () => {
                 console.warn("Could not update quiz stats:", statsError.message);
             }
 
-            // Update user preferences with error handling
+            // Update user preferences and performance tracking with error handling
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
                 if (user?._id) {
                     const totalTimeSpent = Object.values(answerTimes).reduce((sum, time) => sum + time, 0);
-                    await axios.post('/api/intelligence/preferences', {
-                        quizId: id,
-                        score: scoreAchieved,
-                        totalQuestions: quiz.questions.length,
-                        timeSpent: totalTimeSpent,
-                        category: quiz.category || 'General',
-                        difficulty: quiz.questions.length > 10 ? 'hard' :
-                                   quiz.questions.length > 5 ? 'medium' : 'easy'
-                    });
+                    try {
+                        await axios.post('/api/intelligence/preferences', {
+                            quizId: id,
+                            score: scoreAchieved,
+                            totalQuestions: quiz.questions.length,
+                            timeSpent: totalTimeSpent,
+                            category: quiz.category || 'General',
+                            difficulty: quiz.questions.length > 10 ? 'hard' :
+                                       quiz.questions.length > 5 ? 'medium' : 'easy'
+                        });
+                    } catch (prefError) {
+                        console.warn("Could not update user preferences:", prefError.response?.data?.error || prefError.message);
+                    }
+
+                    try {
+                        await axios.post('/api/intelligence/track-performance', {
+                            quizId: id,
+                            score: scoreAchieved,
+                            totalQuestions: quiz.questions.length,
+                            timeSpent: totalTimeSpent,
+                        });
+                    } catch (perfError) {
+                        console.warn("Could not track performance:", perfError.response?.data?.error || perfError.message);
+                    }
                 }
             } catch (preferencesError) {
                 console.warn("Could not update user preferences:", preferencesError.message);
@@ -494,7 +510,7 @@ const TakeQuiz = () => {
         isSubmitButtonClicked.current = true;
 
         // Prevent submission if already auto-submitted or currently auto-submitting
-        if (hasAutoSubmitted || isSubmittingRef.current) {
+        if (hasAutoSubmitted || isSubmittingRef.current || isSubmitting) {
             return;
         }
 
@@ -556,22 +572,35 @@ const TakeQuiz = () => {
 
             // Phase 2: Update user preferences and performance tracking
             if (user?._id) {
-                await axios.post('/api/intelligence/preferences', {
-                    quizId: id,
-                    score: scoreAchieved,
-                    totalQuestions: quiz.questions.length,
-                    timeSpent: totalTimeSpent,
-                    category: quiz.category || 'General',
-                    difficulty: quiz.questions.length > 10 ? 'hard' :
-                               quiz.questions.length > 5 ? 'medium' : 'easy'
-                });
+                try {
+                    await axios.post('/api/intelligence/preferences', {
+                        quizId: id,
+                        score: scoreAchieved,
+                        totalQuestions: quiz.questions.length,
+                        timeSpent: totalTimeSpent,
+                        category: quiz.category || 'General',
+                        difficulty: quiz.questions.length > 10 ? 'hard' :
+                                   quiz.questions.length > 5 ? 'medium' : 'easy'
+                    });
+                } catch (prefError) {
+                    console.warn("Could not update user preferences:", prefError.response?.data?.error || prefError.message);
+                }
 
-                await axios.post('/api/intelligence/track-performance', {
-                    quizId: id,
-                    score: scoreAchieved,
-                    totalQuestions: quiz.questions.length,
-                    timeSpent: totalTimeSpent,
-                });
+                try {
+                    await axios.post('/api/intelligence/track-performance', {
+                        quizId: id,
+                        score: scoreAchieved,
+                        totalQuestions: quiz.questions.length,
+                        timeSpent: totalTimeSpent,
+                    });
+                } catch (perfError) {
+                    console.warn("Could not track performance:", perfError.response?.data?.error || perfError.message);
+                    // Show a user-friendly warning if it's a validation error
+                    if (perfError.response?.status === 400) {
+                        const errorMsg = perfError.response?.data?.error || "Invalid data provided";
+                        showError(`Unable to track your performance: ${errorMsg}. Your quiz results have been saved successfully.`);
+                    }
+                }
             }
 
             // ✅ Refresh user data to get updated XP and level
@@ -589,10 +618,12 @@ const TakeQuiz = () => {
         } catch (error) {
             console.error("Error saving report:", error);
             showError("Failed to save your score. Please try again.");
+            setIsSubmitting(false);
         } finally {
             isSubmittingRef.current = false;
+            setIsSubmitting(false);
         }
-    }, [quiz, answers, answerTimes, optionLetters, showError, id, recordAnswerTime, hasAutoSubmitted, exitFullScreen]);
+    }, [quiz, answers, answerTimes, optionLetters, showError, id, recordAnswerTime, hasAutoSubmitted, exitFullScreen, isSubmitting]);
 
     useEffect(() => {
         if (timeLeft === null) return;
@@ -740,7 +771,12 @@ const TakeQuiz = () => {
                 >
                     Next
                 </button>
-                <button onClick={handleSubmit}>Submit Quiz</button>
+                <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting || hasAutoSubmitted || isSubmittingRef.current}
+                >
+                    {isSubmitting || isSubmittingRef.current ? 'Submitting...' : 'Submit Quiz'}
+                </button>
                 </div>
             </div>
 

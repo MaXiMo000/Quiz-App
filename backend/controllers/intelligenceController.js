@@ -432,10 +432,18 @@ export const trackUserPerformance = async (req, res) => {
         const userId = req.user.id;
         const { quizId, score, totalQuestions, timeSpent } = req.body;
 
-        // Validate required fields
-        if (!quizId || score === undefined || !totalQuestions || !timeSpent) {
+        // Validate required fields (allow 0 values for score and timeSpent)
+        if (!quizId || score === undefined || score === null || totalQuestions === undefined || totalQuestions === null || timeSpent === undefined || timeSpent === null) {
+            const missingFields = [];
+            if (!quizId) missingFields.push('quizId');
+            if (score === undefined || score === null) missingFields.push('score');
+            if (totalQuestions === undefined || totalQuestions === null) missingFields.push('totalQuestions');
+            if (timeSpent === undefined || timeSpent === null) missingFields.push('timeSpent');
+
             logger.warn(`Missing required fields for performance tracking: quizId=${quizId}, score=${score}, totalQuestions=${totalQuestions}, timeSpent=${timeSpent}`);
-            return res.status(400).json({ error: "Missing required fields: quizId, score, totalQuestions, and timeSpent are required" });
+            return res.status(400).json({
+                error: `Missing required fields: ${missingFields.join(', ')}. All fields are required for performance tracking.`
+            });
         }
 
         await trackLearningAnalytics(userId, quizId, {
