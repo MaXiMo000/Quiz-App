@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import "../App.css";
-import "./UserReports.css"; // ✅ Use enhanced UserReports CSS for consistency
+import "./AdminReports.css";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const AdminReports = () => {
     const [reports, setReports] = useState([]);
@@ -93,7 +94,7 @@ const AdminReports = () => {
         }
     };
 
-    if (loading) return <Spinner message="Loading reports..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (
@@ -103,6 +104,11 @@ const AdminReports = () => {
             animate="visible"
             variants={containerVariants}
         >
+            {/* Floating Decorative Elements */}
+            <div className="floating-orb floating-orb-1"></div>
+            <div className="floating-orb floating-orb-2"></div>
+            <div className="floating-orb floating-orb-3"></div>
+
             <motion.h1
                 variants={itemVariants}
                 whileHover={{ scale: 1.02 }}
@@ -110,54 +116,34 @@ const AdminReports = () => {
                 📄 All User Quiz Reports
             </motion.h1>
 
-            <AnimatePresence mode="wait">
-                {loading ? (
-                    <motion.div
-                        className="loading-container"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        key="loading"
-                    >
-                        <div className="loading-spinner">🔄</div>
-                        <p>Loading reports...</p>
-                    </motion.div>
-                ) : error ? (
-                    <motion.div
-                        className="error-container"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        key="error"
-                    >
-                        <p className="error-message">{error}</p>
-                    </motion.div>
-                ) : reports.length === 0 ? (
-                    <motion.div
-                        className="no-reports"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        key="no-reports"
-                    >
-                        <div className="no-reports-icon">📋</div>
-                        <p>No reports found.</p>
-                        <p className="no-reports-subtitle">Users haven't taken any quizzes yet!</p>
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        className="table-container"
-                        variants={itemVariants}
-                        key="reports-table"
-                    >
-                        <motion.table
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <motion.thead
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3 }}
-                            >
+            {error ? (
+                <motion.div
+                    className="error-container"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    key="error"
+                >
+                    <p className="error-message">{error}</p>
+                </motion.div>
+            ) : reports.length === 0 ? (
+                <motion.div
+                    className="no-reports"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    key="no-reports"
+                >
+                    <div className="no-reports-icon">📋</div>
+                    <p>No reports found.</p>
+                    <p className="no-reports-subtitle">Users haven't taken any quizzes yet!</p>
+                </motion.div>
+            ) : (
+                <motion.div
+                    className="table-container"
+                    variants={itemVariants}
+                    key="reports-table"
+                >
+                        <table>
+                            <thead>
                                 <tr>
                                     <th>Username</th>
                                     <th>Quiz Name</th>
@@ -166,68 +152,44 @@ const AdminReports = () => {
                                     <th>Passed</th>
                                     <th>Action</th>
                                 </tr>
-                            </motion.thead>
-                            <motion.tbody>
-                                <AnimatePresence>
-                                    {reports.map((report, index) => (
-                                        <motion.tr
-                                            key={`admin-report-${report._id || index}`}
-                                            variants={tableRowVariants}
-                                            initial="hidden"
-                                            animate="visible"
-                                            exit="exit"
-                                            layout
-                                            whileHover={{
-                                                backgroundColor: "rgba(99, 102, 241, 0.05)",
-                                                scale: 1.01
-                                            }}
-                                            transition={{ duration: 0.2 }}
-                                            custom={index}
-                                        >
-                                            <motion.td
-                                                className="username-cell"
-                                                whileHover={{ x: 5, color: "#6366f1" }}
+                            </thead>
+                            <tbody>
+                                {reports.map((report, index) => (
+                                    <tr
+                                        key={`admin-report-${report._id || index}`}
+                                        style={{
+                                            animation: `fadeInRow 0.4s ease-out ${0.3 + (index * 0.05)}s both`
+                                        }}
+                                    >
+                                        <td className="username-cell">{report.username}</td>
+                                        <td>{report.quizName}</td>
+                                        <td className="score-cell">{report.score.toFixed(1)}</td>
+                                        <td>{report.total}</td>
+                                        <td className="pass-status">
+                                            {report.score >= report.total * 0.5 ? (
+                                                <span className="passed">✅</span>
+                                            ) : (
+                                                <span className="failed">❌</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            <motion.button
+                                                className="delete-btn"
+                                                onClick={() => deleteReport(report._id)}
+                                                disabled={deletingId === report._id}
+                                                whileHover={{ scale: 1.05, y: -2 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                animate={deletingId === report._id ? { opacity: 0.5 } : { opacity: 1 }}
                                             >
-                                                {report.username}
-                                            </motion.td>
-                                            <motion.td whileHover={{ x: 5 }}>{report.quizName}</motion.td>
-                                            <motion.td
-                                                className="score-cell"
-                                                whileHover={{ scale: 1.1, color: "#6366f1" }}
-                                            >
-                                                {report.score.toFixed(1)}
-                                            </motion.td>
-                                            <motion.td whileHover={{ x: 5 }}>{report.total}</motion.td>
-                                            <motion.td
-                                                className="pass-status"
-                                                whileHover={{ scale: 1.2 }}
-                                            >
-                                                {report.score >= report.total * 0.5 ? (
-                                                    <span className="passed">✅</span>
-                                                ) : (
-                                                    <span className="failed">❌</span>
-                                                )}
-                                            </motion.td>
-                                            <motion.td>
-                                                <motion.button
-                                                    className="delete-btn"
-                                                    onClick={() => deleteReport(report._id)}
-                                                    disabled={deletingId === report._id}
-                                                    whileHover={{ scale: 1.05, y: -2 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                    animate={deletingId === report._id ? { opacity: 0.5 } : { opacity: 1 }}
-                                                >
-                                                    {deletingId === report._id ? "🔄 Deleting..." : "Delete"}
-                                                </motion.button>
-                                            </motion.td>
-                                        </motion.tr>
-                                    ))}
-                                </AnimatePresence>
-                            </motion.tbody>
-                        </motion.table>
+                                                {deletingId === report._id ? "🔄 Deleting..." : "Delete"}
+                                            </motion.button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </motion.div>
                 )}
-            </AnimatePresence>
 
             {/* Notification Modal */}
             <NotificationModal

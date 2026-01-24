@@ -17,6 +17,7 @@ import {
   BarElement
 } from 'chart.js';
 import axios from '../utils/axios';
+import Loading from './Loading';
 import './EnhancedDashboard.css';
 
 ChartJS.register(
@@ -458,16 +459,7 @@ const EnhancedDashboard = () => {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="enhanced-dashboard">
-        <div className="dashboard-loading">
-          <div className="loading-spinner">
-            <div className="spinner-ring"></div>
-          </div>
-          <p className="loading-text">Loading your premium dashboard...</p>
-        </div>
-      </div>
-    );
+    return <Loading fullScreen={true} />;
   }
 
   return (

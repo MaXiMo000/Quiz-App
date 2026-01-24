@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
+import Loading from "../components/Loading";
 import "./Leaderboard.css";
 
 const XPLeaderboard = () => {
@@ -119,16 +120,7 @@ const XPLeaderboard = () => {
 
             <AnimatePresence mode="wait">
                 {loading ? (
-                    <motion.div
-                        className="loading-container"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        key="loading"
-                    >
-                        <div className="loading-spinner">🔄</div>
-                        <p>Loading leaderboard...</p>
-                    </motion.div>
+                    <Loading fullScreen={false} size="medium" key="loading" />
                 ) : error ? (
                     <motion.div
                         className="error-container"

@@ -4,6 +4,7 @@ import { verifyToken } from "../middleware/auth.js";
 import { roleUpdateLimiter } from "../middleware/rateLimiting.js";
 import mongoose from "mongoose";
 import { validate, registerSchema, loginSchema } from "../middleware/validation.js";
+import cache, { clearCacheByPattern } from "../middleware/cache.js";
 
 import passport from "passport";
 import "../config/passport.js";
@@ -31,7 +32,7 @@ router.get(
     }
 );
 
-router.get("/", verifyToken, getAllUsers); // Protected route
+router.get("/", verifyToken, cache, getAllUsers); // Protected route
 
 // 🔒 SECURITY: New endpoint to get current user data securely
 // IMPORTANT: This must come BEFORE /:id route to avoid "me" being treated as an ID
@@ -83,7 +84,7 @@ router.get("/me", verifyToken, async (req, res) => {
     }
 });
 
-router.get("/:id", verifyToken, async (req, res) => {
+router.get("/:id", verifyToken, cache, async (req, res) => {
     try {
         const user = await UserQuiz.findById(req.params.id);
         res.json(user);
@@ -92,7 +93,7 @@ router.get("/:id", verifyToken, async (req, res) => {
     }
 });
 
-router.patch("/update-role", roleUpdateLimiter, verifyToken, updateUserRole);
-router.post("/:id/theme", verifyToken, updateUserTheme);
+router.patch("/update-role", roleUpdateLimiter, verifyToken, clearCacheByPattern("/api/users"), updateUserRole);
+router.post("/:id/theme", verifyToken, clearCacheByPattern("/api/users"), updateUserTheme);
 
 export default router;

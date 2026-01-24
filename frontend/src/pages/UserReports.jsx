@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import "./UserReports.css"; // Import the specific CSS file for UserReports
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
@@ -61,7 +62,7 @@ const UserReports = () => {
         }
     };
 
-    if (loading) return <Spinner message="Loading reports..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (

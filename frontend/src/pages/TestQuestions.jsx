@@ -5,6 +5,7 @@ import "../App.css";
 import "./QuizQuestions.css"; // ✅ Use the same styles as QuizQuestions
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const TestQuestions = () => {
     const { id } = useParams(); // ✅ Get test ID from URL
@@ -49,7 +50,7 @@ const TestQuestions = () => {
         }
     };
 
-    if (loading) return <Spinner message="Loading test questions..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (

@@ -779,16 +779,35 @@ const StudyGroups = () => {
                                             );
                                         }
 
+                                        // Get user name from activity.user if populated, otherwise from details.message
+                                        const getUserName = () => {
+                                            if (activity.user?.name) {
+                                                return activity.user.name;
+                                            }
+                                            // Extract name from message if it exists (e.g., "test1 joined the group")
+                                            const message = activity.details?.message || '';
+                                            if (message && activity.type === 'member_joined') {
+                                                const match = message.match(/^(.+?)\s+(joined|left)\s+the\s+group$/i);
+                                                return match ? match[1] : null;
+                                            }
+                                            return null;
+                                        };
+
+                                        const userName = getUserName();
+                                        const displayMessage = userName
+                                            ? activity.details?.message || `${userName} ${activity.type === 'member_joined' ? 'joined' : 'left'} the group`
+                                            : activity.details?.message || activity.details || 'Activity';
+
                                         return (
                                             <div key={`activity-${index}-${activity.timestamp || Date.now()}`}
                                                  className="activity-item"
                                             >
                                                 <div className="activity-icon">
-                                                    {activity.type === 'member_joined' ? '👋' : '📊'}
+                                                    {activity.type === 'member_joined' ? '👋' : activity.type === 'member_left' ? '👋' : '📊'}
                                                 </div>
                                                 <div className="activity-details">
                                                     <span className="activity-message">
-                                                        {activity.details?.message || activity.details}
+                                                        {displayMessage}
                                                     </span>
                                                     <span className="activity-time">
                                                         {new Date(activity.timestamp).toLocaleDateString()}

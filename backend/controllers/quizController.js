@@ -2,6 +2,7 @@ import Quiz from "../models/Quiz.js";
 import UserQuiz from "../models/User.js";
 import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
 import logger from "../utils/logger.js";
+import mongoose from "mongoose";
 
 export const getQuizzes = async (req, res) => {
     logger.info(`Getting quizzes for user ${req.user.id} with role ${req.user.role}`);
@@ -12,20 +13,48 @@ export const getQuizzes = async (req, res) => {
         if (role === "admin") {
         // Admin sees all quizzes
         quizzes = await Quiz.find();
+        logger.info(`Admin user ${userId} fetching ALL quizzes. Found ${quizzes.length} quizzes.`);
         } else if (role === "premium") {
         // Premium sees their own quizzes and admin's quizzes
-        quizzes = await Quiz.find({
+        // Ensure userId is properly converted to ObjectId for comparison
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            logger.error(`Invalid ObjectId format for userId: ${userId}`);
+            return res.status(400).json({ error: "Invalid user ID format" });
+        }
+
+        const userObjectId = new mongoose.Types.ObjectId(userId);
+        logger.debug(`Premium user filtering: userId=${userId}, userObjectId=${userObjectId}`);
+
+        // Query for quizzes created by this user OR by admin (null)
+        // Use explicit ObjectId comparison
+        const query = {
             $or: [
-            { "createdBy._id": userId },
-            { "createdBy._id": null }
+                { "createdBy._id": userObjectId },
+                { "createdBy._id": null }
             ]
-        });
+        };
+
+        logger.debug(`Query filter: ${JSON.stringify(query)}`);
+        quizzes = await Quiz.find(query).lean(); // Added .lean() for better performance
+
+        // Log the actual createdBy._id values from results to verify filtering
+        logger.info(`Premium user ${userId} fetching quizzes. Found ${quizzes.length} total quizzes.`);
+        if (quizzes.length > 0) {
+            const creatorIds = quizzes.map(q => {
+                const creatorId = q.createdBy?._id;
+                return creatorId ? creatorId.toString() : 'null';
+            });
+            const uniqueIds = [...new Set(creatorIds)];
+            logger.debug(`Creator IDs in results: ${creatorIds.slice(0, 10).join(', ')}${creatorIds.length > 10 ? '...' : ''}`);
+            logger.debug(`Expected: Only ${userId} and null. Actual unique IDs: ${uniqueIds.join(', ')}`);
+        }
         } else {
         // Regular users see only admin's quizzes
         quizzes = await Quiz.find({ "createdBy._id": null });
+        logger.info(`Regular user ${userId} fetching admin quizzes only. Found ${quizzes.length} quizzes.`);
         }
 
-        logger.info(`Successfully fetched ${quizzes.length} quizzes for user ${userId}`);
+        logger.info(`✅ Successfully fetched ${quizzes.length} quizzes for user ${userId} with role ${role}`);
         res.json(quizzes);
     } catch (error) {
         logger.error({ message: `Error getting quizzes for user ${req.user.id}`, error: error.message, stack: error.stack });
@@ -169,20 +198,47 @@ export async function addQuestion(req, res) {
 }
 
 export async function getQuizById(req, res) {
-    logger.info(`Fetching quiz by ID: ${req.params.id}`);
+    logger.info(`Fetching quiz by ID: ${req.params.id} for user ${req.user?.id} with role ${req.user?.role}`);
     try {
+        const { role, id: userId } = req.user;
+
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id}`);
             return res.status(404).json({ message: "Quiz not found" });
         }
 
+        // Authorization check: Premium users can only access their own quizzes or admin quizzes
+        if (role === "premium") {
+            const quizCreatorId = quiz.createdBy?._id;
+            const userObjectId = mongoose.Types.ObjectId.isValid(userId)
+                ? new mongoose.Types.ObjectId(userId)
+                : userId;
+
+            // Check if quiz is created by admin (null) or by this user
+            const isAdminQuiz = quizCreatorId === null;
+            const isUserQuiz = quizCreatorId && quizCreatorId.toString() === userObjectId.toString();
+
+            if (!isAdminQuiz && !isUserQuiz) {
+                logger.warn(`Premium user ${userId} attempted to access quiz ${req.params.id} created by ${quizCreatorId}`);
+                return res.status(403).json({ message: "Access denied. You can only access your own quizzes or admin quizzes." });
+            }
+        } else if (role === "user") {
+            // Regular users can only access admin quizzes
+            const quizCreatorId = quiz.createdBy?._id;
+            if (quizCreatorId !== null) {
+                logger.warn(`Regular user ${userId} attempted to access quiz ${req.params.id} created by ${quizCreatorId}`);
+                return res.status(403).json({ message: "Access denied. You can only access admin quizzes." });
+            }
+        }
+        // Admin can access all quizzes (no check needed)
+
         // Create initial review schedules for the user and quiz
         if (req.user) {
             await createInitialReviewSchedules(req.user.id, quiz._id, quiz.questions);
         }
 
-        logger.info(`Successfully fetched quiz ${req.params.id}`);
+        logger.info(`Successfully fetched quiz ${req.params.id} for user ${userId}`);
         res.json(quiz);
     } catch (error) {
         logger.error({ message: `Error fetching quiz ${req.params.id}`, error: error.message, stack: error.stack });

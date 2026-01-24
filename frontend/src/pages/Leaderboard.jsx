@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import "./Leaderboard.css";
 
 const Leaderboard = () => {
@@ -35,7 +36,7 @@ const Leaderboard = () => {
         ? topScorers
         : topScorers.filter(item => item.quizName === filteredQuiz);
 
-    if (loading) return <Spinner message="Loading leaderboard..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (

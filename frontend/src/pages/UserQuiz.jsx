@@ -6,6 +6,7 @@ import "./UserQuiz.css";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import ShareQuizModal from "../components/ShareQuizModal";
+import Loading from "../components/Loading";
 
 const UserQuiz = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -37,18 +38,7 @@ const UserQuiz = () => {
         alert(`Quiz shared successfully with ${groupCount} group${groupCount !== 1 ? 's' : ''}!`);
     };
 
-    if (loading) return (
-        <div className="user-quiz-container">
-            <div className="loading-container">
-                <div className="loading-spinner">
-                    <div className="spinner-ring"></div>
-                </div>
-                <p className="loading-text">
-                    Loading Available Quizzes...
-                </p>
-            </div>
-        </div>
-    );
+    if (loading) return <Loading fullScreen={true} />;
 
     if (error) return (
         <div className="user-quiz-container">

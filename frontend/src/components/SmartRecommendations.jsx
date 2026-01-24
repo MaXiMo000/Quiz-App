@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from '../utils/axios';
+import Loading from './Loading';
 import './SmartRecommendations.css';
 
 const SmartRecommendations = ({ user }) => {
@@ -56,12 +57,7 @@ const SmartRecommendations = ({ user }) => {
     };
 
     if (loading) {
-        return (
-            <div className="smart-recommendations loading">
-                <div className="loading-spinner"></div>
-                <p>Finding perfect quizzes for you...</p>
-            </div>
-        );
+        return <Loading fullScreen={false} size="medium" />;
     }
 
     if (error) {

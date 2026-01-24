@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import "../App.css";
 import "./UserReportsCheck.css";
 
@@ -70,9 +71,9 @@ export default function UserReportsCheck() {
 
     return (
         <AnimatePresence mode="wait">
-            {loading ? (
-                <Spinner message="Loading report..." />
-            ) : error ? (
+                {loading ? (
+                    <Loading fullScreen={true} />
+                ) : error ? (
                 <motion.div
                     className="error-container"
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -114,6 +115,11 @@ export default function UserReportsCheck() {
                     variants={containerVariants}
                     key="report-content"
                 >
+                    {/* Floating Decorative Elements */}
+                    <div className="floating-orb floating-orb-1"></div>
+                    <div className="floating-orb floating-orb-2"></div>
+                    <div className="floating-orb floating-orb-3"></div>
+
                     <motion.div className="report-header" variants={itemVariants}>
                         <motion.button
                             className="back-btn"
@@ -125,26 +131,38 @@ export default function UserReportsCheck() {
                         </motion.button>
 
                         <motion.h2
+                            className="report-title"
                             whileHover={{ scale: 1.02 }}
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3, duration: 0.6 }}
                         >
                             📄 Quiz Report: {report.quizName}
                         </motion.h2>
+                    </motion.div>
 
+                    <motion.div
+                        className="score-summary"
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.02 }}
+                    >
+                        <div className="score-display-wrapper">
+                            <div className="score-display">
+                                <span className="score-number">{Math.round(report.score)}</span>
+                                <span className="score-divider">/</span>
+                                <span className="total-score">{report.total}</span>
+                            </div>
+                            <div className="percentage-score">
+                                {Math.round((report.score / report.total) * 100)}%
+                            </div>
+                        </div>
                         <motion.div
-                            className="score-summary"
-                            whileHover={{ scale: 1.05 }}
+                            className={`result-badge ${report.score >= report.total * 0.5 ? 'passed' : 'failed'}`}
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 10 }}
                         >
-                            <p className="score">
-                                Score: <strong>{Math.round(report.score)}</strong> / {report.total}
-                            </p>
-                            <motion.div
-                                className={`result-badge ${report.score >= report.total * 0.5 ? 'passed' : 'failed'}`}
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: 0.5, type: "spring" }}
-                            >
-                                {report.score >= report.total * 0.5 ? '✅ PASSED' : '❌ FAILED'}
-                            </motion.div>
+                            {report.score >= report.total * 0.5 ? '🎉 PASSED' : '❌ FAILED'}
                         </motion.div>
                     </motion.div>
 

@@ -241,6 +241,18 @@ const GamificationHub = () => {
         }
     }, [activeTab, fetchDailyChallenge, fetchTournaments, fetchCompletedChallenges, fetchCompletedTournaments, fetchHistory]);
 
+    // Add class to body/html for full-page scrolling
+    useEffect(() => {
+        document.body.classList.add('gamification-hub-page');
+        document.documentElement.classList.add('gamification-hub-page');
+
+        // Cleanup on unmount
+        return () => {
+            document.body.classList.remove('gamification-hub-page');
+            document.documentElement.classList.remove('gamification-hub-page');
+        };
+    }, []);
+
     const createDailyChallenge = async (challengeData) => {
         try {
             await axios.post('/api/gamification/challenges/create', challengeData);
@@ -1719,7 +1731,7 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
             >
                 <div className="modal-header">
                     <h2>🎯 Create Daily Challenge</h2>
-                    <button className="close-btn" onClick={onClose}>×</button>
+                    <button className="close-btn" onClick={onClose} aria-label="Close">×</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="create-form">
@@ -1850,11 +1862,6 @@ const CreateChallengeModal = ({ onClose, onCreate }) => {
                         {formData.selectedQuizzes.length > 0 && (
                             <p className="selected-count">
                                 {formData.selectedQuizzes.length} quiz{formData.selectedQuizzes.length !== 1 ? 'es' : ''} selected
-                            </p>
-                        )}
-                        {availableQuizzes.length > 5 && (
-                            <p className="scroll-hint">
-                                💡 Tip: Scroll down to see more quizzes ({availableQuizzes.length} total)
                             </p>
                         )}
                         {loadingQuizzes ? (
@@ -2080,7 +2087,7 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
             >
                 <div className="modal-header">
                     <h2>🏆 Create Tournament</h2>
-                    <button className="close-btn" onClick={onClose}>×</button>
+                    <button className="close-btn" onClick={onClose} aria-label="Close">×</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="create-form">
@@ -2192,11 +2199,6 @@ const CreateTournamentModal = ({ onClose, onCreate }) => {
                         {formData.selectedQuizzes.length > 0 && (
                             <p className="selected-count">
                                 {formData.selectedQuizzes.length} quiz{formData.selectedQuizzes.length !== 1 ? 'es' : ''} selected
-                            </p>
-                        )}
-                        {availableQuizzes.length > 5 && (
-                            <p className="scroll-hint">
-                                💡 Tip: Scroll down to see more quizzes ({availableQuizzes.length} total)
                             </p>
                         )}
                         {loadingQuizzes ? (
@@ -2391,8 +2393,8 @@ const GameQuizModal = ({
     const progress = ((currentQuestion + 1) / quiz.questions.length) * 100;
 
     return (
-        <div className="game-quiz-modal-overlay">
-            <div className="game-quiz-modal">
+        <div className="game-quiz-modal-overlay" onClick={onClose}>
+            <div className="game-quiz-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="quiz-header">
                     <div className="quiz-info">
                         <h3>{quiz.title}</h3>

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "../utils/axios";
-import "./AdminDashboard.css";
 import "../App.css";
+import "./AdminDashboard.css";
 import Spinner from "../components/Spinner";
 import MigrationPanel from "../components/MigrationPanel";
+import Loading from "../components/Loading";
 
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
@@ -97,32 +98,7 @@ const AdminDashboard = () => {
         }
     }, [users]); // Re-run when users change
 
-    if (loading) return (
-        <motion.div
-            className="admin-dashboard"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-        >
-            <div className="loading-container">
-                <motion.div
-                    className="loading-spinner"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                >
-                    <div className="spinner-ring"></div>
-                </motion.div>
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="loading-text"
-                >
-                    Loading Dashboard...
-                </motion.p>
-            </div>
-        </motion.div>
-    );
+    if (loading) return <Loading fullScreen={true} />;
 
     if (error) return (
         <motion.div
@@ -149,6 +125,11 @@ const AdminDashboard = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
         >
+            {/* Floating Decorative Orbs */}
+            <div className="floating-element floating-1"></div>
+            <div className="floating-element floating-2"></div>
+            <div className="floating-element floating-3"></div>
+
             <div className="dashboard-content">
                 <motion.div
                     className="dashboard-header"
@@ -325,30 +306,21 @@ const AdminDashboard = () => {
                             </thead>
                             <tbody>
                                 {users.map((user, index) => (
-                                    <motion.tr
+                                    <tr
                                         key={user._id}
                                         className={user.role === 'PREMIUM' ? 'premium-user' : ''}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{
-                                            duration: 0.4,
-                                            delay: 1.3 + (index * 0.1)
-                                        }}
-                                        whileHover={{
-                                            backgroundColor: user.role === 'PREMIUM'
-                                                ? "rgba(251, 191, 36, 0.1)"
-                                                : "rgba(99, 102, 241, 0.05)",
-                                            transition: { duration: 0.2 }
+                                        style={{
+                                            animation: `fadeInRow 0.4s ease-out ${0.9 + (index * 0.05)}s both`
                                         }}
                                     >
-                                        <td>{user.name || 'Unknown'}</td>
-                                        <td>{user.email || 'No email'}</td>
-                                        <td>
+                                        <td className="user-name-cell">{user.name || 'Unknown'}</td>
+                                        <td className="user-email-cell">{user.email || 'No email'}</td>
+                                        <td className="user-role-cell">
                                             <span className={`role-badge ${(user.role || 'user').toLowerCase()}`}>
                                                 {user.role || 'USER'}
                                             </span>
                                         </td>
-                                    </motion.tr>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
@@ -356,48 +328,6 @@ const AdminDashboard = () => {
                 </motion.div>
             </div>
 
-            {/* Floating decorative elements */}
-            <motion.div
-                className="floating-element floating-1"
-                animate={{
-                    y: [0, -20, 0],
-                    x: [0, 10, 0],
-                    rotate: [0, 180, 360]
-                }}
-                transition={{
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                }}
-            />
-            <motion.div
-                className="floating-element floating-2"
-                animate={{
-                    y: [0, 15, 0],
-                    x: [0, -15, 0],
-                    rotate: [0, -180, -360]
-                }}
-                transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1
-                }}
-            />
-            <motion.div
-                className="floating-element floating-3"
-                animate={{
-                    y: [0, -25, 0],
-                    x: [0, 20, 0],
-                    scale: [1, 1.2, 1]
-                }}
-                transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 2
-                }}
-            />
         </motion.div>
     );
 };

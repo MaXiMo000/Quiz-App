@@ -1,17 +1,38 @@
-/* Enhanced Dashboard Styles */
+/* ✨ Enhanced Dashboard Styles - Ultra Modern ✨ */
 .enhanced-dashboard {
   max-width: 1400px;
   margin: 0 auto;
-  padding: var(--space-xl);
+  padding: 3rem 2rem;
   min-height: 100vh;
-  background: linear-gradient(135deg,
-    rgba(255, 215, 0, 0.03),
-    rgba(255, 193, 7, 0.02),
-    transparent 50%);
+  background:
+    radial-gradient(ellipse at top left, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at top right, rgba(255, 193, 7, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(255, 165, 0, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg,
+      rgba(15, 15, 35, 0.95) 0%,
+      rgba(26, 26, 46, 0.97) 25%,
+      rgba(30, 20, 60, 0.95) 50%,
+      rgba(22, 33, 62, 0.97) 75%,
+      rgba(15, 15, 35, 0.95) 100%
+    );
   width: 100%;
   max-width: 100vw;
   box-sizing: border-box;
   overflow-x: hidden;
+  position: relative;
+  animation: pageSlideIn 1s ease-out;
+}
+
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Hide scrollbars completely */
@@ -56,27 +77,80 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-2xl);
-  padding: var(--space-xl);
-  background: linear-gradient(135deg,
-    rgba(255, 215, 0, 0.08),
-    rgba(255, 193, 7, 0.05));
-  backdrop-filter: blur(25px);
-  border-radius: var(--radius-2xl);
-  border: none;
-  box-shadow: var(--shadow-xl), 0 0 30px rgba(255, 215, 0, 0.1);
+  padding: 3rem 2.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 32px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 0 120px rgba(255, 215, 0, 0.2);
   width: 100%;
   max-width: 100%;
+  position: relative;
+  overflow: hidden;
+  animation: headerSlideIn 0.8s ease-out;
+}
+
+@keyframes headerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatOrb 15s ease-in-out infinite;
+}
+
+.dashboard-header::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 193, 7, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatOrb 12s ease-in-out infinite reverse;
+}
+
+@keyframes floatOrb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(30px, -30px) scale(1.1);
+    opacity: 0.8;
+  }
 }
 
 .dashboard-header h1 {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
-  background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 25%, #FF8C00 50%, #FFD700 75%, #FFA500 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 5s ease-in-out infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
-  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
   position: relative;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -86,6 +160,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   z-index: 1;
+  letter-spacing: -0.02em;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .premium-badge {
@@ -129,7 +210,9 @@
 }
 
 /* Loading and Error States */
-.dashboard-loading, .dashboard-error {
+/* OLD LOADING STYLES - DEPRECATED: Now using centralized Loading component */
+/*
+.dashboard-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -205,6 +288,17 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+*/
+
+.dashboard-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: var(--space-2xl);
+  text-align: center;
+}
 
 @keyframes rotate {
   0% { transform: rotate(0deg); }
@@ -233,9 +327,7 @@
   100% {
     background-position: 200% 0;
   }
-}
-
-.dashboard-error {
+*/
   color: var(--text-secondary);
 }
 

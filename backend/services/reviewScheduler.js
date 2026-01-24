@@ -7,20 +7,45 @@ import { calculateNextReview } from "../algorithms/spacedRepetition.js";
  * @returns {Promise<Array>} - A promise that resolves to an array of review schedules.
  */
 export const getReviewScheduleForUser = async (userId) => {
-  const schedules = await ReviewSchedule.find({ user: userId, nextReviewDate: { $lte: new Date() } })
-    .populate("quiz", "title category questions");
+  try {
+    const schedules = await ReviewSchedule.find({ user: userId, nextReviewDate: { $lte: new Date() } })
+      .populate("quiz", "title category questions")
+      .lean(); // Use lean() for better performance
 
-  // Manually populate question data from the quiz
-  return schedules.map(schedule => {
-    // Convert both IDs to strings for comparison
-    const questionIdStr = schedule.question.toString();
-    const question = schedule.quiz.questions.find(q => q._id.toString() === questionIdStr);
+    // Manually populate question data from the quiz
+    const reviews = schedules.map(schedule => {
+      // Safety check: ensure quiz exists and has questions
+      if (!schedule.quiz || !schedule.quiz.questions || !Array.isArray(schedule.quiz.questions)) {
+        return null;
+      }
 
-    return {
-      ...schedule.toObject(),
-      question: question || null
-    };
-  });
+      // Convert both IDs to strings for comparison
+      const questionIdStr = schedule.question?.toString();
+      if (!questionIdStr) {
+        return null;
+      }
+
+      const question = schedule.quiz.questions.find(q => {
+        if (!q || !q._id) return false;
+        return q._id.toString() === questionIdStr;
+      });
+
+      // Only return reviews with valid question data
+      if (!question) {
+        return null;
+      }
+
+      return {
+        ...schedule,
+        question: question
+      };
+    }).filter(review => review !== null); // Filter out null entries
+
+    return reviews;
+  } catch (error) {
+    console.error("Error in getReviewScheduleForUser:", error);
+    throw error;
+  }
 };
 
 /**

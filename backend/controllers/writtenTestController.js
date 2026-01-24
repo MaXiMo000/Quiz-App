@@ -89,9 +89,9 @@ Score: 8
 Feedback: Well-structured answer with key points covered.
 `;
 
-        const geminiResponse = await generateFromGemini(prompt, { 
+        const geminiResponse = await generateFromGemini(prompt, {
             preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-            maxRetries: 3 
+            maxRetries: 3
         });
 
         const scoreMatch = geminiResponse.match(/Score\s*[:-]?\s*(\d+)/i);

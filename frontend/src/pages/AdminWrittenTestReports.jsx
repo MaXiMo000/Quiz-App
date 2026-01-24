@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import "../App.css";
@@ -93,7 +94,7 @@ const AdminWrittenTestReports = () => {
         }
     };
 
-    if (loading) return <Spinner message="Loading written test reports..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (
@@ -111,18 +112,7 @@ const AdminWrittenTestReports = () => {
             </motion.h1>
 
             <AnimatePresence mode="wait">
-                {loading ? (
-                    <motion.div
-                        className="loading-container"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        key="loading"
-                    >
-                        <div className="loading-spinner">🔄</div>
-                        <p>Loading reports...</p>
-                    </motion.div>
-                ) : error ? (
+                {error ? (
                     <motion.div
                         className="error-container"
                         initial={{ opacity: 0, scale: 0.9 }}

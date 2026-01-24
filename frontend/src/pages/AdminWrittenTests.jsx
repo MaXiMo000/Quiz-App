@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
+import Loading from "../components/Loading";
 import "../App.css";
 import "./AdminQuizzes.css"; // ✅ Use the enhanced styles as AdminQuizzes
 
@@ -149,17 +150,7 @@ const AdminWrittenTests = () => {
 
     // ✅ Loading state with beautiful animation
     if (loading) {
-        return (
-            <motion.div
-                className="loading-container"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-            >
-                <div className="loading-spinner"></div>
-                <p className="loading-text">Loading Written Tests...</p>
-            </motion.div>
-        );
+        return <Loading fullScreen={true} />;
     }
 
     // ✅ Error state with motion animation

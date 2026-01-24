@@ -9,6 +9,7 @@ import {
     updateCompetencyFromQuiz
 } from "../controllers/learningPathController.js";
 import { verifyToken } from "../middleware/auth.js";
+import cache, { clearCacheByPattern } from "../middleware/cache.js";
 
 const router = express.Router();
 
@@ -16,16 +17,16 @@ const router = express.Router();
 router.use(verifyToken);
 
 // Learning Paths
-router.get("/", getLearningPaths);
-router.get("/:pathId", getLearningPath);
-router.post("/:pathId/start", startLearningPath);
-router.patch("/:pathId/nodes/:nodeId", updateNodeProgress);
+router.get("/", cache, getLearningPaths);
+router.get("/:pathId", cache, getLearningPath);
+router.post("/:pathId/start", clearCacheByPattern("/api/learning-paths"), startLearningPath);
+router.patch("/:pathId/nodes/:nodeId", clearCacheByPattern("/api/learning-paths"), updateNodeProgress);
 
 // Analytics
-router.get("/analytics/overview", getLearningAnalytics);
+router.get("/analytics/overview", cache, getLearningAnalytics);
 
 // Competencies
-router.get("/competencies/user", getUserCompetencies);
-router.post("/competencies/update-from-quiz", updateCompetencyFromQuiz);
+router.get("/competencies/user", cache, getUserCompetencies);
+router.post("/competencies/update-from-quiz", clearCacheByPattern("/api/learning-paths"), updateCompetencyFromQuiz);
 
 export default router;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
+import Loading from './Loading';
 import './LearningPathHub.css';
 
 const LearningPathHub = () => {
@@ -214,8 +215,9 @@ const LearningPathHub = () => {
                     <motion.div
                         key={path._id}
                         className="path-card"
-                        whileHover={{ scale: 1.02, y: -5 }}
-                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
                     >
                         <div className="path-header">
                             <h3>{path.title}</h3>
@@ -702,14 +704,7 @@ const LearningPathHub = () => {
     };
 
     if (loading) {
-        return (
-            <div className="learning-path-hub loading">
-                <div className="loading-spinner">
-                    <div className="spinner-ring"></div>
-                </div>
-                <p>Loading Learning Path Hub...</p>
-            </div>
-        );
+        return <Loading fullScreen={true} />;
     }
 
     return (

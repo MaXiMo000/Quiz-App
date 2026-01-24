@@ -6,6 +6,7 @@ import "../App.css";
 import { ThemeContext } from "../context/ThemeContext";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -132,13 +133,7 @@ const Login = () => {
             </div>
 
             {/* Full Screen Loader */}
-            {loading && (
-                <div className="fullscreen-loader">
-                    <div className="loader-spinner"></div>
-                    <div className="loader-text">Signing you in...</div>
-                    <div className="loader-subtext">Please wait a moment</div>
-                </div>
-            )}
+            {loading && <Loading fullScreen={true} />}
 
             {/* Notification Modal */}
             <NotificationModal

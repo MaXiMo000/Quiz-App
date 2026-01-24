@@ -89,9 +89,9 @@ Create a warm, encouraging welcome message that:
 
 Keep it conversational, supportive, and under 200 words.`;
 
-        const welcomeMessage = await generateFromGemini(prompt, { 
+        const welcomeMessage = await generateFromGemini(prompt, {
             preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-            maxRetries: 3 
+            maxRetries: 3
         });
 
         session.addMessage("assistant", welcomeMessage, { type: "welcome" });
@@ -226,11 +226,11 @@ Return ONLY a valid JSON object with this structure:
 
         try {
             // Generate content with retry logic and fallback models
-            const responseText = await generateFromGemini(prompt, { 
+            const responseText = await generateFromGemini(prompt, {
                 preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-                maxRetries: 3 
+                maxRetries: 3
             });
-            
+
             // Clean the response to ensure valid JSON
             let cleanedText = responseText.trim();
             cleanedText = cleanedText.replace(/```json\n?/, "").replace(/\n?```/, "");
@@ -388,11 +388,11 @@ Format as a JSON array of recommendation objects:
         let recommendations;
 
         try {
-            const responseText = await generateFromGemini(prompt, { 
+            const responseText = await generateFromGemini(prompt, {
                 preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-                maxRetries: 3 
+                maxRetries: 3
             });
-            
+
             let cleanedText = responseText.trim();
             cleanedText = cleanedText.replace(/```json\n?/, "").replace(/\n?```/, "");
             recommendations = JSON.parse(cleanedText);
@@ -452,9 +452,9 @@ Respond encouragingly and ask for specific details:
 
 Keep it conversational and helpful. Offer suggestions based on their weak areas.`;
 
-    const content = await generateFromGemini(prompt, { 
+    const content = await generateFromGemini(prompt, {
         preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-        maxRetries: 3 
+        maxRetries: 3
     });
 
     return {
@@ -478,9 +478,9 @@ Provide a clear, detailed explanation that:
 
 Adapt the explanation style to their learning preference (${session.learningStyle}).`;
 
-    const content = await generateFromGemini(prompt, { 
+    const content = await generateFromGemini(prompt, {
         preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-        maxRetries: 3 
+        maxRetries: 3
     });
 
     return {
@@ -507,9 +507,9 @@ Create a structured study plan with:
 
 Make it realistic and achievable for their level.`;
 
-    const content = await generateFromGemini(prompt, { 
+    const content = await generateFromGemini(prompt, {
         preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-        maxRetries: 3 
+        maxRetries: 3
     });
 
     return {
@@ -533,9 +533,9 @@ Provide:
 
 Be encouraging and specific about how to improve.`;
 
-    const content = await generateFromGemini(prompt, { 
+    const content = await generateFromGemini(prompt, {
         preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-        maxRetries: 3 
+        maxRetries: 3
     });
 
     return {
@@ -573,9 +573,9 @@ Keep responses conversational, under 150 words, and always offer actionable next
 If they ask about generating quizzes, be specific about topics and difficulty levels available.
 If they mention struggling with something, offer targeted help and practice suggestions.`;
 
-    const content = await generateFromGemini(prompt, { 
+    const content = await generateFromGemini(prompt, {
         preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-        maxRetries: 3 
+        maxRetries: 3
     });
 
     // Analyze the response to suggest relevant actions
@@ -791,9 +791,9 @@ Create an encouraging progress report that:
 
 Keep it positive, specific, and under 200 words.`;
 
-        const progressReport = await generateFromGemini(prompt, { 
+        const progressReport = await generateFromGemini(prompt, {
             preferredModel: "gemini-2.5-pro", // Premium model, falls back if quota exceeded
-            maxRetries: 3 
+            maxRetries: 3
         });
 
         res.json({

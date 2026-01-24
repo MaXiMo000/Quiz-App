@@ -189,7 +189,7 @@ const Contact = () => {
                         <div className="item-icon">📧</div>
                         <div className="item-content">
                             <h2>Email</h2>
-                            <span>ritishsaini503@gmail.com</span>
+                            <span>test@test.com</span>
                         </div>
                     </motion.div>
 
@@ -197,7 +197,7 @@ const Contact = () => {
                         <div className="item-icon">📱</div>
                         <div className="item-content">
                             <h2>Phone</h2>
-                            <span>+91 98765-43210</span>
+                            <span>+91 00000-00000</span>
                         </div>
                     </motion.div>
 
@@ -205,7 +205,7 @@ const Contact = () => {
                         <div className="item-icon">📍</div>
                         <div className="item-content">
                             <h2>Address</h2>
-                            <span>Delhi, India</span>
+                            <span>Test City, India</span>
                         </div>
                     </motion.div>
                 </motion.div>

@@ -4,6 +4,7 @@ import "../App.css";
 import "./TakeQuiz.css";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 
@@ -656,7 +657,7 @@ const TakeQuiz = () => {
         }
     };
 
-    if (loading) return <Spinner message="Loading quiz..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return (
         <div className="error-container">
             <p className="error-message">{error}</p>
@@ -683,11 +684,11 @@ const TakeQuiz = () => {
             )}
         </div>
     );
-    if (isAutoSubmitting) return <Spinner message="Auto-submitting quiz..." />;
+    if (isAutoSubmitting) return <Loading fullScreen={true} />;
 
     // Add null checks for quiz data
-    if (!quiz) return <Spinner message="Loading quiz data..." />;
-    if (!currentQ) return <Spinner message="Loading question..." />;
+    if (!quiz) return <Loading fullScreen={true} />;
+    if (!currentQ) return <Loading fullScreen={true} />;
 
     return (
         <div className="quiz-container">

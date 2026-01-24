@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from '../utils/axios';
+import Loading from './Loading';
 import './AdaptiveDifficulty.css';
 
 const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
@@ -56,12 +57,7 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
     };
 
     if (loading) {
-        return (
-            <div className="adaptive-difficulty loading">
-                <div className="loading-spinner"></div>
-                <p>Analyzing your performance...</p>
-            </div>
-        );
+        return <Loading fullScreen={false} size="medium" />;
     }
 
     if (!adaptiveData) {

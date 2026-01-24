@@ -5,6 +5,7 @@ import "./TakeWrittenTest.css"; // ✅ Importing the new CSS file
 import axios from "../utils/axios";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const TakeWrittenTest = () => {
     const { id } = useParams();
@@ -168,7 +169,7 @@ const TakeWrittenTest = () => {
     }, [test, answers, showWarning, showError, showSuccess, navigate]);
 
 
-    if (loading) return <Spinner message="Loading test..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
     if (!test) return <h2>Test not found.</h2>;
 

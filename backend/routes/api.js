@@ -22,8 +22,9 @@ router.delete("/quizzes/:id/questions/:questionIndex", verifyToken, clearCacheBy
 router.post("/quizzes/:id/stats", verifyToken, clearCacheByPattern("/api/quizzes"), updateQuizStats);
 
 // 🔒 AI endpoints with rate limiting to prevent spam
-router.post("/quizzes/:id/generate-questions", verifyToken, aiQuestionLimiter, generateQuizQuestions);
-router.post("/adaptive", verifyToken, aiQuestionLimiter, generateAdaptiveQuestions);
+// IMPORTANT: Clear cache when AI generates questions to prevent stale data
+router.post("/quizzes/:id/generate-questions", verifyToken, aiQuestionLimiter, clearCacheByPattern("/api/quizzes"), generateQuizQuestions);
+router.post("/adaptive", verifyToken, aiQuestionLimiter, clearCacheByPattern("/api/quizzes"), generateAdaptiveQuestions);
 
 // Report Routes
 router.get("/reports", verifyToken, cache, getReports);
