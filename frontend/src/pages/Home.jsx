@@ -133,128 +133,181 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
         >
-        <motion.h1
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
-        >
-            Welcome, {user?.name}!
-        </motion.h1>
-
-        <XPBar xp={xp} level={level} />
-
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-        >
-            <p className="home-description">Level: {level}</p>
-            <p className="home-description">Login Streak: {user.loginStreak} days</p>
-            <p className="home-description">Quiz Streak: {user.quizStreak} days</p>
-        </motion.div>
-
-        {/* Theme selection button */}
-        <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="theme-selectors"
-        >
-            <ThemeSelector />
-            <AdvancedThemeSelector
-                currentTheme={document.documentElement.getAttribute('data-theme') || 'Default'}
-                onThemeChange={(themeName) => {
-                    document.documentElement.setAttribute('data-theme', themeName);
-                    localStorage.setItem('theme', themeName);
-                }}
-            />
-        </motion.div>
-
-        <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="home-description"
-        >
-            Ready to take a quiz?
-        </motion.p>
-
-        <motion.button
-            className="start-quiz-btn"
-            onClick={() => navigate("/user/test")}
-            initial={{ opacity: 0, y: 30, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.8, duration: 0.6, type: "spring", stiffness: 120 }}
-            whileHover={{
-                scale: 1.05,
-                y: -5,
-                transition: { duration: 0.3 }
-            }}
-            whileTap={{ scale: 0.95 }}
-        >
-            Start Quiz
-        </motion.button>
-
-        {/* Premium Intelligence Dashboard Link */}
-        {(user?.role === "premium") && (
-            <motion.button
-                className="intelligence-dashboard-btn"
-                onClick={() => navigate("/intelligence-dashboard")}
-                initial={{ opacity: 0, y: 30, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: 0.9, duration: 0.6, type: "spring", stiffness: 120 }}
-                whileHover={{
-                    scale: 1.05,
-                    y: -5,
-                    transition: { duration: 0.3 }
-                }}
-                whileTap={{ scale: 0.95 }}
+            {/* Hero Section */}
+            <motion.div
+                className="hero-section"
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
             >
-                🧠 Intelligence Dashboard
-            </motion.button>
-        )}
-
-        <motion.div
-            className="badge-list"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.8 }}
-        >
-            <h3>Your Badges:</h3>
-            <ul>
-            {badges.map((badge, i) => (
-                <motion.li
-                    key={i}
-                    className="badge-item"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.2 + (i * 0.1), duration: 0.5 }}
-                    whileHover={{
-                        scale: 1.05,
-                        rotateY: 10,
-                        transition: { duration: 0.3 }
-                    }}
+                <motion.h1 className="welcome-title">
+                    Welcome back, <span className="user-name">{user?.name?.split(' ')[0] || 'Champion'}!</span>
+                </motion.h1>
+                <motion.p
+                    className="welcome-subtitle"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                    🏅 {badge}
-                </motion.li>
-            ))}
-            </ul>
-        </motion.div>
+                    Ready to level up your knowledge?
+                </motion.p>
+            </motion.div>
 
-        <motion.button
-            onClick={fetchUserData}
-            className="start-quiz-btn"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 0.5 }}
-            whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.3 }
-            }}
-            whileTap={{ scale: 0.95 }}
-        >
-            Refresh Stats
-        </motion.button>
+            {/* XP Progress Bar */}
+            <XPBar xp={xp} level={level} />
+
+            {/* Stats Dashboard */}
+            <motion.div
+                className="stats-dashboard"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+            >
+                <motion.div
+                    className="stat-card"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                >
+                    <div className="stat-icon level-icon">🎯</div>
+                    <div className="stat-content">
+                        <h3>Level</h3>
+                        <div className="stat-value">{level}</div>
+                        <p className="stat-description">Keep learning to level up!</p>
+                    </div>
+                </motion.div>
+
+                <motion.div
+                    className="stat-card"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                >
+                    <div className="stat-icon streak-icon">🔥</div>
+                    <div className="stat-content">
+                        <h3>Login Streak</h3>
+                        <div className="stat-value">{user?.loginStreak || 0}</div>
+                        <p className="stat-description">Days in a row</p>
+                    </div>
+                </motion.div>
+
+                <motion.div
+                    className="stat-card"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                >
+                    <div className="stat-icon quiz-streak-icon">⚡</div>
+                    <div className="stat-content">
+                        <h3>Quiz Streak</h3>
+                        <div className="stat-value">{user?.quizStreak || 0}</div>
+                        <p className="stat-description">Consecutive quiz days</p>
+                    </div>
+                </motion.div>
+            </motion.div>
+
+            {/* Quick Actions */}
+            <motion.div
+                className="quick-actions"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 0.6 }}
+            >
+                <h2 className="section-title">Quick Actions</h2>
+                <div className="action-buttons">
+                    <motion.button
+                        className="action-btn primary-action"
+                        onClick={() => navigate("/user/test")}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1.0, duration: 0.5 }}
+                        whileHover={{ scale: 1.05, y: -5 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <span className="btn-icon">🚀</span>
+                        <span className="btn-text">Start Quiz</span>
+                    </motion.button>
+
+                    {(user?.role === "premium") && (
+                        <motion.button
+                            className="action-btn secondary-action"
+                            onClick={() => navigate("/intelligence-dashboard")}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 1.1, duration: 0.5 }}
+                            whileHover={{ scale: 1.05, y: -5 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            <span className="btn-icon">🧠</span>
+                            <span className="btn-text">Intelligence Dashboard</span>
+                        </motion.button>
+                    )}
+
+                    <motion.button
+                        className="action-btn tertiary-action"
+                        onClick={() => navigate("/enhanced-dashboard")}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1.2, duration: 0.5 }}
+                        whileHover={{ scale: 1.05, y: -5 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <span className="btn-icon">📊</span>
+                        <span className="btn-text">View Analytics</span>
+                    </motion.button>
+                </div>
+            </motion.div>
+
+            {/* Achievements Section */}
+            {badges.length > 0 && (
+                <motion.div
+                    className="achievements-section"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.3, duration: 0.6 }}
+                >
+                    <h2 className="section-title">Your Achievements</h2>
+                    <div className="badges-container">
+                        {badges.map((badge, i) => (
+                            <motion.div
+                                key={i}
+                                className="badge-card"
+                                initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
+                                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                                transition={{ delay: 1.4 + (i * 0.1), duration: 0.6 }}
+                                whileHover={{ scale: 1.05, rotateY: 5, y: -5 }}
+                            >
+                                <div className="badge-icon">🏅</div>
+                                <h3 className="badge-title">{badge}</h3>
+                                <p className="badge-description">Keep up the great work!</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+
+            {/* Theme Selection */}
+            <motion.div
+                className="theme-section"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5, duration: 0.6 }}
+            >
+                <h2 className="section-title">Customize Your Experience</h2>
+                <div className="theme-selectors">
+                    <ThemeSelector />
+                    <AdvancedThemeSelector
+                        currentTheme={document.documentElement.getAttribute('data-theme') || 'Default'}
+                        onThemeChange={(themeName) => {
+                            document.documentElement.setAttribute('data-theme', themeName);
+                            localStorage.setItem('theme', themeName);
+                        }}
+                    />
+                </div>
+            </motion.div>
         </motion.div>
     );
 };
