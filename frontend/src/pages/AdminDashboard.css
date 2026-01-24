@@ -2,17 +2,11 @@
 .admin-dashboard {
     min-height: 100vh;
     background:
-        radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg,
-            rgba(15, 15, 35, 0.95) 0%,
-            rgba(26, 26, 46, 0.97) 25%,
-            rgba(22, 33, 62, 0.95) 50%,
-            rgba(30, 20, 60, 0.97) 75%,
-            rgba(15, 15, 35, 0.95) 100%
-        );
+        radial-gradient(ellipse at top left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, var(--info-light) 0%, transparent 50%),
+        var(--bg-dark);
     padding: 3rem 2rem;
     position: relative;
     overflow-x: hidden !important;
@@ -52,7 +46,7 @@
 .floating-1 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.4), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     top: 10%;
     left: 5%;
     animation: floatOrb1 20s ease-in-out infinite;
@@ -61,7 +55,7 @@
 .floating-2 {
     width: 250px;
     height: 250px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     top: 60%;
     right: 8%;
     animation: floatOrb2 25s ease-in-out infinite;
@@ -70,7 +64,7 @@
 .floating-3 {
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     bottom: 15%;
     left: 50%;
     animation: floatOrb3 18s ease-in-out infinite;
@@ -131,12 +125,7 @@
 .dashboard-header h1 {
     font-size: clamp(2.5rem, 5vw, 4rem) !important;
     font-weight: 800 !important;
-    background: linear-gradient(135deg,
-        #667eea 0%,
-        #764ba2 25%,
-        #f093fb 50%,
-        #4facfe 75%,
-        #00f2fe 100%) !important;
+    background: var(--gradient-primary) !important;
     background-size: 300% 300% !important;
     animation: gradientShift 5s ease-in-out infinite, titleFloat 6s ease-in-out infinite !important;
     -webkit-background-clip: text !important;
@@ -162,7 +151,7 @@
     transform: translateX(-50%);
     width: 120px;
     height: 4px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    background: var(--gradient-primary);
     border-radius: 2px;
     animation: lineExpand 2s ease-out;
 }
@@ -186,13 +175,13 @@
 .dashboard-icon {
     font-size: 3.5rem;
     display: inline-block;
-    filter: drop-shadow(0 0 25px rgba(99, 102, 241, 0.6));
+    filter: drop-shadow(0 0 25px var(--accent-light));
     transform-style: preserve-3d;
 }
 
 .dashboard-subtitle {
     font-size: clamp(1.1rem, 2vw, 1.5rem);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-muted);
     font-weight: 400;
     margin-top: 0.5rem;
     animation: fadeIn 1.5s ease-out 0.5s both;
@@ -215,10 +204,8 @@
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
     padding: 2.5rem 2rem;
     text-align: center;
@@ -227,8 +214,8 @@
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.15),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        var(--shadow-lg),
+        0 0 0 1px var(--glass-border) inset;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -243,7 +230,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -254,11 +241,11 @@
 .stat-card:hover {
     transform: translateY(-12px) scale(1.03);
     box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.25),
-        0 0 40px rgba(99, 102, 241, 0.2),
-        0 0 0 2px rgba(255, 255, 255, 0.1) inset;
-    border-color: rgba(99, 102, 241, 0.4);
-    background: rgba(255, 255, 255, 0.12);
+        var(--shadow-xl),
+        0 0 40px var(--accent-light),
+        0 0 0 2px var(--glass-border) inset;
+    border-color: var(--accent);
+    background: var(--card-bg-glass);
 }
 
 .stat-icon {
@@ -285,7 +272,7 @@
 
 .stat-card h3 {
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
     font-weight: 600;
     margin: 0;
     text-transform: uppercase;
@@ -295,14 +282,14 @@
 .stat-number {
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 900;
-    background: linear-gradient(135deg, #ffffff, #e2e8f0, #ffffff);
+    background: var(--gradient-primary);
     background-size: 200% 200%;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
     line-height: 1;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 4px 8px var(--shadow-md));
     animation: numberShimmer 3s ease-in-out infinite;
 }
 
@@ -318,7 +305,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--card-bg-glass) 0%, transparent 70%);
     animation: bgRotate 10s linear infinite;
     pointer-events: none;
 }
@@ -329,25 +316,25 @@
 }
 
 .users-card {
-    border-color: rgba(99, 102, 241, 0.3);
+    border-color: var(--accent);
 }
 
 .users-card:hover {
     box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.25),
-        0 0 40px rgba(99, 102, 241, 0.3),
-        0 0 0 2px rgba(255, 255, 255, 0.1) inset;
+        var(--shadow-xl),
+        0 0 40px var(--accent-light),
+        0 0 0 2px var(--glass-border) inset;
 }
 
 .quizzes-card {
-    border-color: rgba(168, 85, 247, 0.3);
+    border-color: var(--accent2);
 }
 
 .quizzes-card:hover {
     box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.25),
-        0 0 40px rgba(168, 85, 247, 0.3),
-        0 0 0 2px rgba(255, 255, 255, 0.1) inset;
+        var(--shadow-xl),
+        0 0 40px var(--accent-light),
+        0 0 0 2px var(--glass-border) inset;
 }
 
 /* ✨ Enhanced Users Section ✨ */
@@ -364,11 +351,11 @@
     font-size: clamp(2rem, 4vw, 2.5rem) !important;
     font-weight: 800 !important;
     background: linear-gradient(135deg,
-        #6366f1 0%,
-        #8b5cf6 25%,
-        #d946ef 50%,
-        #8b5cf6 75%,
-        #6366f1 100%) !important;
+        var(--accent) 0%,
+        var(--accent2) 25%,
+        var(--accent) 50%,
+        var(--accent2) 75%,
+        var(--accent) 100%) !important;
     background-size: 300% 300% !important;
     animation: gradientShift 5s ease-in-out infinite !important;
     -webkit-background-clip: text !important;
@@ -380,7 +367,7 @@
     justify-content: center !important;
     gap: 1rem !important;
     text-align: center !important;
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5)) !important;
+    filter: drop-shadow(0 0 20px var(--accent-light)) !important;
     color: transparent !important;
 }
 
@@ -396,10 +383,10 @@
 
 /* ✨ NEW CLEAN TABLE CONTAINER ✨ */
 .admin-dashboard .table-container {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
     overflow-x: auto;
     overflow-y: auto;
@@ -407,9 +394,9 @@
     position: relative;
     width: 100%;
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 60px rgba(99, 102, 241, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--shadow-xl),
+        0 0 60px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
     transition: all 0.4s ease;
 }
 
@@ -420,7 +407,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    background: var(--gradient-primary);
     border-radius: 24px 24px 0 0;
     z-index: 11;
 }
@@ -428,9 +415,9 @@
 .table-container:hover {
     transform: translateY(-4px);
     box-shadow:
-        0 12px 48px rgba(0, 0, 0, 0.4),
-        0 0 80px rgba(99, 102, 241, 0.2);
-    border-color: rgba(255, 255, 255, 0.25);
+        var(--shadow-2xl),
+        0 0 80px var(--accent-light);
+    border-color: var(--card-border);
 }
 
 /* Custom scrollbar for table container */
@@ -440,18 +427,18 @@
 }
 
 .admin-dashboard .table-container::-webkit-scrollbar-track {
-    background: rgba(99, 102, 241, 0.05);
+    background: var(--accent-light);
     border-radius: 10px;
 }
 
 .admin-dashboard .table-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(139, 92, 246, 0.6));
+    background: var(--gradient-primary);
     border-radius: 10px;
     transition: all 0.3s ease;
 }
 
 .admin-dashboard .table-container::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    background: var(--gradient-primary);
 }
 
 /* ✨ NEW CLEAN TABLE STYLES ✨ */
@@ -467,8 +454,8 @@
 
 .admin-dashboard .table-container thead {
     background: linear-gradient(135deg,
-        rgba(99, 102, 241, 0.2),
-        rgba(139, 92, 246, 0.2));
+        var(--accent-light),
+        var(--accent-light));
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     position: sticky;
@@ -481,12 +468,12 @@
     text-align: left;
     font-weight: 800;
     font-size: 1rem;
-    color: #ffffff;
+    color: var(--text-light);
     text-transform: uppercase;
     letter-spacing: 1px;
-    border-bottom: 2px solid rgba(99, 102, 241, 0.4);
+    border-bottom: 2px solid var(--accent);
     position: relative;
-    text-shadow: 0 2px 8px rgba(99, 102, 241, 0.6);
+    text-shadow: 0 2px 8px var(--accent-light);
     white-space: nowrap;
 }
 
@@ -512,7 +499,7 @@ th::after {
     height: 2px;
     background: linear-gradient(90deg,
         transparent,
-        rgba(99, 102, 241, 0.8),
+        var(--accent-light),
         transparent);
     animation: headerShimmer 3s ease-in-out infinite;
 }
@@ -534,39 +521,39 @@ th::after {
 }
 
 .admin-dashboard .table-container tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--card-border);
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--card-bg-glass);
 }
 
 .admin-dashboard .table-container tbody tr:nth-child(even) {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg-glass);
 }
 
 .admin-dashboard .table-container tbody tr:hover {
-    background: rgba(99, 102, 241, 0.12);
-    border-left: 3px solid rgba(99, 102, 241, 0.5);
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
 }
 
 .admin-dashboard .table-container td {
     padding: 1.25rem 1.5rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--text-color);
     font-size: 0.95rem;
     font-weight: 500;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--card-border);
     vertical-align: middle;
 }
 
 .admin-dashboard .table-container td:first-child,
 .admin-dashboard .table-container .user-name-cell {
     font-weight: 600;
-    color: rgba(255, 255, 255, 1);
+    color: var(--text-color);
     font-size: 1rem;
 }
 
 .admin-dashboard .table-container td:nth-child(2),
 .admin-dashboard .table-container .user-email-cell {
-    color: rgba(226, 232, 240, 0.95);
+    color: var(--text-muted);
     font-size: 0.9rem;
     word-break: break-word;
 }
@@ -599,38 +586,38 @@ th::after {
 }
 
 .role-badge.user {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.15)) !important;
-    color: #60a5fa !important;
-    border-color: rgba(59, 130, 246, 0.4) !important;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+    background: var(--info-light) !important;
+    color: var(--info) !important;
+    border-color: var(--info) !important;
+    box-shadow: 0 0 15px var(--info-light) !important;
+    text-shadow: 0 0 10px var(--info-light) !important;
 }
 
 .role-badge.premium {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.2)) !important;
-    color: #fbbf24 !important;
-    border-color: rgba(251, 191, 36, 0.5) !important;
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5) !important;
-    text-shadow: 0 0 10px rgba(251, 191, 36, 0.6) !important;
+    background: var(--warning-light) !important;
+    color: var(--warning) !important;
+    border-color: var(--warning) !important;
+    box-shadow: 0 0 20px var(--warning-light) !important;
+    text-shadow: 0 0 10px var(--warning-light) !important;
     animation: premiumGlow 2s ease-in-out infinite, badgeFloat 3s ease-in-out infinite;
     font-weight: 800 !important;
 }
 
 @keyframes premiumGlow {
     0%, 100% {
-        box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+        box-shadow: 0 0 15px var(--warning-light);
     }
     50% {
-        box-shadow: 0 0 25px rgba(251, 191, 36, 0.5);
+        box-shadow: 0 0 25px var(--warning-light);
     }
 }
 
 .role-badge.admin {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(147, 51, 234, 0.15)) !important;
-    color: #a855f7 !important;
-    border-color: rgba(168, 85, 247, 0.4) !important;
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4) !important;
-    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5) !important;
+    background: var(--accent-light) !important;
+    color: var(--accent2) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 15px var(--accent-light) !important;
+    text-shadow: 0 0 10px var(--accent-light) !important;
 }
 
 .role-badge::before {
@@ -640,7 +627,7 @@ th::after {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -653,18 +640,18 @@ th::after {
 }
 
 .premium-user {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(245, 158, 11, 0.04)) !important;
-    border-left: 3px solid rgba(251, 191, 36, 0.6) !important;
+    background: var(--warning-light) !important;
+    border-left: 3px solid var(--warning) !important;
 }
 
 .premium-user:hover {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.08)) !important;
-    border-left-color: rgba(251, 191, 36, 0.8) !important;
-    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.2) !important;
+    background: var(--warning-light) !important;
+    border-left-color: var(--warning) !important;
+    box-shadow: var(--shadow-md) !important;
 }
 
 .premium-user td {
-    color: rgba(255, 255, 255, 1) !important;
+    color: var(--text-color) !important;
 }
 
 /* ✨ Enhanced Error Container ✨ */
@@ -676,27 +663,27 @@ th::after {
     min-height: 50vh;
     text-align: center;
     padding: 3rem;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
     margin: 2rem auto;
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.2),
-        0 0 40px rgba(99, 102, 241, 0.1);
+        var(--shadow-xl),
+        0 0 40px var(--accent-light);
     max-width: 500px;
     position: relative;
     z-index: 1;
 }
 
 .error-container {
-    border-color: rgba(239, 68, 68, 0.3);
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.04));
+    border-color: var(--danger);
+    background: var(--danger-light);
 }
 
 .error-message {
     font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
     margin-bottom: 1.5rem;
 }
 
@@ -706,18 +693,18 @@ th::after {
 }
 
 .table-container::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     border-radius: 10px;
 }
 
 .table-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(139, 92, 246, 0.6));
+    background: var(--gradient-primary);
     border-radius: 10px;
     transition: all 0.3s ease;
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    background: var(--gradient-primary);
 }
 
 /* Scroll hint indicator */
@@ -726,8 +713,8 @@ th::after {
     bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(99, 102, 241, 0.9);
-    color: white;
+    background: var(--accent);
+    color: var(--text-light);
     padding: 0.5rem 1rem;
     border-radius: 1rem;
     font-size: 0.8rem;
@@ -736,8 +723,8 @@ th::after {
     animation: pulseHint 2s ease-in-out infinite;
     pointer-events: none;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-md);
 }
 
 @keyframes pulseHint {
@@ -863,16 +850,16 @@ th::after {
     }
 
     .admin-dashboard .table-container th {
-        color: #ffffff !important;
+        color: var(--text-light) !important;
         font-weight: 800 !important;
     }
 
     td {
-        color: rgba(255, 255, 255, 0.95) !important;
+        color: var(--text-color) !important;
     }
 
     .premium-user td {
-        color: rgba(255, 255, 255, 1) !important;
+        color: var(--text-color) !important;
     }
 
     .role-badge {

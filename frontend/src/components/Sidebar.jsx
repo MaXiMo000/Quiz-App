@@ -77,9 +77,27 @@ const Sidebar = ({ isOpen = false, onClose }) => {
         }
     }, [isMobile, isOpen]);
 
-    const handleLogout = () => {
-        localStorage.clear();
-        navigate("/login");
+    const handleLogout = async () => {
+        try {
+            // Call logout endpoint to update online status
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    await axios.post("/api/users/logout", {}, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                } catch (error) {
+                    // Log error but continue with logout even if API call fails
+                    console.error("Logout API call failed:", error);
+                }
+            }
+        } catch (error) {
+            console.error("Error during logout:", error);
+        } finally {
+            // Always clear localStorage and navigate, even if API call fails
+            localStorage.clear();
+            navigate("/login");
+        }
     };
 
     const handleLinkClick = () => {

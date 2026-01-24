@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { LearningPath, UserPathProgress, Competency, UserCompetency } from "../models/LearningPath.js";
 import User from "../models/User.js";
 import Report from "../models/Report.js";

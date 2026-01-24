@@ -11,10 +11,23 @@ const userSchema = new mongoose.Schema({
     level:    { type: Number, default: 1 },          // current level
     loginStreak:   { type: Number, default: 0 },     // consecutive login days
     lastLogin:     { type: Date,   default: null },  // last login date
+    lastLoginIP:   { type: String, default: null },  // IP address of last login
+    loginIPHistory: [{                                // History of login IPs for security
+        ip: { type: String, required: true },
+        loginDate: { type: Date, default: Date.now },
+        userAgent: { type: String },
+        location: { type: String } // Optional: Can be populated with geolocation data
+    }],
     quizStreak:    { type: Number, default: 0 },     // consecutive quiz days
     lastQuizDate:  { type: Date,   default: null },  // last quiz date
     unlockedThemes:{ type: [String], default: [] },   // unlocked UI themes
     selectedTheme: { type: String, default: "Default" }, // selected UI theme
+    customThemes: [{  // user-created custom themes
+        name: { type: String, required: true },
+        themeData: { type: mongoose.Schema.Types.Mixed, required: true },
+        createdAt: { type: Date, default: Date.now },
+        levelCreated: { type: Number, required: true }
+    }],
 
     // Phase 2: Intelligence Layer - User preferences and analytics
     preferences: {

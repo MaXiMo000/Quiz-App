@@ -18,6 +18,7 @@ const TakeWrittenTest = () => {
     const [timeLeft, setTimeLeft] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
@@ -100,6 +101,12 @@ const TakeWrittenTest = () => {
     // ✅ Submit Written Test
 
     const handleSubmit = useCallback(async () => {
+        // Prevent multiple submissions
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
         let totalScore = 0;
         let totalMarks = test.totalMarks;
         let validResponses = 0;
@@ -108,6 +115,7 @@ const TakeWrittenTest = () => {
 
         if (!user) {
             showWarning("User not found. Please log in.");
+            setIsSubmitting(false);
             return;
         }
 
@@ -146,6 +154,7 @@ const TakeWrittenTest = () => {
         if (validResponses === 0) {
             setScore(0);
             showError("Failed to score the test. Please try again.");
+            setIsSubmitting(false);
             return;
         }
 
@@ -161,12 +170,13 @@ const TakeWrittenTest = () => {
                 total: totalMarks,
                 questions: scoredQuestions,
             });
+            navigate("/user/written-reports");
         } catch (error) {
             console.error("Error saving written test report:", error);
+            setIsSubmitting(false);
+            showError("Failed to save your test report. Please try again.");
         }
-
-        navigate("/user/written-reports");
-    }, [test, answers, showWarning, showError, showSuccess, navigate]);
+    }, [test, answers, showWarning, showError, showSuccess, navigate, isSubmitting]);
 
 
     if (loading) return <Loading fullScreen={true} />;
@@ -198,7 +208,12 @@ const TakeWrittenTest = () => {
                 >
                     Next
                 </button>
-                <button onClick={handleSubmit}>Submit Test</button>
+                <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Submitting...' : 'Submit Test'}
+                </button>
             </div>
 
             <div className="fullscreen-toggle">

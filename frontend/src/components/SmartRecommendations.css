@@ -179,17 +179,17 @@
 }
 
 .confidence-badge {
-    color: white;
+    color: var(--text-light);
     padding: 0.4rem 0.8rem;
     border-radius: 16px;
     font-size: 0.8rem;
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: var(--shadow);
 }
 
 .take-quiz-btn {
-    background: var(--primary-color);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     border: none;
     padding: 0.6rem 1.2rem;
     border-radius: 8px;
@@ -200,7 +200,7 @@
 }
 
 .take-quiz-btn:hover {
-    background: var(--primary-color-dark);
+    background: var(--gradient-primary-accent);
     transform: translateX(2px);
 }
 
@@ -237,28 +237,28 @@
 }
 
 .area-tag.strong {
-    background: #e8f5e8;
-    color: #2e7d32;
-    border: 1px solid #c8e6c9;
+    background: var(--success-light);
+    color: var(--success);
+    border: 1px solid var(--success);
 }
 
 .area-tag.weak {
-    background: #fff3e0;
-    color: #f57c00;
-    border: 1px solid #ffcc02;
+    background: var(--warning-light);
+    color: var(--warning);
+    border: 1px solid var(--warning);
 }
 
 /* Dark theme adjustments */
 [data-theme="dark"] .area-tag.strong {
-    background: #1b3d1b;
-    color: #81c784;
-    border-color: #2e7d32;
+    background: var(--success);
+    color: var(--success-light);
+    border-color: var(--success);
 }
 
 [data-theme="dark"] .area-tag.weak {
-    background: #2d1b0d;
-    color: #ffb74d;
-    border-color: #f57c00;
+    background: var(--warning);
+    color: var(--warning-light);
+    border-color: var(--warning);
 }
 
 /* Mobile Responsiveness */

@@ -20,20 +20,17 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg,
-        rgba(102, 126, 234, 0.08) 0%,
-        rgba(118, 75, 162, 0.05) 50%,
-        rgba(102, 126, 234, 0.08) 100%);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 24px;
+    border-radius: var(--radius-2xl);
     position: relative;
     overflow-y: auto;
     box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(255, 255, 255, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(102, 126, 234, 0.15);
+        var(--shadow-xl),
+        0 0 0 1px var(--glass-border),
+        inset 0 1px 0 var(--glass-border);
+    border: 1px solid var(--card-border);
 }
 
 .ai-welcome::before {
@@ -44,15 +41,15 @@
     right: 0;
     bottom: 0;
     background:
-        radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 80%, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--accent2) 0%, transparent 50%);
     z-index: -1;
 }
 
 .ai-avatar {
     font-size: 100px;
     margin-bottom: 25px;
-    filter: drop-shadow(0 15px 35px rgba(102, 126, 234, 0.3));
+    filter: drop-shadow(0 15px 35px var(--accent-light));
     animation: float 3s ease-in-out infinite;
 }
 
@@ -70,14 +67,14 @@
 .ai-welcome h2 {
     font-size: clamp(2rem, 5vw, 3rem);
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: var(--gradient-primary);
     background-size: 200% 200%;
     animation: gradientShift 5s ease infinite;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 800;
-    filter: drop-shadow(0 4px 20px rgba(102, 126, 234, 0.4));
+    filter: drop-shadow(0 4px 20px var(--accent-light));
     letter-spacing: -0.02em;
 }
 
@@ -88,7 +85,7 @@
 
 .ai-welcome p {
     font-size: 1.3rem;
-    color: #4a5568;
+    color: var(--text-muted);
     margin-bottom: 45px;
     max-width: 600px;
     line-height: 1.7;
@@ -114,10 +111,10 @@
     -webkit-backdrop-filter: blur(20px);
     border-radius: 18px;
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.08),
-        0 0 0 1px rgba(102, 126, 234, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(102, 126, 234, 0.15);
+        var(--shadow-sm),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
+    border: 1px solid var(--accent);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
@@ -142,16 +139,16 @@
 .feature:hover {
     transform: translateY(-4px) scale(1.02);
     box-shadow:
-        0 15px 40px rgba(102, 126, 234, 0.2),
-        0 0 0 1px rgba(102, 126, 234, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 1);
-    border-color: rgba(102, 126, 234, 0.3);
-    background: rgba(255, 255, 255, 1);
+        var(--shadow-xl),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
+    border-color: var(--accent);
+    background: var(--card-bg);
 }
 
 .feature-icon {
     font-size: 28px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 2px 4px var(--shadow-sm));
 }
 
 .feature span:last-child {
@@ -162,7 +159,7 @@
 
 .start-session-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: var(--text-light);
     border: none;
     padding: 18px 50px;
     font-size: 1.2rem;
@@ -170,7 +167,7 @@
     border-radius: 35px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-lg);
     position: relative;
     overflow: hidden;
 }
@@ -191,7 +188,7 @@
 }
 
 .start-session-btn:hover {
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+    box-shadow: var(--shadow-xl);
     transform: translateY(-3px);
 }
 
@@ -199,14 +196,14 @@
     opacity: 0.7;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 /* Active Chat Interface */
 .ai-study-buddy.active {
     background: linear-gradient(135deg,
-        rgba(248, 250, 252, 0.95) 0%,
-        rgba(241, 245, 249, 0.95) 100%);
+        var(--card-bg) 0%,
+        var(--card-bg-glass) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
@@ -223,10 +220,10 @@
 }
 
 .chat-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: var(--gradient-primary);
     background-size: 200% 200%;
     animation: gradientShift 5s ease infinite;
-    color: white;
+    color: var(--text-light);
     padding: 1.25rem 1.5rem;
     display: flex;
     justify-content: space-between;
@@ -272,7 +269,7 @@
 
 .end-session-btn {
     background: rgba(255, 255, 255, 0.2);
-    color: white;
+    color: var(--text-light);
     border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 6px 14px;
     border-radius: 18px;
@@ -300,7 +297,7 @@
 
 .recommendations-panel h4 {
     margin: 0 0 8px 0;
-    color: #4a5568;
+    color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 600;
 }
@@ -433,7 +430,7 @@
 .message.user {
     align-self: flex-end;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: var(--text-light);
     border-radius: 20px 20px 6px 20px;
     padding: 1rem 1.25rem;
     margin-left: auto;
@@ -536,7 +533,7 @@
     padding: 4px 12px;
     font-size: 0.8rem;
     font-weight: 500;
-    color: #4a5568;
+    color: var(--text-muted);
 }
 
 .quiz-actions {
@@ -559,7 +556,7 @@
 
 .take-quiz-btn.primary {
     background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+    color: var(--text-light);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
@@ -571,7 +568,7 @@
 .preview-quiz-btn.secondary {
     background: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(102, 126, 234, 0.2);
-    color: #4a5568;
+    color: var(--text-muted);
 }
 
 .preview-quiz-btn.secondary:hover {
@@ -590,7 +587,7 @@
 
 .action-btn {
     background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
-    color: #4a5568;
+    color: var(--text-muted);
     border: 1px solid #e2e8f0;
     padding: 8px 16px;
     border-radius: 18px;
@@ -622,7 +619,7 @@
 
 .action-btn:hover {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: var(--text-light);
     border-color: #667eea;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
@@ -642,7 +639,7 @@
 
 .action-btn[data-action*="quiz"]:hover {
     background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-    color: white;
+    color: var(--text-light);
     border-color: #e53e3e;
 }
 
@@ -654,7 +651,7 @@
 
 .action-btn[data-action*="study"]:hover {
     background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
-    color: white;
+    color: var(--text-light);
     border-color: #38a169;
 }
 
@@ -666,7 +663,7 @@
 
 .action-btn[data-action*="explain"]:hover {
     background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-    color: white;
+    color: var(--text-light);
     border-color: #f56565;
 }
 
@@ -678,7 +675,7 @@
 
 .action-btn[data-action*="track"]:hover {
     background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-    color: white;
+    color: var(--text-light);
     border-color: #4299e1;
 }
 
@@ -761,7 +758,7 @@
     min-width: 120px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    color: #4a5568;
+    color: var(--text-muted);
     border: 1px solid rgba(102, 126, 234, 0.15);
     padding: 0.75rem 1rem;
     border-radius: 18px;
@@ -793,7 +790,7 @@
 
 .quick-action-btn:hover {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: var(--text-light);
     border-color: #667eea;
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
@@ -917,7 +914,7 @@
 
 .send-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: var(--text-light);
     border: none;
     width: 44px;
     height: 44px;

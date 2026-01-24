@@ -22,15 +22,15 @@
 }
 
 .offline-banner.offline {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-    color: white;
-    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+    background: var(--gradient-danger);
+    color: var(--text-light);
+    box-shadow: var(--shadow-lg);
 }
 
 .offline-banner.slow-connection {
-    background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
-    color: white;
-    box-shadow: 0 4px 20px rgba(255, 167, 38, 0.3);
+    background: var(--gradient-warning);
+    color: var(--text-light);
+    box-shadow: var(--shadow-lg);
 }
 
 .offline-banner-content {
@@ -66,9 +66,9 @@
 }
 
 .retry-connection-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--card-bg-glass);
     border: none;
-    color: white;
+    color: var(--text-light);
     padding: 8px;
     border-radius: 50%;
     cursor: pointer;
@@ -83,7 +83,7 @@
 }
 
 .retry-connection-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--card-bg-glass);
     transform: rotate(180deg);
 }
 
@@ -127,7 +127,7 @@
     }
 
     .offline-banner.slow-connection {
-        background: linear-gradient(135deg, #f57c00 0%, #ef6c00 100%);
+        background: var(--gradient-warning);
     }
 }
 
@@ -143,8 +143,8 @@
     }
 
     .offline-banner.slow-connection {
-        background: #fd7e14;
-        color: black;
+        background: var(--warning);
+        color: var(--text-color);
     }
 }
 

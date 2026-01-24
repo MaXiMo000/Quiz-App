@@ -1,19 +1,7 @@
 /* ✨ Leaderboard.css - Ultra Beautiful World Championship Experience ✨ */
 
 /* ✨ Enhanced CSS Variables for Championship Feel ✨ */
-:root {
-    --leaderboard-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --leaderboard-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --leaderboard-gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --leaderboard-gradient-gold: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
-    --leaderboard-gradient-silver: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%);
-    --leaderboard-gradient-bronze: linear-gradient(135deg, #cd7f32 0%, #b8860b 100%);
-    --leaderboard-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    --leaderboard-glow: 0 0 40px rgba(102, 126, 234, 0.8);
-    --leaderboard-shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.3);
-    --leaderboard-glass: rgba(255, 255, 255, 0.12);
-    --leaderboard-border: rgba(255, 255, 255, 0.25);
-}
+/* Uses theme variables from index.css */
 
 /* ✨ Ultra Beautiful Championship Container ✨ */
 .leaderboard-container {
@@ -21,16 +9,16 @@
     max-width: 1200px;
     margin: var(--space-xl) auto;
     padding: 3rem;
-    background: var(--leaderboard-glass);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     color: var(--text-color);
-    border-radius: 2.5rem;
-    border: 2px solid var(--leaderboard-border);
+    border-radius: var(--radius-2xl);
+    border: 2px solid var(--card-border);
     box-shadow:
-        var(--leaderboard-shadow-xl),
-        0 0 80px rgba(102, 126, 234, 0.2),
-        inset 0 2px 0 rgba(255, 255, 255, 0.15);
+        var(--shadow-2xl),
+        0 0 80px var(--accent-light),
+        inset 0 2px 0 var(--glass-border);
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -56,23 +44,23 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--leaderboard-gradient-gold);
+    background: var(--gradient-warning);
     border-radius: 2.5rem 2.5rem 0 0;
     animation: championGlow 3s ease-in-out infinite;
 }
 
 @keyframes championGlow {
     0%, 100% {
-        background: var(--leaderboard-gradient-gold);
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        background: var(--gradient-warning);
+        box-shadow: 0 0 30px var(--warning-light);
     }
     33% {
         background: var(--leaderboard-gradient-silver);
-        box-shadow: 0 0 30px rgba(192, 192, 192, 0.6);
+        box-shadow: 0 0 30px var(--text-muted);
     }
     66% {
         background: var(--leaderboard-gradient-bronze);
-        box-shadow: 0 0 30px rgba(205, 127, 50, 0.6);
+        box-shadow: 0 0 30px var(--warning-light);
     }
 }
 
@@ -80,7 +68,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
+    background: radial-gradient(circle at 50% 0%, var(--warning-light) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
 }
@@ -89,7 +77,7 @@
 .leaderboard-container h2 {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 900;
-    background: var(--leaderboard-gradient-gold);
+    background: var(--gradient-warning);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -100,7 +88,7 @@
     justify-content: center;
     gap: 1rem;
     animation: titleFloat 1s ease-out;
-    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    filter: drop-shadow(0 0 20px var(--warning-light));
 }
 
 @keyframes titleFloat {
@@ -118,7 +106,7 @@
     content: '🏆';
     font-size: 3rem;
     animation: trophyBounce 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+    filter: drop-shadow(0 0 15px var(--warning-light));
 }
 
 @keyframes trophyBounce {
@@ -134,7 +122,7 @@
     transform: translateX(-50%);
     width: 120px;
     height: 4px;
-    background: var(--leaderboard-gradient-gold);
+    background: var(--gradient-warning);
     border-radius: 2px;
     animation: underlineGlow 2s ease-in-out infinite;
 }
@@ -142,13 +130,13 @@
 @keyframes underlineGlow {
     0%, 100% {
         width: 120px;
-        background: var(--leaderboard-gradient-gold);
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        background: var(--gradient-warning);
+        box-shadow: 0 0 20px var(--warning-light);
     }
     50% {
         width: 150px;
         background: var(--leaderboard-gradient-2);
-        box-shadow: 0 0 25px rgba(240, 147, 251, 0.8);
+        box-shadow: 0 0 25px var(--accent-light);
     }
 }
 
@@ -210,7 +198,7 @@
 /* ✨ Beautiful Championship Headers ✨ */
 .leaderboard-table th {
     background: var(--leaderboard-gradient-1);
-    color: white;
+    color: var(--text-light);
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -220,7 +208,7 @@
     position: sticky;
     top: 0;
     z-index: 15;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: var(--shadow-md);
     backdrop-filter: blur(20px);
     text-align: center;
     word-wrap: break-word;
@@ -269,7 +257,7 @@
 /* ✨ Champion Row Styling ✨ */
 .leaderboard-table td, .leaderboard-table th {
     padding: 1rem 0.8rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--card-border);
     vertical-align: middle;
     box-sizing: border-box;
 }
@@ -286,18 +274,18 @@
 }
 
 .leaderboard-table tr:hover td {
-    background: rgba(102, 126, 234, 0.15);
+    background: var(--accent-light);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+    box-shadow: var(--shadow-lg);
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* ✨ Rank Medal System ✨ */
 .leaderboard-table tbody tr:nth-child(1) td:first-child {
-    background: var(--leaderboard-gradient-gold);
-    color: #000;
+    background: var(--gradient-warning);
+    color: var(--text-color);
     font-weight: 900;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: var(--shadow-sm);
     position: relative;
     padding-left: 2.8rem;
     text-align: center;
@@ -318,15 +306,15 @@
 .leaderboard-table tbody tr:nth-child(1) td:first-child .rank-position {
     position: relative;
     z-index: 2;
-    color: #000;
+    color: var(--text-color);
     font-weight: 900;
 }
 
 .leaderboard-table tbody tr:nth-child(2) td:first-child {
     background: var(--leaderboard-gradient-silver);
-    color: #000;
+    color: var(--text-color);
     font-weight: 900;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: var(--shadow-sm);
     position: relative;
     padding-left: 2.8rem;
     text-align: center;
@@ -347,15 +335,15 @@
 .leaderboard-table tbody tr:nth-child(2) td:first-child .rank-position {
     position: relative;
     z-index: 2;
-    color: #000;
+    color: var(--text-color);
     font-weight: 900;
 }
 
 .leaderboard-table tbody tr:nth-child(3) td:first-child {
     background: var(--leaderboard-gradient-bronze);
-    color: #000;
+    color: var(--text-color);
     font-weight: 900;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: var(--shadow-sm);
     position: relative;
     padding-left: 2.8rem;
     text-align: center;
@@ -376,7 +364,7 @@
 .leaderboard-table tbody tr:nth-child(3) td:first-child .rank-position {
     position: relative;
     z-index: 2;
-    color: #000;
+    color: var(--text-color);
     font-weight: 900;
 }
 
@@ -400,7 +388,7 @@
 
 .leaderboard-buttons button {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: white;
+    color: var(--text-light);
     border: none;
     border-radius: var(--radius-lg);
     padding: var(--space-md) var(--space-xl);
@@ -412,7 +400,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
     box-shadow: var(--shadow-lg);
     min-height: 45px;
 }
@@ -429,15 +417,15 @@
     gap: var(--space-md);
     flex-wrap: wrap;
     padding: var(--space-md);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg-glass);
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--card-border);
 }
 
 .leaderboard-controls select {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
     padding: var(--space-md) var(--space-xl);
     font-size: 0.9rem;
@@ -465,13 +453,13 @@
 .leaderboard-controls select:hover {
     background: var(--accent2);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+    box-shadow: var(--shadow-lg);
 }
 
 .leaderboard-controls select:focus {
     outline: none;
     background: var(--accent2);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 3px var(--accent-light);
 }
 
 /* ✅ XP Leaderboard Specific Styles */
@@ -566,14 +554,14 @@
 
 .period-btn:hover {
     background: var(--accent);
-    color: white;
+    color: var(--text-light);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
 
 .period-btn.active {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: white;
+    color: var(--text-light);
     border-color: var(--accent2);
     box-shadow: var(--shadow-xl);
 }

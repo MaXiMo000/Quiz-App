@@ -100,21 +100,21 @@
 }
 
 .test-status.new {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  background: var(--gradient-success);
+  color: var(--text-light);
+  box-shadow: var(--shadow-md);
 }
 
 .test-status.existing {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: white;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  background: var(--gradient-primary);
+  color: var(--text-light);
+  box-shadow: var(--shadow-md);
 }
 
 .test-status.enhanced {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: white;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  background: var(--gradient-warning);
+  color: var(--text-light);
+  box-shadow: var(--shadow-md);
 }
 
 .test-note {
@@ -122,13 +122,13 @@
   bottom: var(--space-md);
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(99, 102, 241, 0.1);
+  background: var(--accent-light);
   color: var(--accent);
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 500;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid var(--accent);
 }
 
 .test-info {
@@ -236,10 +236,10 @@
 /* Animation enhancements */
 @keyframes glow {
   0%, 100% {
-    box-shadow: var(--shadow-xl), 0 0 20px rgba(99, 102, 241, 0.3);
+    box-shadow: var(--shadow-xl), 0 0 20px var(--accent-light);
   }
   50% {
-    box-shadow: var(--shadow-2xl), 0 0 30px rgba(99, 102, 241, 0.5);
+    box-shadow: var(--shadow-2xl), 0 0 30px var(--accent-light);
   }
 }
 

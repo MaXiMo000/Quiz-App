@@ -1,7 +1,7 @@
 .real-time-quiz {
     min-height: calc(100vh - 120px);
     padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     background-attachment: fixed;
 }
 
@@ -9,7 +9,7 @@
 .real-time-quiz-menu {
     max-width: 1200px;
     margin: 0 auto;
-    color: white;
+    color: var(--text-light);
 }
 
 .menu-header {
@@ -20,7 +20,12 @@
 .menu-header h1 {
     font-size: 3rem;
     margin-bottom: 15px;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: var(--shadow);
+    color: var(--text-light) !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: var(--text-light) !important;
+    background-clip: initial !important;
 }
 
 .menu-header p {
@@ -30,12 +35,12 @@
 }
 
 .real-time-quiz .player-stats {
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: var(--card-bg-glass) !important;
     backdrop-filter: blur(10px) !important;
     border-radius: 20px !important;
     padding: 25px !important;
     margin-bottom: 40px !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid var(--card-border) !important;
     box-shadow: none !important;
     transform: none !important;
 }
@@ -44,7 +49,7 @@
     text-align: center !important;
     margin-bottom: 20px !important;
     font-size: 1.5rem !important;
-    color: white !important;
+    color: var(--text-light) !important;
     font-weight: 600 !important;
     background: none !important;
     -webkit-background-clip: initial !important;
@@ -61,9 +66,9 @@
 .real-time-quiz .stat {
     text-align: center !important;
     padding: 15px !important;
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: var(--card-bg-glass) !important;
     border-radius: 15px !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--card-border) !important;
     transition: all 0.3s ease !important;
     cursor: pointer !important;
     transform: none !important;
@@ -72,10 +77,10 @@
 }
 
 .real-time-quiz .stat:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    background: var(--card-bg-glass) !important;
+    border-color: var(--card-border) !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: var(--shadow-md) !important;
 }
 
 .real-time-quiz .stat-value {
@@ -83,7 +88,7 @@
     font-size: 2rem !important;
     font-weight: bold !important;
     margin-bottom: 5px !important;
-    color: #00d4ff !important;
+    color: var(--info) !important;
     background: none !important;
     -webkit-background-clip: initial !important;
     -webkit-text-fill-color: initial !important;
@@ -94,7 +99,7 @@
 .real-time-quiz .stat-label {
     font-size: 0.9rem !important;
     opacity: 0.8 !important;
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: var(--text-muted) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
     font-weight: 500 !important;
@@ -108,11 +113,11 @@
 }
 
 .menu-section {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--card-border);
 }
 
 @media (max-width: 1024px) {
@@ -160,9 +165,9 @@
 }
 
 .refresh-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--card-bg-glass);
+    color: var(--text-light);
+    border: 1px solid var(--card-border);
     padding: 8px 15px;
     border-radius: 20px;
     cursor: pointer;
@@ -171,7 +176,7 @@
 }
 
 .refresh-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--card-bg-glass);
 }
 
 /* Create Room Form */
@@ -189,17 +194,17 @@
 
 .form-group label {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
 }
 
 .form-group select,
 .form-group input {
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--card-border);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(10px);
-    color: white;
+    color: var(--text-light);
     font-size: 1rem;
     width: 100%;
     transition: all 0.3s ease;
@@ -216,17 +221,17 @@
 }
 
 .form-group select option {
-    background: #2d3748;
-    color: white;
+    background: var(--bg-secondary);
+    color: var(--text-light);
     padding: 8px 12px;
 }
 
 .real-time-quiz .quiz-info {
     margin-top: 12px !important;
     padding: 20px !important;
-    background: rgba(255, 255, 255, 0.15) !important;
+    background: var(--card-bg-glass) !important;
     border-radius: 12px !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid var(--card-border) !important;
     width: 100% !important;
     box-sizing: border-box !important;
     backdrop-filter: blur(10px) !important;
@@ -237,7 +242,7 @@
 .real-time-quiz .quiz-info p {
     margin: 8px 0 !important;
     font-size: 0.95rem !important;
-    color: rgba(255, 255, 255, 0.95) !important;
+    color: var(--text-light) !important;
     word-wrap: break-word !important;
     display: flex !important;
     align-items: center !important;
@@ -252,7 +257,7 @@
 }
 
 .real-time-quiz .quiz-info strong {
-    color: white !important;
+    color: var(--text-light) !important;
     display: inline-block !important;
     min-width: 90px !important;
     font-weight: 600 !important;
@@ -284,10 +289,10 @@
 .error-message {
     margin-top: 12px;
     padding: 15px;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: var(--danger-light);
+    border: 1px solid var(--danger-light);
     border-radius: 8px;
-    color: rgba(239, 68, 68, 0.9);
+    color: var(--danger);
 }
 
 .error-message p {
@@ -296,9 +301,9 @@
 }
 
 .retry-btn {
-    background: rgba(239, 68, 68, 0.2);
-    color: rgba(239, 68, 68, 0.9);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid var(--danger-light);
     padding: 8px 15px;
     border-radius: 6px;
     cursor: pointer;
@@ -307,17 +312,17 @@
 }
 
 .retry-btn:hover {
-    background: rgba(239, 68, 68, 0.3);
-    color: white;
+    background: var(--danger-light);
+    color: var(--text-light);
 }
 
 .error-message {
     margin-top: 8px;
     padding: 10px;
-    background: rgba(229, 62, 62, 0.2);
-    border: 1px solid rgba(229, 62, 62, 0.4);
+    background: var(--danger-light);
+    border: 1px solid var(--danger-light);
     border-radius: 8px;
-    color: #fed7d7;
+    color: var(--danger-light);
 }
 
 .error-message p {
@@ -326,9 +331,9 @@
 }
 
 .retry-btn {
-    background: rgba(229, 62, 62, 0.3);
-    color: white;
-    border: 1px solid rgba(229, 62, 62, 0.5);
+    background: var(--danger-light);
+    color: var(--text-light);
+    border: 1px solid var(--danger-light);
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 0.8rem;
@@ -337,7 +342,7 @@
 }
 
 .retry-btn:hover {
-    background: rgba(229, 62, 62, 0.4);
+    background: var(--danger-light);
 }
 
 .form-group select:disabled {
@@ -347,18 +352,18 @@
 
 .form-group select::placeholder,
 .form-group input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-muted);
 }
 
 .form-group select:invalid {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-muted);
 }
 
 .form-group select:focus,
 .form-group input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    border-color: var(--card-border);
+    box-shadow: 0 0 0 3px var(--card-border);
 }
 
 .settings-grid {
@@ -376,8 +381,8 @@
 }
 
 .create-room-btn {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-    color: white;
+    background: var(--gradient-success);
+    color: var(--text-light);
     border: none;
     padding: 15px 30px;
     border-radius: 30px;
@@ -385,14 +390,14 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    box-shadow: var(--shadow-md);
     width: 100%;
     margin-top: 15px;
 }
 
 .create-room-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+    box-shadow: var(--shadow-lg);
 }
 
 .create-room-btn:disabled {
@@ -432,8 +437,8 @@
 }
 
 .room-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
     border-radius: 15px;
     padding: 20px;
     cursor: pointer;
@@ -444,7 +449,7 @@
 }
 
 .room-card:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--card-bg-glass);
     transform: translateY(-2px);
 }
 
@@ -469,7 +474,7 @@
 .status-indicator {
     width: 8px;
     height: 8px;
-    background: #48bb78;
+    background: var(--success);
     border-radius: 50%;
     animation: pulse 2s infinite;
 }
@@ -484,13 +489,13 @@
 .quiz-lobby {
     max-width: 1200px;
     margin: 0 auto;
-    color: white;
+    color: var(--text-light);
     min-height: calc(100vh - 120px);
 }
 
 .lobby-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     padding: 25px 30px;
     display: flex;
     justify-content: space-between;
@@ -512,9 +517,9 @@
 }
 
 .leave-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--card-bg-glass);
+    color: var(--text-light);
+    border: 1px solid var(--card-border);
     padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
@@ -523,7 +528,7 @@
 }
 
 .leave-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--card-bg-glass);
 }
 
 .lobby-content {
@@ -543,9 +548,9 @@
 
 .players-section h3 {
     margin-bottom: 20px;
-    color: white;
+    color: var(--text-light);
     font-size: 1.3rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: var(--shadow);
 }
 
 .players-grid {
@@ -591,8 +596,8 @@
 }
 
 .player-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #e2e8f0;
+    background: var(--card-bg-glass);
+    border: 2px solid var(--card-border);
     border-radius: 15px;
     padding: 20px;
     text-align: center;
@@ -604,22 +609,22 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     box-sizing: border-box;
     overflow: hidden;
     word-wrap: break-word;
 }
 
 .player-card.host {
-    border-color: #ffd700;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 255, 255, 0.95) 100%);
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    border-color: var(--warning);
+    background: var(--warning-light);
+    box-shadow: var(--shadow-md);
 }
 
 .player-card.empty {
     border-style: dashed;
-    border-color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.3);
+    border-color: var(--card-border);
+    background: var(--card-bg-glass);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -627,7 +632,7 @@
 }
 
 .empty-slot {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
     font-style: italic;
     font-size: 0.9rem;
 }
@@ -635,13 +640,13 @@
 .player-avatar {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    color: white;
+    color: var(--text-light);
     margin: 0 auto 15px auto;
     font-weight: bold;
 }
@@ -655,7 +660,7 @@
     gap: 8px;
     font-size: 0.9rem;
     word-break: break-word;
-    color: #2d3748;
+    color: var(--text-color);
 }
 
 .host-badge {
@@ -705,14 +710,14 @@
 }
 
 .player-level {
-    color: #4a5568;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
 .start-quiz-btn {
     width: 100%;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     border: none;
     padding: 15px;
     border-radius: 30px;
@@ -720,19 +725,19 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
 .start-quiz-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+    box-shadow: var(--shadow-lg);
 }
 
 .start-quiz-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
-    background: #a0aec0;
+    background: var(--text-disabled);
     box-shadow: none;
 }
 
@@ -743,14 +748,14 @@
 
 .chat-section h3 {
     margin-bottom: 15px;
-    color: white;
+    color: var(--text-light);
     font-size: 1.2rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: var(--shadow);
 }
 
 .chat-messages {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
     border-radius: 15px;
     height: 300px;
     overflow-y: auto;
@@ -854,18 +859,18 @@
 
 .chat-author {
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-color);
 }
 
 .chat-text {
-    color: #4a5568;
+    color: var(--text-secondary);
 }
 
 .system-message {
-    color: #6b7280;
+    color: var(--text-muted);
     font-style: italic;
     font-size: 0.9rem;
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--bg-secondary);
     padding: 4px 8px;
     border-radius: 8px;
 }
@@ -878,27 +883,27 @@
 .chat-input input {
     flex: 1;
     padding: 10px 15px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--card-border);
     border-radius: 20px;
     font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.9);
-    color: #2d3748;
+    background: var(--card-bg-glass);
+    color: var(--text-color);
 }
 
 .chat-input input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    background: rgba(255, 255, 255, 1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+    background: var(--card-bg-glass);
 }
 
 .chat-input input::placeholder {
-    color: #9ca3af;
+    color: var(--text-muted);
 }
 
 .chat-input button {
-    background: #667eea;
-    color: white;
+    background: var(--accent);
+    color: var(--text-light);
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
@@ -907,7 +912,7 @@
 }
 
 .chat-input button:hover {
-    background: #5a67d8;
+    background: var(--accent-hover);
 }
 
 /* Quiz Playing */
@@ -917,12 +922,12 @@
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-xl);
 }
 
 .question-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     padding: 25px 30px;
     display: flex;
     justify-content: space-between;
@@ -942,14 +947,14 @@
 .timer-circle {
     width: 60px;
     height: 60px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid var(--card-border);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     font-weight: bold;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-glass);
 }
 
 .question-content {
@@ -959,7 +964,7 @@
 .question-content h2 {
     text-align: center;
     margin-bottom: 40px;
-    color: #2d3748;
+    color: var(--text-color);
     font-size: 1.5rem;
     line-height: 1.4;
 }
@@ -975,8 +980,8 @@
     align-items: center;
     gap: 15px;
     padding: 20px;
-    background: #f7fafc;
-    border: 2px solid #e2e8f0;
+    background: var(--card-bg-glass);
+    border: 2px solid var(--card-border);
     border-radius: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -985,15 +990,15 @@
 }
 
 .option-btn:hover:not(:disabled) {
-    background: #edf2f7;
-    border-color: #cbd5e0;
+    background: var(--bg-secondary);
+    border-color: var(--card-border);
     transform: translateY(-2px);
 }
 
 .option-btn.selected {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-color: #667eea;
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border-color: var(--accent);
 }
 
 .option-btn:disabled {
@@ -1004,8 +1009,8 @@
 .option-letter {
     width: 30px;
     height: 30px;
-    background: #667eea;
-    color: white;
+    background: var(--accent);
+    color: var(--text-light);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1016,7 +1021,7 @@
 
 .option-btn.selected .option-letter {
     background: white;
-    color: #667eea;
+    color: var(--accent);
 }
 
 .option-text {
@@ -1025,8 +1030,8 @@
 }
 
 .mini-chat {
-    background: #f8f9fa;
-    border-top: 1px solid #e2e8f0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--card-border);
     padding: 15px 30px;
 }
 
@@ -1040,7 +1045,7 @@
 
 .mini-chat-message {
     font-size: 0.8rem;
-    color: #718096;
+    color: var(--text-muted);
 }
 
 .mini-chat-message.system {
@@ -1054,13 +1059,13 @@
     background: white;
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-xl);
     text-align: center;
 }
 
 .quiz-results h2 {
     margin-bottom: 30px;
-    color: #2d3748;
+    color: var(--text-color);
     font-size: 2rem;
 }
 
@@ -1076,28 +1081,28 @@
     align-items: center;
     gap: 20px;
     padding: 20px;
-    background: #f7fafc;
+    background: var(--card-bg-glass);
     border-radius: 15px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--card-border);
     transition: all 0.3s ease;
     position: relative;
 }
 
 .leaderboard-item.winner {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    border-color: #ffd700;
+    background: var(--gradient-warning);
+    border-color: var(--warning);
     transform: scale(1.02);
 }
 
 .rank {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #4a5568;
+    color: var(--text-secondary);
     min-width: 40px;
 }
 
 .leaderboard-item.winner .rank {
-    color: #744210;
+    color: var(--text-color);
 }
 
 .player-info {
@@ -1118,18 +1123,18 @@
 }
 
 .player-level {
-    color: #718096;
+    color: var(--text-muted);
     font-size: 0.9rem;
 }
 
 .score {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #667eea;
+    color: var(--accent);
 }
 
 .leaderboard-item.winner .score {
-    color: #744210;
+    color: var(--text-color);
 }
 
 .crown {
@@ -1140,8 +1145,8 @@
 }
 
 .back-to-menu-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     border: none;
     padding: 15px 40px;
     border-radius: 30px;
@@ -1149,12 +1154,12 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
 .back-to-menu-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Mobile Responsiveness */
@@ -1276,12 +1281,12 @@
 .real-time-quiz .stat-value,
 .real-time-quiz .stat .stat-value,
 .real-time-quiz .stats-grid .stat-value {
-    color: #00d4ff !important;
+    color: var(--info) !important;
     background: none !important;
     background-image: none !important;
     background-color: transparent !important;
     -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: #00d4ff !important;
+    -webkit-text-fill-color: var(--info) !important;
     background-clip: initial !important;
     text-shadow: none !important;
     filter: none !important;
@@ -1319,10 +1324,10 @@
 /* Override any global hover animations that might conflict */
 .real-time-quiz .stat:hover {
     animation: none !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    background: var(--card-bg-glass) !important;
+    border-color: var(--card-border) !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: var(--shadow-md) !important;
     scale: none !important;
     rotate: none !important;
 }

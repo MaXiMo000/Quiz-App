@@ -1,10 +1,10 @@
 .migration-panel {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     border-radius: 12px;
     padding: 20px;
     margin: 20px 0;
-    color: white;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    color: var(--text-light);
+    box-shadow: var(--shadow-xl);
 }
 
 .migration-panel h3 {
@@ -22,9 +22,9 @@
 }
 
 .migration-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: white;
+    background: var(--card-bg-glass);
+    border: 2px solid var(--card-border);
+    color: var(--text-light);
     padding: 12px 24px;
     border-radius: 8px;
     cursor: pointer;
@@ -34,8 +34,8 @@
 }
 
 .migration-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: var(--card-bg-glass);
+    border-color: var(--card-border);
     transform: translateY(-2px);
 }
 
@@ -53,16 +53,16 @@
 }
 
 .migration-status.success {
-    background: rgba(76, 175, 80, 0.3);
-    border: 1px solid rgba(76, 175, 80, 0.5);
+    background: var(--success-light);
+    border: 1px solid var(--success);
 }
 
 .migration-status.error {
-    background: rgba(244, 67, 54, 0.3);
-    border: 1px solid rgba(244, 67, 54, 0.5);
+    background: var(--danger-light);
+    border: 1px solid var(--danger);
 }
 
 .migration-status.info {
-    background: rgba(33, 150, 243, 0.3);
-    border: 1px solid rgba(33, 150, 243, 0.5);
+    background: var(--info-light);
+    border: 1px solid var(--info);
 }

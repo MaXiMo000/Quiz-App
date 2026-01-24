@@ -2,24 +2,24 @@
 
 /* Admin Color Variables */
 :root {
-    --admin-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    --admin-secondary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    --admin-accent: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
-    --admin-purple: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
-    --admin-blue: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    --admin-glass: rgba(99, 102, 241, 0.08);
-    --admin-border: rgba(99, 102, 241, 0.2);
-    --admin-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
-    --admin-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+    --admin-primary: var(--gradient-primary);
+    --admin-secondary: var(--gradient-primary);
+    --admin-accent: var(--gradient-primary);
+    --admin-purple: var(--gradient-primary);
+    --admin-blue: var(--gradient-primary);
+    --admin-glass: var(--glass-bg);
+    --admin-border: var(--card-border);
+    --admin-shadow: var(--shadow-lg);
+    --admin-glow: var(--shadow-lg);
 
     /* Premium Golden Colors */
-    --premium-primary: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    --premium-secondary: linear-gradient(135deg, #d97706 0%, #92400e 100%);
-    --premium-accent: linear-gradient(135deg, #fde047 0%, #eab308 100%);
-    --premium-glass: rgba(251, 191, 36, 0.08);
-    --premium-border: rgba(251, 191, 36, 0.2);
-    --premium-shadow: 0 8px 25px rgba(251, 191, 36, 0.15);
-    --premium-glow: 0 0 20px rgba(251, 191, 36, 0.3);
+    --premium-primary: var(--gradient-warning);
+    --premium-secondary: var(--gradient-warning);
+    --premium-accent: var(--gradient-warning);
+    --premium-glass: var(--warning-light);
+    --premium-border: var(--warning);
+    --premium-shadow: var(--shadow-lg);
+    --premium-glow: var(--shadow-lg);
 }
 
 /* Admin Container */
@@ -28,11 +28,11 @@
     height: auto !important;
     max-height: none !important;
     background:
-        radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg, #0f0f23 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+        radial-gradient(ellipse at top left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, var(--info-light) 0%, transparent 50%),
+        var(--bg-dark);
     position: relative;
     overflow-x: hidden;
     overflow-y: visible !important;
@@ -103,14 +103,14 @@ html.admin-quizzes-page .main-content {
 }
 
 .error-message {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.08));
-    border: 2px solid rgba(239, 68, 68, 0.3);
-    color: #fca5a5;
+    background: var(--danger-light);
+    border: 2px solid var(--danger);
+    color: var(--danger);
     padding: 2.5rem;
     border-radius: 1.2rem;
     font-size: 1.2rem;
     backdrop-filter: blur(8px);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Admin Header Styles */
@@ -135,7 +135,7 @@ html.admin-quizzes-page .main-content {
     height: 2px;
     background: var(--admin-primary);
     border-radius: 1px;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 20px var(--accent-light);
 }
 
 .quiz-header h2 {
@@ -150,14 +150,14 @@ html.admin-quizzes-page .main-content {
     gap: 1.2rem;
     letter-spacing: -0.02em;
     margin: 0;
-    text-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
-    filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4));
+    text-shadow: 0 0 30px var(--accent-light);
+    filter: drop-shadow(0 0 15px var(--accent-light));
 }
 
 .header-icon {
     font-size: 3rem;
     display: inline-block;
-    filter: drop-shadow(0 0 25px rgba(99, 102, 241, 0.8));
+    filter: drop-shadow(0 0 25px var(--accent-light));
     transform-style: preserve-3d;
 }
 
@@ -166,7 +166,7 @@ html.admin-quizzes-page .main-content {
     border: 2px solid var(--admin-border);
     padding: 1.2rem 2.5rem;
     border-radius: 1.2rem;
-    color: #ffffff;
+    color: var(--text-light);
     font-weight: 700;
     font-size: 1.1rem;
     cursor: pointer;
@@ -182,8 +182,8 @@ html.admin-quizzes-page .main-content {
 
 .create-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-    border-color: #6366f1;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
 }
 
 /* Admin Quiz List */
@@ -215,14 +215,14 @@ html.admin-quizzes-page .main-content {
 .empty-icon {
     font-size: 4rem;
     margin-bottom: 1.5rem;
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.6));
+    filter: drop-shadow(0 0 20px var(--accent-light));
 }
 
 .empty-state h3 {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: #6366f1;
+    color: var(--accent);
 }
 
 .empty-state p {
@@ -252,7 +252,7 @@ html.admin-quizzes-page .main-content {
     right: 0;
     height: 2px;
     background: var(--admin-primary);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 20px var(--accent-light);
 }
 
 .admin-box::after {
@@ -269,7 +269,7 @@ html.admin-quizzes-page .main-content {
     top: -10px;
     right: 20px;
     background: var(--admin-primary);
-    color: #ffffff;
+    color: var(--text-light);
     padding: 0.8rem 1.5rem;
     border-radius: 0 0 1rem 1rem;
     font-weight: 800;
@@ -290,11 +290,11 @@ html.admin-quizzes-page .main-content {
 .admin-box h3 {
     font-size: 1.7rem;
     font-weight: 800;
-    color: #818cf8;
+    color: var(--accent2);
     margin-bottom: 1.8rem;
     text-align: center;
     letter-spacing: -0.01em;
-    text-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    text-shadow: 0 0 15px var(--accent-light);
 }
 
 /* Premium Quiz Box (for premium user-created quizzes) */
@@ -318,7 +318,7 @@ html.admin-quizzes-page .main-content {
     right: 0;
     height: 2px;
     background: var(--premium-primary);
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+    box-shadow: 0 0 20px var(--warning-light);
 }
 
 .premium-box::after {
@@ -335,7 +335,7 @@ html.admin-quizzes-page .main-content {
     top: -10px;
     right: 20px;
     background: var(--premium-primary);
-    color: #0f0f23;
+    color: var(--text-color);
     padding: 0.8rem 1.5rem;
     border-radius: 0 0 1rem 1rem;
     font-weight: 800;
@@ -344,18 +344,18 @@ html.admin-quizzes-page .main-content {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
+    box-shadow: var(--shadow-lg);
     z-index: 10;
 }
 
 .premium-box h3 {
     font-size: 1.7rem;
     font-weight: 800;
-    color: #fbbf24;
+    color: var(--warning);
     margin-bottom: 1.8rem;
     text-align: center;
     letter-spacing: -0.01em;
-    text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+    text-shadow: 0 0 15px var(--warning-light);
 }
 
 .admin-quiz-container .premium-box .quiz-info {
@@ -376,7 +376,7 @@ html.admin-quizzes-page .main-content {
     align-items: center !important;
     gap: 1rem !important;
     margin: 1rem 0 !important;
-    color: rgba(251, 191, 36, 0.9) !important;
+    color: var(--warning) !important;
     font-weight: 600 !important;
     transition: all 0.3s ease !important;
     font-size: 1.05rem !important;
@@ -408,7 +408,7 @@ html.admin-quizzes-page .main-content {
     align-items: center !important;
     gap: 1rem !important;
     margin: 1rem 0 !important;
-    color: rgba(129, 140, 248, 0.9) !important;
+    color: var(--accent2) !important;
     font-weight: 600 !important;
     transition: all 0.3s ease !important;
     font-size: 1.05rem !important;
@@ -483,7 +483,7 @@ html.admin-quizzes-page .main-content {
 .admin-quiz-container .quiz-actions .add-question-btn:hover,
 .admin-quiz-container .quiz-actions .view-questions-btn:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4) !important;
+    box-shadow: var(--shadow-xl) !important;
 }
 
 .admin-quiz-container .quiz-actions .delete-btn,
@@ -516,17 +516,17 @@ html.admin-quizzes-page .main-content {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
 .admin-quiz-container .quiz-actions .delete-btn:hover,
 .admin-quiz-container .quiz-actions .admin-delete-btn:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 15px 30px rgba(239, 68, 68, 0.4) !important;
-    background: linear-gradient(135deg, #f87171, #ef4444) !important;
-    border-color: rgba(248, 113, 113, 0.4) !important;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: var(--shadow-xl) !important;
+    background: var(--gradient-danger) !important;
+    border-color: var(--danger) !important;
+    text-shadow: var(--shadow-lg) !important;
 }
 
 .admin-quiz-container .quiz-actions .delete-btn:hover::before,
@@ -536,8 +536,8 @@ html.admin-quizzes-page .main-content {
 
 /* Admin Questions Display */
 .display-ans.admin-questions {
-    background: rgba(99, 102, 241, 0.03);
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    background: var(--accent-light);
+    border: 1px solid var(--accent);
     border-radius: 1rem;
     padding: 1.5rem;
     max-height: 250px;
@@ -548,8 +548,8 @@ html.admin-quizzes-page .main-content {
 
 .admin-questions li {
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-    color: rgba(129, 140, 248, 0.8);
+    border-bottom: 1px solid var(--accent);
+    color: var(--accent2);
     font-size: 0.95rem;
     line-height: 1.6;
     transition: all 0.3s ease;
@@ -565,15 +565,15 @@ html.admin-quizzes-page .main-content {
     display: block;
     margin-top: 0.5rem;
     padding-left: 1rem;
-    color: #818cf8;
+    color: var(--accent2);
     font-weight: 700;
-    text-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+    text-shadow: 0 0 5px var(--accent-light);
 }
 
 /* Premium Questions Display */
 .display-ans.premium-questions {
-    background: rgba(251, 191, 36, 0.03);
-    border: 1px solid rgba(251, 191, 36, 0.1);
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
     border-radius: 1rem;
     padding: 1.5rem;
     max-height: 250px;
@@ -584,8 +584,8 @@ html.admin-quizzes-page .main-content {
 
 .premium-questions li {
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(251, 191, 36, 0.1);
-    color: rgba(251, 191, 36, 0.8);
+    border-bottom: 1px solid var(--warning);
+    color: var(--warning);
     font-size: 0.95rem;
     line-height: 1.6;
     transition: all 0.3s ease;
@@ -601,7 +601,7 @@ html.admin-quizzes-page .main-content {
     display: block;
     margin-top: 0.5rem;
     padding-left: 1rem;
-    color: #fbbf24;
+    color: var(--warning);
     font-weight: 700;
     text-shadow: 0 0 5px rgba(251, 191, 36, 0.3);
 }
@@ -620,7 +620,7 @@ html.admin-quizzes-page .main-content {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.03), transparent);
+    background: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -636,7 +636,7 @@ html.admin-quizzes-page .main-content {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(from 0deg, transparent, rgba(251, 191, 36, 0.03), transparent);
+    background: conic-gradient(from 0deg, transparent, var(--warning-light), transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -648,7 +648,7 @@ html.admin-quizzes-page .main-content {
 
 /* Admin Modal Styles */
 .modal.admin-modal {
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--shadow);
     backdrop-filter: blur(8px);
     border: none;
     border-radius: 0;
@@ -682,7 +682,7 @@ html.admin-quizzes-page .main-content {
 }
 
 .modal.admin-modal::backdrop {
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--shadow);
     backdrop-filter: blur(8px);
 }
 
@@ -709,7 +709,7 @@ html.admin-quizzes-page .main-content {
     right: 0;
     height: 2px;
     background: var(--admin-primary);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 20px var(--accent-light);
     border-radius: 2rem 2rem 0 0;
 }
 
@@ -717,9 +717,9 @@ html.admin-quizzes-page .main-content {
     position: absolute;
     top: 1.2rem;
     right: 1.2rem;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #fca5a5;
+    background: var(--danger-light);
+    border: 1px solid var(--danger);
+    color: var(--danger);
     font-size: 1.6rem;
     cursor: pointer;
     padding: 0.6rem;
@@ -736,21 +736,21 @@ html.admin-quizzes-page .main-content {
 
 .close-btn.admin-close:hover {
     background: rgba(239, 68, 68, 0.2);
-    color: #ffffff;
+    color: var(--text-light);
     transform: scale(1.1);
 }
 
 .modal-title.admin-title {
     font-size: 2rem;
     font-weight: 800;
-    color: #818cf8;
+    color: var(--accent2);
     margin-bottom: 2.5rem;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    text-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    text-shadow: 0 0 15px var(--accent-light);
 }
 
 /* Admin Form Styles */
@@ -764,7 +764,7 @@ html.admin-quizzes-page .main-content {
     background: rgba(99, 102, 241, 0.05);
     border: 2px solid rgba(99, 102, 241, 0.2);
     border-radius: 1rem;
-    color: #818cf8;
+    color: var(--accent2);
     font-size: 1.05rem;
     font-weight: 500;
     transition: all 0.4s ease;
@@ -773,7 +773,7 @@ html.admin-quizzes-page .main-content {
 
 .admin-modal-box input.admin-input::placeholder,
 .admin-modal-box .admin-input::placeholder {
-    color: rgba(99, 102, 241, 0.6);
+    color: var(--accent);
 }
 
 .admin-modal-box input.admin-input:focus,
@@ -781,9 +781,9 @@ html.admin-quizzes-page .main-content {
 .admin-modal-box .admin-input:focus,
 .admin-modal-box .admin-select:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--accent);
     box-shadow: 0 0 25px rgba(99, 102, 241, 0.3);
-    background: rgba(99, 102, 241, 0.08);
+    background: var(--accent-light);
 }
 
 .submit-btn.admin-submit {
@@ -792,7 +792,7 @@ html.admin-quizzes-page .main-content {
     background: var(--admin-primary);
     border: 2px solid var(--admin-border);
     border-radius: 1rem;
-    color: #ffffff;
+    color: var(--text-light);
     font-weight: 700;
     font-size: 1.1rem;
     cursor: pointer;
@@ -841,7 +841,7 @@ html.admin-quizzes-page .main-content {
     background: rgba(99, 102, 241, 0.05);
     border: 2px solid rgba(99, 102, 241, 0.2);
     border-radius: 1rem;
-    color: #818cf8;
+    color: var(--accent2);
     font-size: 1.05rem;
     font-weight: 500;
     transition: all 0.4s ease;
@@ -849,15 +849,15 @@ html.admin-quizzes-page .main-content {
 }
 
 .form-input::placeholder {
-    color: rgba(99, 102, 241, 0.6);
+    color: var(--accent);
 }
 
 .form-input:focus,
 .form-select:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--accent);
     box-shadow: 0 0 25px rgba(99, 102, 241, 0.3);
-    background: rgba(99, 102, 241, 0.08);
+    background: var(--accent-light);
 }
 
 /* Admin Floating Elements */
@@ -873,7 +873,7 @@ html.admin-quizzes-page .main-content {
     right: 8%;
     width: 120px;
     height: 120px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     filter: blur(2px);
 }
 
@@ -882,7 +882,7 @@ html.admin-quizzes-page .main-content {
     left: 6%;
     width: 100px;
     height: 100px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     filter: blur(2.5px);
 }
 
@@ -891,7 +891,7 @@ html.admin-quizzes-page .main-content {
     right: 3%;
     width: 140px;
     height: 140px;
-    background: radial-gradient(circle, rgba(79, 70, 229, 0.08), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     filter: blur(3px);
 }
 
@@ -1027,12 +1027,12 @@ html.admin-quizzes-page .main-content {
 
 .admin-questions::-webkit-scrollbar-thumb,
 .admin-modal-box::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(139, 92, 246, 0.6));
+    background: var(--gradient-primary);
     border-radius: 10px;
     transition: all 0.3s ease;
 }
 
 .admin-questions::-webkit-scrollbar-thumb:hover,
 .admin-modal-box::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    background: var(--gradient-primary);
 }
