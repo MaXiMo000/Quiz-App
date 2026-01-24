@@ -794,7 +794,7 @@ const StudyGroups = () => {
                                         };
 
                                         const userName = getUserName();
-                                        const displayMessage = userName 
+                                        const displayMessage = userName
                                             ? activity.details?.message || `${userName} ${activity.type === 'member_joined' ? 'joined' : 'left'} the group`
                                             : activity.details?.message || activity.details || 'Activity';
 

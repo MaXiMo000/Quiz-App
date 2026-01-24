@@ -1,7 +1,7 @@
 /* ✨ ULTRA MODERN INTELLIGENCE DASHBOARD STYLES ✨ */
 .intelligence-dashboard-container {
     min-height: 100vh;
-    background: 
+    background:
         radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
         radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
         radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
@@ -98,7 +98,7 @@
     color: white;
     position: relative;
     overflow: hidden;
-    box-shadow: 
+    box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.3),
         0 0 0 1px rgba(255, 255, 255, 0.05) inset,
         0 0 120px rgba(139, 92, 246, 0.2);
@@ -216,7 +216,7 @@
     font-size: 1rem;
     flex-shrink: 0;
     white-space: nowrap;
-    box-shadow: 
+    box-shadow:
         0 8px 24px rgba(251, 191, 36, 0.3),
         0 0 0 1px rgba(251, 191, 36, 0.2) inset;
     transition: all 0.3s ease;
@@ -247,7 +247,7 @@
 
 .premium-badge:hover {
     transform: scale(1.05);
-    box-shadow: 
+    box-shadow:
         0 12px 32px rgba(251, 191, 36, 0.4),
         0 0 0 1px rgba(251, 191, 36, 0.3) inset;
 }
@@ -313,7 +313,7 @@
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(0, 0, 0, 0.2),
         0 0 0 1px rgba(255, 255, 255, 0.05) inset,
         0 0 80px rgba(139, 92, 246, 0.15);
@@ -340,7 +340,7 @@
 
 .dashboard-section:hover {
     transform: translateY(-8px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.3),
         0 0 0 1px rgba(255, 255, 255, 0.1) inset,
         0 0 120px rgba(139, 92, 246, 0.25);
@@ -364,7 +364,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(0, 0, 0, 0.2),
         0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     position: relative;

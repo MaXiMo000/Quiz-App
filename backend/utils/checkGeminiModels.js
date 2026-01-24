@@ -5,15 +5,15 @@ dotenv.config();
 
 /**
  * ⚠️ UTILITY SCRIPT ONLY - NOT USED IN API CALLS ⚠️
- * 
+ *
  * This is a standalone utility to check which models are available.
  * It is NOT called during normal API operations (quiz generation, etc.)
- * 
+ *
  * Usage: npm run check-models (runs as separate script)
- * 
+ *
  * The actual API uses generateFromGemini() which directly calls models
  * without any checking/testing phase for maximum performance.
- * 
+ *
  * Check which Gemini models are available for your API key
  * This helps identify which models you have access to based on your quota tier
  */
@@ -24,25 +24,25 @@ export const checkAvailableModels = async () => {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    
+
     // List of models to test - matches MODEL_PRIORITY in geminiHelper.js
     // Test main model first, then fallbacks (optimized order)
     const modelsToTest = [
         // Main model (test first)
         "gemini-2.5-pro",
-        
+
         // Fallback Tier 1: Highest quota models
         "gemini-2.5-flash-lite",
         "gemini-2.0-flash-lite",
         "gemini-2.0-flash",
-        
+
         // Fallback Tier 2: Good quota models
         "gemini-2.5-flash",
         "gemini-3-flash",
-        
+
         // Fallback Tier 3: Other premium models
         "gemini-3-pro",
-        
+
         // Fallback Tier 4: Legacy models (test only if needed)
         "gemini-1.5-pro",
         "gemini-1.5-flash"
@@ -64,22 +64,22 @@ export const checkAvailableModels = async () => {
         const testStartTime = Date.now();
         try {
             const model = genAI.getGenerativeModel({ model: modelName });
-            
+
             // Performance: Use Promise.race to add timeout
             const testPromise = model.generateContent({
                 contents: [{ parts: [{ text: "Say 'OK' if you can hear me." }] }]
             });
-            
-            const timeoutPromise = new Promise((_, reject) => 
+
+            const timeoutPromise = new Promise((_, reject) =>
                 setTimeout(() => reject(new Error("Test timeout")), TEST_TIMEOUT)
             );
-            
+
             // Try a simple test request with timeout
             const result = await Promise.race([testPromise, timeoutPromise]);
             const response = result.response.text();
-            
+
             const testDuration = Date.now() - testStartTime;
-            
+
             // SECURITY: Don't store full response, just confirm it worked
             results.available.push({
                 model: modelName,
@@ -87,13 +87,13 @@ export const checkAvailableModels = async () => {
                 responseLength: response.length, // Only store length, not content
                 testDuration: `${testDuration}ms`
             });
-            
+
             console.log(`✅ ${modelName.padEnd(30)} - Available (${testDuration}ms, ${response.length} chars)`);
 
         } catch (error) {
             const testDuration = Date.now() - testStartTime;
             const errorMsg = error.message || error.toString();
-            
+
             // Check for specific error types
             if (errorMsg.includes("timeout") || errorMsg.includes("Test timeout")) {
                 results.unavailable.push({
@@ -149,7 +149,7 @@ export const checkAvailableModels = async () => {
     console.log("   - Check your quota limits at: https://aistudio.google.com/app/apikey");
     console.log("   - View billing/quota in Google Cloud Console: https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/quotas");
     console.log("   - Premium models require billing to be set up");
-    
+
     return results;
 };
 
@@ -164,4 +164,3 @@ if (isMainModule) {
             process.exit(1);
         });
 }
-

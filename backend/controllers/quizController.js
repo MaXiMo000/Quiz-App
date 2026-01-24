@@ -21,10 +21,10 @@ export const getQuizzes = async (req, res) => {
             logger.error(`Invalid ObjectId format for userId: ${userId}`);
             return res.status(400).json({ error: "Invalid user ID format" });
         }
-        
+
         const userObjectId = new mongoose.Types.ObjectId(userId);
         logger.debug(`Premium user filtering: userId=${userId}, userObjectId=${userObjectId}`);
-        
+
         // Query for quizzes created by this user OR by admin (null)
         // Use explicit ObjectId comparison
         const query = {
@@ -33,10 +33,10 @@ export const getQuizzes = async (req, res) => {
                 { "createdBy._id": null }
             ]
         };
-        
+
         logger.debug(`Query filter: ${JSON.stringify(query)}`);
         quizzes = await Quiz.find(query).lean(); // Added .lean() for better performance
-        
+
         // Log the actual createdBy._id values from results to verify filtering
         logger.info(`Premium user ${userId} fetching quizzes. Found ${quizzes.length} total quizzes.`);
         if (quizzes.length > 0) {
@@ -172,7 +172,7 @@ export async function getQuizById(req, res) {
     logger.info(`Fetching quiz by ID: ${req.params.id} for user ${req.user?.id} with role ${req.user?.role}`);
     try {
         const { role, id: userId } = req.user;
-        
+
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id}`);
@@ -182,14 +182,14 @@ export async function getQuizById(req, res) {
         // Authorization check: Premium users can only access their own quizzes or admin quizzes
         if (role === "premium") {
             const quizCreatorId = quiz.createdBy?._id;
-            const userObjectId = mongoose.Types.ObjectId.isValid(userId) 
-                ? new mongoose.Types.ObjectId(userId) 
+            const userObjectId = mongoose.Types.ObjectId.isValid(userId)
+                ? new mongoose.Types.ObjectId(userId)
                 : userId;
-            
+
             // Check if quiz is created by admin (null) or by this user
             const isAdminQuiz = quizCreatorId === null;
             const isUserQuiz = quizCreatorId && quizCreatorId.toString() === userObjectId.toString();
-            
+
             if (!isAdminQuiz && !isUserQuiz) {
                 logger.warn(`Premium user ${userId} attempted to access quiz ${req.params.id} created by ${quizCreatorId}`);
                 return res.status(403).json({ message: "Access denied. You can only access your own quizzes or admin quizzes." });

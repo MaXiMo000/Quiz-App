@@ -92,7 +92,7 @@ html.premium-quizzes-page .main-content {
         max-height: none !important;
         position: relative !important;
     }
-    
+
     /* Ensure no fixed height on body/html - override any conflicting rules */
     body.premium-quizzes-page,
     html.premium-quizzes-page {
@@ -102,7 +102,7 @@ html.premium-quizzes-page .main-content {
         overflow-y: auto !important;
         overflow-x: hidden !important;
     }
-    
+
     /* Ensure main-content doesn't restrict scrolling */
     .premium-quiz-container.main-content {
         height: auto !important;
@@ -111,7 +111,7 @@ html.premium-quizzes-page .main-content {
         overflow-x: hidden !important;
         position: relative !important;
     }
-    
+
     /* Ensure quiz-list doesn't restrict scrolling */
     .premium-quiz-container .quiz-list {
         height: auto !important;

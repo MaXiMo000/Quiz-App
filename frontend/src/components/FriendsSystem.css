@@ -203,7 +203,7 @@
     gap: 1.25rem;
     position: relative;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(102, 126, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -229,7 +229,7 @@
 .friend-card:hover {
     border-color: rgba(102, 126, 234, 0.4);
     transform: translateY(-4px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(102, 126, 234, 0.2),
         0 0 0 1px rgba(102, 126, 234, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -474,7 +474,7 @@
     border-radius: 20px;
     text-align: center;
     color: white;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(239, 68, 68, 0.3),
         0 0 0 1px rgba(255, 255, 255, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -502,7 +502,7 @@
 
 .blocked-user-card:hover {
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(239, 68, 68, 0.4),
         0 0 0 1px rgba(255, 255, 255, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -574,7 +574,7 @@
     gap: 1.25rem;
     margin-bottom: 0.875rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
         0 4px 20px rgba(0, 0, 0, 0.08),
         0 0 0 1px rgba(102, 126, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -601,7 +601,7 @@
 .request-card:hover {
     border-color: rgba(102, 126, 234, 0.4);
     transform: translateX(4px);
-    box-shadow: 
+    box-shadow:
         0 6px 25px rgba(102, 126, 234, 0.15),
         0 0 0 1px rgba(102, 126, 234, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -750,7 +750,7 @@
 .search-input:focus {
     outline: none;
     border-color: #667eea;
-    box-shadow: 
+    box-shadow:
         0 0 0 4px rgba(102, 126, 234, 0.1),
         0 4px 20px rgba(102, 126, 234, 0.15);
     background: rgba(255, 255, 255, 0.08);
@@ -788,7 +788,7 @@
     align-items: center;
     gap: 1.25rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(102, 126, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -815,7 +815,7 @@
 .search-result-card:hover {
     border-color: rgba(102, 126, 234, 0.4);
     transform: translateY(-4px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(102, 126, 234, 0.2),
         0 0 0 1px rgba(102, 126, 234, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);

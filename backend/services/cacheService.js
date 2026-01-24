@@ -26,7 +26,7 @@ const delByPattern = async (pattern) => {
     try {
         let cursor = "0";
         let totalDeleted = 0;
-        
+
         do {
             const reply = await redisClient.scan(cursor, {
                 MATCH: pattern,
@@ -38,7 +38,7 @@ const delByPattern = async (pattern) => {
                 totalDeleted += deleted;
             }
         } while (cursor !== "0");
-        
+
         if (totalDeleted > 0) {
             logger.debug(`Deleted ${totalDeleted} cache keys matching pattern: ${pattern}`);
         }

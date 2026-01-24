@@ -107,7 +107,7 @@ const QuizQuestions = () => {
                             quiz.questions.map((q, index) => {
                                 // Check if this is an admin quiz (createdBy._id is null)
                                 const isAdminQuiz = !quiz.createdBy || !quiz.createdBy._id;
-                                
+
                                 return (
                                     <motion.div
                                         key={index}

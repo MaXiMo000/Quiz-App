@@ -19,7 +19,7 @@ const SpacedRepetition = () => {
     const fetchReviews = async () => {
       try {
         const res = await axios.get("/api/reviews");
-        
+
         // Check if response data is an array
         if (!Array.isArray(res.data)) {
           console.error("Invalid response format:", res.data);
@@ -30,10 +30,10 @@ const SpacedRepetition = () => {
         }
 
         // Filter out reviews with missing question data
-        const validReviews = res.data.filter(review => 
-          review && 
-          review.question && 
-          review.quiz && 
+        const validReviews = res.data.filter(review =>
+          review &&
+          review.question &&
+          review.quiz &&
           review.quiz._id
         );
 

@@ -24,7 +24,7 @@ export const getCurrentDailyChallenge = async (req, res) => {
 
         // Filter challenges based on user participation and 24-hour reset logic
         const availableChallenges = [];
-        
+
         for (const challenge of allActiveChallenges) {
             const userParticipant = challenge.participants.find(p =>
                 p.user.toString() === userId

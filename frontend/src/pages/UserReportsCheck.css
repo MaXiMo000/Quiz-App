@@ -1,7 +1,7 @@
 /* ✨ ULTRA MODERN REPORT PAGE STYLES ✨ */
 .report-container {
     min-height: 100vh;
-    background: 
+    background:
         radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
         radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
         radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
@@ -182,7 +182,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(99, 102, 241, 0.3),
         0 0 20px rgba(99, 102, 241, 0.1);
     backdrop-filter: blur(10px);
@@ -211,7 +211,7 @@
 
 .back-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(99, 102, 241, 0.4),
         0 0 40px rgba(99, 102, 241, 0.2);
     background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
@@ -233,7 +233,7 @@
     -webkit-backdrop-filter: blur(30px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.3),
         0 0 60px rgba(99, 102, 241, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -309,7 +309,7 @@
     font-size: clamp(1.1rem, 2vw, 1.4rem);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(0, 0, 0, 0.3),
         0 0 40px rgba(0, 0, 0, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -336,7 +336,7 @@
 .result-badge.passed {
     background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     color: white;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(34, 197, 94, 0.4),
         0 0 50px rgba(34, 197, 94, 0.2);
     border-color: rgba(255, 255, 255, 0.3);
@@ -345,7 +345,7 @@
 .result-badge.failed {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(239, 68, 68, 0.4),
         0 0 50px rgba(239, 68, 68, 0.2);
     border-color: rgba(255, 255, 255, 0.3);
@@ -353,7 +353,7 @@
 
 .result-badge:hover {
     transform: scale(1.05);
-    box-shadow: 
+    box-shadow:
         0 12px 35px rgba(0, 0, 0, 0.4),
         0 0 60px rgba(0, 0, 0, 0.3);
 }
@@ -376,7 +376,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     padding: 2.5rem;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.2),
         0 0 40px rgba(99, 102, 241, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -415,7 +415,7 @@
 
 .question-box:hover {
     transform: translateY(-6px);
-    box-shadow: 
+    box-shadow:
         0 12px 48px rgba(0, 0, 0, 0.3),
         0 0 60px rgba(99, 102, 241, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -508,7 +508,7 @@
 
 .options-list li:hover {
     transform: translateX(8px);
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(99, 102, 241, 0.2),
         0 0 20px rgba(99, 102, 241, 0.1);
     background: rgba(99, 102, 241, 0.12);
@@ -520,7 +520,7 @@
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(22, 163, 74, 0.08));
     border-color: rgba(34, 197, 94, 0.4);
     color: #86efac;
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(34, 197, 94, 0.2),
         0 0 20px rgba(34, 197, 94, 0.1);
 }
@@ -537,7 +537,7 @@
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.08));
     border-color: rgba(239, 68, 68, 0.4);
     color: #fca5a5;
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(239, 68, 68, 0.2),
         0 0 20px rgba(239, 68, 68, 0.1);
 }
@@ -558,7 +558,7 @@
     backdrop-filter: blur(15px);
     border: 1px solid rgba(99, 102, 241, 0.15);
     border-radius: 16px;
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
@@ -600,7 +600,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     margin: 2rem auto;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.2),
         0 0 40px rgba(99, 102, 241, 0.1);
     max-width: 500px;

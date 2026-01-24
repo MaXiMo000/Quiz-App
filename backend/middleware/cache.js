@@ -45,25 +45,25 @@ const GLOBAL_ENDPOINTS = [
 const isUserSpecificEndpoint = (url) => {
   // Remove query parameters for matching
   const urlPath = url.split('?')[0];
-  
+
   // Normalize: Remove /api prefix if present for pattern matching
   // Routes are mounted at /api, so /api/quizzes becomes /quizzes for matching
   const normalizedPath = urlPath.startsWith('/api/') ? urlPath.slice(4) : urlPath;
-  
+
   // Check global endpoints first (these should NOT be user-specific)
   // Use exact path matching to avoid false positives
   if (GLOBAL_ENDPOINTS.some(pattern => {
     // Check both original path and normalized path
     const normalizedPattern = pattern.startsWith('/api/') ? pattern.slice(4) : pattern;
-    return normalizedPath === normalizedPattern || 
-           normalizedPath.startsWith(normalizedPattern + '/') || 
+    return normalizedPath === normalizedPattern ||
+           normalizedPath.startsWith(normalizedPattern + '/') ||
            normalizedPath === normalizedPattern ||
            urlPath === pattern ||
            urlPath.startsWith(pattern + '/');
   })) {
     return false;
   }
-  
+
   // Check if it matches any user-specific pattern
   return USER_SPECIFIC_ENDPOINTS.some(pattern => {
     // Handle patterns ending with / (for path parameters)
@@ -72,21 +72,21 @@ const isUserSpecificEndpoint = (url) => {
       // But NOT match: /api/quizzes-top-scorers
       const basePattern = pattern.slice(0, -1); // Remove trailing /
       // Check normalized path (without /api)
-      return normalizedPath.startsWith(basePattern + '/') || 
+      return normalizedPath.startsWith(basePattern + '/') ||
              normalizedPath === basePattern ||
              urlPath.includes(basePattern + '/');
     }
-    
+
     // Handle exact patterns (like /quizzes, /reports)
     // Match if normalized URL equals pattern or starts with pattern + /
-    if (normalizedPath === pattern || 
-        normalizedPath.startsWith(pattern + '/') || 
+    if (normalizedPath === pattern ||
+        normalizedPath.startsWith(pattern + '/') ||
         normalizedPath.startsWith(pattern + '?') ||
         urlPath.includes(pattern + '/') ||
         urlPath.endsWith(pattern)) {
       return true;
     }
-    
+
     return false;
   });
 };
@@ -100,7 +100,7 @@ const cache = async (req, res, next) => {
     // Build cache key
     let key = req.originalUrl;
     let isUserSpecific = false;
-    
+
     // For user-specific endpoints, include user ID in cache key
     // This ensures each user gets their own cached results
     if (req.user && req.user.id && isUserSpecificEndpoint(req.originalUrl)) {
@@ -114,7 +114,7 @@ const cache = async (req, res, next) => {
         // Also clear all old cache entries for this pattern
         await cacheService.delByPattern(`${req.originalUrl}*`);
       }
-      
+
       key = `${req.originalUrl}:user:${req.user.id}`;
       isUserSpecific = true;
     }
@@ -147,18 +147,18 @@ export const clearCacheByPattern = (pattern) => {
                 const cleanEndpoint = endpoint.replace(/\/$/, '');
                 return pattern.includes(cleanEndpoint) || pattern.endsWith(cleanEndpoint);
             });
-            
+
             if (isUserSpecific) {
                 // For user-specific endpoints, clear cache for:
                 // 1. Base pattern without user suffix (for backward compatibility with old cache keys)
                 await cacheService.delByPattern(`${pattern}*`);
-                
+
                 // 2. Current user's cache (immediate invalidation)
                 if (req.user && req.user.id) {
                     const userPattern = `${pattern}*:user:${req.user.id}*`;
                     await cacheService.delByPattern(userPattern);
                 }
-                
+
                 // 3. All users' cache (in case admin makes changes affecting all users)
                 // Pattern: /api/quizzes*:user:*
                 const allUsersPattern = `${pattern}*:user:*`;
@@ -195,11 +195,11 @@ export const getCacheKey = (req) => {
     if (!req.user || !req.user.id) {
         return req.originalUrl;
     }
-    
+
     if (isUserSpecificEndpoint(req.originalUrl)) {
         return `${req.originalUrl}:user:${req.user.id}`;
     }
-    
+
     return req.originalUrl;
 };
 

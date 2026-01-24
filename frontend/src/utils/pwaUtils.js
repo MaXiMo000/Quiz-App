@@ -15,7 +15,7 @@ class PWAManager {
     // Listen for beforeinstallprompt event
     // NOTE: We preventDefault() to intercept the browser's default install prompt
     // and show it manually via promptInstall() when user clicks install button.
-    // 
+    //
     // IMPORTANT: The browser console message "Banner not shown: beforeinstallpromptevent.preventDefault() called"
     // is EXPECTED and INFORMATIONAL - it's NOT an error. This is Chrome's way of informing developers
     // that the default prompt was prevented. We handle the prompt manually through our custom install button

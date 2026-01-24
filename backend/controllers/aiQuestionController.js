@@ -36,17 +36,17 @@ export const generateQuizQuestions = async (req, res) => {
             quiz.questions.map((q) => q.question.trim().toLowerCase())
         );
         let finalQuestions = [];
-        
+
         // Generate questions with retry logic to ensure we get enough unique questions
         const MAX_ATTEMPTS = 3;
         const GENERATION_MULTIPLIER = 1.5; // Generate 1.5x requested to account for duplicates/invalid
-        
+
         for (let attempt = 0; attempt < MAX_ATTEMPTS && finalQuestions.length < numQuestions; attempt++) {
             // Calculate how many more questions we need
             const remainingNeeded = numQuestions - finalQuestions.length;
             // Generate extra questions to account for duplicates/invalid ones
             const questionsToGenerate = Math.ceil(remainingNeeded * GENERATION_MULTIPLIER);
-            
+
             let parsed;
             try {
                 if (questionType === "mcq") {
@@ -70,14 +70,14 @@ export const generateQuizQuestions = async (req, res) => {
                 const normalized = q.question.trim().toLowerCase();
                 const isUnique = !existingQuestions.has(normalized);
                 const isValid = validateQuestion(q);
-                
+
                 if (!isUnique) {
                     logger.debug(`Duplicate question filtered: ${q.question.substring(0, 50)}...`);
                 }
                 if (!isValid) {
                     logger.debug(`Invalid question filtered: ${q.question.substring(0, 50)}...`);
                 }
-                
+
                 return isUnique && isValid;
             });
 
@@ -91,7 +91,7 @@ export const generateQuizQuestions = async (req, res) => {
             });
 
             finalQuestions.push(...newUnique);
-            
+
             logger.info(`Attempt ${attempt + 1}: Generated ${parsed.questions.length} questions, ${newUnique.length} unique, ${finalQuestions.length} total collected`);
         }
 

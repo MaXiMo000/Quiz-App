@@ -1,7 +1,7 @@
 /* ✨ ULTRA MODERN ADMIN REPORTS PAGE STYLES ✨ */
 .container {
     min-height: 100vh;
-    background: 
+    background:
         radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
         radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
         radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
@@ -175,7 +175,7 @@
     max-height: 70vh;
     position: relative;
     width: 100%;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.3),
         0 0 60px rgba(99, 102, 241, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -195,7 +195,7 @@
 
 .table-container:hover {
     transform: translateY(-4px);
-    box-shadow: 
+    box-shadow:
         0 12px 48px rgba(0, 0, 0, 0.4),
         0 0 80px rgba(99, 102, 241, 0.2);
     border-color: rgba(255, 255, 255, 0.2);
@@ -340,7 +340,7 @@ th::after {
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(239, 68, 68, 0.3),
         0 0 20px rgba(239, 68, 68, 0.1);
     backdrop-filter: blur(10px);
@@ -366,7 +366,7 @@ th::after {
 
 .delete-btn:hover {
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(239, 68, 68, 0.4),
         0 0 40px rgba(239, 68, 68, 0.2);
 }
@@ -391,7 +391,7 @@ th::after {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     margin: 2rem auto;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.2),
         0 0 40px rgba(99, 102, 241, 0.1);
     max-width: 500px;
@@ -486,13 +486,13 @@ th::after {
     .container .table-container table {
         min-width: 800px;
     }
-    
+
     .container .table-container th,
     .container .table-container td {
         padding: 1rem 0.75rem;
         font-size: 0.85rem;
     }
-    
+
     .container .table-container td:nth-child(2) {
         word-break: break-word;
     }

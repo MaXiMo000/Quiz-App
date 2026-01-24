@@ -178,7 +178,7 @@
 .path-filters input:focus {
     outline: none;
     border-color: #667eea;
-    box-shadow: 
+    box-shadow:
         0 0 0 4px rgba(102, 126, 234, 0.1),
         0 4px 20px rgba(102, 126, 234, 0.15);
     background: rgba(255, 255, 255, 0.08);
@@ -208,7 +208,7 @@
     cursor: default;
     position: relative;
     overflow: hidden;
-    box-shadow: 
+    box-shadow:
         0 10px 40px rgba(0, 0, 0, 0.2),
         0 0 0 1px rgba(102, 126, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -386,7 +386,7 @@
     animation: progressShimmer 2s ease infinite;
     border-radius: 10px;
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
         0 0 20px rgba(102, 126, 234, 0.6),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
@@ -536,7 +536,7 @@
     border-radius: 20px;
     padding: 1.75rem;
     transition: none;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(102, 126, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -562,7 +562,7 @@
 
 .my-path-card:hover {
     border-color: rgba(102, 126, 234, 0.4);
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(102, 126, 234, 0.2),
         0 0 0 1px rgba(102, 126, 234, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -825,7 +825,7 @@
     padding: 1.75rem;
     text-align: center;
     transition: none;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(102, 126, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -851,7 +851,7 @@
 
 .stat-card:hover {
     border-color: rgba(102, 126, 234, 0.4);
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(102, 126, 234, 0.2),
         0 0 0 1px rgba(102, 126, 234, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);

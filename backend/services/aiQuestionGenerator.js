@@ -50,7 +50,7 @@ export const generateMCQ = async (topic, numQuestions, difficulty = "any") => {
 
     // Use premium model first (will auto-fallback to higher quota models if needed)
     // Uses default 2 retries - if quota exceeded, falls back to flash-lite immediately
-    const aiText = await generateFromGemini(prompt, { 
+    const aiText = await generateFromGemini(prompt, {
         preferredModel: "gemini-2.5-pro" // Premium model, falls back to flash-lite if quota exceeded
     });
     return parseAIResponse(aiText);
@@ -82,7 +82,7 @@ export const generateTrueFalse = async (topic, numQuestions) => {
 
     // Use premium model first (will auto-fallback to higher quota models if needed)
     // Uses default 2 retries - if quota exceeded, falls back to flash-lite immediately
-    const aiText = await generateFromGemini(prompt, { 
+    const aiText = await generateFromGemini(prompt, {
         preferredModel: "gemini-2.5-pro" // Premium model, falls back to flash-lite if quota exceeded
     });
     return parseAIResponse(aiText);

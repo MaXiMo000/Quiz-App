@@ -1,7 +1,7 @@
 /* ✨ ULTRA MODERN ADMIN DASHBOARD STYLES - MATCHING HOME PAGE ✨ */
 .admin-dashboard {
     min-height: 100vh;
-    background: 
+    background:
         radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
         radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
         radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
@@ -226,7 +226,7 @@
     overflow: visible;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     display: flex;
@@ -406,7 +406,7 @@
     max-height: 70vh;
     position: relative;
     width: 100%;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.3),
         0 0 60px rgba(99, 102, 241, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -427,7 +427,7 @@
 
 .table-container:hover {
     transform: translateY(-4px);
-    box-shadow: 
+    box-shadow:
         0 12px 48px rgba(0, 0, 0, 0.4),
         0 0 80px rgba(99, 102, 241, 0.2);
     border-color: rgba(255, 255, 255, 0.25);
@@ -681,7 +681,7 @@ th::after {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     margin: 2rem auto;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.2),
         0 0 40px rgba(99, 102, 241, 0.1);
     max-width: 500px;
@@ -819,20 +819,20 @@ th::after {
         table-layout: auto;
         display: table;
     }
-    
+
     .admin-dashboard .table-container thead {
         display: table-header-group;
     }
-    
+
     .admin-dashboard .table-container tbody {
         display: table-row-group;
     }
-    
+
     .admin-dashboard .table-container thead tr,
     .admin-dashboard .table-container tbody tr {
         display: table-row;
     }
-    
+
     .admin-dashboard .table-container th,
     .admin-dashboard .table-container td {
         padding: 1rem 0.75rem;
@@ -841,36 +841,36 @@ th::after {
         box-sizing: border-box;
         white-space: nowrap;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(1),
     .admin-dashboard .table-container td:nth-child(1) {
         min-width: 120px;
         max-width: 150px;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(2),
     .admin-dashboard .table-container td:nth-child(2) {
         min-width: 200px;
         white-space: normal;
         word-break: break-word;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(3),
     .admin-dashboard .table-container td:nth-child(3) {
         min-width: 100px;
         max-width: 120px;
         text-align: center;
     }
-    
+
     .admin-dashboard .table-container th {
         color: #ffffff !important;
         font-weight: 800 !important;
     }
-    
+
     td {
         color: rgba(255, 255, 255, 0.95) !important;
     }
-    
+
     .premium-user td {
         color: rgba(255, 255, 255, 1) !important;
     }
@@ -934,20 +934,20 @@ th::after {
         display: table-cell;
         white-space: nowrap;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(1),
     .admin-dashboard .table-container td:nth-child(1) {
         min-width: 100px;
         max-width: 120px;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(2),
     .admin-dashboard .table-container td:nth-child(2) {
         min-width: 180px;
         white-space: normal;
         word-break: break-word;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(3),
     .admin-dashboard .table-container td:nth-child(3) {
         min-width: 90px;
@@ -973,18 +973,18 @@ th::after {
         padding: 0.75rem 0.4rem;
         font-size: 0.75rem;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(1),
     .admin-dashboard .table-container td:nth-child(1) {
         min-width: 90px;
         max-width: 110px;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(2),
     .admin-dashboard .table-container td:nth-child(2) {
         min-width: 160px;
     }
-    
+
     .admin-dashboard .table-container th:nth-child(3),
     .admin-dashboard .table-container td:nth-child(3) {
         min-width: 80px;
