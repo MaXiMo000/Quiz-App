@@ -134,7 +134,18 @@ const cache = async (req, res, next) => {
 
     const cachedData = await cacheService.get(key);
 
+    // Always set fresh ETag and cache headers to prevent 304 responses
+    // Use timestamp + random to ensure ETag changes even for cached data
+    const etagValue = `"${Date.now()}-${Math.random().toString(36).substring(7)}"`;
+    res.set({
+      'Cache-Control': 'private, no-cache, must-revalidate',
+      'ETag': etagValue,
+      'Last-Modified': new Date().toUTCString(),
+      'Pragma': 'no-cache'
+    });
+
     if (cachedData) {
+      // Return cached data but with fresh headers to prevent browser caching
       return res.json(cachedData);
     }
 
@@ -155,6 +166,13 @@ const cache = async (req, res, next) => {
 export const clearCacheByPattern = (pattern) => {
     return async (req, res, next) => {
         try {
+            // Set cache-control headers to prevent caching of responses after data modification
+            res.set({
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            });
+
             // Check if this pattern matches user-specific endpoints
             const isUserSpecific = USER_SPECIFIC_ENDPOINTS.some(endpoint => {
                 const cleanEndpoint = endpoint.replace(/\/$/, '');
@@ -164,21 +182,35 @@ export const clearCacheByPattern = (pattern) => {
             if (isUserSpecific) {
                 // For user-specific endpoints, clear cache for:
                 // 1. Base pattern without user suffix (for backward compatibility with old cache keys)
-                await cacheService.delByPattern(`${pattern}*`);
+                const result1 = await cacheService.delByPattern(`${pattern}*`);
 
                 // 2. Current user's cache (immediate invalidation)
+                let result2 = 0;
                 if (req.user && req.user.id) {
                     const userPattern = `${pattern}*:user:${req.user.id}*`;
-                    await cacheService.delByPattern(userPattern);
+                    result2 = await cacheService.delByPattern(userPattern);
                 }
 
                 // 3. All users' cache (in case admin makes changes affecting all users)
                 // Pattern: /api/quizzes*:user:*
                 const allUsersPattern = `${pattern}*:user:*`;
-                await cacheService.delByPattern(allUsersPattern);
+                const result3 = await cacheService.delByPattern(allUsersPattern);
+
+                // Log summary in debug mode
+                if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+                    const totalDeleted = result1 + result2 + result3;
+                    if (totalDeleted > 0) {
+                        logger.debug(`Cleared ${totalDeleted} cache entries for pattern: ${pattern}`);
+                    }
+                }
             } else {
                 // For global endpoints, just clear the base pattern
-                await cacheService.delByPattern(`${pattern}*`);
+                const result = await cacheService.delByPattern(`${pattern}*`);
+                if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+                    if (result > 0) {
+                        logger.debug(`Cleared ${result} cache entries for pattern: ${pattern}`);
+                    }
+                }
             }
         } catch (error) {
             // Only log detailed errors in development or for critical errors

@@ -144,8 +144,8 @@ const delByPattern = async (pattern) => {
     }
 
     try {
-        // Start with cursor 0 (beginning of database)
-        let cursor = 0;
+        // Start with cursor "0" (beginning of database) - Redis v5 requires string
+        let cursor = "0";
         let totalDeleted = 0;
         const maxIterations = 1000; // Safety limit to prevent infinite loops
         let iterations = 0;
@@ -159,9 +159,10 @@ const delByPattern = async (pattern) => {
         }
 
         do {
-            // SCAN command - node-redis v5 returns { cursor, keys }
+            // SCAN command - node-redis v5 requires cursor as string and returns { cursor, keys }
+            // Ensure cursor is always a string for Redis v5 compatibility
             const scanResult = await withTimeout(
-                redisClient.scan(cursor, {
+                redisClient.scan(String(cursor), {
                     MATCH: pattern,
                     COUNT: 100, // Scan 100 keys at a time
                 }),
@@ -185,9 +186,9 @@ const delByPattern = async (pattern) => {
                 break;
             }
 
-            // Normalize cursor - Redis returns "0" (string) when done, or a number
-            // Convert to number for comparison, but handle string "0" correctly
-            const cursorValue = typeof nextCursor === "string" ? parseInt(nextCursor, 10) : nextCursor;
+            // Normalize cursor - Redis returns "0" (string) when done
+            // Keep as string for Redis v5 compatibility
+            const cursorValue = String(nextCursor);
 
             // Delete keys if any found
             if (keys && Array.isArray(keys) && keys.length > 0) {
@@ -206,7 +207,7 @@ const delByPattern = async (pattern) => {
                 }
             }
 
-            // Update cursor for next iteration
+            // Update cursor for next iteration (keep as string)
             cursor = cursorValue;
             iterations++;
 
@@ -216,9 +217,8 @@ const delByPattern = async (pattern) => {
                 break;
             }
 
-            // Continue scanning if cursor is not 0 (0 means scan is complete)
-            // Also handle string "0" case
-        } while (cursor !== 0 && cursor !== "0");
+            // Continue scanning if cursor is not "0" ("0" means scan is complete)
+        } while (cursor !== "0" && cursor !== 0);
 
         if (totalDeleted > 0) {
             // Only log info in development, debug in production
@@ -236,10 +236,19 @@ const delByPattern = async (pattern) => {
 
         return totalDeleted;
     } catch (error) {
+        // Check if Redis is actually connected BEFORE logging error
+        if (!isRedisConnected()) {
+            // Redis is not connected - this is expected if Redis is disabled
+            // Don't log as error - this is normal when Redis is not configured
+            return 0;
+        }
+
         // Only log detailed errors in development, or if it's a critical error
         const isCriticalError = error.code === "ECONNREFUSED" ||
                                 error.code === "ETIMEDOUT" ||
-                                error.message.includes("timeout");
+                                error.message.includes("timeout") ||
+                                error.message.includes("Connection") ||
+                                error.message.includes("ECONNRESET");
 
         if (isCriticalError || process.env.NODE_ENV !== "production") {
             logger.error({
@@ -249,6 +258,9 @@ const delByPattern = async (pattern) => {
                 code: error.code,
                 errno: error.errno,
                 syscall: error.syscall,
+                name: error.name,
+                redisConnected: isRedisConnected(),
+                redisOpen: redisClient.isOpen,
                 stack: process.env.NODE_ENV !== "production" ? error.stack : undefined,
             });
         } else {

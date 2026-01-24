@@ -13,8 +13,8 @@ import logger from "../utils/logger.js";
 
 const router = express.Router();
 
-router.post("/register", validate(registerSchema), registerUser);
-router.post("/login", validate(loginSchema), loginUser);
+router.post("/register", validate(registerSchema), clearCacheByPattern("/api/users"), registerUser);
+router.post("/login", validate(loginSchema), clearCacheByPattern("/api/users"), clearCacheByPattern("/api/dashboard"), loginUser);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 

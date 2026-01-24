@@ -43,6 +43,18 @@ const UserReports = () => {
         }
     }, [user?.name, getReport]); // ✅ Include getReport in dependencies
 
+    // Add class to body for full-page scrolling
+    useEffect(() => {
+        document.body.classList.add('user-reports-page');
+        document.documentElement.classList.add('user-reports-page');
+
+        // Cleanup on unmount
+        return () => {
+            document.body.classList.remove('user-reports-page');
+            document.documentElement.classList.remove('user-reports-page');
+        };
+    }, []);
+
     const deleteReport = async (id) => {
         if (!id) {
             showWarning("Report ID is missing!");
@@ -66,7 +78,12 @@ const UserReports = () => {
     if (error) return <p className="error-message">{error}</p>;
 
     return (
-        <div className="container">
+        <div className="container user-reports-page">
+            <div className="reports-bg-orbs">
+                <div className="orb orb-1"></div>
+                <div className="orb orb-2"></div>
+                <div className="orb orb-3"></div>
+            </div>
             <h1>📄 My Quiz Reports</h1>
             {reports.length === 0 ? (
                 <p>No reports found.</p>

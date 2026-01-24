@@ -362,9 +362,30 @@
 .stats-row {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-lg);
   margin-bottom: var(--space-lg);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+  .stats-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .stats-row {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+  }
+
+  .stat-card {
+    flex-direction: row !important;
+    align-items: center;
+  }
 }
 
 .stat-card {
@@ -377,10 +398,35 @@
   border: none;
   box-shadow: var(--shadow-xl), 0 0 20px rgba(255, 215, 0, 0.08);
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: var(--space-lg);
   position: relative;
   overflow: hidden;
+}
+
+/* ✨ Animated Top Border ✨ */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #FFD700, #FFA500, #FF8C00, #FFD700);
+  background-size: 200% 100%;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  animation: borderShimmer 3s linear infinite;
+  z-index: 1;
+}
+
+@keyframes borderShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 /* Hover effect removed as requested */
@@ -678,7 +724,12 @@
   }
 
   .stats-row {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .stat-card {
+    flex-direction: row !important;
+    align-items: center;
   }
 }
 
@@ -749,7 +800,7 @@
   }
 
   .stats-row {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: var(--space-md);
     margin-bottom: var(--space-lg);
     width: 100%;
@@ -1022,6 +1073,7 @@
   }
 
   .stats-row {
+    grid-template-columns: 1fr !important;
     gap: var(--space-sm);
   }
 

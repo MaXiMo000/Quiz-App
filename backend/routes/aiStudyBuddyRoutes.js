@@ -2,6 +2,7 @@ import express from "express";
 import { generateFromGemini } from "../utils/geminiHelper.js";
 import { verifyToken } from "../middleware/auth.js";
 import { aiLimiter, aiQuestionLimiter } from "../middleware/rateLimiting.js";
+import { clearCacheByPattern } from "../middleware/cache.js";
 import User from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import logger from "../utils/logger.js";
@@ -172,7 +173,7 @@ router.post("/chat", verifyToken, aiLimiter, async (req, res) => {
 });
 
 // Generate personalized quiz
-router.post("/generate-quiz", verifyToken, aiQuestionLimiter, async (req, res) => {
+router.post("/generate-quiz", verifyToken, aiQuestionLimiter, clearCacheByPattern("/api/quizzes"), async (req, res) => {
     try {
         const userId = req.user.id;
         const { topic, difficulty, questionCount = 5, focusAreas = [] } = req.body;
@@ -641,7 +642,7 @@ router.post("/end-session", verifyToken, async (req, res) => {
 });
 
 // Save study plan
-router.post("/save-study-plan", verifyToken, async (req, res) => {
+router.post("/save-study-plan", verifyToken, clearCacheByPattern("/api/users"), async (req, res) => {
     try {
         const userId = req.user.id;
         const { studyPlanContent, timestamp } = req.body;
@@ -683,7 +684,7 @@ router.post("/save-study-plan", verifyToken, async (req, res) => {
 });
 
 // Set reminder
-router.post("/set-reminder", verifyToken, async (req, res) => {
+router.post("/set-reminder", verifyToken, clearCacheByPattern("/api/users"), async (req, res) => {
     try {
         const userId = req.user.id;
         const { reminderText, context } = req.body;
