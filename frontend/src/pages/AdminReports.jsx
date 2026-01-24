@@ -6,6 +6,7 @@ import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const AdminReports = () => {
     const [reports, setReports] = useState([]);
@@ -93,7 +94,7 @@ const AdminReports = () => {
         }
     };
 
-    if (loading) return <Spinner message="Loading reports..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (
@@ -111,18 +112,7 @@ const AdminReports = () => {
             </motion.h1>
 
             <AnimatePresence mode="wait">
-                {loading ? (
-                    <motion.div
-                        className="loading-container"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        key="loading"
-                    >
-                        <div className="loading-spinner">🔄</div>
-                        <p>Loading reports...</p>
-                    </motion.div>
-                ) : error ? (
+                {error ? (
                     <motion.div
                         className="error-container"
                         initial={{ opacity: 0, scale: 0.9 }}

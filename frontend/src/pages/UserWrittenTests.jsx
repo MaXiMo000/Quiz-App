@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../App.css";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import "./UserWrittenTests.css"; // ✅ Import the new CSS file
 
 const UserWrittenTests = () => {
@@ -29,7 +30,7 @@ const UserWrittenTests = () => {
 
 
 
-    if (loading) return <Spinner message="Loading tests..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error-message">{error}</p>;
 
     return (

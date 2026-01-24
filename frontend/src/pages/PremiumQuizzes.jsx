@@ -6,6 +6,7 @@ import "../App.css";
 import "./PremiumQuizzes.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const PremiumQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -151,32 +152,7 @@ const PremiumQuizzes = () => {
         }
     };
 
-    if (loading) return (
-        <motion.div
-            className="premium-quiz-container main-content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-        >
-            <div className="loading-container">
-                <motion.div
-                    className="loading-spinner"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                >
-                    <div className="spinner-ring"></div>
-                </motion.div>
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="loading-text"
-                >
-                    Loading Premium Quizzes...
-                </motion.p>
-            </div>
-        </motion.div>
-    );
+    if (loading) return <Loading fullScreen={true} />;
 
     if (error) return (
         <motion.div

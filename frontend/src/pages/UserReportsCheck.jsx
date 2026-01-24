@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import "../App.css";
 import "./UserReportsCheck.css";
 
@@ -70,9 +71,9 @@ export default function UserReportsCheck() {
 
     return (
         <AnimatePresence mode="wait">
-            {loading ? (
-                <Spinner message="Loading report..." />
-            ) : error ? (
+                {loading ? (
+                    <Loading fullScreen={true} />
+                ) : error ? (
                 <motion.div
                     className="error-container"
                     initial={{ opacity: 0, scale: 0.9 }}

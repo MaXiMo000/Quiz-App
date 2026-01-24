@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import "../App.css";
 import "./UserWrittenReports.css"; // ✅ Import the new CSS file
 
@@ -91,7 +92,7 @@ const UserWrittenReports = () => {
 
     // ✅ Loading state with beautiful animation
     if (loading) {
-        return <Spinner message="Loading Written Test Reports..." />;
+        return <Loading fullScreen={true} />;
     }
 
     // ✅ Error state with motion animation

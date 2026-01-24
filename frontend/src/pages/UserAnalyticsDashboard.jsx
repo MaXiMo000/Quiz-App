@@ -3,6 +3,7 @@ import axios from "../utils/axios";
 import { Line, Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import Spinner from "../components/Spinner";
+import Loading from "../components/Loading";
 import "./UserAnalytics.css";
 
 const UserAnalyticsDashboard = () => {
@@ -39,7 +40,7 @@ const UserAnalyticsDashboard = () => {
         fetchAll();
     }, []);
 
-    if (loading) return <Spinner message="Loading analytics..." />;
+    if (loading) return <Loading fullScreen={true} />;
     if (error) return <p className="error">{error}</p>;
 
     const scoreData = {

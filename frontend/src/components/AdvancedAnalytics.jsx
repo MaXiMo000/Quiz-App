@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "../utils/axios";
 import { Line, Bar, Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
+import Loading from "./Loading";
 import "./AdvancedAnalytics.css";
 
 const AdvancedAnalytics = () => {
@@ -49,14 +50,7 @@ const AdvancedAnalytics = () => {
   };
 
   if (loading) {
-    return (
-      <div className="advanced-analytics-container">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p className="loading-text">Loading advanced analytics...</p>
-        </div>
-      </div>
-    );
+    return <Loading fullScreen={true} />;
   }
 
   if (error) {

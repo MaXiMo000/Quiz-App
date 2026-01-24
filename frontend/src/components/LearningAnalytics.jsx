@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from '../utils/axios';
+import Loading from './Loading';
 import './LearningAnalytics.css';
 
 const LearningAnalytics = ({ user }) => {
@@ -36,12 +37,7 @@ const LearningAnalytics = ({ user }) => {
     ];
 
     if (loading) {
-        return (
-            <div className="learning-analytics loading">
-                <div className="loading-spinner"></div>
-                <p>Analyzing your learning patterns...</p>
-            </div>
-        );
+        return <Loading fullScreen={false} size="medium" />;
     }
 
     if (error) {

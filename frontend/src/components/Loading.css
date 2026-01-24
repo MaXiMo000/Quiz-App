@@ -1,0 +1,723 @@
+/* Beautiful Fullscreen Loading Component - No Text */
+
+.loading-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.loading-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-inline {
+    min-height: 400px;
+    padding: 2rem;
+}
+
+/* Animated Background Gradient Orbs */
+.loading-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.loading-gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.5;
+    animation: floatOrb 10s ease-in-out infinite;
+}
+
+.loading-orb-1 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.loading-orb-2 {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    top: 60%;
+    right: 15%;
+    animation-delay: 2.5s;
+}
+
+.loading-orb-3 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    bottom: 20%;
+    left: 50%;
+    animation-delay: 5s;
+}
+
+.loading-orb-4 {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    top: 50%;
+    left: 30%;
+    animation-delay: 7.5s;
+}
+
+/* Desktop Enhancements - Larger Orbs */
+@media (min-width: 1024px) {
+    .loading-gradient-orb {
+        filter: blur(120px);
+        opacity: 0.6;
+    }
+
+    .loading-orb-1 {
+        width: 600px;
+        height: 600px;
+    }
+
+    .loading-orb-2 {
+        width: 500px;
+        height: 500px;
+    }
+
+    .loading-orb-3 {
+        width: 450px;
+        height: 450px;
+    }
+
+    .loading-orb-4 {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .loading-gradient-orb {
+        filter: blur(150px);
+        opacity: 0.7;
+    }
+
+    .loading-orb-1 {
+        width: 800px;
+        height: 800px;
+    }
+
+    .loading-orb-2 {
+        width: 700px;
+        height: 700px;
+    }
+
+    .loading-orb-3 {
+        width: 600px;
+        height: 600px;
+    }
+
+    .loading-orb-4 {
+        width: 550px;
+        height: 550px;
+    }
+}
+
+@keyframes floatOrb {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(40px, -40px) scale(1.15);
+    }
+    50% {
+        transform: translate(-30px, 30px) scale(0.9);
+    }
+    75% {
+        transform: translate(30px, 40px) scale(1.1);
+    }
+}
+
+/* Loading Container */
+.loading-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.loading-large {
+    width: 100%;
+    max-width: 600px;
+}
+
+.loading-medium {
+    width: 100%;
+    max-width: 400px;
+}
+
+.loading-small {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Glass Card - Larger and More Prominent */
+.loading-glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 40px;
+    padding: 5rem 4rem;
+    box-shadow: 
+        0 30px 80px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 0 120px rgba(102, 126, 234, 0.3),
+        inset 0 0 60px rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+}
+
+/* Desktop Enhancements for Glass Card */
+@media (min-width: 1024px) {
+    .loading-glass-card {
+        padding: 6rem 5rem;
+        border-radius: 50px;
+        box-shadow: 
+            0 40px 100px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+            0 0 150px rgba(102, 126, 234, 0.4),
+            inset 0 0 80px rgba(102, 126, 234, 0.15);
+    }
+}
+
+@media (min-width: 1440px) {
+    .loading-glass-card {
+        padding: 7rem 6rem;
+        border-radius: 60px;
+        box-shadow: 
+            0 50px 120px rgba(0, 0, 0, 0.6),
+            0 0 0 2px rgba(255, 255, 255, 0.1) inset,
+            0 0 180px rgba(102, 126, 234, 0.5),
+            inset 0 0 100px rgba(102, 126, 234, 0.2);
+    }
+}
+
+.loading-glass-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.08) 50%,
+        transparent 70%
+    );
+    animation: shimmer 4s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Spinner Wrapper - Larger for Desktop */
+.loading-spinner-wrapper {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Desktop Enhancements */
+@media (min-width: 1024px) {
+    .loading-spinner-wrapper {
+        width: 240px;
+        height: 240px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .loading-spinner-wrapper {
+        width: 280px;
+        height: 280px;
+    }
+}
+
+/* Outer Spinner */
+.loading-spinner-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.loading-spinner-ring {
+    width: 100%;
+    height: 100%;
+    border: 5px solid transparent;
+    border-top: 5px solid #667eea;
+    border-right: 5px solid #764ba2;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        #667eea 0%,
+        #764ba2 20%,
+        #f093fb 40%,
+        #f5576c 60%,
+        #4facfe 80%,
+        #667eea 100%
+    );
+    filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.8));
+    box-shadow: 
+        0 0 50px rgba(102, 126, 234, 0.6),
+        inset 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+/* Middle Ring */
+.loading-spinner-middle {
+    position: absolute;
+    width: 75%;
+    height: 75%;
+    top: 12.5%;
+    left: 12.5%;
+}
+
+.loading-spinner-ring-middle {
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-top: 4px solid #f093fb;
+    border-right: 4px solid #f5576c;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 180deg,
+        #f093fb 0%,
+        #f5576c 30%,
+        #4facfe 60%,
+        #00f2fe 100%
+    );
+    filter: drop-shadow(0 0 25px rgba(240, 147, 251, 0.7));
+    box-shadow: 
+        0 0 40px rgba(240, 147, 251, 0.5),
+        inset 0 0 25px rgba(240, 147, 251, 0.2);
+}
+
+/* Inner Spinner */
+.loading-spinner-inner {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 25%;
+    left: 25%;
+}
+
+.loading-spinner-core {
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-top: 3px solid #4facfe;
+    border-right: 3px solid #00f2fe;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 90deg,
+        #4facfe 0%,
+        #00f2fe 50%,
+        #667eea 100%
+    );
+    filter: drop-shadow(0 0 20px rgba(79, 172, 254, 0.8));
+    box-shadow: 
+        0 0 30px rgba(79, 172, 254, 0.6),
+        inset 0 0 20px rgba(79, 172, 254, 0.3);
+}
+
+/* Center Dot - Larger and More Glowing */
+.loading-spinner-center {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.loading-spinner-dot {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #ffffff 0%, #667eea 100%);
+    border-radius: 50%;
+    box-shadow: 
+        0 0 30px rgba(255, 255, 255, 0.9),
+        0 0 60px rgba(102, 126, 234, 0.8),
+        0 0 90px rgba(102, 126, 234, 0.5),
+        inset 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+/* Desktop Enhancements - Larger Center Dot */
+@media (min-width: 1024px) {
+    .loading-spinner-center {
+        width: 40px;
+        height: 40px;
+    }
+
+    .loading-spinner-dot {
+        box-shadow: 
+            0 0 40px rgba(255, 255, 255, 0.95),
+            0 0 80px rgba(102, 126, 234, 0.9),
+            0 0 120px rgba(102, 126, 234, 0.6),
+            0 0 160px rgba(102, 126, 234, 0.3),
+            inset 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+}
+
+@media (min-width: 1440px) {
+    .loading-spinner-center {
+        width: 50px;
+        height: 50px;
+    }
+
+    .loading-spinner-dot {
+        box-shadow: 
+            0 0 50px rgba(255, 255, 255, 1),
+            0 0 100px rgba(102, 126, 234, 1),
+            0 0 150px rgba(102, 126, 234, 0.7),
+            0 0 200px rgba(102, 126, 234, 0.4),
+            inset 0 0 25px rgba(255, 255, 255, 0.7);
+    }
+}
+
+/* Glowing Particles */
+.loading-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(102, 126, 234, 0.6));
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
+    animation: particleOrbit 4s linear infinite;
+}
+
+/* Desktop Enhancements - Larger Particles */
+@media (min-width: 1024px) {
+    .particle {
+        width: 10px;
+        height: 10px;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.9);
+        animation: particleOrbitDesktop 4s linear infinite;
+    }
+
+    @keyframes particleOrbitDesktop {
+        0% {
+            transform: rotate(0deg) translateX(120px) rotate(0deg);
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.6;
+        }
+        100% {
+            transform: rotate(360deg) translateX(120px) rotate(-360deg);
+            opacity: 1;
+        }
+    }
+}
+
+@media (min-width: 1440px) {
+    .particle {
+        width: 12px;
+        height: 12px;
+        box-shadow: 0 0 25px rgba(102, 126, 234, 1);
+        animation: particleOrbitLargeDesktop 4s linear infinite;
+    }
+
+    @keyframes particleOrbitLargeDesktop {
+        0% {
+            transform: rotate(0deg) translateX(140px) rotate(0deg);
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+        100% {
+            transform: rotate(360deg) translateX(140px) rotate(-360deg);
+            opacity: 1;
+        }
+    }
+}
+
+.particle-1 {
+    top: 0;
+    left: 50%;
+    animation-delay: 0s;
+}
+
+.particle-2 {
+    top: 50%;
+    right: 0;
+    animation-delay: 0.67s;
+}
+
+.particle-3 {
+    bottom: 0;
+    left: 50%;
+    animation-delay: 1.33s;
+}
+
+.particle-4 {
+    top: 50%;
+    left: 0;
+    animation-delay: 2s;
+}
+
+.particle-5 {
+    top: 15%;
+    right: 15%;
+    animation-delay: 0.33s;
+}
+
+.particle-6 {
+    bottom: 15%;
+    left: 15%;
+    animation-delay: 1s;
+}
+
+@keyframes particleOrbit {
+    0% {
+        transform: rotate(0deg) translateX(90px) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: rotate(360deg) translateX(90px) rotate(-360deg);
+        opacity: 1;
+    }
+}
+
+/* Desktop-specific enhancements */
+@media (min-width: 1024px) {
+    .loading-wrapper {
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 30%, #16213e 60%, #0f0f23 100%);
+        background-size: 200% 200%;
+        animation: backgroundShift 15s ease infinite;
+    }
+
+    @keyframes backgroundShift {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .loading-spinner-ring {
+        filter: drop-shadow(0 0 40px rgba(102, 126, 234, 0.9));
+        box-shadow: 
+            0 0 70px rgba(102, 126, 234, 0.7),
+            inset 0 0 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .loading-spinner-ring-middle {
+        filter: drop-shadow(0 0 35px rgba(240, 147, 251, 0.8));
+        box-shadow: 
+            0 0 60px rgba(240, 147, 251, 0.6),
+            inset 0 0 35px rgba(240, 147, 251, 0.3);
+    }
+
+    .loading-spinner-core {
+        filter: drop-shadow(0 0 30px rgba(79, 172, 254, 0.9));
+        box-shadow: 
+            0 0 50px rgba(79, 172, 254, 0.7),
+            inset 0 0 30px rgba(79, 172, 254, 0.4);
+    }
+}
+
+@media (min-width: 1440px) {
+    .loading-wrapper {
+        background-size: 300% 300%;
+    }
+
+    .loading-spinner-ring {
+        filter: drop-shadow(0 0 50px rgba(102, 126, 234, 1));
+        box-shadow: 
+            0 0 90px rgba(102, 126, 234, 0.8),
+            inset 0 0 50px rgba(102, 126, 234, 0.5);
+    }
+
+    .loading-spinner-ring-middle {
+        filter: drop-shadow(0 0 45px rgba(240, 147, 251, 0.9));
+        box-shadow: 
+            0 0 80px rgba(240, 147, 251, 0.7),
+            inset 0 0 45px rgba(240, 147, 251, 0.4);
+    }
+
+    .loading-spinner-core {
+        filter: drop-shadow(0 0 40px rgba(79, 172, 254, 1));
+        box-shadow: 
+            0 0 70px rgba(79, 172, 254, 0.8),
+            inset 0 0 40px rgba(79, 172, 254, 0.5);
+    }
+
+    /* Add more particles for ultra-wide screens */
+    .loading-particles::before,
+    .loading-particles::after {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(240, 147, 251, 0.6));
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(240, 147, 251, 0.9);
+        animation: particleOrbitLargeDesktop 5s linear infinite;
+    }
+
+    .loading-particles::before {
+        top: 25%;
+        left: 25%;
+        animation-delay: 0.5s;
+    }
+
+    .loading-particles::after {
+        bottom: 25%;
+        right: 25%;
+        animation-delay: 1.5s;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .loading-glass-card {
+        padding: 4rem 3rem;
+        border-radius: 32px;
+    }
+
+    .loading-spinner-wrapper {
+        width: 150px;
+        height: 150px;
+    }
+
+    .loading-spinner-center {
+        width: 25px;
+        height: 25px;
+    }
+
+    .loading-orb-1,
+    .loading-orb-2,
+    .loading-orb-3,
+    .loading-orb-4 {
+        filter: blur(70px);
+    }
+
+    .particle {
+        width: 6px;
+        height: 6px;
+    }
+
+    @keyframes particleOrbit {
+        0% {
+            transform: rotate(0deg) translateX(75px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(75px) rotate(-360deg);
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .loading-glass-card {
+        padding: 3rem 2rem;
+        border-radius: 24px;
+    }
+
+    .loading-spinner-wrapper {
+        width: 120px;
+        height: 120px;
+    }
+
+    .loading-spinner-center {
+        width: 20px;
+        height: 20px;
+    }
+
+    .particle {
+        width: 5px;
+        height: 5px;
+    }
+
+    @keyframes particleOrbit {
+        0% {
+            transform: rotate(0deg) translateX(60px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(60px) rotate(-360deg);
+        }
+    }
+}
+
+/* Size Variants */
+.loading-small .loading-glass-card {
+    padding: 3rem 2rem;
+}
+
+.loading-small .loading-spinner-wrapper {
+    width: 120px;
+    height: 120px;
+}
+
+.loading-medium .loading-glass-card {
+    padding: 4rem 3rem;
+}
+
+.loading-medium .loading-spinner-wrapper {
+    width: 150px;
+    height: 150px;
+}

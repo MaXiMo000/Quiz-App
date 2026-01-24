@@ -308,6 +308,8 @@
 }
 
 /* Loading States */
+/* OLD LOADING STYLES - DEPRECATED: Now using centralized Loading component */
+/*
 .achievement-loading,
 .achievement-error {
   display: flex;
@@ -333,6 +335,7 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+*/
 
 .achievement-error {
   color: var(--text-secondary);

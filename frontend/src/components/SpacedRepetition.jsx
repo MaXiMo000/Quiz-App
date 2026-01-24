@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "../utils/axios";
+import Loading from "./Loading";
 import "./SpacedRepetition.css";
 
 const SpacedRepetition = () => {
@@ -8,8 +9,13 @@ const SpacedRepetition = () => {
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [quizProgress, setQuizProgress] = useState({});
+  const fetchingRef = useRef(false); // Prevent duplicate calls
 
   useEffect(() => {
+    // Prevent duplicate calls (React StrictMode in dev causes double renders)
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
+
     const fetchReviews = async () => {
       try {
         const res = await axios.get("/api/reviews");
@@ -31,11 +37,19 @@ const SpacedRepetition = () => {
         setQuizProgress(progress);
       } catch (error) {
         console.error("Error fetching reviews:", error);
+        // Reset fetching flag on error so user can retry
+        fetchingRef.current = false;
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchReviews();
+
+    // Cleanup function
+    return () => {
+      fetchingRef.current = false;
+    };
   }, []);
 
   const handleUpdateReview = async (quality) => {
@@ -71,16 +85,7 @@ const SpacedRepetition = () => {
   };
 
   if (loading) {
-    return (
-      <div className="spaced-repetition">
-        <div className="spaced-repetition-container">
-          <div className="spaced-repetition-loading">
-            <div className="loading-spinner"></div>
-            <p className="loading-text">Loading your review sessions...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <Loading fullScreen={true} />;
   }
 
   if (reviews.length === 0) {

@@ -129,7 +129,9 @@
 }
 
 /* Loading and Error States */
-.dashboard-loading, .dashboard-error {
+/* OLD LOADING STYLES - DEPRECATED: Now using centralized Loading component */
+/*
+.dashboard-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -205,6 +207,17 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+*/
+
+.dashboard-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: var(--space-2xl);
+  text-align: center;
+}
 
 @keyframes rotate {
   0% { transform: rotate(0deg); }
@@ -233,9 +246,7 @@
   100% {
     background-position: 200% 0;
   }
-}
-
-.dashboard-error {
+*/
   color: var(--text-secondary);
 }
 

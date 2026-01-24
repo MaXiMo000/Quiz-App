@@ -5,6 +5,7 @@ import "./AdminDashboard.css";
 import "../App.css";
 import Spinner from "../components/Spinner";
 import MigrationPanel from "../components/MigrationPanel";
+import Loading from "../components/Loading";
 
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
@@ -97,32 +98,7 @@ const AdminDashboard = () => {
         }
     }, [users]); // Re-run when users change
 
-    if (loading) return (
-        <motion.div
-            className="admin-dashboard"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-        >
-            <div className="loading-container">
-                <motion.div
-                    className="loading-spinner"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                >
-                    <div className="spinner-ring"></div>
-                </motion.div>
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="loading-text"
-                >
-                    Loading Dashboard...
-                </motion.p>
-            </div>
-        </motion.div>
-    );
+    if (loading) return <Loading fullScreen={true} />;
 
     if (error) return (
         <motion.div

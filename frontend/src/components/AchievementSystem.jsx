@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
+import Loading from './Loading';
 import './AchievementSystem.css';
 
 const AchievementSystem = ({ _userId }) => {
@@ -58,14 +59,7 @@ const AchievementSystem = ({ _userId }) => {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="achievement-system">
-        <div className="achievement-loading">
-          <div className="loading-spinner"></div>
-          <p>Loading achievements...</p>
-        </div>
-      </div>
-    );
+    return <Loading fullScreen={true} />;
   }
 
   // Error state with fallback

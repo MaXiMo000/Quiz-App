@@ -5,6 +5,7 @@ import "./Register.css"; // Import CSS for styling
 import "../App.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const Register = () => {
     const [name, setName] = useState("");
@@ -108,13 +109,7 @@ const Register = () => {
             </div>
 
             {/* Full Screen Loader */}
-            {loading && (
-                <div className="fullscreen-loader">
-                    <div className="loader-spinner"></div>
-                    <div className="loader-text">Creating your account...</div>
-                    <div className="loader-subtext">This will only take a moment</div>
-                </div>
-            )}
+            {loading && <Loading fullScreen={true} />}
 
             {/* Notification Modal */}
             <NotificationModal
