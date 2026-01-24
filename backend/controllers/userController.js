@@ -444,10 +444,22 @@ export const updateUserTheme = async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
 
+        // Validate theme name and check if unlocked
+        const validThemes = ["Default", "Light", "Dark", "Galaxy", "Forest", "Sunset", "Neon",
+            "material-light", "material-dark", "dracula", "nord", "solarized-light", "solarized-dark",
+            "monokai", "one-dark", "gruvbox-dark", "gruvbox-light", "oceanic", "synthwave",
+            "night-owl", "tokyo-night", "ayu-light", "catppuccin-mocha", "catppuccin-latte",
+            "rose-pine", "everforest", "kanagawa", "github-dark", "github-light"];
+
+        if (!validThemes.includes(theme)) {
+            logger.warn(`User ${id} attempted to set invalid theme: ${theme}`);
+            return res.status(400).json({ error: "Invalid theme name" });
+        }
+
         // Allow "Default" theme without validation, validate others
         if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
-            logger.warn(`User ${id} attempted to set theme to ${theme} which is not unlocked`);
-            return res.status(400).json({ error: "Theme not unlocked yet" });
+            logger.warn(`User ${id} attempted to set theme to ${theme} which is not unlocked. User level: ${user.level}, Unlocked themes: ${user.unlockedThemes.join(', ')}`);
+            return res.status(403).json({ error: "Theme not unlocked yet. Level up to unlock more themes!" });
         }
 
         user.selectedTheme = theme;
