@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from "../utils/axios";
 import "../App.css";
 import "./QuizQuestions.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import Loading from "../components/Loading";
 
 const PremiumQuizQuestions = () => {
     const { id } = useParams();  // Get quiz ID from URL
     const navigate = useNavigate();
     const [quiz, setQuiz] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
@@ -17,11 +20,14 @@ const PremiumQuizQuestions = () => {
     // Fetch the quiz data with questions
     const getQuizDetails = useCallback(async () => {
         try {
+            setLoading(true);
             const response = await axios.get(`/api/quizzes/${id}`);
             setQuiz(response.data);
         } catch (error) {
             console.error("Error fetching quiz details:", error);
             showError("Failed to fetch quiz details.");
+        } finally {
+            setLoading(false);
         }
     }, [id, showError]);
 
@@ -43,52 +49,117 @@ const PremiumQuizQuestions = () => {
         }
     };
 
+    if (loading) return <Loading fullScreen={true} />;
+
     return (
-        <div className="quiz-questions-container">
-            <button className="back-btn" onClick={() => navigate("/premium/quizzes")}>🔙 Back to Quizzes</button>
+        <motion.div
+            className="quiz-questions-container premium-questions-page"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+            <motion.button
+                className="back-btn premium-back-btn"
+                onClick={() => navigate("/premium/quizzes")}
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                whileHover={{ scale: 1.05, x: -5 }}
+                whileTap={{ scale: 0.95 }}
+            >
+                🔙 Back to Premium Quizzes
+            </motion.button>
 
             {quiz ? (
-                <div className="quiz-details">
-                    <h2>📖 {quiz.title} - Questions</h2>
-                    <p><strong>Category:</strong> {quiz.category}</p>
-                    <p><strong>Duration:</strong> {quiz.duration} minutes</p>
-                    <p><strong>Total Marks:</strong> {quiz.totalMarks}</p>
-                    <p><strong>Passing Marks:</strong> {quiz.passingMarks}</p>
+                <motion.div
+                    className="quiz-details"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                >
+                    <motion.h2
+                        className="premium-title"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4, duration: 0.5 }}
+                    >
+                        💎 {quiz.title} - Premium Questions
+                    </motion.h2>
 
-                    <div className="question-list">
+                    <motion.div
+                        className="quiz-info premium-info"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 0.6 }}
+                    >
+                        <p><strong>Category:</strong> {quiz.category}</p>
+                        <p><strong>Duration:</strong> {quiz.duration} minutes</p>
+                        <p><strong>Total Marks:</strong> {quiz.totalMarks}</p>
+                        <p><strong>Passing Marks:</strong> {quiz.passingMarks}</p>
+                    </motion.div>
+
+                    <motion.div
+                        className="question-list"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6, duration: 0.6 }}
+                    >
                         {quiz.questions.length > 0 ? (
                             quiz.questions.map((q, index) => {
                                 // Check if this is an admin quiz (createdBy._id is null)
                                 const isAdminQuiz = !quiz.createdBy || !quiz.createdBy._id;
                                 
                                 return (
-                                    <div key={index} className="question-box">
+                                    <motion.div
+                                        key={index}
+                                        className="question-box premium-question-box"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.7 + (index * 0.1), duration: 0.5 }}
+                                        whileHover={{ scale: 1.02, y: -5 }}
+                                    >
                                         <h3>{index + 1}. {q.question}</h3>
                                         <ul>
                                             {q.options.map((option, i) => (
-                                                <li key={i}><strong>{String.fromCharCode(65 + i)}.</strong> {option}</li>
+                                                <motion.li
+                                                    key={i}
+                                                    initial={{ opacity: 0, x: -10 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    transition={{ delay: 0.8 + (index * 0.1) + (i * 0.05), duration: 0.4 }}
+                                                >
+                                                    <strong>{String.fromCharCode(65 + i)}.</strong> {option}
+                                                </motion.li>
                                             ))}
                                         </ul>
-                                        <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
-                                        <button 
-                                            className="delete-btn" 
+                                        <p className="correct-answer premium-answer">
+                                            <strong>✨ Correct Answer:</strong> {q.correctAnswer}
+                                        </p>
+                                        <motion.button
+                                            className="delete-btn premium-delete-btn"
                                             onClick={() => deleteQuestion(index)}
                                             disabled={isAdminQuiz}
                                             title={isAdminQuiz ? "Cannot delete questions from admin quizzes" : "Delete question"}
+                                            whileHover={!isAdminQuiz ? { scale: 1.05, y: -2 } : {}}
+                                            whileTap={!isAdminQuiz ? { scale: 0.95 } : {}}
                                         >
                                             🗑️ Delete Question
-                                        </button>
-                                    </div>
+                                        </motion.button>
+                                    </motion.div>
                                 );
                             })
                         ) : (
-                            <p>No questions added yet.</p>
+                            <motion.div
+                                className="no-questions"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.7, duration: 0.5 }}
+                            >
+                                <p>No questions added yet.</p>
+                            </motion.div>
                         )}
-                    </div>
-                </div>
-            ) : (
-                <p>Loading quiz details...</p>
-            )}
+                    </motion.div>
+                </motion.div>
+            ) : null}
 
             {/* Notification Modal */}
             <NotificationModal
@@ -98,7 +169,7 @@ const PremiumQuizQuestions = () => {
                 onClose={hideNotification}
                 autoClose={notification.autoClose}
             />
-        </div>
+        </motion.div>
     );
 };
 
