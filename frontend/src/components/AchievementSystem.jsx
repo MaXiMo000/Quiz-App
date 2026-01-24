@@ -38,8 +38,7 @@ const AchievementSystem = ({ _userId }) => {
         throw new Error('Invalid response from server');
       }
     } catch (error) {
-      console.error('Error fetching achievements:', error);
-      setError(error.message);
+      setError(error.message || 'Failed to load achievements');
 
       // Set empty state on error instead of mock data
       setAchievements({
@@ -66,9 +65,14 @@ const AchievementSystem = ({ _userId }) => {
   if (error) {
     return (
       <div className="achievement-system">
+        <div className="achievement-bg-orbs">
+          <div className="orb orb-1"></div>
+          <div className="orb orb-2"></div>
+          <div className="orb orb-3"></div>
+        </div>
         <div className="achievement-error">
           <p>⚠️ {error}</p>
-          <p>Showing cached achievements...</p>
+          <p>Please try refreshing the page</p>
         </div>
       </div>
     );
@@ -79,9 +83,13 @@ const AchievementSystem = ({ _userId }) => {
       'Streaks': '🔥',
       'Learning Progress': '📚',
       'Performance': '🎯',
+      'Perfect Scores': '💯',
       'Subject Mastery': '🧠',
       'Levels': '⭐',
       'Time-Based': '⏰',
+      'Consistency': '📊',
+      'Speed': '⚡',
+      'Diversity': '🎭',
       'Special': '🏆'
     };
     return icons[categoryName] || '🏅';
@@ -122,23 +130,49 @@ const AchievementSystem = ({ _userId }) => {
       : 0;
   };
 
-  // Group achievements by category (enhanced with new categories)
+  // Separate regular and near-impossible achievements
+  const regularAchievements = filteredAchievements.filter(a => !a.nearImpossible);
+  const nearImpossibleAchievements = filteredAchievements.filter(a => a.nearImpossible);
+
+  // Group regular achievements by category
   const achievementsByCategory = {
-    'Streaks': filteredAchievements.filter(a => a.id.includes('streak')),
-    'Learning Progress': filteredAchievements.filter(a => a.id.includes('quiz')),
-    'Performance': filteredAchievements.filter(a => a.id.includes('score')),
-    'Subject Mastery': filteredAchievements.filter(a => a.id.startsWith('category_')),
-    'Levels': filteredAchievements.filter(a => a.id.includes('level')),
-    'Time-Based': filteredAchievements.filter(a => a.id.includes('early_bird') || a.id.includes('night_owl')),
-    'Special': filteredAchievements.filter(a =>
-      !['streak', 'quiz', 'score', 'level', 'category_', 'early_bird', 'night_owl'].some(type =>
+    'Streaks': regularAchievements.filter(a => a.id.includes('streak') && !a.nearImpossible),
+    'Learning Progress': regularAchievements.filter(a => a.id.includes('quiz') && !a.nearImpossible),
+    'Performance': regularAchievements.filter(a => a.id.includes('score') && !a.nearImpossible),
+    'Perfect Scores': regularAchievements.filter(a => a.id.startsWith('perfect_') && !a.nearImpossible),
+    'Subject Mastery': regularAchievements.filter(a => (a.id.startsWith('category_') || a.id.startsWith('master_')) && !a.nearImpossible),
+    'Levels': regularAchievements.filter(a => a.id.includes('level') && !a.nearImpossible),
+    'Time-Based': regularAchievements.filter(a =>
+      (a.id.includes('early_bird') ||
+      a.id.includes('night_owl') ||
+      a.id.includes('weekend') ||
+      a.id.includes('daily_grind') ||
+      a.id.includes('marathon') ||
+      a.id.includes('complete')) && !a.nearImpossible
+    ),
+    'Consistency': regularAchievements.filter(a =>
+      (a.id.includes('consistent') ||
+      a.id.includes('improvement') ||
+      a.id.includes('no_fail')) && !a.nearImpossible
+    ),
+    'Speed': regularAchievements.filter(a => (a.id.includes('speed') || a.id.includes('lightning')) && !a.nearImpossible),
+    'Diversity': regularAchievements.filter(a => (a.id.includes('jack') || a.id.includes('master_of_all')) && !a.nearImpossible),
+    'Special': regularAchievements.filter(a =>
+      !['streak', 'quiz', 'score', 'perfect_', 'level', 'category_', 'master_', 'early_bird', 'night_owl', 'weekend', 'daily_grind', 'marathon', 'complete', 'consistent', 'improvement', 'no_fail', 'speed', 'lightning', 'jack', 'master_of_all'].some(type =>
         a.id.includes(type) || a.id.startsWith(type)
-      )
+      ) && !a.nearImpossible
     )
   };
 
   return (
     <div className="achievement-system">
+      {/* Floating Background Elements */}
+      <div className="achievement-bg-orbs">
+        <div className="orb orb-1"></div>
+        <div className="orb orb-2"></div>
+        <div className="orb orb-3"></div>
+      </div>
+
       <motion.div
         className="achievement-header"
         initial={{ opacity: 0, y: -20 }}
@@ -146,29 +180,44 @@ const AchievementSystem = ({ _userId }) => {
         transition={{ duration: 0.6 }}
       >
         <div className="header-content">
-          <h1>🏆 Achievement Center</h1>
+          <div className="header-title-section">
+            <h1 className="achievement-main-title">
+              <span className="title-icon">🏆</span>
+              <span className="title-text">Achievement Center</span>
+            </h1>
+            <p className="header-subtitle">Unlock your potential, one achievement at a time</p>
+          </div>
+
           <div className="progress-overview">
             <div className="completion-circle">
-              <svg width="60" height="60" className="progress-ring">
+              <svg width="80" height="80" className="progress-ring">
                 <circle
-                  cx="30"
-                  cy="30"
-                  r="25"
+                  cx="40"
+                  cy="40"
+                  r="35"
                   stroke="rgba(255,255,255,0.1)"
-                  strokeWidth="4"
+                  strokeWidth="5"
                   fill="none"
                 />
                 <circle
-                  cx="30"
-                  cy="30"
-                  r="25"
-                  stroke="var(--accent)"
-                  strokeWidth="4"
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  stroke="url(#progressGradient)"
+                  strokeWidth="5"
                   fill="none"
-                  strokeDasharray={`${2 * Math.PI * 25}`}
-                  strokeDashoffset={`${2 * Math.PI * 25 * (1 - getCompletionPercentage() / 100)}`}
-                  transform="rotate(-90 30 30)"
+                  strokeDasharray={`${2 * Math.PI * 35}`}
+                  strokeDashoffset={`${2 * Math.PI * 35 * (1 - getCompletionPercentage() / 100)}`}
+                  transform="rotate(-90 40 40)"
+                  className="progress-circle"
                 />
+                <defs>
+                  <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#6366f1" />
+                    <stop offset="50%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#ec4899" />
+                  </linearGradient>
+                </defs>
               </svg>
               <span className="percentage-text">{getCompletionPercentage()}%</span>
             </div>
@@ -181,18 +230,23 @@ const AchievementSystem = ({ _userId }) => {
 
         <div className="filter-controls">
           {['all', 'unlocked', 'locked'].map(filterType => (
-            <button
+            <motion.button
               key={filterType}
               className={`filter-btn ${filter === filterType ? 'active' : ''}`}
               onClick={() => setFilter(filterType)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
-            </button>
+              <span className="filter-btn-text">
+                {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
+              </span>
+            </motion.button>
           ))}
         </div>
       </motion.div>
 
       <div className="achievements-grid">
+        {/* Regular Achievements */}
         {Object.entries(achievementsByCategory).map(([category, categoryAchievements]) => {
           if (categoryAchievements.length === 0) return null;
 
@@ -208,8 +262,10 @@ const AchievementSystem = ({ _userId }) => {
                 {getCategoryIcon(category)} {category} ({categoryAchievements.filter(a => a.unlocked).length}/{categoryAchievements.length})
               </h3>
               <div className="category-achievements">
-                {categoryAchievements.map((achievement) => {
+                {categoryAchievements.map((achievement, index) => {
                   const rarityStyle = getRarityStyle(achievement.rarity);
+                  const iconEmoji = achievement.title.split(' ')[0];
+                  const titleText = achievement.title.replace(/^[^\w\s]+/, '').trim();
 
                   return (
                     <motion.div
@@ -219,33 +275,48 @@ const AchievementSystem = ({ _userId }) => {
                         border: rarityStyle.border,
                         boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
                       }}
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      transition={{ duration: 0.2 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02, y: -4 }}
                     >
-                      <div className="achievement-icon">
-                        {achievement.title.split(' ')[0]}
+                      <div className="achievement-card-bg"></div>
+
+                      <div className="achievement-icon-wrapper">
+                        <div className="achievement-icon">
+                          {iconEmoji}
+                        </div>
+                        {achievement.unlocked && (
+                          <div className="unlock-badge">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                              <path d="M16.7071 5.29289C17.0976 5.68342 17.0976 6.31658 16.7071 6.70711L8.70711 14.7071C8.31658 15.0976 7.68342 15.0976 7.29289 14.7071L3.29289 10.7071C2.90237 10.3166 2.90237 9.68342 3.29289 9.29289C3.68342 8.90237 4.31658 8.90237 4.70711 9.29289L8 12.5858L15.2929 5.29289C15.6834 4.90237 16.3166 4.90237 16.7071 5.29289Z" fill="currentColor"/>
+                            </svg>
+                          </div>
+                        )}
                       </div>
+
                       <div className="achievement-content">
                         <h4 className="achievement-title">
-                          {achievement.title.substring(2)} {/* Remove emoji from title since it's in icon */}
+                          {titleText}
                         </h4>
                         <p className="achievement-description">{achievement.description}</p>
                         <div className="achievement-meta">
-                          <span className={`rarity ${achievement.rarity}`}>{achievement.rarity}</span>
+                          <span className={`rarity-badge rarity-${achievement.rarity}`}>
+                            {achievement.rarity}
+                          </span>
                           {!achievement.unlocked && achievement.progress !== undefined && (
-                            <div className="progress-bar">
-                              <div
-                                className="progress-fill"
-                                style={{ width: `${achievement.progress}%` }}
-                              ></div>
+                            <div className="progress-container">
+                              <div className="progress-bar">
+                                <div
+                                  className="progress-fill"
+                                  style={{ width: `${achievement.progress}%` }}
+                                ></div>
+                              </div>
                               <span className="progress-text">{Math.round(achievement.progress)}%</span>
                             </div>
                           )}
                         </div>
                       </div>
-                      {achievement.unlocked && (
-                        <div className="unlock-badge">✓</div>
-                      )}
                     </motion.div>
                   );
                 })}
@@ -253,6 +324,83 @@ const AchievementSystem = ({ _userId }) => {
             </motion.div>
           );
         })}
+
+        {/* Near Impossible Achievements Section */}
+        {nearImpossibleAchievements.length > 0 && (
+          <motion.div
+            className="achievement-category near-impossible-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h3 className="category-title near-impossible-title">
+              <span className="title-icon">⚡</span> Near Impossible ({nearImpossibleAchievements.filter(a => a.unlocked).length}/{nearImpossibleAchievements.length})
+            </h3>
+            <p className="near-impossible-description">
+              These achievements are designed to be extremely challenging. Only the most dedicated players will unlock them!
+            </p>
+            <div className="category-achievements">
+              {nearImpossibleAchievements.map((achievement, index) => {
+                const rarityStyle = getRarityStyle(achievement.rarity);
+                const iconEmoji = achievement.title.split(' ')[0];
+                const titleText = achievement.title.replace(/^[^\w\s]+/, '').trim();
+
+                return (
+                  <motion.div
+                    key={achievement.id}
+                    className={`achievement-card near-impossible-card ${achievement.unlocked ? 'unlocked' : 'locked'}`}
+                    style={{
+                      border: rarityStyle.border,
+                      boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
+                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    whileHover={{ scale: 1.02, y: -4 }}
+                  >
+                    <div className="achievement-card-bg"></div>
+
+                    <div className="achievement-icon-wrapper">
+                      <div className="achievement-icon">
+                        {iconEmoji}
+                      </div>
+                      {achievement.unlocked && (
+                        <div className="unlock-badge">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M16.7071 5.29289C17.0976 5.68342 17.0976 6.31658 16.7071 6.70711L8.70711 14.7071C8.31658 15.0976 7.68342 15.0976 7.29289 14.7071L3.29289 10.7071C2.90237 10.3166 2.90237 9.68342 3.29289 9.29289C3.68342 8.90237 4.31658 8.90237 4.70711 9.29289L8 12.5858L15.2929 5.29289C15.6834 4.90237 16.3166 4.90237 16.7071 5.29289Z" fill="currentColor"/>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="achievement-content">
+                      <h4 className="achievement-title">
+                        {titleText}
+                      </h4>
+                      <p className="achievement-description">{achievement.description}</p>
+                      <div className="achievement-meta">
+                        <span className={`rarity-badge rarity-${achievement.rarity}`}>
+                          {achievement.rarity}
+                        </span>
+                        {!achievement.unlocked && achievement.progress !== undefined && (
+                          <div className="progress-container">
+                            <div className="progress-bar">
+                              <div
+                                className="progress-fill"
+                                style={{ width: `${achievement.progress}%` }}
+                              ></div>
+                            </div>
+                            <span className="progress-text">{Math.round(achievement.progress)}%</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
       </div>
 
       {/* Achievement Notification */}
