@@ -2,6 +2,7 @@ import { LearningPath, UserPathProgress, Competency, UserCompetency } from "../m
 import User from "../models/User.js";
 import Report from "../models/Report.js";
 import { seedLearningPaths } from "../utils/seedLearningPaths.js";
+import logger from "../utils/logger.js";
 
 // ===================== LEARNING PATHS =====================
 
@@ -41,8 +42,8 @@ export const getLearningPaths = async (req, res) => {
         res.json({ paths: pathsWithProgress });
 
     } catch (error) {
-        console.error("Error getting learning paths:", error);
-        res.status(500).json({ message: "Server error" });
+        logger.error({ message: "Error getting learning paths", error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -51,6 +52,12 @@ export const getLearningPath = async (req, res) => {
     try {
         const userId = req.user.id;
         const { pathId } = req.params;
+
+        // SECURITY: Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(pathId)) {
+            logger.warn(`Invalid path ID format: ${pathId}`);
+            return res.status(400).json({ message: "Invalid path ID format" });
+        }
 
         const path = await LearningPath.findById(pathId)
             .populate("createdBy._id", "name");
@@ -80,8 +87,8 @@ export const getLearningPath = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error getting learning path:", error);
-        res.status(500).json({ message: "Server error" });
+        logger.error({ message: "Error getting learning path", pathId: req.params.pathId, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -130,8 +137,8 @@ export const startLearningPath = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error starting learning path:", error);
-        res.status(500).json({ message: "Server error" });
+        logger.error({ message: "Error starting learning path", pathId: req.params.pathId, userId: req.user.id, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -206,8 +213,8 @@ export const updateNodeProgress = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error updating node progress:", error);
-        res.status(500).json({ message: "Server error" });
+        logger.error({ message: "Error updating node progress", pathId: req.params.pathId, nodeId: req.params.nodeId, userId: req.user.id, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -261,8 +268,8 @@ export const getLearningAnalytics = async (req, res) => {
         res.json({ analytics });
 
     } catch (error) {
-        console.error("Error getting learning analytics:", error);
-        res.status(500).json({ message: "Server error" });
+        logger.error({ message: "Error getting learning analytics", userId: req.user.id, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -280,8 +287,8 @@ export const getUserCompetencies = async (req, res) => {
         res.json({ competencies: userCompetencies });
 
     } catch (error) {
-        console.error("Error getting user competencies:", error);
-        res.status(500).json({ message: "Server error" });
+        logger.error({ message: "Error getting user competencies", userId: req.user.id, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -341,8 +348,8 @@ export const updateCompetencyFromQuiz = async (req, res) => {
         res.json({ message: "Competencies updated successfully" });
 
     } catch (error) {
-        console.error("Error updating competency:", error);
-        res.status(500).json({ message: "Server error" });
+        logger.error({ message: "Error updating competency", userId: req.user.id, error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -669,7 +676,7 @@ async function ensureBasicData() {
             await seedLearningPaths();
         }
     } catch (error) {
-        console.error("❌ Error in auto-seeding:", error);
+        logger.error({ message: "Error in auto-seeding learning paths", error: error.message, stack: error.stack });
     }
 }
 
@@ -721,7 +728,7 @@ async function enhancePathsWithUserData(paths, userProgress, userId) {
         });
 
     } catch (error) {
-        console.error("Error enhancing paths with user data:", error);
+        logger.error({ message: "Error enhancing paths with user data", userId, error: error.message, stack: error.stack });
         return paths.map(path => ({
             ...path.toObject(),
             userProgress: null,

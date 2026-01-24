@@ -26,7 +26,8 @@ export const getSmartRecommendations = async (req, res) => {
         // Get user's recent performance
         const recentReports = await Report.find({ username: user.name })
             .sort({ createdAt: -1 })
-            .limit(10);
+            .limit(10)
+            .lean();
 
         const recommendations = [];
 
@@ -67,7 +68,7 @@ export const getSmartRecommendations = async (req, res) => {
 
     } catch (error) {
         logger.error({ message: `Error getting smart recommendations for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Server error", message: error.message });
     }
 };
 
@@ -376,7 +377,7 @@ export const getAdaptiveDifficulty = async (req, res) => {
 
     } catch (error) {
         logger.error({ message: `Error calculating adaptive difficulty for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Server error", message: error.message });
     }
 };
 
@@ -393,7 +394,9 @@ export const getLearningAnalytics = async (req, res) => {
 
         // Get comprehensive performance data
         const allReports = await Report.find({ username: user.name })
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean()
+            .lean();
 
         // Get advanced analytics data
         const learningAnalytics = await LearningAnalytics.find({ user: userId });
@@ -419,7 +422,7 @@ export const getLearningAnalytics = async (req, res) => {
 
     } catch (error) {
         logger.error({ message: `Error getting learning analytics for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Server error", message: error.message });
     }
 };
 

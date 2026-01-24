@@ -201,8 +201,15 @@ export async function getQuizById(req, res) {
     logger.info(`Fetching quiz by ID: ${req.params.id} for user ${req.user?.id} with role ${req.user?.role}`);
     try {
         const { role, id: userId } = req.user;
+        const quizId = req.params.id;
 
-        const quiz = await Quiz.findById(req.params.id);
+        // SECURITY: Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(quizId)) {
+            logger.warn(`Invalid quiz ID format: ${quizId}`);
+            return res.status(400).json({ message: "Invalid quiz ID format" });
+        }
+
+        const quiz = await Quiz.findById(quizId);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id}`);
             return res.status(404).json({ message: "Quiz not found" });

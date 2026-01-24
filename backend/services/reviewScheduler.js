@@ -1,5 +1,6 @@
 import ReviewSchedule from "../models/ReviewSchedule.js";
 import { calculateNextReview } from "../algorithms/spacedRepetition.js";
+import logger from "../utils/logger.js";
 
 /**
  * Get the review schedule for a user.
@@ -43,7 +44,7 @@ export const getReviewScheduleForUser = async (userId) => {
 
     return reviews;
   } catch (error) {
-    console.error("Error in getReviewScheduleForUser:", error);
+    logger.error({ message: "Error in getReviewScheduleForUser", userId, error: error.message, stack: error.stack });
     throw error;
   }
 };

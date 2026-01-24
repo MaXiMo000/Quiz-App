@@ -274,13 +274,16 @@ export const searchUsers = async (req, res) => {
         const receivedRequestIds = (currentUser.social?.friendRequests?.received || [])
             .map(req => req.requester.toString());
 
+        // SECURITY: Escape special regex characters to prevent ReDoS attacks
+        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
         // Search for users
         const users = await UserQuiz.find({
             $and: [
                 {
                     $or: [
-                        { name: { $regex: query, $options: "i" } },
-                        { email: { $regex: query, $options: "i" } }
+                        { name: { $regex: escapedQuery, $options: "i" } },
+                        { email: { $regex: escapedQuery, $options: "i" } }
                     ]
                 },
                 { _id: { $ne: userId } }, // Exclude current user

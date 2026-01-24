@@ -2,6 +2,7 @@ import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
 import logger from "../utils/logger.js";
+import mongoose from "mongoose";
 
 // Achievement system data - Expanded with many more achievements
 const ACHIEVEMENTS = {
@@ -120,7 +121,21 @@ export const getDashboardData = async (req, res) => {
     logger.info(`Fetching dashboard data for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
+        const requestingUserId = req.user.id;
+        const requestingUserRole = req.user.role;
         const { timeRange = "week" } = req.query; // week, month, year
+
+        // SECURITY: Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            logger.warn(`Invalid user ID format: ${userId}`);
+            return res.status(400).json({ message: "Invalid user ID format" });
+        }
+
+        // SECURITY: Authorization check - users can only access their own dashboard unless admin
+        if (requestingUserRole !== "admin" && requestingUserId !== userId) {
+            logger.warn(`User ${requestingUserId} attempted to access dashboard for user ${userId}`);
+            return res.status(403).json({ message: "Access denied. You can only access your own dashboard." });
+        }
 
         // Get user data
         const user = await UserQuiz.findById(userId);
@@ -130,7 +145,7 @@ export const getDashboardData = async (req, res) => {
         }
 
         // Get all user reports using the user's name (since reports use username)
-        const reports = await Report.find({ username: user.name });
+        const reports = await Report.find({ username: user.name }).lean();
 
         // Calculate basic stats
         let quizFilter;
@@ -202,7 +217,8 @@ const calculateStreak = async (username) => {
     try {
         const reports = await Report.find({ username })
             .sort({ createdAt: -1 })
-            .limit(30); // Check last 30 days
+            .limit(30)
+            .lean(); // Check last 30 days
 
         if (reports.length === 0) return 0;
 
@@ -271,14 +287,14 @@ const getWeeklyProgress = async (username, timeRange) => {
 // Get category performance
 const getCategoryPerformance = async (username) => {
     try {
-        const reports = await Report.find({ username });
+        const reports = await Report.find({ username }).lean();
         const categoryStats = {};
 
         // Get all unique quiz names from reports
         const quizNames = [...new Set(reports.map(report => report.quizName))];
 
         // Fetch quiz categories from database
-        const quizzes = await Quiz.find({ title: { $in: quizNames } }).select("title category");
+        const quizzes = await Quiz.find({ title: { $in: quizNames } }).select("title category").lean();
         const quizCategoryMap = {};
         quizzes.forEach(quiz => {
             quizCategoryMap[quiz.title] = quiz.category;
@@ -447,7 +463,7 @@ const getStudyTimeData = async (username, timeRange) => {
 // Get difficulty statistics
 const getDifficultyStats = async (username) => {
     try {
-        const reports = await Report.find({ username });
+        const reports = await Report.find({ username }).lean();
         const difficultyStats = { Easy: 0, Medium: 0, Hard: 0 };
 
         reports.forEach(report => {
@@ -506,11 +522,26 @@ export const getUserLeaderboardPosition = async (req, res) => {
     logger.info(`Fetching leaderboard position for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
+        const requestingUserId = req.user.id;
+        const requestingUserRole = req.user.role;
+
+        // SECURITY: Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            logger.warn(`Invalid user ID format: ${userId}`);
+            return res.status(400).json({ message: "Invalid user ID format" });
+        }
+
+        // SECURITY: Authorization check - users can only access their own position unless admin
+        if (requestingUserRole !== "admin" && requestingUserId !== userId) {
+            logger.warn(`User ${requestingUserId} attempted to access leaderboard position for user ${userId}`);
+            return res.status(403).json({ message: "Access denied. You can only access your own leaderboard position." });
+        }
 
         // Get all users sorted by XP
         const users = await UserQuiz.find({})
             .sort({ xp: -1 })
-            .select("_id name xp");
+            .select("_id name xp")
+            .lean();
 
         const position = users.findIndex(user => user._id.toString() === userId) + 1;
         const totalUsers = users.length;
@@ -1467,13 +1498,28 @@ export const getUserAchievementsEndpoint = async (req, res) => {
     logger.info(`Fetching achievements for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
+        const requestingUserId = req.user.id;
+        const requestingUserRole = req.user.role;
+
+        // SECURITY: Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            logger.warn(`Invalid user ID format: ${userId}`);
+            return res.status(400).json({ message: "Invalid user ID format" });
+        }
+
+        // SECURITY: Authorization check - users can only access their own achievements unless admin
+        if (requestingUserRole !== "admin" && requestingUserId !== userId) {
+            logger.warn(`User ${requestingUserId} attempted to access achievements for user ${userId}`);
+            return res.status(403).json({ message: "Access denied. You can only access your own achievements." });
+        }
+
         const user = await UserQuiz.findById(userId);
         if (!user) {
             logger.warn(`User not found with ID: ${userId} when fetching achievements`);
             return res.status(404).json({ message: "User not found" });
         }
 
-        const reports = await Report.find({ username: user.name });
+        const reports = await Report.find({ username: user.name }).lean();
         const currentStreak = await calculateStreak(user.name);
 
         const achievements = await getUserAchievements(user.name, user, reports, currentStreak);

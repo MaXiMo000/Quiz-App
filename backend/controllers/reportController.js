@@ -82,8 +82,10 @@ export async function createReport(req, res) {
 
             if (!user) {
                 // Try case-insensitive search
+                // SECURITY: Escape special regex characters to prevent ReDoS attacks
+                const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 user = await UserQuiz.findOne({
-                    name: { $regex: new RegExp(`^${username}$`, "i") }
+                    name: { $regex: new RegExp(`^${escapedUsername}$`, "i") }
                 });
             }
 
