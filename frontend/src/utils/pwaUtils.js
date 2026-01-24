@@ -13,12 +13,23 @@ class PWAManager {
 
   setupEventListeners() {
     // Listen for beforeinstallprompt event
+    // NOTE: We preventDefault() to intercept the browser's default install prompt
+    // and show it manually via promptInstall() when user clicks install button.
+    // 
+    // IMPORTANT: The browser console message "Banner not shown: beforeinstallpromptevent.preventDefault() called"
+    // is EXPECTED and INFORMATIONAL - it's NOT an error. This is Chrome's way of informing developers
+    // that the default prompt was prevented. We handle the prompt manually through our custom install button
+    // in the EnhancedDashboard component, which calls promptInstall() when clicked.
+    //
+    // The install prompt is stored in this.installPrompt and will be shown when:
+    // 1. User clicks the "Install App" button in EnhancedDashboard
+    // 2. Or when promptInstall() is called programmatically
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       this.installPrompt = e;
       this.isInstallable = true;
 
-      // Dispatch custom event to notify components
+      // Dispatch custom event to notify components (like EnhancedDashboard)
       window.dispatchEvent(new CustomEvent('pwa-installable', {
         detail: { canInstall: true }
       }));

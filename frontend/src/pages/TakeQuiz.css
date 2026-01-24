@@ -463,6 +463,19 @@
     padding: 20px;
 }
 
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: var(--space-sm);
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: var(--space-xs);
+    }
+}
+
 .modal-content {
     background: var(--quiz-glass);
     backdrop-filter: blur(35px);
@@ -499,19 +512,19 @@
 .result-modal {
     width: 100%;
     max-width: 500px;
-    min-width: 320px;
+    min-width: 280px;
     padding: var(--space-2xl);
     text-align: center;
     margin: 0;
 }
 
 .result-header {
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
 }
 
 .result-icon {
     font-size: 3rem;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     /* animation: bounce 1s ease-in-out; */
 }
 
@@ -568,8 +581,8 @@
 .score-display {
     background: var(--glass-bg);
     border-radius: var(--radius-xl);
-    padding: var(--space-xl);
-    margin-bottom: var(--space-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(20px);
 }
@@ -613,7 +626,7 @@
 }
 
 .performance-badge {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
 }
 
 .badge {
@@ -649,8 +662,9 @@
 .result-message {
     font-size: 1.1rem;
     color: var(--text-secondary);
-    margin-bottom: var(--space-xl);
-    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+    line-height: 1.5;
+    padding: 0 var(--space-sm);
 }
 
 .generate-btn, .reports-btn {
@@ -735,8 +749,8 @@
 @media (max-width: 768px) {
     .quiz-container {
         max-width: 95%;
-        margin: var(--space-md) auto;
-        padding: var(--space-lg);
+        margin: var(--space-xs) auto; /* Reduced top margin for mobile */
+        padding: var(--space-md); /* Reduced padding for mobile */
         min-height: 60vh;
     }
 
@@ -784,32 +798,60 @@
 
     /* Result Modal Tablet Styles */
     .result-modal {
-        min-width: 320px;
-        max-width: 400px;
-        padding: var(--space-xl);
+        min-width: 300px;
+        max-width: 380px;
+        padding: var(--space-lg);
+    }
+
+    .result-header {
+        margin-bottom: var(--space-md);
+    }
+
+    .result-icon {
+        font-size: 2.5rem;
+        margin-bottom: var(--space-xs);
     }
 
     .result-header h2 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
+    }
+
+    .score-display {
+        padding: var(--space-md);
+        margin-bottom: var(--space-sm);
     }
 
     .score-number {
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .total-score {
-        font-size: 1.8rem;
+        font-size: 1.7rem;
+    }
+
+    .score-divider {
+        font-size: 1.7rem;
     }
 
     .percentage-score {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
+        padding: var(--space-xs) var(--space-md);
+    }
+
+    .performance-badge {
+        margin-bottom: var(--space-sm);
+    }
+
+    .result-message {
+        font-size: 1rem;
+        margin-bottom: var(--space-md);
     }
 }
 
 @media (max-width: 480px) {
     .quiz-container {
-        margin: var(--space-sm) auto;
-        padding: var(--space-md);
+        margin: var(--space-xs) auto; /* Reduced top margin for small mobile */
+        padding: var(--space-sm); /* Reduced padding for small mobile */
         border-radius: var(--radius-lg);
         min-height: 55vh;
     }
@@ -841,34 +883,98 @@
 
     /* Result Modal Mobile Styles */
     .result-modal {
-        min-width: 300px;
-        max-width: 350px;
-        padding: var(--space-lg);
+        min-width: 280px;
+        max-width: 90vw;
+        padding: var(--space-md);
+        max-height: 85vh;
     }
 
-    .result-header h2 {
-        font-size: 1.5rem;
+    .modal-overlay {
+        padding: var(--space-sm);
+    }
+
+    .result-header {
+        margin-bottom: var(--space-sm);
     }
 
     .result-icon {
-        font-size: 2.8rem;
+        font-size: 2.2rem;
+        margin-bottom: var(--space-xs);
     }
 
-    .score-number {
-        font-size: 2.1rem;
+    .result-header h2 {
+        font-size: 1.3rem;
     }
 
-    .total-score {
-        font-size: 1.7rem;
+    .auto-submit-notice {
+        padding: var(--space-sm);
+        margin: var(--space-sm) 0;
+        gap: var(--space-sm);
     }
 
-    .percentage-score {
+    .notice-icon {
         font-size: 1.2rem;
     }
 
+    .notice-content strong {
+        font-size: 0.9rem;
+    }
+
+    .notice-content p {
+        font-size: 0.85rem;
+    }
+
+    .score-display {
+        padding: var(--space-md);
+        margin-bottom: var(--space-sm);
+    }
+
+    .score-circle {
+        margin-bottom: var(--space-xs);
+        gap: 0.3rem;
+    }
+
+    .score-number {
+        font-size: 1.8rem;
+    }
+
+    .total-score {
+        font-size: 1.5rem;
+    }
+
+    .score-divider {
+        font-size: 1.5rem;
+    }
+
+    .percentage-score {
+        font-size: 1rem;
+        padding: var(--space-xs) var(--space-md);
+    }
+
+    .performance-badge {
+        margin-bottom: var(--space-sm);
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: var(--space-xs) var(--space-md);
+    }
+
+    .result-message {
+        font-size: 0.95rem;
+        margin-bottom: var(--space-md);
+        line-height: 1.4;
+    }
+
+    .modal-actions {
+        gap: var(--space-xs);
+        margin-top: var(--space-sm);
+    }
+
     .generate-btn, .reports-btn {
-        min-width: 140px;
-        padding: var(--space-sm) var(--space-lg);
+        min-width: 120px;
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.9rem;
     }
 }
 
@@ -905,51 +1011,102 @@
         gap: var(--space-xs);
     }
 
-    /* Result Modal Mobile Styles */
+    /* Result Modal Small Mobile Styles */
     .result-modal {
-        min-width: 280px;
-        max-width: 320px;
-        padding: var(--space-lg);
+        min-width: 260px;
+        max-width: 95vw;
+        padding: var(--space-sm);
+        max-height: 90vh;
     }
 
-    .result-header h2 {
-        font-size: 1.4rem;
+    .modal-overlay {
+        padding: var(--space-xs);
+    }
+
+    .result-header {
+        margin-bottom: var(--space-xs);
     }
 
     .result-icon {
-        font-size: 2.5rem;
-    }
-
-    .score-number {
         font-size: 2rem;
+        margin-bottom: 0.25rem;
     }
 
-    .total-score {
-        font-size: 1.6rem;
-    }
-
-    .score-divider {
-        font-size: 1.6rem;
-    }
-
-    .percentage-score {
+    .result-header h2 {
         font-size: 1.2rem;
-        padding: 0.4rem 0.8rem;
     }
 
-    .badge {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.8rem;
+    .auto-submit-notice {
+        padding: var(--space-xs);
+        margin: var(--space-xs) 0;
+        gap: var(--space-xs);
     }
 
-    .result-message {
+    .notice-icon {
         font-size: 1rem;
     }
 
-    .generate-btn, .reports-btn {
-        min-width: 120px;
-        padding: var(--space-sm) var(--space-md);
+    .notice-content strong {
+        font-size: 0.85rem;
+    }
+
+    .notice-content p {
+        font-size: 0.8rem;
+    }
+
+    .score-display {
+        padding: var(--space-sm);
+        margin-bottom: var(--space-xs);
+    }
+
+    .score-circle {
+        margin-bottom: 0.25rem;
+        gap: 0.25rem;
+    }
+
+    .score-number {
+        font-size: 1.6rem;
+    }
+
+    .total-score {
+        font-size: 1.3rem;
+    }
+
+    .score-divider {
+        font-size: 1.3rem;
+    }
+
+    .percentage-score {
         font-size: 0.9rem;
+        padding: 0.3rem var(--space-sm);
+    }
+
+    .performance-badge {
+        margin-bottom: var(--space-xs);
+    }
+
+    .badge {
+        font-size: 0.8rem;
+        padding: 0.3rem var(--space-sm);
+    }
+
+    .result-message {
+        font-size: 0.85rem;
+        margin-bottom: var(--space-sm);
+        line-height: 1.3;
+    }
+
+    .modal-actions {
+        gap: var(--space-xs);
+        margin-top: var(--space-xs);
+        flex-direction: column;
+    }
+
+    .generate-btn, .reports-btn {
+        width: 100%;
+        min-width: auto;
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.85rem;
     }
 
     .modal-actions {
@@ -1417,7 +1574,6 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
     /* Body class-based mobile fullscreen - Chrome mobile fixes */
     body.quiz-fullscreen .quiz-container {
         padding: 0.3rem !important;
-        padding-top: 1rem !important; /* Add top spacing for mobile */
         /* Mobile Chrome viewport fixes */
         width: 100% !important;
         max-width: 100% !important;
@@ -1429,6 +1585,11 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         /* Fix mobile Chrome rendering issues */
         -webkit-transform: translateZ(0) !important;
         transform: translateZ(0) !important;
+        /* Center content vertically on mobile */
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
     body.quiz-fullscreen .quiz-content {
@@ -1436,7 +1597,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         width: 100% !important;
         gap: 1rem !important;
         padding: 0.8rem !important;
-        margin-top: 0.5rem !important; /* Add top margin for mobile */
+        margin-top: 0 !important;
         /* Mobile Chrome content fixes */
         box-sizing: border-box !important;
         /* Prevent content overflow on mobile Chrome */
@@ -1445,6 +1606,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
 
     body.quiz-fullscreen .quiz-container h1 {
         font-size: 1.4rem !important;
+        margin-top: 0 !important;
         margin-bottom: 0.8rem !important;
     }
 
@@ -1546,7 +1708,6 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
     /* Body class-based small mobile fullscreen - Chrome mobile fixes */
     body.quiz-fullscreen .quiz-container {
         padding: 0.2rem !important;
-        padding-top: 0.8rem !important; /* Add top spacing for small mobile */
         /* Mobile Chrome viewport fixes for small screens */
         width: 100% !important;
         max-width: 100% !important;
@@ -1566,6 +1727,11 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         bottom: 0 !important;
         height: 100vh !important;
         height: 100dvh !important; /* Dynamic viewport height for mobile Chrome */
+        /* Center content vertically on small mobile */
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
     body.quiz-fullscreen .quiz-content {
@@ -1573,7 +1739,7 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         width: 100% !important;
         gap: 0.8rem !important;
         padding: 0.6rem !important;
-        margin-top: 0.3rem !important; /* Add top margin for small mobile */
+        margin-top: 0 !important;
         /* Mobile Chrome content fixes */
         box-sizing: border-box !important;
         /* Prevent content overflow on mobile Chrome */
@@ -1587,13 +1753,14 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
 
     body.quiz-fullscreen .quiz-container h1 {
         font-size: 1.2rem !important;
+        margin-top: 0 !important;
         margin-bottom: 0.6rem !important;
     }
 
     body.quiz-fullscreen .timer {
         font-size: 0.8rem !important;
         padding: 0.5rem 0.8rem !important;
-        margin-bottom: 0.8rem !important;
+        margin-bottom: 0.6rem !important; /* Reduced bottom margin */
         text-align: center !important;
         display: flex !important;
         align-items: center !important;
@@ -1705,7 +1872,11 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         bottom: 0 !important;
         /* Mobile Chrome padding fixes */
         padding: 0.3rem !important;
-        padding-top: 1rem !important; /* Add top spacing for mobile Chrome */
+        /* Center content vertically on mobile Chrome */
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
     body.quiz-fullscreen .quiz-content {
@@ -1715,10 +1886,12 @@ body.quiz-fullscreen .quiz-content .navigation-buttons {
         /* Mobile Chrome padding fixes */
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
+        padding-top: 0.8rem !important;
+        padding-bottom: 0.8rem !important;
         /* Mobile Chrome margin fixes */
         margin-left: 0 !important;
         margin-right: 0 !important;
-        margin-top: 0.5rem !important; /* Add top margin for mobile Chrome */
+        margin-top: 0 !important;
         /* Mobile Chrome box-sizing fixes */
         box-sizing: border-box !important;
         /* Mobile Chrome overflow fixes */
