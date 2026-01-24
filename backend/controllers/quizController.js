@@ -109,6 +109,7 @@ export const deleteQuiz = async (req, res) => {
     logger.info(`Attempting to delete quiz with title: ${req.query.title}`);
     try {
         const { title } = req.query; // ✅ Get title from request body
+        const { role, id: userId } = req.user;
 
         if (!title) {
             logger.warn("Quiz title is required for deletion");
@@ -121,6 +122,21 @@ export const deleteQuiz = async (req, res) => {
         if (!quizItem) {
             logger.warn(`Quiz not found for deletion with title: ${title}`);
             return res.status(404).json({ message: "Quiz not found" });
+        }
+
+        // Permission check
+        if (role !== 'admin') {
+            if (role === 'premium') {
+                // Check if the user is the creator
+                if (!quizItem.createdBy || !quizItem.createdBy._id || quizItem.createdBy._id.toString() !== userId) {
+                    logger.warn(`User ${userId} (premium) tried to delete quiz "${title}" which they do not own.`);
+                    return res.status(403).json({ message: "You can only delete your own quizzes." });
+                }
+            } else {
+                // Regular users cannot delete quizzes
+                logger.warn(`User ${userId} (${role}) tried to delete quiz "${title}".`);
+                return res.status(403).json({ message: "You do not have permission to delete quizzes." });
+            }
         }
 
         // Delete the quiz
@@ -137,10 +153,23 @@ export const deleteQuiz = async (req, res) => {
 export async function addQuestion(req, res) {
     logger.info(`Adding question to quiz ${req.params.id}`);
     try {
+        const { role, id: userId } = req.user;
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id} when adding question`);
             return res.status(404).json({ message: "Quiz not found" });
+        }
+
+        // Permission check
+        if (role !== 'admin') {
+            if (role === 'premium') {
+                if (!quiz.createdBy || !quiz.createdBy._id || quiz.createdBy._id.toString() !== userId) {
+                    logger.warn(`User ${userId} (premium) tried to add question to quiz "${quiz.title}" which they do not own.`);
+                    return res.status(403).json({ message: "You can only add questions to your own quizzes." });
+                }
+            } else {
+                return res.status(403).json({ message: "You do not have permission to add questions." });
+            }
         }
 
         const questionData = {
@@ -220,10 +249,23 @@ export async function getQuizById(req, res) {
 export async function deleteQuestion(req, res) {
     logger.info(`Deleting question at index ${req.params.questionIndex} from quiz ${req.params.id}`);
     try {
+        const { role, id: userId } = req.user;
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id} when deleting question`);
             return res.status(404).json({ message: "Quiz not found" });
+        }
+
+        // Permission check
+        if (role !== 'admin') {
+            if (role === 'premium') {
+                if (!quiz.createdBy || !quiz.createdBy._id || quiz.createdBy._id.toString() !== userId) {
+                    logger.warn(`User ${userId} (premium) tried to delete question from quiz "${quiz.title}" which they do not own.`);
+                    return res.status(403).json({ message: "You can only delete questions from your own quizzes." });
+                }
+            } else {
+                return res.status(403).json({ message: "You do not have permission to delete questions." });
+            }
         }
 
         const questionIndex = req.params.questionIndex;

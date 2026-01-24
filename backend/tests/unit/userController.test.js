@@ -1,10 +1,12 @@
 import { registerUser, loginUser } from "../../controllers/userController.js";
 import mongoose from "mongoose";
 import User from "../../models/User.js";
+import XPLog from "../../models/XPLog.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 jest.mock("../../models/User.js");
+jest.mock("../../models/XPLog.js");
 jest.mock("bcryptjs");
 jest.mock("jsonwebtoken");
 
@@ -74,8 +76,16 @@ describe("User Controller", () => {
         email: "test@example.com",
         password: "hashedPassword",
         unlockedThemes: [],
+        xp: 100,
+        level: 1,
+        loginStreak: 1,
+        quizStreak: 0,
+        lastLogin: new Date(),
         save: jest.fn().mockResolvedValue({}),
       };
+
+      // Mock XPLog.save
+      XPLog.prototype.save = jest.fn().mockResolvedValue({});
 
       req.body = {
         email: "test@example.com",
