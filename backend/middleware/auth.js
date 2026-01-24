@@ -20,11 +20,23 @@ export const verifyToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         // SECURITY: Only log user ID, not email (PII)
-        logger.info("✅ Token decoded successfully for user:", decoded.id);
+        // Only log successful verification in debug mode to reduce noise
+        if (process.env.LOG_LEVEL === "debug") {
+            logger.debug({ message: "Token decoded successfully", userId: decoded.id });
+        }
         req.user = decoded;
         next();
     } catch (err) {
-        logger.error("❌ JWT verification failed:", err.message);
+        // Only log JWT failures in debug mode or if it's not a common error (expired/invalid)
+        // This reduces log noise from normal invalid token attempts
+        if (process.env.LOG_LEVEL === "debug" ||
+            (err.name !== "TokenExpiredError" && err.name !== "JsonWebTokenError")) {
+            logger.debug({
+                message: "JWT verification failed",
+                error: err.message,
+                errorName: err.name
+            });
+        }
         return res.status(403).json({ message: "Invalid or expired token." });
     }
 };

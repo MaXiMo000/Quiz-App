@@ -379,27 +379,11 @@
   display: flex;
   align-items: center;
   gap: var(--space-lg);
-  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
 }
 
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0;
-  background: linear-gradient(90deg, #FFD700, #FFA500, #FF8C00);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-2xl), 0 0 30px rgba(255, 215, 0, 0.2);
-  animation: goldenPulse 2s ease-in-out infinite;
-}
+/* Hover effect removed as requested */
 
 .stat-icon {
   font-size: 2.5rem;
@@ -408,10 +392,20 @@
   justify-content: center;
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+  padding: 1.2rem 0.8rem;
+  /* Remove golden background - use filter glow instead */
+  background: none !important;
   border-radius: var(--radius-lg);
   border: none;
-  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+  position: relative;
+  z-index: 2;
+  /* Golden glow effect - narrower width, taller height */
+  filter: drop-shadow(0 6px 18px rgba(255, 215, 0, 0.5))
+          drop-shadow(0 2px 8px rgba(255, 193, 7, 0.4)) !important;
+  /* Ensure no background appears behind emoji */
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
 }
 
 .stat-content h3 {
@@ -779,6 +773,9 @@
     font-size: 0.9rem;
     margin: 0 auto var(--space-xs);
     flex-shrink: 0;
+    padding: 0.6rem 0.4rem;
+    filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.4))
+            drop-shadow(0 1px 4px rgba(255, 193, 7, 0.3)) !important;
   }
 
   .stat-content h3 {
@@ -1042,6 +1039,9 @@
     font-size: 0.5rem;
     border: none;
     margin-bottom: var(--space-xs);
+    padding: 0.5rem 0.3rem;
+    filter: drop-shadow(0 3px 10px rgba(255, 215, 0, 0.4))
+            drop-shadow(0 1px 3px rgba(255, 193, 7, 0.3)) !important;
   }
 
   .stat-content h3 {

@@ -1,5 +1,22 @@
-import { redisClient } from "../config/redis.js";
+import { redisClient, isRedisConnected } from "../config/redis.js";
 import logger from "../utils/logger.js";
+
+// Helper function to add timeout to Redis operations
+const withTimeout = async (promise, timeoutMs = 5000, operation = "operation") => {
+    try {
+        return await Promise.race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error(`${operation} timeout after ${timeoutMs}ms`)), timeoutMs)
+            )
+        ]);
+    } catch (error) {
+        if (error.message.includes("timeout")) {
+            logger.warn({ message: `Redis ${operation} timed out`, timeout: timeoutMs });
+        }
+        throw error;
+    }
+};
 
 /**
  * Get a value from cache
@@ -7,11 +24,23 @@ import logger from "../utils/logger.js";
  * @returns {Promise<any|null>} - Parsed JSON value or null if not found
  */
 const get = async (key) => {
+    if (!isRedisConnected()) {
+        // Only log in debug mode or development
+        if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+            logger.debug({ message: "Redis not connected, skipping cache get", key });
+        }
+        return null;
+    }
+
     try {
-        const data = await redisClient.get(key);
+        const data = await withTimeout(redisClient.get(key), 5000, "GET");
         return data ? JSON.parse(data) : null;
     } catch (error) {
-        logger.error({ message: "Error getting cache", key, error: error.message });
+        // Only log errors in production if critical (connection issues)
+        const isCritical = error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT";
+        if (isCritical || process.env.NODE_ENV !== "production") {
+            logger.error({ message: "Error getting cache", key, error: error.message, code: error.code });
+        }
         return null;
     }
 };
@@ -24,11 +53,28 @@ const get = async (key) => {
  * @returns {Promise<string>} - Redis SET result
  */
 const set = async (key, value, expiration = 3600) => {
+    if (!isRedisConnected()) {
+        // Only log in debug mode or development
+        if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+            logger.debug({ message: "Redis not connected, skipping cache set", key });
+        }
+        return "OK"; // Return success to not break application flow
+    }
+
     try {
-        return await redisClient.set(key, JSON.stringify(value), { EX: expiration });
+        return await withTimeout(
+            redisClient.set(key, JSON.stringify(value), { EX: expiration }),
+            5000,
+            "SET"
+        );
     } catch (error) {
-        logger.error({ message: "Error setting cache", key, error: error.message });
-        throw error;
+        // Only log errors in production if critical (connection issues)
+        const isCritical = error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT";
+        if (isCritical || process.env.NODE_ENV !== "production") {
+            logger.error({ message: "Error setting cache", key, error: error.message, code: error.code });
+        }
+        // Don't throw - allow app to continue without cache
+        return "OK";
     }
 };
 
@@ -38,11 +84,23 @@ const set = async (key, value, expiration = 3600) => {
  * @returns {Promise<number>} - Number of keys deleted
  */
 const del = async (key) => {
+    if (!isRedisConnected()) {
+        // Only log in debug mode or development
+        if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+            logger.debug({ message: "Redis not connected, skipping cache delete", key });
+        }
+        return 0;
+    }
+
     try {
-        return await redisClient.del(key);
+        return await withTimeout(redisClient.del(key), 5000, "DEL");
     } catch (error) {
-        logger.error({ message: "Error deleting cache key", key, error: error.message });
-        throw error;
+        // Only log errors in production if critical (connection issues)
+        const isCritical = error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT";
+        if (isCritical || process.env.NODE_ENV !== "production") {
+            logger.error({ message: "Error deleting cache key", key, error: error.message, code: error.code });
+        }
+        return 0; // Return 0 to not break application flow
     }
 };
 
@@ -60,11 +118,17 @@ const clearCache = async (key) => {
  * @returns {Promise<string>} - Redis FLUSHDB result
  */
 const flushAll = async () => {
+    if (!isRedisConnected()) {
+        logger.debug({ message: "Redis not connected, skipping cache flush" });
+        return "OK"; // Return success to not break application flow
+    }
+
     try {
-        return await redisClient.flushDb();
+        return await withTimeout(redisClient.flushDb(), 10000, "FLUSHDB");
     } catch (error) {
         logger.error({ message: "Error flushing cache", error: error.message });
-        throw error;
+        // Don't throw - allow app to continue
+        return "OK";
     }
 };
 
@@ -86,12 +150,24 @@ const delByPattern = async (pattern) => {
         const maxIterations = 1000; // Safety limit to prevent infinite loops
         let iterations = 0;
 
+        if (!isRedisConnected()) {
+            // Only log in debug mode or development
+            if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+                logger.debug({ message: "Redis not connected, skipping cache pattern delete", pattern });
+            }
+            return 0;
+        }
+
         do {
             // SCAN command - node-redis v5 returns { cursor, keys }
-            const scanResult = await redisClient.scan(cursor, {
-                MATCH: pattern,
-                COUNT: 100, // Scan 100 keys at a time
-            });
+            const scanResult = await withTimeout(
+                redisClient.scan(cursor, {
+                    MATCH: pattern,
+                    COUNT: 100, // Scan 100 keys at a time
+                }),
+                5000,
+                "SCAN"
+            );
 
             // Extract cursor and keys from result
             let nextCursor, keys;
@@ -115,12 +191,19 @@ const delByPattern = async (pattern) => {
 
             // Delete keys if any found
             if (keys && Array.isArray(keys) && keys.length > 0) {
-                // Delete all keys in batch
+                // Delete all keys in batch with timeout
                 // redisClient.del() accepts array of keys in redis v5
-                const deleted = await redisClient.del(keys);
+                const deleted = await withTimeout(
+                    redisClient.del(keys),
+                    5000,
+                    "DEL (batch)"
+                );
                 totalDeleted += deleted || 0;
 
-                logger.debug(`Deleted ${deleted} keys matching pattern "${pattern}" (iteration ${iterations + 1}, total: ${totalDeleted})`);
+                // Only log in debug mode or development
+                if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+                    logger.debug(`Deleted ${deleted} keys matching pattern "${pattern}" (iteration ${iterations + 1}, total: ${totalDeleted})`);
+                }
             }
 
             // Update cursor for next iteration
@@ -138,19 +221,44 @@ const delByPattern = async (pattern) => {
         } while (cursor !== 0 && cursor !== "0");
 
         if (totalDeleted > 0) {
-            logger.info(`Successfully deleted ${totalDeleted} cache keys matching pattern: ${pattern}`);
+            // Only log info in development, debug in production
+            if (process.env.NODE_ENV === "production") {
+                logger.debug(`Successfully deleted ${totalDeleted} cache keys matching pattern: ${pattern}`);
+            } else {
+                logger.info(`Successfully deleted ${totalDeleted} cache keys matching pattern: ${pattern}`);
+            }
         } else {
-            logger.debug(`No cache keys found matching pattern: ${pattern}`);
+            // Only log in debug mode
+            if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+                logger.debug(`No cache keys found matching pattern: ${pattern}`);
+            }
         }
 
         return totalDeleted;
     } catch (error) {
-        logger.error({
-            message: "Error deleting cache by pattern",
-            pattern,
-            error: error.message,
-            stack: error.stack,
-        });
+        // Only log detailed errors in development, or if it's a critical error
+        const isCriticalError = error.code === "ECONNREFUSED" ||
+                                error.code === "ETIMEDOUT" ||
+                                error.message.includes("timeout");
+
+        if (isCriticalError || process.env.NODE_ENV !== "production") {
+            logger.error({
+                message: "Error deleting cache by pattern",
+                pattern,
+                error: error.message,
+                code: error.code,
+                errno: error.errno,
+                syscall: error.syscall,
+                stack: process.env.NODE_ENV !== "production" ? error.stack : undefined,
+            });
+        } else {
+            // In production, only log warnings for non-critical cache errors
+            logger.debug({
+                message: "Cache deletion failed (non-critical)",
+                pattern,
+                error: error.message,
+            });
+        }
         // Don't throw - allow the request to continue even if cache clearing fails
         // This prevents cache clearing failures from breaking the application
         return 0;

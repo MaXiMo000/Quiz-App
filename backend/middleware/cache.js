@@ -119,7 +119,10 @@ const cache = async (req, res, next) => {
       const oldKey = req.originalUrl;
       const oldCachedData = await cacheService.get(oldKey);
       if (oldCachedData) {
-        logger.warn(`Found old cache entry without user ID: ${oldKey} - clearing it`);
+        // Only log warnings in development or debug mode
+        if (process.env.LOG_LEVEL === "debug" || process.env.NODE_ENV !== "production") {
+          logger.warn(`Found old cache entry without user ID: ${oldKey} - clearing it`);
+        }
         await cacheService.del(oldKey);
         // Also clear all old cache entries for this pattern
         await cacheService.delByPattern(`${req.originalUrl}*`);
@@ -178,7 +181,27 @@ export const clearCacheByPattern = (pattern) => {
                 await cacheService.delByPattern(`${pattern}*`);
             }
         } catch (error) {
-            logger.error({ message: "Error clearing cache", pattern, error: error.message, stack: error.stack });
+            // Only log detailed errors in development or for critical errors
+            const isCriticalError = error.code === "ECONNREFUSED" ||
+                                    error.code === "ETIMEDOUT" ||
+                                    error.message.includes("timeout");
+
+            if (isCriticalError || process.env.NODE_ENV !== "production") {
+                logger.error({
+                    message: "Error clearing cache",
+                    pattern,
+                    error: error.message,
+                    code: error.code,
+                    stack: process.env.NODE_ENV !== "production" ? error.stack : undefined
+                });
+            } else {
+                // In production, only log warnings for non-critical cache errors
+                logger.debug({
+                    message: "Cache clearing failed (non-critical)",
+                    pattern,
+                    error: error.message
+                });
+            }
             // Don't fail the request if cache clearing fails
         }
         next();
