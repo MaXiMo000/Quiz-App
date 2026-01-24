@@ -41,7 +41,7 @@
 .analytics-header {
     padding: 1.5rem;
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-    color: white;
+    color: var(--text-light);
     text-align: center;
 }
 
@@ -211,7 +211,7 @@
 }
 
 .trend-bar.no-data {
-    background: linear-gradient(to top, #e0e0e0, #f5f5f5);
+    background: linear-gradient(to top, var(--text-disabled), var(--card-bg-glass));
     opacity: 0.6;
 }
 
@@ -240,7 +240,7 @@
 .trend-bar:hover .trend-info {
     opacity: 1;
     background: var(--primary-color);
-    color: white;
+    color: var(--text-light);
 }
 
 .trend-score {
@@ -310,21 +310,21 @@
 }
 
 .confidence-badge.high {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background: var(--success-light);
+    color: var(--success);
+    border: 1px solid var(--success);
 }
 
 .confidence-badge.medium {
-    background: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeaa7;
+    background: var(--warning-light);
+    color: var(--warning);
+    border: 1px solid var(--warning);
 }
 
 .confidence-badge.insufficient_data {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid var(--danger);
 }
 
 .prediction-score {
@@ -353,18 +353,18 @@
 }
 
 .trend-badge.improving {
-    background: #d4edda;
-    color: #155724;
+    background: var(--success-light);
+    color: var(--success);
 }
 
 .trend-badge.declining {
-    background: #f8d7da;
-    color: #721c24;
+    background: var(--danger-light);
+    color: var(--danger);
 }
 
 .trend-badge.stable {
-    background: #e2e3e5;
-    color: #383d41;
+    background: var(--text-disabled);
+    color: var(--text-muted);
 }
 
 /* Recommendations Section */
@@ -503,33 +503,33 @@
 
 /* Dark theme adjustments */
 [data-theme="dark"] .confidence-badge.high {
-    background: #155724;
-    color: #d4edda;
+    background: var(--success);
+    color: var(--success-light);
 }
 
 [data-theme="dark"] .confidence-badge.medium {
-    background: #856404;
-    color: #fff3cd;
+    background: var(--warning);
+    color: var(--warning-light);
 }
 
 [data-theme="dark"] .confidence-badge.insufficient_data {
-    background: #721c24;
-    color: #f8d7da;
+    background: var(--danger);
+    color: var(--danger-light);
 }
 
 [data-theme="dark"] .trend-badge.improving {
-    background: #155724;
-    color: #d4edda;
+    background: var(--success);
+    color: var(--success-light);
 }
 
 [data-theme="dark"] .trend-badge.declining {
-    background: #721c24;
-    color: #f8d7da;
+    background: var(--danger);
+    color: var(--danger-light);
 }
 
 [data-theme="dark"] .trend-badge.stable {
-    background: #383d41;
-    color: #e2e3e5;
+    background: var(--text-disabled);
+    color: var(--text-muted);
 }
 
 /* Tablet Responsiveness */
@@ -641,9 +641,9 @@
 
     .tab-button.active {
         background: var(--primary-color);
-        color: white;
+        color: var(--text-light);
         border-color: var(--primary-color);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: var(--shadow-lg);
     }
 
     .tab-button.active::after {

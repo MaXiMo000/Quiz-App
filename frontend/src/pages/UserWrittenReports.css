@@ -12,8 +12,8 @@
     border: 1px solid var(--card-border);
     box-shadow:
         var(--shadow-2xl),
-        0 0 50px rgba(99, 102, 241, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 50px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
     min-height: 60vh;
     position: relative;
     overflow: hidden;
@@ -26,14 +26,14 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+    background: var(--gradient-primary);
     border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
 }
 
 .reports-container h1 {
     font-size: 2.2rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -50,7 +50,7 @@
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: var(--gradient-primary);
     border-radius: var(--radius-full);
 }
 
@@ -71,7 +71,7 @@
 
 .reports-container th {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: white;
+    color: var(--text-light);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -105,17 +105,17 @@
 
 .score-cell {
     font-weight: 700;
-    color: #6366f1;
+    color: var(--accent);
     font-size: 1.1em;
 }
 
 .passed {
-    color: #22c55e;
+    color: var(--success);
     font-size: 1.2em;
 }
 
 .failed {
-    color: #ef4444;
+    color: var(--danger);
     font-size: 1.2em;
 }
 
@@ -143,23 +143,23 @@
 }
 
 .view-btn {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
 }
 
 .view-btn:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+    background: var(--gradient-primary);
     transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
 }
 
 .delete-btn {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
+    background: var(--gradient-danger);
+    color: var(--text-light);
 }
 
 .delete-btn:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    background: var(--gradient-danger);
     transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
 }
@@ -172,7 +172,7 @@
 
 .take-test-btn, .retry-btn {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: white;
+    color: var(--text-light);
     padding: var(--space-md) var(--space-xl);
     font-size: 1rem;
     min-height: 50px;
@@ -219,8 +219,8 @@
 .loading-spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid rgba(99, 102, 241, 0.2);
-    border-top: 4px solid #6366f1;
+    border: 4px solid var(--accent-light);
+    border-top: 4px solid var(--accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: var(--space-md);
@@ -240,7 +240,7 @@
 }
 
 .error-text {
-    color: #ef4444;
+    color: var(--danger);
     margin-bottom: var(--space-lg);
 }
 
@@ -305,14 +305,14 @@
     }
 
     .reports-table-container::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--card-bg-glass);
         border-radius: 10px;
     }
 
     .reports-table-container::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.5));
+        background: var(--gradient-primary);
         border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--card-border);
     }
 
     .reports-container table {
@@ -333,7 +333,7 @@
         padding: 0.4rem 0.3rem;
         position: sticky;
         top: 0;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(59, 130, 246, 0.2));
+        background: linear-gradient(135deg, var(--accent-light), var(--info-light));
         backdrop-filter: blur(15px);
         z-index: 10;
     }

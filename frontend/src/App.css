@@ -10,8 +10,8 @@
   border-radius: var(--radius-xl);
   box-shadow:
     var(--shadow-xl),
-    0 0 30px rgba(99, 102, 241, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 0 30px var(--accent-light),
+    inset 0 1px 0 var(--glass-border);
   margin: var(--space-md) 0;
   margin-top: calc(var(--space-lg) + var(--space-md));
   min-height: 40vh;
@@ -27,8 +27,8 @@
   transform: translateY(-2px);
   box-shadow:
     var(--shadow-xl),
-    0 0 40px rgba(99, 102, 241, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 0 40px var(--accent-light),
+    inset 0 1px 0 var(--glass-border);
   border-color: var(--accent-light);
 }
 
@@ -75,8 +75,8 @@
   transform: translateY(-3px) scale(1.003);
   box-shadow:
     var(--shadow-2xl),
-    0 0 50px rgba(99, 102, 241, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 0 50px var(--accent-light),
+    inset 0 1px 0 var(--glass-border);
   border-color: var(--accent);
 }
 
@@ -101,7 +101,7 @@
 
 .table-container th {
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-light);
   padding: var(--space-md) var(--space-lg);
   font-weight: 600;
   text-transform: uppercase;
@@ -185,7 +185,7 @@
 /* Enhanced start quiz button */
 .start-quiz-btn {
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-light);
   border: none;
   border-radius: var(--radius-2xl);
   padding: var(--space-lg) var(--space-2xl);
@@ -207,7 +207,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
   transition: left var(--transition-slow);
 }
 
@@ -351,7 +351,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: var(--bg-dark);
   backdrop-filter: blur(12px);
   /* Perfect centering with CSS Grid */
   display: grid !important;
@@ -369,7 +369,7 @@
 
 .notification-modal-content {
   position: relative;
-  background: linear-gradient(135deg, rgba(26, 35, 50, 0.98) 0%, rgba(15, 15, 35, 0.98) 100%);
+  background: var(--bg-dark);
   backdrop-filter: blur(30px);
   border-radius: 24px;
   padding: 5rem 3.5rem 4rem 3.5rem; /* Increased top padding */
@@ -383,8 +383,8 @@
   /* Perfect centering */
   margin: 0 auto;
   box-sizing: border-box;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(16, 185, 129, 0.2);
-  border: 2px solid rgba(16, 185, 129, 0.3);
+  box-shadow: var(--shadow-2xl), 0 0 40px var(--success-light);
+  border: 2px solid var(--success);
   /* Remove any conflicting transforms */
   position: relative;
   left: auto;
@@ -410,21 +410,21 @@
   height: 120px;
   width: 120px;
   margin: 1.5rem auto 2rem; /* Added top margin for more space above */
-  background: rgba(16, 185, 129, 0.15);
+  background: var(--success-light);
   border-radius: 50%;
-  border: 3px solid rgba(16, 185, 129, 0.3);
-  box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+  border: 3px solid var(--success);
+  box-shadow: 0 0 30px var(--success-light);
   animation: iconPulse 2s ease-in-out infinite;
 }
 
 @keyframes iconPulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 30px var(--success-light);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 40px var(--success-light);
   }
 }
 
@@ -435,7 +435,7 @@
   margin-bottom: 1.5rem;
   margin-top: 0.5rem;
   font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-shadow: var(--shadow-sm);
   letter-spacing: 0.3px;
   padding: 0 1rem;
 }
@@ -444,10 +444,10 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 2px solid rgba(239, 68, 68, 0.3);
+  background: var(--danger-light);
+  border: 2px solid var(--danger);
   font-size: 1.4rem;
-  color: #fca5a5;
+  color: var(--danger);
   cursor: pointer;
   padding: 0;
   border-radius: 12px;
@@ -464,10 +464,10 @@
 }
 
 .notification-close-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ffffff;
+  background: var(--danger-light);
+  color: var(--text-light);
   transform: scale(1.1) rotate(90deg);
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .notification-progress {

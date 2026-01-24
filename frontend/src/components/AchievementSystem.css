@@ -1,22 +1,13 @@
 /* Achievement System - Modern Redesign */
 
-:root {
-  --achievement-primary: #6366f1;
-  --achievement-secondary: #8b5cf6;
-  --achievement-accent: #ec4899;
-  --achievement-bg-dark: #0a0a0f;
-  --achievement-card-bg: rgba(255, 255, 255, 0.05);
-  --achievement-card-border: rgba(255, 255, 255, 0.1);
-  --achievement-text-primary: #ffffff;
-  --achievement-text-secondary: rgba(255, 255, 255, 0.7);
-}
+/* Uses theme variables from index.css */
 
 .achievement-system {
   min-height: 100vh;
   padding: 2rem;
   position: relative;
   overflow-x: hidden;
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+  background: var(--bg-dark);
 }
 
 /* Floating Background Orbs */
@@ -42,7 +33,7 @@
 .achievement-bg-orbs .orb-1 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: var(--gradient-primary);
   top: -100px;
   left: -100px;
   animation-delay: 0s;
@@ -51,7 +42,7 @@
 .achievement-bg-orbs .orb-2 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  background: var(--gradient-secondary);
   top: 50%;
   right: -50px;
   animation-delay: 5s;
@@ -60,7 +51,7 @@
 .achievement-bg-orbs .orb-3 {
   width: 350px;
   height: 350px;
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  background: var(--gradient-info);
   bottom: -100px;
   left: 20%;
   animation-delay: 10s;
@@ -82,13 +73,13 @@
 .achievement-header {
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card-bg-glass);
   backdrop-filter: blur(20px);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--card-border);
   padding: 2.5rem;
   margin-bottom: 3rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl);
 }
 
 .header-content {
@@ -112,7 +103,7 @@
   margin: 0 0 0.5rem 0;
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
-  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #ec4899 100%);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -121,11 +112,11 @@
 
 .title-icon {
   font-size: 2.5rem;
-  filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.5));
+  filter: drop-shadow(0 0 10px var(--accent-light));
 }
 
 .title-text {
-  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #ec4899 100%);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -143,10 +134,10 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg-glass);
   padding: 1.5rem;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .completion-circle {
@@ -158,12 +149,12 @@
 }
 
 .progress-ring {
-  filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+  filter: drop-shadow(0 0 10px var(--accent-light));
 }
 
 .progress-circle {
   transition: stroke-dashoffset 1s ease;
-  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+  filter: drop-shadow(0 0 8px var(--accent-light));
 }
 
 .percentage-text {
@@ -171,7 +162,7 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--achievement-text-primary);
-  text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  text-shadow: 0 0 10px var(--accent-light);
 }
 
 .progress-info {
@@ -197,10 +188,10 @@
 .filter-controls {
   display: flex;
   gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card-bg-glass);
   padding: 0.5rem;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .filter-btn {
@@ -225,7 +216,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: var(--gradient-primary);
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: 8px;
@@ -239,14 +230,14 @@
 
 .filter-btn.active,
 .filter-btn:hover {
-  color: #ffffff !important;
+  color: var(--text-light) !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .filter-btn.active,
 .filter-btn:hover {
-  color: #ffffff !important;
+  color: var(--text-light) !important;
 }
 
 .filter-btn.active *,
@@ -255,7 +246,7 @@
 .filter-btn:hover span,
 .filter-btn.active .filter-btn-text,
 .filter-btn:hover .filter-btn-text {
-  color: #ffffff !important;
+  color: var(--text-light) !important;
 }
 
 .filter-btn-text {
@@ -274,19 +265,19 @@
 }
 
 .achievement-category {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card-bg-glass);
   backdrop-filter: blur(20px);
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl);
   transition: all 0.3s ease;
 }
 
 .achievement-category:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: var(--shadow-2xl);
+  border-color: var(--accent-light);
 }
 
 .category-title {
@@ -295,7 +286,7 @@
   color: var(--achievement-text-primary);
   margin: 0 0 1.5rem 0;
   padding-bottom: 1rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--card-border);
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -310,10 +301,10 @@
 /* Achievement Card */
 .achievement-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--card-bg-glass);
   backdrop-filter: blur(15px);
   border-radius: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--card-border);
   padding: 1.5rem;
   transition: all 0.3s ease;
   overflow: hidden;
@@ -328,7 +319,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-light));
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 0;
@@ -339,8 +330,8 @@
 }
 
 .achievement-card.unlocked {
-  background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: var(--accent-light);
+  border-color: var(--accent-light);
 }
 
 .achievement-card.locked {
@@ -366,18 +357,18 @@
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+  background: var(--gradient-primary);
   border-radius: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--card-border);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
 
 .achievement-card.unlocked .achievement-icon {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  background: var(--gradient-primary);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-light);
 }
 
 .unlock-badge {
@@ -386,12 +377,12 @@
   right: -8px;
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: var(--gradient-success);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-light);
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
   border: 2px solid rgba(255, 255, 255, 0.2);
@@ -459,27 +450,27 @@
 }
 
 .rarity-common {
-  background: rgba(156, 163, 175, 0.2);
-  color: #9ca3af;
-  border: 1px solid rgba(156, 163, 175, 0.3);
+  background: var(--text-disabled);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
 }
 
 .rarity-rare {
-  background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: var(--info-light);
+  color: var(--info);
+  border: 1px solid var(--info-light);
 }
 
 .rarity-epic {
-  background: rgba(139, 92, 246, 0.2);
-  color: #8b5cf6;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: var(--accent-light);
+  color: var(--accent2);
+  border: 1px solid var(--accent-light);
 }
 
 .rarity-legendary {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: var(--warning-light);
+  color: var(--warning);
+  border: 1px solid var(--warning-light);
 }
 
 .progress-container {

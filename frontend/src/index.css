@@ -79,12 +79,14 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: var(--shadow-glass);
 
-  /* Enhanced gradients */
+  /* Enhanced gradients - All use theme variables */
   --gradient-primary: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-  --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  --gradient-danger: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
-  --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  --gradient-success: linear-gradient(135deg, var(--success) 0%, var(--success) 100%);
+  --gradient-danger: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
+  --gradient-glass: linear-gradient(135deg, var(--glass-bg) 0%, var(--card-bg-glass) 100%);
+  --gradient-warning: linear-gradient(135deg, var(--warning) 0%, var(--warning) 100%);
+  --gradient-info: linear-gradient(135deg, var(--info) 0%, var(--info) 100%);
 
   --shadow: rgba(0, 0, 0, 0.4);
 
@@ -1092,13 +1094,13 @@ body {
 /* Enhanced Global Selection */
 ::selection {
   background: var(--accent);
-  color: white;
+  color: var(--text-light);
   text-shadow: none;
 }
 
 ::-moz-selection {
   background: var(--accent);
-  color: white;
+  color: var(--text-light);
   text-shadow: none;
 }
 
@@ -1107,7 +1109,7 @@ body {
   outline: none;
   box-shadow:
     0 0 0 3px var(--accent-light),
-    0 0 20px rgba(99, 102, 241, 0.3);
+    0 0 20px var(--accent-light);
   border-color: var(--accent);
 }
 
@@ -1116,7 +1118,7 @@ body {
   outline-offset: 2px;
   box-shadow:
     0 0 0 3px var(--accent-light),
-    0 0 20px rgba(99, 102, 241, 0.3);
+    0 0 20px var(--accent-light);
   border-color: var(--accent);
 }
 
@@ -1167,7 +1169,7 @@ button:disabled {
 /* Button variants */
 button.primary {
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-light);
   box-shadow: var(--shadow-md);
 }
 
@@ -1191,7 +1193,7 @@ button.secondary:hover:not(:disabled) {
 
 button.danger {
   background: var(--gradient-danger);
-  color: white;
+  color: var(--text-light);
   box-shadow: var(--shadow-md);
 }
 
@@ -1219,7 +1221,7 @@ input:focus, textarea:focus, select:focus {
   box-shadow:
     var(--shadow-lg),
     0 0 0 3px var(--accent-light),
-    0 0 20px rgba(99, 102, 241, 0.2);
+    0 0 20px var(--accent-light);
   border-color: var(--accent);
   outline: none;
 }
@@ -1295,35 +1297,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.3);
+  background: var(--card-bg-glass);
   border-radius: var(--radius-sm);
   backdrop-filter: blur(10px);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg,
-    rgba(99, 102, 241, 0.6) 0%,
-    rgba(139, 92, 246, 0.6) 50%,
-    rgba(244, 63, 94, 0.6) 100%
-  );
+  background: var(--gradient-primary);
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg,
-    rgba(99, 102, 241, 0.9) 0%,
-    rgba(139, 92, 246, 0.9) 50%,
-    rgba(244, 63, 94, 0.9) 100%
-  );
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+  background: var(--gradient-primary);
+  box-shadow: 0 0 15px var(--accent-light);
 }
 
 /* Enhanced scrollbar for Firefox */
 html {
   scrollbar-width: thin;
-  scrollbar-color: rgba(99, 102, 241, 0.6) rgba(15, 23, 42, 0.3);
+  scrollbar-color: var(--accent) var(--card-bg-glass);
 }
 
 h1 {
@@ -1445,14 +1439,14 @@ button, .btn {
   gap: var(--space-xs);
   text-decoration: none;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   min-height: 44px;
 }
 
 /* Primary button */
 .btn-primary, button:not([class]) {
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-light);
   box-shadow: var(--shadow-lg);
 }
 
@@ -1482,7 +1476,7 @@ button, .btn {
 /* Success button */
 .btn-success {
   background: var(--gradient-success);
-  color: white;
+  color: var(--text-light);
   box-shadow: var(--shadow-lg);
 }
 
@@ -1494,7 +1488,7 @@ button, .btn {
 /* Danger button */
 .btn-danger {
   background: var(--gradient-danger);
-  color: white;
+  color: var(--text-light);
   box-shadow: var(--shadow-lg);
 }
 
@@ -1537,7 +1531,7 @@ button, .btn {
 
 .btn-outline:hover {
   background: var(--accent);
-  color: white;
+  color: var(--text-light);
 }
 
 /* Button with icon */
@@ -1730,9 +1724,9 @@ input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow:
-    0 0 0 3px rgba(99, 102, 241, 0.1),
+    0 0 0 3px var(--accent-light),
     var(--shadow-md);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--card-bg-glass);
   transform: translateY(-1px);
 }
 
@@ -1757,13 +1751,13 @@ input::placeholder, textarea::placeholder {
 
 /* Enhanced Selection Styles */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
-  color: white;
+  background: var(--accent-light);
+  color: var(--text-light);
 }
 
 ::-moz-selection {
-  background: rgba(99, 102, 241, 0.3);
-  color: white;
+  background: var(--accent-light);
+  color: var(--text-light);
 }
 
 /* ✨ Enhanced Animations & Micro-interactions */
@@ -1860,11 +1854,11 @@ input::placeholder, textarea::placeholder {
 
 @keyframes etherealGlow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 20px var(--accent-light);
     filter: brightness(1);
   }
   50% {
-    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+    box-shadow: 0 0 40px var(--accent-light);
     filter: brightness(1.1);
   }
 }
@@ -1925,7 +1919,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .text-gradient-shift {
-  background: linear-gradient(270deg, #6366f1, #8b5cf6, #ec4899, #6366f1);
+  background: var(--gradient-primary);
   background-size: 400% 400%;
   animation: textGradientShift 8s ease infinite;
   -webkit-background-clip: text;
@@ -1945,8 +1939,8 @@ input::placeholder, textarea::placeholder {
 .hover-lift-intense:hover {
   transform: translateY(-12px) scale(1.03);
   box-shadow:
-    0 25px 50px rgba(0, 0, 0, 0.25),
-    0 0 40px rgba(99, 102, 241, 0.3);
+    var(--shadow-2xl),
+    0 0 40px var(--accent-light);
 }
 
 .hover-glow-spread {
@@ -1961,7 +1955,7 @@ input::placeholder, textarea::placeholder {
   left: 50%;
   width: 0;
   height: 0;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--accent-light) 0%, transparent 70%);
   transition: all 0.6s ease;
   transform: translate(-50%, -50%);
   border-radius: 50%;
@@ -1974,13 +1968,13 @@ input::placeholder, textarea::placeholder {
 
 /* ✨ Enhanced Glass Morphism */
 .glass-intense {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--card-bg-glass);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--card-border);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    var(--shadow-xl),
+    inset 0 1px 0 var(--glass-border);
 }
 
 /* ✨ Beautiful Scrollbar Enhancements */
@@ -1989,17 +1983,17 @@ input::placeholder, textarea::placeholder {
 }
 
 .beautiful-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg-glass);
   border-radius: var(--radius-full);
 }
 
 .beautiful-scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #6366f1, #8b5cf6);
+  background: var(--gradient-primary);
   border-radius: var(--radius-full);
   transition: all 0.3s ease;
 }
 
 .beautiful-scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #7c3aed, #a855f7);
+  background: var(--gradient-primary);
   transform: scale(1.1);
 }

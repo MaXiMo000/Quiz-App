@@ -22,7 +22,7 @@
     transform: translate(-50%, -50%);
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--accent-light) 0%, transparent 70%);
     border-radius: 50%;
     animation: headerGlow 3s ease-in-out infinite;
     z-index: 0;
@@ -37,14 +37,14 @@
     color: var(--text-primary);
     margin-bottom: 1rem;
     font-size: clamp(2rem, 5vw, 2.5rem);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: var(--gradient-primary);
     background-size: 200% 200%;
     animation: gradientShift 5s ease infinite;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 800;
-    filter: drop-shadow(0 4px 20px rgba(102, 126, 234, 0.4));
+    filter: drop-shadow(0 4px 20px var(--accent-light));
     letter-spacing: -0.02em;
     position: relative;
     z-index: 1;
@@ -64,8 +64,8 @@
 }
 
 .error-message {
-    background: #ff4757;
-    color: white;
+    background: var(--danger);
+    color: var(--text-light);
     padding: 12px 20px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -78,7 +78,7 @@
 .error-message button {
     background: none;
     border: none;
-    color: white;
+    color: var(--text-light);
     font-size: 20px;
     cursor: pointer;
     padding: 0;
@@ -97,16 +97,16 @@
     gap: 0.75rem;
     padding: 0.75rem;
     flex-wrap: wrap;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 18px;
-    border: 1px solid rgba(102, 126, 234, 0.15);
+    border: 1px solid var(--card-border);
 }
 
 .tab-button {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(102, 126, 234, 0.2);
+    background: var(--card-bg-glass);
+    border: 2px solid var(--accent-light);
     padding: 0.875rem 1.5rem;
     cursor: pointer;
     color: var(--text-secondary);
@@ -133,7 +133,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
     transition: left 0.5s ease;
 }
 
@@ -142,22 +142,22 @@
 }
 
 .tab-button.active {
-    color: white;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
+    color: var(--text-light);
+    background: var(--gradient-primary);
+    border-color: var(--accent);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-xl);
 }
 
 .tab-button:hover:not(.active) {
-    border-color: rgba(102, 126, 234, 0.4);
+    border-color: var(--accent);
     color: var(--text-primary);
     transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-glass);
 }
 
 .tab-count {
-    background: rgba(102, 126, 234, 0.2);
+    background: var(--accent-light);
     backdrop-filter: blur(10px);
     color: var(--text-primary);
     border-radius: 12px;
@@ -169,15 +169,15 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--accent);
+    box-shadow: var(--shadow-sm);
 }
 
 .tab-button.active .tab-count {
-    background: rgba(255, 255, 255, 0.25);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+    background: var(--card-bg-glass);
+    color: var(--text-light);
+    border-color: var(--card-border);
+    box-shadow: var(--shadow-sm);
 }
 
 .tab-content {
@@ -192,10 +192,10 @@
 }
 
 .friend-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 1px solid var(--accent);
     border-radius: 20px;
     padding: 1.75rem;
     display: flex;
@@ -204,9 +204,9 @@
     position: relative;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(102, 126, 234, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--shadow-sm),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
     overflow: hidden;
 }
 
@@ -217,7 +217,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    background: var(--gradient-primary);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -227,28 +227,28 @@
 }
 
 .friend-card:hover {
-    border-color: rgba(102, 126, 234, 0.4);
+    border-color: var(--accent);
     transform: translateY(-4px) scale(1.01);
     box-shadow:
-        0 12px 40px rgba(102, 126, 234, 0.2),
-        0 0 0 1px rgba(102, 126, 234, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.08);
+        var(--shadow-xl),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
+    background: var(--card-bg-glass);
 }
 
 .friend-avatar {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--text-light);
     font-weight: 800;
     font-size: 1.5em;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--card-border);
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
@@ -261,7 +261,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(45deg, transparent, var(--glass-border), transparent);
     animation: shimmer 3s infinite;
 }
 
@@ -313,8 +313,8 @@
 }
 
 .status-indicator.online {
-    background: #22c55e;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6), 0 0 12px rgba(34, 197, 94, 0.3);
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success-light), 0 0 12px var(--success-light);
     animation: pulseOnline 2s ease-in-out infinite;
 }
 
@@ -324,8 +324,8 @@
 }
 
 .status-indicator.offline {
-    background: #94a3b8;
-    box-shadow: 0 0 4px rgba(148, 163, 184, 0.3);
+    background: var(--text-muted);
+    box-shadow: 0 0 4px var(--text-muted);
 }
 
 /* Friend Actions Flex Container */
@@ -340,8 +340,8 @@
 
 .remove-friend-btn {
     position: static;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
+    background: var(--gradient-danger);
+    color: var(--text-light);
     border: none;
     border-radius: 50%;
     width: 32px;
@@ -353,8 +353,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-sm);
+    border: 2px solid var(--card-border);
 }
 
 .friend-card:hover .remove-friend-btn {
@@ -362,16 +362,16 @@
 }
 
 .remove-friend-btn:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    background: var(--gradient-danger);
     transform: scale(1.15) rotate(90deg);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+    box-shadow: var(--shadow-md);
 }
 
 /* Block User Button */
 .block-user-btn {
     position: static;
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-    color: white;
+    background: var(--gradient-danger);
+    color: var(--text-light);
     border: none;
     border-radius: 10px;
     padding: 0.5rem 0.75rem;
@@ -380,8 +380,8 @@
     opacity: 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--card-border);
 }
 
 .friend-card:hover .block-user-btn {
@@ -389,15 +389,15 @@
 }
 
 .block-user-btn:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: var(--gradient-danger);
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+    box-shadow: var(--shadow-md);
 }
 
 /* Unblock Button */
 .unblock-user-btn {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     border: none;
     border-radius: 18px;
     padding: 0.75rem 1.5rem;
@@ -406,8 +406,8 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
     margin-top: 1rem;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--card-border);
     position: relative;
     overflow: hidden;
 }
@@ -419,7 +419,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -428,9 +428,9 @@
 }
 
 .unblock-user-btn:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: var(--gradient-primary);
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: var(--shadow-xl);
 }
 
 /* Blocked Users Section */
@@ -446,17 +446,17 @@
     align-items: center;
     gap: 0.75rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+    filter: drop-shadow(0 2px 4px var(--accent-light));
 }
 
 .blocked-users-section h3::before {
     content: "🚫";
     font-size: 1.5em;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 2px 4px var(--shadow-sm));
 }
 
 .blocked-grid {
@@ -467,18 +467,18 @@
 }
 
 .blocked-user-card {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%);
+    background: var(--gradient-danger);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 1.75rem;
     border-radius: 20px;
     text-align: center;
-    color: white;
+    color: var(--text-light);
     box-shadow:
-        0 8px 32px rgba(239, 68, 68, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+        var(--shadow-xl),
+        0 0 0 1px var(--glass-border),
+        inset 0 1px 0 var(--glass-border);
+    border: 1px solid var(--card-border);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -491,7 +491,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+    background: linear-gradient(90deg, var(--glass-border), var(--glass-border));
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -503,9 +503,9 @@
 .blocked-user-card:hover {
     transform: translateY(-4px) scale(1.02);
     box-shadow:
-        0 12px 40px rgba(239, 68, 68, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        var(--shadow-xl),
+        0 0 0 1px var(--glass-border),
+        inset 0 1px 0 var(--glass-border);
 }
 
 .blocked-user-card h4 {
@@ -525,10 +525,10 @@
     text-align: center;
     padding: 4rem 2rem;
     color: var(--text-secondary);
-    background: rgba(102, 126, 234, 0.03);
+    background: var(--accent-light);
     backdrop-filter: blur(10px);
     border-radius: 20px;
-    border: 2px dashed rgba(102, 126, 234, 0.2);
+    border: 2px dashed var(--accent);
 }
 
 .no-blocked-users p {
@@ -542,7 +542,7 @@
     font-size: clamp(2.5rem, 6vw, 3.5rem);
     margin-bottom: 1rem;
     display: block;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 4px 8px var(--shadow-sm));
 }
 
 /* Requests */
@@ -551,11 +551,11 @@
     margin: 0 0 1.25rem 0;
     font-size: clamp(1.15rem, 3vw, 1.35rem);
     font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+    filter: drop-shadow(0 2px 4px var(--accent-light));
 }
 
 .requests-list {
@@ -563,10 +563,10 @@
 }
 
 .request-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 1px solid var(--accent);
     border-radius: 18px;
     padding: 1.25rem;
     display: flex;
@@ -575,9 +575,9 @@
     margin-bottom: 0.875rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.08),
-        0 0 0 1px rgba(102, 126, 234, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--shadow-sm),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
     position: relative;
     overflow: hidden;
 }
@@ -589,7 +589,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: var(--gradient-primary);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -599,28 +599,28 @@
 }
 
 .request-card:hover {
-    border-color: rgba(102, 126, 234, 0.4);
+    border-color: var(--accent);
     transform: translateX(4px);
     box-shadow:
-        0 6px 25px rgba(102, 126, 234, 0.15),
-        0 0 0 1px rgba(102, 126, 234, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.08);
+        var(--shadow-lg),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
+    background: var(--card-bg-glass);
 }
 
 .request-avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--text-light);
     font-weight: 800;
     font-size: 1.2em;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-md);
+    border: 2px solid var(--card-border);
     flex-shrink: 0;
 }
 
@@ -667,7 +667,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -677,36 +677,36 @@
 }
 
 .accept-btn {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    color: white;
-    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    background: var(--gradient-success);
+    color: var(--text-light);
+    box-shadow: var(--shadow-lg);
 }
 
 .accept-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+    box-shadow: var(--shadow-xl);
 }
 
 .decline-btn {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    background: var(--gradient-danger);
+    color: var(--text-light);
+    box-shadow: var(--shadow-lg);
 }
 
 .decline-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    box-shadow: var(--shadow-xl);
 }
 
 .pending-label {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: white;
+    background: var(--gradient-warning);
+    color: var(--text-light);
     padding: 0.5rem 1rem;
     border-radius: 18px;
     font-size: 0.85em;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--card-border);
 }
 
 .no-requests {
@@ -714,10 +714,10 @@
     color: var(--text-secondary);
     font-style: italic;
     padding: 2rem;
-    background: rgba(102, 126, 234, 0.03);
+    background: var(--accent-light);
     backdrop-filter: blur(10px);
     border-radius: 18px;
-    border: 2px dashed rgba(102, 126, 234, 0.2);
+    border: 2px dashed var(--accent);
     font-size: clamp(0.95rem, 2.5vw, 1.05rem);
     font-weight: 500;
 }
@@ -736,10 +736,10 @@
 .search-input {
     width: 100%;
     padding: 1rem 1.25rem;
-    border: 2px solid rgba(102, 126, 234, 0.2);
+    border: 2px solid var(--accent-light);
     border-radius: 16px;
     font-size: 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(10px);
     color: var(--text-primary);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -749,11 +749,11 @@
 
 .search-input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--accent);
     box-shadow:
-        0 0 0 4px rgba(102, 126, 234, 0.1),
-        0 4px 20px rgba(102, 126, 234, 0.15);
-    background: rgba(255, 255, 255, 0.08);
+        0 0 0 4px var(--accent-light),
+        var(--shadow-lg);
+    background: var(--card-bg-glass);
     transform: translateY(-1px);
 }
 
@@ -778,10 +778,10 @@
 }
 
 .search-result-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 1px solid var(--accent);
     border-radius: 20px;
     padding: 1.5rem;
     display: flex;
@@ -789,9 +789,9 @@
     gap: 1.25rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(102, 126, 234, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--shadow-sm),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
     position: relative;
     overflow: hidden;
 }
@@ -803,7 +803,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    background: var(--gradient-primary);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -813,28 +813,28 @@
 }
 
 .search-result-card:hover {
-    border-color: rgba(102, 126, 234, 0.4);
+    border-color: var(--accent);
     transform: translateY(-4px) scale(1.01);
     box-shadow:
-        0 12px 40px rgba(102, 126, 234, 0.2),
-        0 0 0 1px rgba(102, 126, 234, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.08);
+        var(--shadow-xl),
+        0 0 0 1px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
+    background: var(--card-bg-glass);
 }
 
 .search-result-avatar {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--text-light);
     font-weight: 800;
     font-size: 1.4em;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--card-border);
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
@@ -847,7 +847,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(45deg, transparent, var(--glass-border), transparent);
     animation: shimmer 3s infinite;
 }
 
@@ -875,8 +875,8 @@
 }
 
 .search-block-btn {
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-    color: white;
+    background: var(--gradient-danger);
+    color: var(--text-light);
     border: none;
     border-radius: 12px;
     padding: 0.625rem 1rem;
@@ -887,8 +887,8 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--card-border);
     position: relative;
     overflow: hidden;
 }
@@ -900,7 +900,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -909,14 +909,14 @@
 }
 
 .search-block-btn:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: var(--gradient-danger);
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    box-shadow: var(--shadow-md);
 }
 
 .add-friend-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     border: none;
     padding: 0.75rem 1.25rem;
     border-radius: 14px;
@@ -926,7 +926,7 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     font-size: 0.9rem;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: var(--shadow-lg);
     position: relative;
     overflow: hidden;
     min-width: 110px;
@@ -939,7 +939,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -949,7 +949,7 @@
 
 .add-friend-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-xl);
 }
 
 .empty-state, .no-results, .search-hint {
@@ -957,10 +957,10 @@
     color: var(--text-secondary);
     padding: 4rem 2rem;
     font-size: clamp(1rem, 2.5vw, 1.15rem);
-    background: rgba(102, 126, 234, 0.03);
+    background: var(--accent-light);
     backdrop-filter: blur(10px);
     border-radius: 20px;
-    border: 2px dashed rgba(102, 126, 234, 0.2);
+    border: 2px dashed var(--accent);
     line-height: 1.6;
 }
 
@@ -1031,25 +1031,25 @@
 
     .tab-button.active {
         background: var(--primary-color);
-        color: white;
+        color: var(--text-light);
         border-color: var(--primary-color);
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(var(--primary-color-rgb), 0.2);
     }
 
     .tab-count {
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--glass-border);
         font-size: 0.8em;
     }
 
     .tab-button.active .tab-count {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
+        background: var(--glass-border);
+        color: var(--text-light);
     }
 
     .tab-button.active .tab-count {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
+        background: var(--glass-border);
+        color: var(--text-light);
     }
 
     .friends-grid, .search-results {

@@ -74,7 +74,7 @@
 
 .retry-button {
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-light);
   border: none;
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--radius-lg);
@@ -99,11 +99,14 @@
   background: var(--card-bg);
   border-radius: var(--radius-xl);
   border: 1px solid var(--card-border);
-  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: visible;
 }
 
 .header-content {
   flex: 1;
+  position: relative;
+  z-index: 5;
 }
 
 .analytics-title {
@@ -128,29 +131,48 @@
   display: flex;
   gap: var(--space-md);
   flex-wrap: wrap;
+  position: relative;
+  z-index: 5;
 }
 
 .stat-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
   text-align: center;
   min-width: 120px;
-  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: visible;
+  z-index: 1;
 }
 
 .stat-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--text-color) !important;
   margin-bottom: var(--space-xs);
+  position: relative;
+  z-index: 10 !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  -webkit-text-fill-color: var(--text-color) !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: var(--text-muted);
-  font-weight: 500;
+  color: var(--text-color) !important;
+  font-weight: 600;
+  position: relative;
+  z-index: 10 !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Tab Navigation */
@@ -195,7 +217,7 @@
 
 .tab-button.active {
   background: var(--gradient-primary);
-  color: white;
+  color: var(--text-light);
   box-shadow: var(--shadow-md);
 }
 
@@ -217,7 +239,6 @@
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
-  backdrop-filter: blur(10px);
 }
 
 .card-header {
@@ -278,7 +299,6 @@
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
-  backdrop-filter: blur(10px);
 }
 
 .chart-title {
@@ -335,7 +355,6 @@
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
-  backdrop-filter: blur(10px);
   transition: all var(--transition-normal);
 }
 
@@ -407,7 +426,6 @@
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
-  backdrop-filter: blur(10px);
 }
 
 .learning-metrics {
@@ -421,7 +439,6 @@
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
-  backdrop-filter: blur(10px);
   transition: all var(--transition-normal);
 }
 
@@ -491,7 +508,7 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-light);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: var(--shadow);
 }
 
 /* Insights Section */
@@ -506,7 +523,6 @@
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
-  backdrop-filter: blur(10px);
   transition: all var(--transition-normal);
   text-align: center;
 }
@@ -609,6 +625,9 @@
 
   .stat-value {
     font-size: 1.5rem;
+    color: var(--text-color) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .metric-card, .learning-metric-card, .insight-card {

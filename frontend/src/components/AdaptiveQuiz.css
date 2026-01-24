@@ -1,29 +1,15 @@
 /* ✨ ULTRA MODERN ADAPTIVE QUIZ GENERATOR STYLES ✨ */
-:root {
-    --adaptive-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --adaptive-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --adaptive-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --adaptive-glass: rgba(255, 255, 255, 0.08);
-    --adaptive-border: rgba(255, 255, 255, 0.15);
-    --adaptive-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    --adaptive-glow: 0 0 20px rgba(102, 126, 234, 0.4);
-}
+/* Uses theme variables from index.css */
 
 /* ✨ Main Container ✨ */
 .adaptive-wrapper {
     min-height: 100vh;
     background:
-        radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg,
-            rgba(15, 15, 35, 0.95) 0%,
-            rgba(26, 26, 46, 0.97) 25%,
-            rgba(22, 33, 62, 0.95) 50%,
-            rgba(30, 20, 60, 0.97) 75%,
-            rgba(15, 15, 35, 0.95) 100%
-        );
+        radial-gradient(ellipse at top left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, color-mix(in srgb, var(--accent2) 12%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, color-mix(in srgb, var(--info-light) 8%, transparent) 0%, transparent 50%),
+        var(--bg-dark);
     padding: 3rem 2rem;
     position: relative;
     overflow-x: hidden;
@@ -69,7 +55,7 @@
 .adaptive-bg-orbs .orb-1 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(102, 126, 234, 0.4), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     top: 10%;
     left: 5%;
     animation-delay: 0s;
@@ -78,7 +64,7 @@
 .adaptive-bg-orbs .orb-2 {
     width: 350px;
     height: 350px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent2) 35%, transparent), transparent);
     top: 60%;
     right: 8%;
     animation-delay: 5s;
@@ -87,7 +73,7 @@
 .adaptive-bg-orbs .orb-3 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 30%, transparent), transparent);
     bottom: 15%;
     left: 50%;
     animation-delay: 10s;
@@ -110,19 +96,19 @@
 
 /* ✨ Main Card ✨ */
 .adaptive-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 2rem;
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius-2xl);
     padding: 3rem;
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
     box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--shadow-2xl),
+        0 0 0 1px var(--glass-border),
+        inset 0 1px 0 var(--glass-border);
     position: relative;
     z-index: 1;
     overflow: hidden;
@@ -148,7 +134,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+    background: var(--gradient-primary);
     background-size: 200% 100%;
     border-radius: 2rem 2rem 0 0;
     animation: borderShimmer 3s linear infinite;
@@ -170,11 +156,11 @@
     margin-bottom: 2.5rem;
     font-size: clamp(1.8rem, 5vw, 2.5rem);
     font-weight: 800;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.3));
+    filter: drop-shadow(0 2px 8px var(--accent-light));
     position: relative;
     display: flex;
     align-items: center;
@@ -190,7 +176,7 @@
     transform: translateX(-50%);
     width: 100px;
     height: 3px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     border-radius: 2px;
     animation: lineExpand 0.8s ease-out 0.5s both;
 }
@@ -215,17 +201,17 @@
 
 .adaptive-info > p {
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
     padding: 1rem 1.5rem;
-    background: rgba(102, 126, 234, 0.1);
-    border-radius: 1rem;
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: var(--accent-light);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--accent-light);
     backdrop-filter: blur(10px);
     margin: 0;
 }
 
 .adaptive-info > p strong {
-    color: #fff;
+    color: var(--text-light);
     font-weight: 600;
     margin-right: 0.5rem;
 }
@@ -236,13 +222,13 @@
     flex-direction: column;
     gap: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--text-light);
     font-size: 1rem;
 }
 
 .adaptive-info label strong {
     font-size: 1.05rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -255,27 +241,27 @@
     padding: 1rem 1.25rem;
     font-size: 1rem;
     border-radius: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--card-border);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(10px);
-    color: #ffffff;
+    color: var(--text-light);
     transition: all 0.3s ease;
     font-family: inherit;
     box-sizing: border-box;
 }
 
 .adaptive-info input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-muted);
 }
 
 .adaptive-info input:focus,
 .adaptive-info select:focus {
     outline: none;
-    border-color: rgba(102, 126, 234, 0.6);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+    background: var(--card-bg-glass);
     box-shadow:
-        0 0 0 4px rgba(102, 126, 234, 0.1),
-        0 8px 20px rgba(0, 0, 0, 0.2);
+        0 0 0 4px var(--accent-light),
+        var(--shadow-lg);
     transform: translateY(-2px);
 }
 
@@ -289,8 +275,8 @@
 }
 
 .adaptive-info select option {
-    background: #1a1a2e;
-    color: #ffffff;
+    background: var(--bg-secondary);
+    color: var(--text-light);
 }
 
 /* ✨ Generate Button ✨ */
@@ -302,13 +288,13 @@
     border: none;
     border-radius: 1rem;
     cursor: pointer;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #ffffff;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
     margin-top: 0.5rem;
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    box-shadow: var(--shadow-lg);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -320,7 +306,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -330,8 +316,8 @@
 
 .generate-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    box-shadow: var(--shadow-xl);
+    background: var(--gradient-primary);
 }
 
 .generate-btn:active {
@@ -367,7 +353,7 @@
     font-size: clamp(1.3rem, 4vw, 1.8rem);
     font-weight: 700;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -383,9 +369,9 @@
     overflow-x: hidden;
     padding: 1rem;
     border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
     margin-top: 1rem;
 }
 
@@ -395,17 +381,17 @@
 }
 
 .question-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     border-radius: 4px;
 }
 
 .question-list::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     border-radius: 4px;
 }
 
 .question-list::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    background: var(--gradient-primary);
 }
 
 .question-list ul {
@@ -420,7 +406,7 @@
 /* ✨ Question Item ✨ */
 .question-list li {
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(10px);
     border-radius: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -436,16 +422,16 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .question-list li:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(102, 126, 234, 0.3);
+    background: var(--card-bg-glass);
+    border-color: var(--accent);
     transform: translateX(4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .question-list li:hover::before {
@@ -455,14 +441,14 @@
 .question-list li strong {
     display: block;
     font-size: 1.1rem;
-    color: #ffffff;
+    color: var(--text-light);
     margin-bottom: 0.75rem;
     font-weight: 700;
 }
 
 .question-list li > span:not(.difficulty-tag) {
     display: block;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
     line-height: 1.6;
     margin-bottom: 1rem;
     font-size: 1rem;
@@ -487,42 +473,42 @@
     border-radius: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
 }
 
 .difficulty-tag.easy {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    color: #000;
+    background: var(--gradient-success);
+    color: var(--text-color);
 }
 
 .difficulty-tag.medium {
-    background: linear-gradient(135deg, #fdd835 0%, #fbc02d 100%);
-    color: #000;
+    background: var(--gradient-warning);
+    color: var(--text-color);
 }
 
 .difficulty-tag.hard {
-    background: linear-gradient(135deg, #e57373 0%, #ef5350 100%);
-    color: #fff;
+    background: var(--gradient-danger);
+    color: var(--text-light);
 }
 
 .difficulty-tag:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
 }
 
 /* ✨ Delete Button ✨ */
 .delete-btn {
     padding: 0.625rem 1.25rem;
-    background: linear-gradient(135deg, #e57373 0%, #ef5350 100%);
-    color: #ffffff;
+    background: var(--gradient-danger);
+    color: var(--text-light);
     border: none;
     border-radius: 0.75rem;
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(229, 115, 115, 0.3);
+    box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
@@ -536,7 +522,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -546,8 +532,8 @@
 
 .delete-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(229, 115, 115, 0.4);
-    background: linear-gradient(135deg, #ef5350 0%, #e57373 100%);
+    box-shadow: var(--shadow-xl);
+    background: var(--gradient-danger);
 }
 
 .delete-btn:active {

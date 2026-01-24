@@ -11,17 +11,11 @@
     overflow-x: hidden;
     margin: 0 auto;
     background:
-        radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg,
-            rgba(15, 15, 35, 0.95) 0%,
-            rgba(26, 26, 46, 0.97) 25%,
-            rgba(22, 33, 62, 0.95) 50%,
-            rgba(30, 20, 60, 0.97) 75%,
-            rgba(15, 15, 35, 0.95) 100%
-        );
+        radial-gradient(ellipse at top left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, color-mix(in srgb, var(--accent2) 12%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, color-mix(in srgb, var(--info-light) 8%, transparent) 0%, transparent 50%),
+        var(--bg-dark);
     color: var(--text-color);
     position: relative;
     overflow: hidden;
@@ -42,17 +36,11 @@
 /* Premium Questions Page - Golden Theme */
 .quiz-questions-container.premium-questions-page {
     background:
-        radial-gradient(ellipse at top left, rgba(255, 215, 0, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(255, 140, 0, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(255, 165, 0, 0.06) 0%, transparent 50%),
-        linear-gradient(135deg,
-            rgba(15, 15, 35, 0.95) 0%,
-            rgba(26, 26, 46, 0.97) 25%,
-            rgba(30, 20, 60, 0.95) 50%,
-            rgba(22, 33, 62, 0.97) 75%,
-            rgba(15, 15, 35, 0.95) 100%
-        );
+        radial-gradient(ellipse at top left, var(--warning-light) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, color-mix(in srgb, var(--warning) 10%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, color-mix(in srgb, var(--warning-light) 8%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, color-mix(in srgb, var(--warning-light) 6%, transparent) 0%, transparent 50%),
+        var(--bg-dark);
     position: relative;
 }
 
@@ -64,8 +52,8 @@
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(255, 193, 7, 0.03) 0%, transparent 50%);
+        radial-gradient(circle at 20% 30%, var(--warning-light) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, var(--warning-light) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
 }
@@ -77,13 +65,13 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    background: var(--gradient-primary);
     border-radius: 0;
     animation: gradientShift 3s ease-in-out infinite;
 }
 
 .premium-questions-page::before {
-    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    background: var(--gradient-warning);
     animation: premiumGradientShift 3s ease-in-out infinite;
 }
 
@@ -102,8 +90,8 @@
 /* ✨ Enhanced Back Button ✨ */
 .back-btn {
     align-self: flex-start;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     border: none;
     border-radius: 16px;
     padding: 1rem 2rem;
@@ -112,10 +100,10 @@
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow:
-        0 8px 25px rgba(99, 102, 241, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        var(--shadow-lg),
+        0 0 0 1px var(--glass-border) inset;
     backdrop-filter: blur(15px);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--card-border);
     margin-bottom: 3rem;
     position: relative;
     overflow: hidden;
@@ -123,12 +111,12 @@
 }
 
 .back-btn.premium-back-btn {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    color: #0f0f23;
+    background: var(--gradient-warning);
+    color: var(--text-dark);
     box-shadow:
-        0 8px 25px rgba(255, 215, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-    border-color: rgba(255, 215, 0, 0.3);
+        var(--shadow-lg),
+        0 0 0 1px var(--glass-border) inset;
+    border-color: var(--warning-light);
 }
 
 .back-btn::before {
@@ -138,7 +126,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
 }
 
@@ -149,16 +137,16 @@
 .back-btn:hover {
     transform: translateY(-4px) scale(1.05);
     box-shadow:
-        0 12px 35px rgba(99, 102, 241, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        var(--shadow-xl),
+        0 0 0 1px var(--glass-border) inset;
+    background: var(--gradient-primary);
 }
 
 .premium-back-btn:hover {
-    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+    background: var(--gradient-warning);
     box-shadow:
-        0 12px 35px rgba(255, 215, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        var(--shadow-xl),
+        0 0 0 1px var(--glass-border) inset;
 }
 
 /* ✨ Enhanced Quiz Details Header ✨ */
@@ -177,11 +165,7 @@
     font-size: clamp(2rem, 4vw, 3rem) !important;
     font-weight: 800 !important;
     background: linear-gradient(135deg,
-        #6366f1 0%,
-        #8b5cf6 25%,
-        #d946ef 50%,
-        #8b5cf6 75%,
-        #6366f1 100%) !important;
+        var(--gradient-primary)) !important;
     background-size: 300% 300% !important;
     animation: gradientShift 5s ease-in-out infinite !important;
     -webkit-background-clip: text !important;
@@ -191,7 +175,7 @@
     text-align: center !important;
     position: relative !important;
     letter-spacing: -0.02em !important;
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5)) !important;
+    filter: drop-shadow(0 0 20px var(--accent-light)) !important;
     color: transparent !important;
     display: block !important;
     font-family: var(--font-display, 'Inter', sans-serif) !important;
@@ -200,13 +184,9 @@
 
 .quiz-details h2.premium-title {
     background: linear-gradient(135deg,
-        #FFD700 0%,
-        #FFA500 25%,
-        #FF8C00 50%,
-        #FFA500 75%,
-        #FFD700 100%) !important;
+        var(--gradient-warning)) !important;
     background-size: 300% 300% !important;
-    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.6)) !important;
+    filter: drop-shadow(0 0 25px var(--warning-light)) !important;
     animation: gradientShift 5s ease-in-out infinite !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
@@ -221,13 +201,13 @@
     transform: translateX(-50%);
     width: 120px;
     height: 4px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: var(--gradient-primary);
     border-radius: var(--radius-full);
     animation: lineExpand 2s ease-out;
 }
 
 .premium-title::after {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
+    background: var(--gradient-warning);
 }
 
 @keyframes lineExpand {
@@ -242,15 +222,15 @@
     gap: 1.5rem;
     margin-bottom: 3rem;
     padding: 2.5rem;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-2xl);
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-        0 0 80px rgba(99, 102, 241, 0.15);
+        var(--shadow-xl),
+        0 0 0 1px var(--glass-border) inset,
+        0 0 80px var(--accent-light);
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -259,14 +239,14 @@
 }
 
 .quiz-info.premium-info {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: var(--card-bg-glass) !important;
     backdrop-filter: blur(30px) !important;
     -webkit-backdrop-filter: blur(30px) !important;
-    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    border: 1px solid var(--warning-light) !important;
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-        0 0 80px rgba(255, 215, 0, 0.15) !important;
+        var(--shadow-xl),
+        0 0 0 1px var(--glass-border) inset,
+        0 0 80px var(--warning-light) !important;
 }
 
 .quiz-info::before {
@@ -278,8 +258,8 @@
     height: 2px;
     background: linear-gradient(90deg,
         transparent,
-        rgba(99, 102, 241, 0.6),
-        rgba(139, 92, 246, 0.6),
+        var(--accent-light),
+        color-mix(in srgb, var(--accent2) 60%, transparent),
         transparent);
     opacity: 0.6;
 }
@@ -287,9 +267,9 @@
 .premium-info::before {
     background: linear-gradient(90deg,
         transparent,
-        rgba(255, 215, 0, 0.4),
-        rgba(255, 193, 7, 0.5),
-        rgba(255, 215, 0, 0.4),
+        var(--warning-light),
+        color-mix(in srgb, var(--warning) 50%, transparent),
+        var(--warning-light),
         transparent);
     opacity: 0.8;
     height: 3px;
@@ -298,17 +278,17 @@
 .quiz-info p {
     margin: 0;
     padding: 1.25rem 1.5rem;
-    background: rgba(99, 102, 241, 0.15);
+    background: var(--accent-light);
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid var(--accent-light);
     border-radius: 16px;
     font-size: 1.05rem;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
-    color: #ffffff !important;
+    color: var(--text-light) !important;
     position: relative;
     overflow: hidden;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 4px var(--shadow);
     font-weight: 600;
     z-index: 1;
 }
@@ -319,12 +299,12 @@
 }
 
 .premium-info p {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: var(--card-bg-glass) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 215, 0, 0.25) !important;
-    color: rgba(255, 255, 255, 0.95) !important;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid var(--warning-light) !important;
+    color: var(--text-light) !important;
+    text-shadow: 0 2px 4px var(--shadow) !important;
     font-weight: 600 !important;
     font-size: 1.05rem !important;
     -webkit-font-smoothing: antialiased !important;
@@ -333,20 +313,20 @@
     mix-blend-mode: normal !important;
     visibility: visible !important;
     box-shadow:
-        0 4px 15px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(255, 215, 0, 0.1) inset !important;
+        0 4px 15px var(--shadow),
+        0 0 0 1px var(--warning-light) inset !important;
 }
 
 .premium-info p,
 .premium-info p *:not(strong) {
-    color: rgba(255, 255, 255, 0.95) !important;
+    color: var(--text-light) !important;
 }
 
 .premium-info p strong {
-    color: #FFD700 !important;
+    color: var(--warning) !important;
     text-shadow:
-        0 0 15px rgba(255, 215, 0, 0.6),
-        0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        0 0 15px var(--warning-light),
+        0 2px 4px var(--shadow) !important;
     font-weight: 800 !important;
     font-size: 1em !important;
     display: block !important;
@@ -360,7 +340,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left 0.5s ease;
     z-index: 0;
     pointer-events: none;
@@ -371,39 +351,39 @@
 }
 
 .quiz-info p:hover {
-    background: rgba(99, 102, 241, 0.12);
-    border-color: rgba(99, 102, 241, 0.4);
+    background: var(--accent-light);
+    border-color: var(--accent);
     transform: translateY(-4px) scale(1.02);
     box-shadow:
-        0 8px 25px rgba(99, 102, 241, 0.3),
-        0 0 0 1px rgba(99, 102, 241, 0.2) inset;
+        0 8px 25px var(--accent-light),
+        0 0 0 1px var(--accent-light) inset;
 }
 
 .premium-info p:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 215, 0, 0.4) !important;
+    background: var(--card-bg-glass) !important;
+    border-color: var(--warning-light) !important;
     box-shadow:
-        0 8px 25px rgba(255, 215, 0, 0.25),
-        0 0 0 1px rgba(255, 215, 0, 0.2) inset,
-        0 0 30px rgba(255, 215, 0, 0.15) !important;
+        0 8px 25px var(--warning-light),
+        0 0 0 1px var(--warning-light) inset,
+        0 0 30px var(--warning-light) !important;
     transform: translateY(-4px) scale(1.02) !important;
 }
 
 .quiz-info p strong {
-    color: #a5b4fc !important;
+    color: var(--accent-light) !important;
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 800 !important;
     font-size: 0.95em;
-    text-shadow: 0 2px 4px rgba(99, 102, 241, 0.6);
+    text-shadow: 0 2px 4px var(--accent-light);
 }
 
 /* Premium info strong - consolidated and enhanced */
 .premium-info p strong {
-    color: #FFD700 !important;
+    color: var(--warning) !important;
     text-shadow:
-        0 0 15px rgba(255, 215, 0, 0.6),
-        0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        0 0 15px var(--warning-light),
+        0 2px 4px var(--shadow) !important;
     font-weight: 800 !important;
     font-size: 1em !important;
     display: block !important;
@@ -424,16 +404,16 @@
 
 /* ✨ Enhanced Question Boxes ✨ */
 .question-box {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
     padding: 2.5rem;
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-        0 0 80px rgba(99, 102, 241, 0.15);
+        0 12px 40px var(--shadow),
+        0 0 0 1px var(--glass-border) inset,
+        0 0 80px var(--accent-light);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
@@ -441,12 +421,12 @@
 }
 
 .question-box.premium-question-box {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 215, 0, 0.2);
+    background: var(--card-bg-glass);
+    border-color: var(--warning-light);
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-        0 0 80px rgba(255, 215, 0, 0.2);
+        0 12px 40px var(--shadow),
+        0 0 0 1px var(--glass-border) inset,
+        0 0 80px var(--warning-light);
 }
 
 .question-box::before {
@@ -456,7 +436,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    background: var(--gradient-primary);
     transform: scaleX(0);
     transition: transform 0.4s ease;
     transform-origin: left;
@@ -464,7 +444,7 @@
 }
 
 .premium-question-box::before {
-    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    background: var(--gradient-warning);
 }
 
 .question-box:hover::before {
@@ -474,18 +454,18 @@
 .question-box:hover {
     transform: translateY(-8px) scale(1.01);
     box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-        0 0 120px rgba(99, 102, 241, 0.25);
-    border-color: rgba(255, 255, 255, 0.2);
+        0 20px 60px var(--shadow),
+        0 0 0 1px var(--glass-border) inset,
+        0 0 120px var(--accent-light);
+    border-color: var(--card-border);
 }
 
 .premium-question-box:hover {
     box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-        0 0 120px rgba(255, 215, 0, 0.3);
-    border-color: rgba(255, 215, 0, 0.3);
+        0 20px 60px var(--shadow),
+        0 0 0 1px var(--glass-border) inset,
+        0 0 120px var(--warning-light);
+    border-color: var(--warning-light);
 }
 
 /* ✨ Enhanced Question Titles ✨ */
@@ -493,7 +473,7 @@
     font-size: clamp(1.3rem, 2.5vw, 1.8rem) !important;
     font-weight: 800 !important;
     margin: 0 0 1.5rem 0 !important;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%) !important;
+    background: var(--gradient-primary) !important;
     background-size: 200% 200% !important;
     animation: gradientShift 4s ease-in-out infinite !important;
     -webkit-background-clip: text !important;
@@ -504,7 +484,7 @@
     letter-spacing: -0.01em !important;
     color: transparent !important;
     display: block !important;
-    filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5)) !important;
+    filter: drop-shadow(0 0 10px var(--accent-light)) !important;
     font-family: var(--font-display, 'Inter', sans-serif) !important;
     text-align: left !important;
     word-wrap: break-word !important;
@@ -512,9 +492,9 @@
 }
 
 .premium-question-box h3 {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%) !important;
+    background: var(--gradient-warning) !important;
     background-size: 200% 200% !important;
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)) !important;
+    filter: drop-shadow(0 0 15px var(--warning-light)) !important;
     animation: gradientShift 4s ease-in-out infinite !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
@@ -533,22 +513,22 @@
 
 .question-box li {
     padding: 1rem 1.25rem;
-    background: rgba(99, 102, 241, 0.08);
+    background: var(--accent-light);
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    border: 1px solid var(--accent-light);
     border-radius: 12px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     font-size: 1rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
     position: relative;
     overflow: hidden;
 }
 
 .premium-question-box li {
-    background: rgba(255, 215, 0, 0.08);
-    border-color: rgba(255, 215, 0, 0.2);
+    background: var(--warning-light);
+    border-color: var(--warning-light);
 }
 
 .question-box li::before {
@@ -558,30 +538,30 @@
     top: 0;
     width: 3px;
     height: 100%;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: var(--gradient-primary);
     transform: scaleY(0);
     transition: transform 0.3s ease;
 }
 
 .premium-question-box li::before {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
+    background: var(--gradient-warning);
 }
 
 .question-box li:hover {
-    background: rgba(99, 102, 241, 0.12);
-    border-color: rgba(99, 102, 241, 0.4);
+    background: var(--accent-light);
+    border-color: var(--accent);
     transform: translateX(8px) scale(1.02);
     box-shadow:
-        0 6px 20px rgba(99, 102, 241, 0.25),
-        0 0 0 1px rgba(99, 102, 241, 0.2) inset;
+        0 6px 20px var(--accent-light),
+        0 0 0 1px var(--accent-light) inset;
 }
 
 .premium-question-box li:hover {
-    background: rgba(255, 215, 0, 0.12);
-    border-color: rgba(255, 215, 0, 0.4);
+    background: var(--warning-light);
+    border-color: var(--warning-light);
     box-shadow:
-        0 6px 20px rgba(255, 215, 0, 0.25),
-        0 0 0 1px rgba(255, 215, 0, 0.2) inset;
+        0 6px 20px var(--warning-light),
+        0 0 0 1px var(--warning-light) inset;
 }
 
 .question-box li:hover::before {
@@ -589,41 +569,41 @@
 }
 
 .question-box li strong {
-    color: #6366f1;
+    color: var(--accent);
     margin-right: 0.75rem;
     font-weight: 700;
     font-size: 1.1em;
 }
 
 .premium-question-box li strong {
-    color: #FFD700;
+    color: var(--warning);
 }
 
 /* ✨ Enhanced Correct Answer Display ✨ */
 .correct-answer {
     padding: 1.25rem 1.5rem;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(22, 163, 74, 0.08));
+    background: var(--success-light);
     backdrop-filter: blur(15px);
-    border: 2px solid rgba(34, 197, 94, 0.3);
+    border: 2px solid var(--success);
     border-radius: 16px;
     margin-bottom: 1.5rem;
     font-weight: 700;
-    color: #22c55e;
+    color: var(--success);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
     box-shadow:
-        0 4px 15px rgba(34, 197, 94, 0.2),
-        0 0 0 1px rgba(34, 197, 94, 0.1) inset;
+        0 4px 15px var(--success-light),
+        0 0 0 1px var(--success-light) inset;
 }
 
 .correct-answer.premium-answer {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.1));
-    border-color: rgba(255, 215, 0, 0.4);
-    color: #FFD700;
+    background: var(--warning-light);
+    border-color: var(--warning-light);
+    color: var(--warning);
     box-shadow:
-        0 4px 15px rgba(255, 215, 0, 0.3),
-        0 0 0 1px rgba(255, 215, 0, 0.15) inset;
+        0 4px 15px var(--warning-light),
+        0 0 0 1px var(--warning-light) inset;
 }
 
 .correct-answer::before {
@@ -633,12 +613,12 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(from 0deg, transparent, rgba(34, 197, 94, 0.1), transparent);
+    background: conic-gradient(from 0deg, transparent, var(--success-light), transparent);
     animation: rotate 10s linear infinite;
 }
 
 .premium-answer::before {
-    background: conic-gradient(from 0deg, transparent, rgba(255, 215, 0, 0.15), transparent);
+    background: conic-gradient(from 0deg, transparent, var(--warning-light), transparent);
 }
 
 @keyframes rotate {
@@ -647,36 +627,36 @@
 }
 
 .correct-answer:hover {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.18), rgba(22, 163, 74, 0.12));
-    border-color: rgba(34, 197, 94, 0.5);
+    background: var(--success-light);
+    border-color: var(--success);
     transform: scale(1.03) translateY(-2px);
     box-shadow:
-        0 8px 25px rgba(34, 197, 94, 0.3),
-        0 0 0 1px rgba(34, 197, 94, 0.2) inset;
+        0 8px 25px var(--success-light),
+        0 0 0 1px var(--success-light) inset;
 }
 
 .premium-answer:hover {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.15));
-    border-color: rgba(255, 215, 0, 0.5);
+    background: var(--warning-light);
+    border-color: var(--warning);
     box-shadow:
-        0 8px 25px rgba(255, 215, 0, 0.4),
-        0 0 0 1px rgba(255, 215, 0, 0.25) inset;
+        0 8px 25px var(--warning-light),
+        0 0 0 1px var(--warning-light) inset;
 }
 
 .correct-answer strong {
-    color: #15803d;
+    color: var(--success);
 }
 
 /* ✅ Enhanced Marks Display for Test Questions */
 .marks-display {
     padding: var(--space-sm) var(--space-md);
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+    background: var(--info-light);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    border: 1px solid var(--info);
     border-radius: var(--radius-lg);
     margin-bottom: var(--space-lg);
     font-weight: 600;
-    color: #2563eb;
+    color: var(--info);
     transition: all var(--transition-normal);
     display: inline-block;
     min-width: 120px;
@@ -684,20 +664,20 @@
 }
 
 .marks-display:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.08));
-    border-color: rgba(59, 130, 246, 0.4);
+    background: var(--info-light);
+    border-color: var(--info);
     transform: scale(1.02);
     box-shadow: var(--shadow-md);
 }
 
 .marks-display strong {
-    color: #1d4ed8;
+    color: var(--info);
 }
 
 /* ✨ Enhanced Delete Button ✨ */
 .delete-btn {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-    color: white;
+    background: var(--gradient-danger);
+    color: var(--text-light);
     border: none;
     border-radius: 16px;
     padding: 1rem 1.75rem;
@@ -706,10 +686,10 @@
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow:
-        0 8px 25px rgba(220, 38, 38, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        0 8px 25px var(--danger-light),
+        0 0 0 1px var(--glass-border) inset;
     backdrop-filter: blur(15px);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--card-border);
     position: relative;
     overflow: hidden;
     width: fit-content;
@@ -718,8 +698,8 @@
 
 .delete-btn.premium-delete-btn {
     box-shadow:
-        0 8px 25px rgba(220, 38, 38, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        0 8px 25px var(--danger-light),
+        0 0 0 1px var(--glass-border) inset;
 }
 
 .delete-btn::before {
@@ -729,7 +709,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     transition: left var(--transition-normal);
 }
 
@@ -740,16 +720,16 @@
 .delete-btn:hover {
     transform: translateY(-4px) scale(1.08);
     box-shadow:
-        0 12px 35px rgba(220, 38, 38, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-    background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+        0 12px 35px var(--danger-light),
+        0 0 0 1px var(--glass-border) inset;
+    background: var(--gradient-danger);
 }
 
 .delete-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background-color: #9ca3af !important;
-    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+    background-color: var(--text-disabled) !important;
+    background: var(--text-disabled) !important;
     pointer-events: none;
     transform: none !important;
     box-shadow: none !important;
@@ -758,7 +738,7 @@
 .delete-btn:disabled:hover {
     transform: none !important;
     box-shadow: none !important;
-    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+    background: var(--text-disabled) !important;
 }
 
 /* ✅ Enhanced Loading & Error States */
@@ -771,11 +751,9 @@
     min-height: 50vh;
     text-align: center;
     padding: var(--space-2xl);
-    background: linear-gradient(135deg,
-        rgba(99, 102, 241, 0.05),
-        rgba(139, 92, 246, 0.05));
+    background: var(--accent-light);
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    border: 1px solid var(--accent-light);
     border-radius: var(--radius-xl);
     margin: var(--space-xl) auto;
     box-shadow: var(--shadow-lg);
@@ -789,23 +767,23 @@
 }
 
 .error-container {
-    border-color: rgba(239, 68, 68, 0.3);
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.02));
+    border-color: var(--danger-light);
+    background: var(--danger-light);
 }
 
 /* ✨ Enhanced No Questions State ✨ */
 .no-questions {
     text-align: center;
     padding: 4rem 2rem;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-    color: rgba(255, 255, 255, 0.7);
+        0 12px 40px var(--shadow),
+        0 0 0 1px var(--glass-border) inset;
+    color: var(--text-muted);
     font-size: 1.2rem;
     position: relative;
     overflow: hidden;
@@ -818,7 +796,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+    background: conic-gradient(from 0deg, transparent, var(--accent-light), transparent);
     animation: rotate 15s linear infinite;
 }
 
@@ -826,7 +804,7 @@
     position: relative;
     z-index: 1;
     font-weight: 600;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -853,7 +831,7 @@
     }
 
     .quiz-details h2.premium-title {
-        filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.6)) !important;
+        filter: drop-shadow(0 0 18px var(--warning-light)) !important;
     }
 
     .question-box {
@@ -879,7 +857,7 @@
     }
 
     .quiz-details h2.premium-title {
-        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)) !important;
+        filter: drop-shadow(0 0 15px var(--warning-light)) !important;
     }
 
     .quiz-info {
@@ -947,7 +925,7 @@
     }
 
     .quiz-details h2.premium-title {
-        filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.6)) !important;
+        filter: drop-shadow(0 0 12px var(--warning-light)) !important;
     }
 
     .quiz-details h2::after {
@@ -1015,7 +993,7 @@
     }
 
     .quiz-details h2.premium-title {
-        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6)) !important;
+        filter: drop-shadow(0 0 10px var(--warning-light)) !important;
     }
 
     .quiz-details h2::after {

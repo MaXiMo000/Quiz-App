@@ -5,13 +5,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-bg-glass);
   backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid var(--card-border);
   z-index: 1000;
   display: none;
   padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 @media (max-width: 768px) {
@@ -130,7 +130,7 @@
 /* Haptic feedback style for supported devices */
 @media (hover: none) and (pointer: coarse) {
   .nav-item:active {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-glass);
     transform: scale(0.95);
   }
 }
@@ -145,12 +145,12 @@
 /* Theme-based styling */
 @media (prefers-color-scheme: dark) {
   .mobile-nav-bar {
-    background: rgba(0, 0, 0, 0.8);
-    border-top-color: rgba(255, 255, 255, 0.1);
+    background: var(--bg-dark);
+    border-top-color: var(--card-border);
   }
 
   .nav-item:active {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg-glass);
   }
 }
 

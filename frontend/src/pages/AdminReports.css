@@ -2,17 +2,11 @@
 .container {
     min-height: 100vh;
     background:
-        radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg,
-            rgba(15, 15, 35, 0.95) 0%,
-            rgba(26, 26, 46, 0.97) 25%,
-            rgba(22, 33, 62, 0.95) 50%,
-            rgba(30, 20, 60, 0.97) 75%,
-            rgba(15, 15, 35, 0.95) 100%
-        );
+        radial-gradient(ellipse at top left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, var(--info-light) 0%, transparent 50%),
+        var(--bg-dark);
     padding: 3rem 2rem;
     position: relative;
     overflow-x: hidden;
@@ -48,7 +42,7 @@
 .floating-orb-1 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.4), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     top: 10%;
     left: 5%;
     animation: floatOrb1 20s ease-in-out infinite;
@@ -57,7 +51,7 @@
 .floating-orb-2 {
     width: 250px;
     height: 250px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     top: 60%;
     right: 8%;
     animation: floatOrb2 25s ease-in-out infinite;
@@ -66,7 +60,7 @@
 .floating-orb-3 {
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent);
+    background: radial-gradient(circle, var(--accent-light), transparent);
     bottom: 15%;
     left: 50%;
     animation: floatOrb3 18s ease-in-out infinite;
@@ -109,12 +103,7 @@
 .container h1 {
     font-size: clamp(2rem, 4vw, 3rem) !important;
     font-weight: 800 !important;
-    background: linear-gradient(135deg,
-        #6366f1 0%,
-        #8b5cf6 25%,
-        #d946ef 50%,
-        #8b5cf6 75%,
-        #6366f1 100%) !important;
+    background: var(--gradient-primary) !important;
     background-size: 300% 300% !important;
     animation: gradientShift 5s ease-in-out infinite !important;
     -webkit-background-clip: text !important;
@@ -124,7 +113,7 @@
     text-align: center !important;
     position: relative !important;
     letter-spacing: -0.02em !important;
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5)) !important;
+    filter: drop-shadow(0 0 20px var(--accent-light)) !important;
     color: transparent !important;
     display: block !important;
     line-height: 1.2 !important;
@@ -138,7 +127,7 @@
     transform: translateX(-50%);
     width: 120px;
     height: 4px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    background: var(--gradient-primary);
     border-radius: 50px;
     animation: lineExpand 1s ease-out;
 }
@@ -165,10 +154,10 @@
 
 /* ✨ NEW CLEAN TABLE CONTAINER ✨ */
 .container .table-container {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
     overflow-x: auto;
     overflow-y: auto;
@@ -176,9 +165,9 @@
     position: relative;
     width: 100%;
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 60px rgba(99, 102, 241, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        var(--shadow-xl),
+        0 0 60px var(--accent-light),
+        inset 0 1px 0 var(--glass-border);
     transition: all 0.4s ease;
 }
 
@@ -189,16 +178,16 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+    background: var(--gradient-primary);
     border-radius: 24px 24px 0 0;
 }
 
 .table-container:hover {
     transform: translateY(-4px);
     box-shadow:
-        0 12px 48px rgba(0, 0, 0, 0.4),
-        0 0 80px rgba(99, 102, 241, 0.2);
-    border-color: rgba(255, 255, 255, 0.2);
+        var(--shadow-2xl),
+        0 0 80px var(--accent-light);
+    border-color: var(--card-border);
 }
 
 /* ✨ NEW CLEAN TABLE STYLES ✨ */
@@ -214,8 +203,8 @@
 
 .container .table-container thead {
     background: linear-gradient(135deg,
-        rgba(99, 102, 241, 0.15),
-        rgba(139, 92, 246, 0.15));
+        var(--accent-light),
+        var(--accent-light));
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;

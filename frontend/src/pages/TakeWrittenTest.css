@@ -39,7 +39,7 @@ textarea {
 
 .navigation-buttons button {
     background: var(--accent);
-    color: #fff;
+    color: var(--text-light);
     border: none;
     border-radius: 6px;
     padding: var(--space-xs) var(--space-md);
@@ -61,7 +61,7 @@ textarea {
     font-size: 1rem;
     padding: var(--space-xs) var(--space-sm);
     background: var(--accent2);
-    color: #fff;
+    color: var(--text-light);
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -69,5 +69,5 @@ textarea {
 }
 
 .fullscreen-toggle button:hover {
-    background: #00695c;
+    background: var(--accent-hover);
 }

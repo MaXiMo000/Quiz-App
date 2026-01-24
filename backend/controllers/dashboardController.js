@@ -1498,6 +1498,13 @@ export const getUserAchievementsEndpoint = async (req, res) => {
     logger.info(`Fetching achievements for user ${req.params.userId}`);
     try {
         const userId = req.params.userId;
+
+        // Check if req.user exists (should be set by verifyToken middleware)
+        if (!req.user || !req.user.id) {
+            logger.warn(`Unauthorized access attempt to achievements endpoint`);
+            return res.status(401).json({ message: "Unauthorized. Please log in." });
+        }
+
         const requestingUserId = req.user.id;
         const requestingUserRole = req.user.role;
 

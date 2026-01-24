@@ -7,7 +7,7 @@
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    background: var(--bg-dark);
 }
 
 .loading-fullscreen {
@@ -52,7 +52,7 @@
 .loading-orb-1 {
     width: 400px;
     height: 400px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     top: 10%;
     left: 10%;
     animation-delay: 0s;
@@ -61,7 +61,7 @@
 .loading-orb-2 {
     width: 350px;
     height: 350px;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: var(--gradient-primary);
     top: 60%;
     right: 15%;
     animation-delay: 2.5s;
@@ -70,7 +70,7 @@
 .loading-orb-3 {
     width: 300px;
     height: 300px;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: var(--gradient-primary);
     bottom: 20%;
     left: 50%;
     animation-delay: 5s;
@@ -79,7 +79,7 @@
 .loading-orb-4 {
     width: 250px;
     height: 250px;
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    background: var(--gradient-primary);
     top: 50%;
     left: 30%;
     animation-delay: 7.5s;
@@ -185,17 +185,17 @@
 
 /* Glass Card - Larger and More Prominent */
 .loading-glass-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg-glass);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--card-border);
     border-radius: 40px;
     padding: 5rem 4rem;
     box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-        0 0 120px rgba(102, 126, 234, 0.3),
-        inset 0 0 60px rgba(102, 126, 234, 0.1);
+        var(--shadow-2xl),
+        0 0 0 1px var(--glass-border) inset,
+        0 0 120px var(--accent-light),
+        inset 0 0 60px var(--accent-light);
     position: relative;
     overflow: visible;
     display: flex;
@@ -211,10 +211,10 @@
         padding: 6rem 5rem;
         border-radius: 50px;
         box-shadow:
-            0 40px 100px rgba(0, 0, 0, 0.5),
-            0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-            0 0 150px rgba(102, 126, 234, 0.4),
-            inset 0 0 80px rgba(102, 126, 234, 0.15);
+            var(--shadow-2xl),
+            0 0 0 1px var(--glass-border) inset,
+            0 0 150px var(--accent-light),
+            inset 0 0 80px var(--accent-light);
     }
 }
 
@@ -223,10 +223,10 @@
         padding: 7rem 6rem;
         border-radius: 60px;
         box-shadow:
-            0 50px 120px rgba(0, 0, 0, 0.6),
-            0 0 0 2px rgba(255, 255, 255, 0.1) inset,
-            0 0 180px rgba(102, 126, 234, 0.5),
-            inset 0 0 100px rgba(102, 126, 234, 0.2);
+            var(--shadow-2xl),
+            0 0 0 2px var(--glass-border) inset,
+            0 0 180px var(--accent-light),
+            inset 0 0 100px var(--accent-light);
     }
 }
 
@@ -240,7 +240,7 @@
     background: linear-gradient(
         45deg,
         transparent 30%,
-        rgba(255, 255, 255, 0.08) 50%,
+        var(--glass-border) 50%,
         transparent 70%
     );
     animation: shimmer 4s infinite;
@@ -295,22 +295,22 @@
     width: 100%;
     height: 100%;
     border: 5px solid transparent;
-    border-top: 5px solid #667eea;
-    border-right: 5px solid #764ba2;
+    border-top: 5px solid var(--accent);
+    border-right: 5px solid var(--accent2);
     border-radius: 50%;
     background: conic-gradient(
         from 0deg,
-        #667eea 0%,
-        #764ba2 20%,
-        #f093fb 40%,
-        #f5576c 60%,
-        #4facfe 80%,
-        #667eea 100%
+        var(--accent) 0%,
+        var(--accent2) 20%,
+        var(--accent2) 40%,
+        var(--accent) 60%,
+        var(--info) 80%,
+        var(--accent) 100%
     );
-    filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.8));
+    filter: drop-shadow(0 0 30px var(--accent-light));
     box-shadow:
-        0 0 50px rgba(102, 126, 234, 0.6),
-        inset 0 0 30px rgba(102, 126, 234, 0.3);
+        0 0 50px var(--accent-light),
+        inset 0 0 30px var(--accent-light);
 }
 
 /* Middle Ring */
@@ -326,20 +326,20 @@
     width: 100%;
     height: 100%;
     border: 4px solid transparent;
-    border-top: 4px solid #f093fb;
-    border-right: 4px solid #f5576c;
+    border-top: 4px solid var(--accent2);
+    border-right: 4px solid var(--accent);
     border-radius: 50%;
     background: conic-gradient(
         from 180deg,
-        #f093fb 0%,
-        #f5576c 30%,
-        #4facfe 60%,
-        #00f2fe 100%
+        var(--accent2) 0%,
+        var(--accent) 30%,
+        var(--info) 60%,
+        var(--info) 100%
     );
-    filter: drop-shadow(0 0 25px rgba(240, 147, 251, 0.7));
+    filter: drop-shadow(0 0 25px var(--accent-light));
     box-shadow:
-        0 0 40px rgba(240, 147, 251, 0.5),
-        inset 0 0 25px rgba(240, 147, 251, 0.2);
+        0 0 40px var(--accent-light),
+        inset 0 0 25px var(--accent-light);
 }
 
 /* Inner Spinner */
@@ -355,19 +355,19 @@
     width: 100%;
     height: 100%;
     border: 3px solid transparent;
-    border-top: 3px solid #4facfe;
-    border-right: 3px solid #00f2fe;
+    border-top: 3px solid var(--info);
+    border-right: 3px solid var(--info);
     border-radius: 50%;
     background: conic-gradient(
         from 90deg,
-        #4facfe 0%,
-        #00f2fe 50%,
-        #667eea 100%
+        var(--info) 0%,
+        var(--info) 50%,
+        var(--accent) 100%
     );
-    filter: drop-shadow(0 0 20px rgba(79, 172, 254, 0.8));
+    filter: drop-shadow(0 0 20px var(--info-light));
     box-shadow:
-        0 0 30px rgba(79, 172, 254, 0.6),
-        inset 0 0 20px rgba(79, 172, 254, 0.3);
+        0 0 30px var(--info-light),
+        inset 0 0 20px var(--info-light);
 }
 
 /* Center Dot - Larger and More Glowing */
@@ -384,13 +384,13 @@
 .loading-spinner-dot {
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, #ffffff 0%, #667eea 100%);
+    background: radial-gradient(circle, var(--text-light) 0%, var(--accent) 100%);
     border-radius: 50%;
     box-shadow:
-        0 0 30px rgba(255, 255, 255, 0.9),
-        0 0 60px rgba(102, 126, 234, 0.8),
-        0 0 90px rgba(102, 126, 234, 0.5),
-        inset 0 0 15px rgba(255, 255, 255, 0.5);
+        0 0 30px var(--text-light),
+        0 0 60px var(--accent-light),
+        0 0 90px var(--accent-light),
+        inset 0 0 15px var(--glass-border);
 }
 
 /* Desktop Enhancements - Larger Center Dot */
@@ -402,11 +402,11 @@
 
     .loading-spinner-dot {
         box-shadow:
-            0 0 40px rgba(255, 255, 255, 0.95),
-            0 0 80px rgba(102, 126, 234, 0.9),
-            0 0 120px rgba(102, 126, 234, 0.6),
-            0 0 160px rgba(102, 126, 234, 0.3),
-            inset 0 0 20px rgba(255, 255, 255, 0.6);
+            0 0 40px var(--text-light),
+            0 0 80px var(--accent-light),
+            0 0 120px var(--accent-light),
+            0 0 160px var(--accent-light),
+            inset 0 0 20px var(--glass-border);
     }
 }
 
@@ -418,11 +418,11 @@
 
     .loading-spinner-dot {
         box-shadow:
-            0 0 50px rgba(255, 255, 255, 1),
-            0 0 100px rgba(102, 126, 234, 1),
-            0 0 150px rgba(102, 126, 234, 0.7),
-            0 0 200px rgba(102, 126, 234, 0.4),
-            inset 0 0 25px rgba(255, 255, 255, 0.7);
+            0 0 50px var(--text-light),
+            0 0 100px var(--accent-light),
+            0 0 150px var(--accent-light),
+            0 0 200px var(--accent-light),
+            inset 0 0 25px var(--glass-border);
     }
 }
 
@@ -439,9 +439,9 @@
     position: absolute;
     width: 8px;
     height: 8px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(102, 126, 234, 0.6));
+    background: radial-gradient(circle, var(--text-light), var(--accent-light));
     border-radius: 50%;
-    box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
+    box-shadow: 0 0 15px var(--accent-light);
     animation: particleOrbit 4s linear infinite;
 }
 
@@ -450,7 +450,7 @@
     .particle {
         width: 10px;
         height: 10px;
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.9);
+        box-shadow: 0 0 20px var(--accent-light);
         animation: particleOrbitDesktop 4s linear infinite;
     }
 
@@ -473,7 +473,7 @@
     .particle {
         width: 12px;
         height: 12px;
-        box-shadow: 0 0 25px rgba(102, 126, 234, 1);
+        box-shadow: 0 0 25px var(--accent-light);
         animation: particleOrbitLargeDesktop 4s linear infinite;
     }
 
@@ -545,7 +545,7 @@
 /* Desktop-specific enhancements */
 @media (min-width: 1024px) {
     .loading-wrapper {
-        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 30%, #16213e 60%, #0f0f23 100%);
+        background: var(--bg-dark);
         background-size: 200% 200%;
         animation: backgroundShift 15s ease infinite;
     }
@@ -560,24 +560,24 @@
     }
 
     .loading-spinner-ring {
-        filter: drop-shadow(0 0 40px rgba(102, 126, 234, 0.9));
+        filter: drop-shadow(0 0 40px var(--accent-light));
         box-shadow:
-            0 0 70px rgba(102, 126, 234, 0.7),
-            inset 0 0 40px rgba(102, 126, 234, 0.4);
+            0 0 70px var(--accent-light),
+            inset 0 0 40px var(--accent-light);
     }
 
     .loading-spinner-ring-middle {
-        filter: drop-shadow(0 0 35px rgba(240, 147, 251, 0.8));
+        filter: drop-shadow(0 0 35px var(--accent-light));
         box-shadow:
-            0 0 60px rgba(240, 147, 251, 0.6),
-            inset 0 0 35px rgba(240, 147, 251, 0.3);
+            0 0 60px var(--accent-light),
+            inset 0 0 35px var(--accent-light);
     }
 
     .loading-spinner-core {
-        filter: drop-shadow(0 0 30px rgba(79, 172, 254, 0.9));
+        filter: drop-shadow(0 0 30px var(--info-light));
         box-shadow:
-            0 0 50px rgba(79, 172, 254, 0.7),
-            inset 0 0 30px rgba(79, 172, 254, 0.4);
+            0 0 50px var(--info-light),
+            inset 0 0 30px var(--info-light);
     }
 }
 
@@ -587,24 +587,24 @@
     }
 
     .loading-spinner-ring {
-        filter: drop-shadow(0 0 50px rgba(102, 126, 234, 1));
+        filter: drop-shadow(0 0 50px var(--accent-light));
         box-shadow:
-            0 0 90px rgba(102, 126, 234, 0.8),
-            inset 0 0 50px rgba(102, 126, 234, 0.5);
+            0 0 90px var(--accent-light),
+            inset 0 0 50px var(--accent-light);
     }
 
     .loading-spinner-ring-middle {
-        filter: drop-shadow(0 0 45px rgba(240, 147, 251, 0.9));
+        filter: drop-shadow(0 0 45px var(--accent-light));
         box-shadow:
-            0 0 80px rgba(240, 147, 251, 0.7),
-            inset 0 0 45px rgba(240, 147, 251, 0.4);
+            0 0 80px var(--accent-light),
+            inset 0 0 45px var(--accent-light);
     }
 
     .loading-spinner-core {
-        filter: drop-shadow(0 0 40px rgba(79, 172, 254, 1));
+        filter: drop-shadow(0 0 40px var(--info-light));
         box-shadow:
-            0 0 70px rgba(79, 172, 254, 0.8),
-            inset 0 0 40px rgba(79, 172, 254, 0.5);
+            0 0 70px var(--info-light),
+            inset 0 0 40px var(--info-light);
     }
 
     /* Add more particles for ultra-wide screens */
@@ -614,9 +614,9 @@
         position: absolute;
         width: 8px;
         height: 8px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(240, 147, 251, 0.6));
+        background: radial-gradient(circle, var(--text-light), var(--accent-light));
         border-radius: 50%;
-        box-shadow: 0 0 20px rgba(240, 147, 251, 0.9);
+        box-shadow: 0 0 20px var(--accent-light);
         animation: particleOrbitLargeDesktop 5s linear infinite;
     }
 

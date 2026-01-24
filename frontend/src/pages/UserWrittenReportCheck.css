@@ -12,8 +12,8 @@
     border: 1px solid var(--card-border);
     box-shadow:
         var(--shadow-2xl),
-        0 0 50px rgba(99, 102, 241, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 50px var(--accent-light-alpha),
+        inset 0 1px 0 var(--glass-border);
     min-height: 80vh;
     position: relative;
     overflow: hidden;
@@ -26,7 +26,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+    background: var(--gradient-primary-accent);
     border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
 }
 
@@ -41,7 +41,7 @@
 .report-header h2 {
     font-size: 2.2rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    background: var(--gradient-primary-accent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -52,7 +52,7 @@
 
 .back-btn, .retry-btn, .retake-btn, .dashboard-btn {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: white;
+    color: var(--text-light);
     border: none;
     border-radius: var(--radius-lg);
     padding: var(--space-md) var(--space-lg);
@@ -62,18 +62,18 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-lg);
     min-height: 45px;
     font-size: 0.9rem;
 }
 
 .back-btn {
-    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    background: var(--gradient-neutral);
 }
 
 .back-btn:hover {
-    background: linear-gradient(135deg, #475569 0%, #334155 100%);
+    background: var(--gradient-neutral-dark);
     transform: translateY(-2px) translateX(-2px);
     box-shadow: var(--shadow-xl);
 }
@@ -111,8 +111,8 @@
 .score-number {
     font-size: 3rem;
     font-weight: 800;
-    color: #6366f1;
-    text-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+    color: var(--accent);
+    text-shadow: var(--text-shadow-sm);
 }
 
 .score-divider {
@@ -130,7 +130,7 @@
 .percentage-score {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #8b5cf6;
+    color: var(--accent2);
     margin-bottom: var(--space-lg);
 }
 
@@ -145,15 +145,15 @@
 }
 
 .result-badge.passed {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    color: white;
-    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+    background: var(--gradient-success);
+    color: var(--text-light);
+    box-shadow: var(--success-shadow-md);
 }
 
 .result-badge.failed {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
-    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+    background: var(--gradient-danger);
+    color: var(--text-light);
+    box-shadow: var(--danger-shadow-md);
 }
 
 .questions-section {
@@ -177,7 +177,7 @@
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: var(--gradient-primary);
     border-radius: var(--radius-full);
 }
 
@@ -209,13 +209,13 @@
 }
 
 .question-box.correct::before {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+    background: var(--gradient-success);
+    box-shadow: var(--success-shadow-md);
 }
 
 .question-box.wrong::before {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+    background: var(--gradient-danger);
+    box-shadow: var(--danger-shadow-md);
 }
 
 .question-header {
@@ -226,8 +226,8 @@
 }
 
 .question-number {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--text-light);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-lg);
     font-weight: 700;
@@ -248,13 +248,13 @@
 }
 
 .correct-icon {
-    background: rgba(34, 197, 94, 0.2);
-    border: 2px solid #22c55e;
+    background: var(--success-light-alpha);
+    border: 2px solid var(--success);
 }
 
 .wrong-icon {
-    background: rgba(239, 68, 68, 0.2);
-    border: 2px solid #ef4444;
+    background: var(--danger-light-alpha);
+    border: 2px solid var(--danger);
 }
 
 .question-text {
@@ -290,22 +290,22 @@
     border-radius: var(--radius-md);
     font-weight: 600;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
     transition: all var(--transition-fast);
     flex: 1;
     min-width: 150px;
 }
 
 .correct-answer-text {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-    border-color: rgba(34, 197, 94, 0.3);
+    background: var(--success-light-alpha);
+    color: var(--success);
+    border-color: var(--success-border);
 }
 
 .wrong-answer-text {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border-color: rgba(239, 68, 68, 0.3);
+    background: var(--danger-light-alpha);
+    color: var(--danger);
+    border-color: var(--danger-border);
 }
 
 .marks-section {
@@ -314,9 +314,9 @@
     gap: var(--space-sm);
     margin-top: var(--space-md);
     padding: var(--space-sm) var(--space-md);
-    background: rgba(99, 102, 241, 0.1);
+    background: var(--accent-light-alpha);
     border-radius: var(--radius-md);
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid var(--accent-border);
 }
 
 .marks-label {
@@ -326,7 +326,7 @@
 
 .marks-value {
     font-weight: 700;
-    color: #6366f1;
+    color: var(--accent);
     font-size: 1.1rem;
 }
 
@@ -353,11 +353,11 @@
 }
 
 .retake-btn {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--gradient-success);
 }
 
 .dashboard-btn {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: var(--gradient-primary-dark);
 }
 
 .loading-container,
@@ -380,8 +380,8 @@
 .loading-spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid rgba(99, 102, 241, 0.2);
-    border-top: 4px solid #6366f1;
+    border: 4px solid var(--accent-light-alpha);
+    border-top: 4px solid var(--accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -400,7 +400,7 @@
 }
 
 .error-text {
-    color: #ef4444;
+    color: var(--danger);
 }
 
 /* ✅ Enhanced Mobile Responsiveness for Best Website Experience */
