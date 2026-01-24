@@ -13,10 +13,111 @@
 
 .premium-quiz-container {
     min-height: 100vh;
+    height: auto !important;
+    max-height: none !important;
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
     position: relative;
     overflow-x: hidden;
+    overflow-y: visible !important;
     padding: 2rem;
+}
+
+/* Ensure full-page scrolling when combined with main-content */
+.premium-quiz-container.main-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    overflow-x: hidden;
+    position: relative !important;
+}
+
+/* Ensure parent containers don't restrict height */
+body:has(.premium-quiz-container),
+html:has(.premium-quiz-container) {
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Direct body/html rules for better mobile support */
+body.premium-quizzes-page,
+html.premium-quizzes-page {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Override any App.css main-content restrictions */
+body.premium-quizzes-page .main-content,
+html.premium-quizzes-page .main-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    min-height: auto !important;
+}
+
+/* Override App.css mobile rules */
+@media (max-width: 768px) {
+    body.premium-quizzes-page .main-content {
+        min-height: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body.premium-quizzes-page .main-content {
+        min-height: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+    }
+}
+
+/* More aggressive mobile fixes */
+@media (max-width: 768px) {
+    body:has(.premium-quiz-container),
+    html:has(.premium-quiz-container),
+    body.premium-quizzes-page,
+    html.premium-quizzes-page {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        max-height: none !important;
+        position: relative !important;
+    }
+    
+    /* Ensure no fixed height on body/html - override any conflicting rules */
+    body.premium-quizzes-page,
+    html.premium-quizzes-page {
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Ensure main-content doesn't restrict scrolling */
+    .premium-quiz-container.main-content {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+    }
+    
+    /* Ensure quiz-list doesn't restrict scrolling */
+    .premium-quiz-container .quiz-list {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
 }
 
 /* Premium Loading Styles */
@@ -147,9 +248,12 @@
 .quiz-list {
     display: grid;
     min-height: 800px;
+    height: auto !important;
+    max-height: none !important;
     grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
     gap: 2.5rem;
     margin-bottom: 4rem;
+    overflow: visible !important;
 }
 
 /* Empty State Styles */
@@ -679,14 +783,31 @@
 
 /* Premium Responsive Design */
 @media (max-width: 1024px) {
-    .quiz-header {
-        flex-direction: column;
-        gap: 2rem;
-        text-align: center;
+    .premium-quiz-container {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden;
+    }
+
+    .premium-quiz-container.main-content {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden;
     }
 
     .quiz-list {
         grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .quiz-header {
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
     }
 
     .premium-quiz-container .premium-box .quiz-info {
@@ -723,13 +844,42 @@
 }
 
 @media (max-width: 768px) {
+    /* Force body/html to allow scrolling */
+    body.premium-quizzes-page,
+    html.premium-quizzes-page {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100vh !important;
+        position: relative !important;
+    }
+
     .premium-quiz-container {
         padding: 1.5rem;
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+    }
+
+    .premium-quiz-container.main-content {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+        min-height: auto !important;
     }
 
     .quiz-list {
         grid-template-columns: 1fr;
         gap: 2rem;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        min-height: auto !important;
     }
 
     .quiz-actions {
@@ -839,6 +989,41 @@
 }
 
 @media (max-width: 480px) {
+    /* Force body/html to allow scrolling on small mobile */
+    body.premium-quizzes-page,
+    html.premium-quizzes-page {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100vh !important;
+        position: relative !important;
+    }
+
+    .premium-quiz-container {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+    }
+
+    .premium-quiz-container.main-content {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+        min-height: auto !important;
+    }
+
+    .quiz-list {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        min-height: auto !important;
+    }
+
     .quiz-header h2 {
         font-size: 2rem;
     }
@@ -934,8 +1119,40 @@
 
 /* Extra small screens */
 @media (max-width: 320px) {
+    /* Force body/html to allow scrolling on extra small mobile */
+    body.premium-quizzes-page,
+    html.premium-quizzes-page {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100vh !important;
+        position: relative !important;
+    }
+
     .premium-quiz-container {
         padding: 1rem;
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+    }
+
+    .premium-quiz-container.main-content {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+        min-height: auto !important;
+    }
+
+    .quiz-list {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        min-height: auto !important;
     }
 
     .premium-box {

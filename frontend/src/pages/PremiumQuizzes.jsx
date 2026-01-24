@@ -44,6 +44,16 @@ const PremiumQuizzes = () => {
                 modal.close();
             }
         });
+
+        // Add class to body for CSS targeting
+        document.body.classList.add('premium-quizzes-page');
+        document.documentElement.classList.add('premium-quizzes-page');
+
+        // Cleanup on unmount
+        return () => {
+            document.body.classList.remove('premium-quizzes-page');
+            document.documentElement.classList.remove('premium-quizzes-page');
+        };
     }, []);
 
     const openAddQuestionModal = (quizId) => {
