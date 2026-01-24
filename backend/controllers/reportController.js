@@ -82,8 +82,10 @@ export async function createReport(req, res) {
 
             if (!user) {
                 // Try case-insensitive search
+                // SECURITY: Escape special regex characters to prevent ReDoS attacks
+                const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 user = await UserQuiz.findOne({
-                    name: { $regex: new RegExp(`^${username}$`, "i") }
+                    name: { $regex: new RegExp(`^${escapedUsername}$`, "i") }
                 });
             }
 
@@ -200,6 +202,17 @@ export const getReportsUser = async (req, res) => {
         const username = req.query.username;
         const reports = await Report.find(username ? { username } : {}).lean();
         logger.info(`Successfully fetched ${reports.length} reports for user ${username || "all users"}`);
+
+        // Set cache-control headers to prevent browser caching and ensure fresh data
+        // Use dynamic ETag to prevent 304 responses
+        const etagValue = `"reports-${username}-${Date.now()}-${Math.random().toString(36).substring(7)}"`;
+        res.set({
+            'Cache-Control': 'private, no-cache, must-revalidate',
+            'ETag': etagValue,
+            'Last-Modified': new Date().toUTCString(),
+            'Pragma': 'no-cache'
+        });
+
         res.json(reports);
     } catch (error) {
         logger.error({ message: `Error retrieving reports for user ${req.query.username || "all users"}`, error: error.message, stack: error.stack });
@@ -245,6 +258,14 @@ export const deleteReport = async (req, res) => {
 
         await Report.findByIdAndDelete(id);
         logger.info(`Report with ID ${id} deleted successfully`);
+
+        // Ensure no caching headers are set on DELETE responses
+        res.set({
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        });
+
         return res.status(200).json({ message: "Report deleted successfully!" });
 
     } catch (error) {

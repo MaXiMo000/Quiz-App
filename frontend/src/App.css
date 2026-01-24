@@ -156,34 +156,11 @@
   border-radius: var(--radius-2xl);
   padding: var(--space-2xl);
   text-align: center;
-  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
 }
 
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: var(--gradient-primary);
-  opacity: 0.05;
-  transform: rotate(45deg);
-  transition: all var(--transition-slow);
-}
-
-.stat-card:hover::before {
-  opacity: 0.1;
-  transform: rotate(45deg) scale(1.1);
-}
-
-.stat-card:hover {
-  transform: translateY(-10px) rotate(1deg);
-  box-shadow: var(--shadow-2xl), 0 0 40px var(--accent-light);
-  border-color: var(--accent);
-}
+/* Hover effects removed from stat-card as requested */
 
 .stat-card h3 {
   font-size: 1rem;

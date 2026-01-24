@@ -45,8 +45,16 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
 import { connectRedis, redisClient } from "./config/redis.js";
 import { RedisStore } from "connect-redis";
+import logger from "./utils/logger.js";
 
 const app = express();
+
+// 🔒 PRODUCTION: Trust proxy for Render/Heroku deployment
+// This is required for express-rate-limit to work correctly behind a proxy
+if (process.env.RENDER || process.env.NODE_ENV === "production") {
+    app.set("trust proxy", true);
+    logger.info("Trust proxy enabled for production deployment");
+}
 
 // 🔒 SECURITY: Apply security headers
 app.use(requestLogger);
@@ -110,9 +118,9 @@ app.use((req, res, next) => {
         "http://127.0.0.1:3000"
     ].filter(Boolean);
 
-    // Log all requests for debugging (remove in production)
+    // Log all requests for debugging
     if (process.env.NODE_ENV !== "production") {
-        console.log(`📝 ${req.method} ${req.path} - Origin: ${origin || "none"} - Time: ${new Date().toISOString()}`);
+        logger.debug({ message: `Request: ${req.method} ${req.path}`, origin: origin || "none" });
     }
 
     // Set CORS headers for all requests
@@ -154,8 +162,11 @@ const corsOptions = {
         if (isOriginAllowed) {
             callback(null, true);
         } else {
-            console.log(`CORS blocked origin: ${origin}`);
-            console.log(`Allowed origins: ${allowedOrigins.join(", ")}`);
+            logger.warn({
+                message: "CORS blocked origin",
+                origin,
+                allowedOrigins: allowedOrigins.join(", ")
+            });
             callback(new Error("Not allowed by CORS"));
         }
     },
@@ -204,15 +215,15 @@ const sessionConfig = {
 };
 
 // Use Redis store in production, MemoryStore in development
+// IMPORTANT: RedisStore will be set after Redis connection is established
+// This prevents errors if Redis is unavailable at startup
+let useRedisStore = false;
 if (process.env.NODE_ENV === "production" || process.env.RENDER) {
-    sessionConfig.store = new RedisStore({
-        client: redisClient,
-        prefix: "quiz-app:session:",
-        ttl: 24 * 60 * 60 // 24 hours in seconds
-    });
-    console.log("🔒 Using Redis session store for production");
+    // Will be set after Redis connection is verified
+    useRedisStore = true;
+    logger.info("Redis session store will be configured after connection");
 } else {
-    console.log("🔧 Using MemoryStore for development");
+    logger.info("Using MemoryStore for development");
 }
 
 app.use(session(sessionConfig));
@@ -288,13 +299,43 @@ const PORT = process.env.PORT || 4000;
 
 const startServer = async () => {
     try {
-        await connectRedis();
+        // Connect Redis first (but don't fail if unavailable)
+        let redisConnected = false;
+        try {
+            await connectRedis();
+            redisConnected = true;
+
+            // Configure Redis session store if Redis is connected and in production
+            if (useRedisStore && redisClient && redisClient.isOpen) {
+                // Update session config with Redis store
+                sessionConfig.store = new RedisStore({
+                    client: redisClient,
+                    prefix: "quiz-app:session:",
+                    ttl: 24 * 60 * 60, // 24 hours in seconds
+                    disableTouch: true, // Improve performance
+                });
+                logger.info("✅ Redis session store configured successfully");
+            } else if (useRedisStore) {
+                logger.warn("⚠️ Redis not available - falling back to MemoryStore (sessions won't persist across restarts)");
+            }
+        } catch (redisError) {
+            logger.error("Failed to connect to Redis", {
+                message: redisError.message,
+                code: redisError.code
+            });
+            if (useRedisStore) {
+                logger.warn("⚠️ Falling back to MemoryStore for sessions (Redis unavailable)");
+            }
+            redisConnected = false;
+        }
+
+        // Connect to MongoDB
         await mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
 
-        console.log("✅ Connected to MongoDB");
+        logger.info("Connected to MongoDB");
 
         // ===================== START HTTP SERVER WITH SOCKET.IO =====================
         const server = createServer(app);
@@ -303,42 +344,71 @@ const startServer = async () => {
         initializeRealTimeQuiz(server);
 
         server.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
-            console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`);
-            console.log("🔄 Real-time quiz rooms enabled with Socket.IO");
-            console.log("🤖 AI Study Buddy enabled with Gemini API");
+            logger.info(`Server running on port ${PORT}`);
+            logger.info(`Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`);
+            logger.info("Real-time quiz rooms enabled with Socket.IO");
+            logger.info("AI Study Buddy enabled with Gemini API");
         });
 
         // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
         // Schedule daily challenge reset every hour (for more frequent checking)
         // This will check and reset challenges that were completed more than 24 hours ago
-        cron.schedule("0 * * * *", async () => {
-            console.log("🔄 Running hourly daily challenge reset check...");
-            try {
-                const result = await resetDailyChallenges();
-                if (result.success && result.usersReset > 0) {
-                    console.log(`✅ Reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+        // Using setImmediate to make it non-blocking and prevent cron job delays
+        cron.schedule("0 * * * *", () => {
+            // Use setImmediate to make cron job non-blocking
+            setImmediate(async () => {
+                logger.info("Running hourly daily challenge reset check...");
+                const startTime = Date.now();
+                try {
+                    // Add timeout to prevent blocking (max 30 seconds)
+                    const result = await Promise.race([
+                        resetDailyChallenges(),
+                        new Promise((_, reject) =>
+                            setTimeout(() => reject(new Error("Reset operation timeout after 30 seconds")), 30000)
+                        )
+                    ]);
+
+                    const duration = Date.now() - startTime;
+                    if (result.success && result.usersReset > 0) {
+                        logger.info(`Reset completed: ${result.usersReset} users across ${result.challengesModified} challenges (took ${duration}ms)`);
+                    } else {
+                        logger.debug(`No resets needed (took ${duration}ms)`);
+                    }
+                } catch (error) {
+                    const duration = Date.now() - startTime;
+                    logger.error({
+                        message: "Error in scheduled daily challenge reset",
+                        error: error.message,
+                        stack: error.stack,
+                        duration
+                    });
                 }
-            } catch (error) {
-                console.error("❌ Error in scheduled reset:", error);
-            }
+            });
         });
 
         // Also run once at server startup to catch any challenges that should have been reset
-        console.log("🚀 Running initial daily challenge reset check...");
+        logger.info("Running initial daily challenge reset check...");
         resetDailyChallenges()
             .then(result => {
                 if (result.success && result.usersReset > 0) {
-                    console.log(`✅ Startup reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
+                    logger.info(`Startup reset completed: ${result.usersReset} users across ${result.challengesModified} challenges`);
                 } else {
-                    console.log("📝 No challenges needed reset at startup");
+                    logger.info("No challenges needed reset at startup");
                 }
             })
             .catch(error => {
-                console.error("❌ Error in startup reset:", error);
+                logger.error({
+                    message: "Error in startup reset",
+                    error: error.message,
+                    stack: error.stack
+                });
             });
     } catch (err) {
-        console.error("❌ Server Startup Error:", err);
+        logger.error({
+            message: "Server Startup Error",
+            error: err.message,
+            stack: err.stack
+        });
         process.exit(1);
     }
 };

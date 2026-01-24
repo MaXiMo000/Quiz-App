@@ -1,6 +1,7 @@
 import express from "express";
 import { verifyToken } from "../middleware/auth.js";
 import { getRoomStatus, getActiveRooms } from "../controllers/realTimeQuizController.js";
+import logger from "../utils/logger.js";
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ router.get("/stats", verifyToken, async (req, res) => {
 
         res.json({ stats });
     } catch (error) {
-        console.error("Error getting multiplayer stats:", error);
+        logger.error({ message: "Error getting multiplayer stats", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Server error" });
     }
 });

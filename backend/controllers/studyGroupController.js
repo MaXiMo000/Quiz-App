@@ -256,15 +256,19 @@ export const searchStudyGroups = async (req, res) => {
         };
 
         if (query) {
+            // SECURITY: Escape special regex characters to prevent ReDoS attacks
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             searchCriteria.$or = [
-                { name: { $regex: query, $options: "i" } },
-                { description: { $regex: query, $options: "i" } },
-                { tags: { $in: [new RegExp(query, "i")] } }
+                { name: { $regex: escapedQuery, $options: "i" } },
+                { description: { $regex: escapedQuery, $options: "i" } },
+                { tags: { $in: [new RegExp(escapedQuery, "i")] } }
             ];
         }
 
         if (category) {
-            searchCriteria.category = { $regex: category, $options: "i" };
+            // SECURITY: Escape special regex characters to prevent ReDoS attacks
+            const escapedCategory = category.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            searchCriteria.category = { $regex: escapedCategory, $options: "i" };
         }
 
         const skip = (parseInt(page) - 1) * parseInt(limit);

@@ -144,7 +144,6 @@ const Home = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.6, duration: 0.5 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
                 >
                     <div className="stat-icon level-icon">🎯</div>
                     <div className="stat-content">
@@ -159,7 +158,6 @@ const Home = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.7, duration: 0.5 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
                 >
                     <div className="stat-icon streak-icon">🔥</div>
                     <div className="stat-content">
@@ -174,7 +172,6 @@ const Home = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.8, duration: 0.5 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
                 >
                     <div className="stat-icon quiz-streak-icon">⚡</div>
                     <div className="stat-content">

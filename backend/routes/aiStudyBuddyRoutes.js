@@ -2,8 +2,10 @@ import express from "express";
 import { generateFromGemini } from "../utils/geminiHelper.js";
 import { verifyToken } from "../middleware/auth.js";
 import { aiLimiter, aiQuestionLimiter } from "../middleware/rateLimiting.js";
+import { clearCacheByPattern } from "../middleware/cache.js";
 import User from "../models/User.js";
 import Quiz from "../models/Quiz.js";
+import logger from "../utils/logger.js";
 
 const router = express.Router();
 
@@ -108,7 +110,7 @@ Keep it conversational, supportive, and under 200 words.`;
         });
 
     } catch (error) {
-        console.error("Error starting AI study session:", error);
+        logger.error({ message: "Error starting AI study session", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to start study session" });
     }
 });
@@ -165,13 +167,13 @@ router.post("/chat", verifyToken, aiLimiter, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error in AI chat:", error);
+        logger.error({ message: "Error in AI chat", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to process chat message" });
     }
 });
 
 // Generate personalized quiz
-router.post("/generate-quiz", verifyToken, aiQuestionLimiter, async (req, res) => {
+router.post("/generate-quiz", verifyToken, aiQuestionLimiter, clearCacheByPattern("/api/quizzes"), async (req, res) => {
     try {
         const userId = req.user.id;
         const { topic, difficulty, questionCount = 5, focusAreas = [] } = req.body;
@@ -236,7 +238,7 @@ Return ONLY a valid JSON object with this structure:
             cleanedText = cleanedText.replace(/```json\n?/, "").replace(/\n?```/, "");
             quizData = JSON.parse(cleanedText);
         } catch (parseError) {
-            console.error("Error parsing AI response:", parseError);
+            logger.error({ message: "Error parsing AI response", error: parseError.message, stack: parseError.stack });
             return res.status(500).json({ message: "Failed to generate quiz format" });
         }
 
@@ -250,7 +252,7 @@ Return ONLY a valid JSON object with this structure:
 
             // Validate that correctAnswer is a valid letter
             if (!["A", "B", "C", "D"].includes(correctAnswer)) {
-                console.warn(`Invalid correctAnswer: ${correctAnswer}, defaulting to A`);
+                logger.warn({ message: "Invalid correctAnswer, defaulting to A", correctAnswer });
                 correctAnswer = "A";
             }
 
@@ -333,7 +335,7 @@ Return ONLY a valid JSON object with this structure:
         });
 
     } catch (error) {
-        console.error("Error generating AI quiz:", error);
+        logger.error({ message: "Error generating AI quiz", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to generate quiz" });
     }
 });
@@ -397,7 +399,7 @@ Format as a JSON array of recommendation objects:
             cleanedText = cleanedText.replace(/```json\n?/, "").replace(/\n?```/, "");
             recommendations = JSON.parse(cleanedText);
         } catch (parseError) {
-            console.error("Error parsing recommendations:", parseError);
+            logger.error({ message: "Error parsing recommendations", error: parseError.message, stack: parseError.stack });
             // Fallback recommendations
             recommendations = [
                 {
@@ -430,7 +432,7 @@ Format as a JSON array of recommendation objects:
         });
 
     } catch (error) {
-        console.error("Error getting study recommendations:", error);
+        logger.error({ message: "Error getting study recommendations", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to get recommendations" });
     }
 });
@@ -634,13 +636,13 @@ router.post("/end-session", verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error ending study session:", error);
+        logger.error({ message: "Error ending study session", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to end session" });
     }
 });
 
 // Save study plan
-router.post("/save-study-plan", verifyToken, async (req, res) => {
+router.post("/save-study-plan", verifyToken, clearCacheByPattern("/api/users"), async (req, res) => {
     try {
         const userId = req.user.id;
         const { studyPlanContent, timestamp } = req.body;
@@ -676,13 +678,13 @@ router.post("/save-study-plan", verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error saving study plan:", error);
+        logger.error({ message: "Error saving study plan", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to save study plan" });
     }
 });
 
 // Set reminder
-router.post("/set-reminder", verifyToken, async (req, res) => {
+router.post("/set-reminder", verifyToken, clearCacheByPattern("/api/users"), async (req, res) => {
     try {
         const userId = req.user.id;
         const { reminderText, context } = req.body;
@@ -714,7 +716,7 @@ router.post("/set-reminder", verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error setting reminder:", error);
+        logger.error({ message: "Error setting reminder", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to set reminder" });
     }
 });
@@ -810,7 +812,7 @@ Keep it positive, specific, and under 200 words.`;
         });
 
     } catch (error) {
-        console.error("Error tracking progress:", error);
+        logger.error({ message: "Error tracking progress", error: error.message, stack: error.stack });
         res.status(500).json({ message: "Failed to track progress" });
     }
 });
