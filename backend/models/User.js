@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
     lastQuizDate:  { type: Date,   default: null },  // last quiz date
     unlockedThemes:{ type: [String], default: [] },   // unlocked UI themes
     selectedTheme: { type: String, default: "Default" }, // selected UI theme
+    customThemes: [{  // user-created custom themes
+        name: { type: String, required: true },
+        themeData: { type: mongoose.Schema.Types.Mixed, required: true },
+        createdAt: { type: Date, default: Date.now },
+        levelCreated: { type: Number, required: true }
+    }],
 
     // Phase 2: Intelligence Layer - User preferences and analytics
     preferences: {

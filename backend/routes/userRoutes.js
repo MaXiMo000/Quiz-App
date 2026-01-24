@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme, logoutUser } from "../controllers/userController.js";
+import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme, logoutUser, saveCustomTheme, getCustomThemes, deleteCustomTheme } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/auth.js";
 import { roleUpdateLimiter } from "../middleware/rateLimiting.js";
 import mongoose from "mongoose";
@@ -278,6 +278,7 @@ router.get("/me", verifyToken, async (req, res) => {
             badges: user.badges || [],
             unlockedThemes: user.unlockedThemes || [],
             selectedTheme: user.selectedTheme || "Default",
+            customThemes: user.customThemes || [],
             isOnline: user.isOnline || false,
             lastSeen: user.lastSeen || new Date(),
         });
@@ -290,14 +291,37 @@ router.get("/me", verifyToken, async (req, res) => {
 
 router.get("/:id", verifyToken, cache, async (req, res) => {
     try {
-        const user = await UserQuiz.findById(req.params.id);
-        res.json(user);
-    } catch {
+        const user = await UserQuiz.findById(req.params.id).select("-password");
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            xp: user.xp || 0,
+            totalXP: user.totalXP || 0,
+            level: user.level || 1,
+            loginStreak: user.loginStreak || 0,
+            quizStreak: user.quizStreak || 0,
+            badges: user.badges || [],
+            unlockedThemes: user.unlockedThemes || [],
+            selectedTheme: user.selectedTheme || "Default",
+            customThemes: user.customThemes || [],
+            isOnline: user.isOnline || false,
+            lastSeen: user.lastSeen || new Date(),
+        });
+    } catch (err) {
+        logger.error({ message: `Error fetching user ${req.params.id}`, error: err.message });
         res.status(500).json({ error: "User not found" });
     }
 });
 
 router.patch("/update-role", roleUpdateLimiter, verifyToken, clearCacheByPattern("/api/users"), updateUserRole);
 router.post("/:id/theme", verifyToken, clearCacheByPattern("/api/users"), updateUserTheme);
+router.post("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), saveCustomTheme);
+router.get("/:id/custom-themes", verifyToken, getCustomThemes);
+router.delete("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), deleteCustomTheme);
 
 export default router;

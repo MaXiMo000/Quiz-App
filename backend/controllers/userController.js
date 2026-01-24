@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import XPLog from "../models/XPLog.js";
 import { unlockThemesForLevel } from "../utils/themeUtils.js";
 import logger from "../utils/logger.js";
+import mongoose from "mongoose";
 
 /**
  * Normalize IP address (convert IPv6 loopback to IPv4, handle IPv4-mapped IPv6)
@@ -340,6 +341,7 @@ export const loginUser = async (req, res) => {
                 badges: user.badges || [],
                 unlockedThemes: user.unlockedThemes || [],
                 selectedTheme: user.selectedTheme || "Default",
+                customThemes: user.customThemes || [],
                 isOnline: user.isOnline || false,
                 lastSeen: user.lastSeen || new Date(),
             },
@@ -470,5 +472,189 @@ export const updateUserTheme = async (req, res) => {
     } catch (err) {
         logger.error({ message: `Error updating theme for user ${req.params.id}`, error: err.message, stack: err.stack });
         res.status(500).json({ error: "Error updating theme" });
+    }
+};
+
+// ✅ Save custom theme
+export const saveCustomTheme = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, themeData } = req.body;
+
+        if (!name || !themeData) {
+            return res.status(400).json({ error: "Theme name and data are required" });
+        }
+
+        // Validate theme name
+        if (typeof name !== 'string' || name.trim().length === 0) {
+            return res.status(400).json({ error: "Theme name must be a non-empty string" });
+        }
+
+        if (name.trim().length > 50) {
+            return res.status(400).json({ error: "Theme name must be 50 characters or less" });
+        }
+
+        // Validate themeData is an object
+        if (typeof themeData !== 'object' || themeData === null || Array.isArray(themeData)) {
+            return res.status(400).json({ error: "Theme data must be an object" });
+        }
+
+        // Validate required theme properties (core colors only)
+        const requiredProps = ['accent', 'accent2', 'bgDark', 'bgSecondary', 'textColor', 'textLight'];
+        const missingProps = requiredProps.filter(prop => !themeData[prop]);
+        if (missingProps.length > 0) {
+            return res.status(400).json({
+                error: `Missing required theme properties: ${missingProps.join(', ')}`
+            });
+        }
+
+        // Set defaults for optional properties if not provided
+        const defaultThemeData = {
+            bgTertiary: '#1a2332',
+            cardBg: 'rgba(26, 35, 50, 0.85)',
+            cardBgGlass: 'rgba(255, 255, 255, 0.03)',
+            cardBorder: 'rgba(255, 255, 255, 0.08)',
+            textMuted: '#94a3b8',
+            textDisabled: '#64748b',
+            accentLight: 'rgba(99, 102, 241, 0.15)',
+            accentHover: '#5855eb',
+            success: '#10b981',
+            successLight: 'rgba(16, 185, 129, 0.15)',
+            warning: '#f59e0b',
+            warningLight: 'rgba(245, 158, 11, 0.15)',
+            danger: '#ef4444',
+            dangerLight: 'rgba(239, 68, 68, 0.15)',
+            info: '#06b6d4',
+            infoLight: 'rgba(6, 182, 212, 0.15)',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderFocus: themeData.accent || '#6366f1',
+            glassBg: 'rgba(255, 255, 255, 0.05)',
+            glassBorder: 'rgba(255, 255, 255, 0.1)',
+            shadow: 'rgba(0, 0, 0, 0.4)',
+            colorSidebarGradientStart: themeData.bgDark || '#0a0e1a',
+            colorSidebarGradientEnd: themeData.bgSecondary || '#141b2e',
+            colorScrollbarThumb: themeData.accent || '#6366f1',
+            colorScrollbarTrack: themeData.bgSecondary || '#141b2e',
+            colorSidebarShadow: 'rgba(0, 0, 0, 0.25)',
+            colorLogoutBg: themeData.danger || '#ef4444',
+            colorLogoutHoverBg: '#dc2626',
+            colorLogoutText: '#ffffff',
+            colorToggleBg: 'rgba(255, 255, 255, 0.05)',
+            colorToggleHoverBg: themeData.accentLight || 'rgba(99, 102, 241, 0.15)',
+            colorToggleText: '#ffffff',
+            colorCloseBtn: themeData.textColor || '#f1f5f9',
+            colorCloseBtnHover: themeData.danger || '#ef4444',
+            borderRadius: '1rem',
+            shadowIntensity: 'medium'
+        };
+
+        // Merge provided theme data with defaults
+        const finalThemeData = { ...defaultThemeData, ...themeData };
+
+        const user = await UserQuiz.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Calculate max custom themes allowed (1 per 5 levels)
+        const maxCustomThemes = Math.floor(user.level / 5);
+        const currentCustomThemes = user.customThemes || [];
+
+        if (currentCustomThemes.length >= maxCustomThemes) {
+            return res.status(403).json({
+                error: `You can only create ${maxCustomThemes} custom theme(s) at Level ${user.level}. Level up to create more! (1 custom theme per 5 levels)`
+            });
+        }
+
+        // Check if name already exists
+        const nameExists = currentCustomThemes.some(theme => theme.name.toLowerCase() === name.toLowerCase());
+        if (nameExists) {
+            return res.status(400).json({ error: "A custom theme with this name already exists" });
+        }
+
+        // Save custom theme
+        user.customThemes.push({
+            name: name.trim(),
+            themeData: finalThemeData,
+            levelCreated: user.level
+        });
+
+        await user.save();
+
+        logger.info(`User ${id} saved custom theme "${name}" at level ${user.level}`);
+        res.json({
+            message: "Custom theme saved successfully",
+            customTheme: user.customThemes[user.customThemes.length - 1],
+            maxCustomThemes,
+            currentCount: user.customThemes.length
+        });
+    } catch (err) {
+        logger.error({ message: `Error saving custom theme for user ${req.params.id}`, error: err.message, stack: err.stack });
+        res.status(500).json({ error: "Error saving custom theme" });
+    }
+};
+
+// ✅ Get user's custom themes
+export const getCustomThemes = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await UserQuiz.findById(id).select('customThemes level');
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const maxCustomThemes = Math.floor(user.level / 5);
+        const currentCustomThemes = user.customThemes || [];
+
+        res.json({
+            customThemes: currentCustomThemes,
+            maxCustomThemes,
+            currentCount: currentCustomThemes.length,
+            canCreateMore: currentCustomThemes.length < maxCustomThemes
+        });
+    } catch (err) {
+        logger.error({ message: `Error fetching custom themes for user ${req.params.id}`, error: err.message, stack: err.stack });
+        res.status(500).json({ error: "Error fetching custom themes" });
+    }
+};
+
+// ✅ Delete custom theme
+export const deleteCustomTheme = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { themeId } = req.body;
+
+        if (!themeId) {
+            return res.status(400).json({ error: "Theme ID is required" });
+        }
+
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(themeId)) {
+            return res.status(400).json({ error: "Invalid theme ID format" });
+        }
+
+        const user = await UserQuiz.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const themeIndex = user.customThemes.findIndex(theme => theme._id.toString() === themeId);
+        if (themeIndex === -1) {
+            return res.status(404).json({ error: "Custom theme not found" });
+        }
+
+        user.customThemes.splice(themeIndex, 1);
+        await user.save();
+
+        logger.info(`User ${id} deleted custom theme ${themeId}`);
+        res.json({
+            message: "Custom theme deleted successfully",
+            remainingThemes: user.customThemes.length,
+            maxCustomThemes: Math.floor(user.level / 5)
+        });
+    } catch (err) {
+        logger.error({ message: `Error deleting custom theme for user ${req.params.id}`, error: err.message, stack: err.stack });
+        res.status(500).json({ error: "Error deleting custom theme" });
     }
 };
