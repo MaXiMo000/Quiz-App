@@ -48,6 +48,7 @@ import PremiumQuizQuestions from "./pages/PremiumQuizQuestions";
 import Contact from "./pages/Contact";
 import UserAnalyticsDashboard from "./pages/UserAnalyticsDashboard";
 import XPLeaderboard from "./pages/XPLeaderboard";
+import StudyStreakPage from "./pages/StudyStreakPage";
 import ThemePage from "./pages/ThemePage";
 import HelpGuide from "./pages/HelpGuide";
 
@@ -232,6 +233,7 @@ const App = () => {
                             <Route path="/friends" element={<FriendsSystem />} />
                             <Route path="/study-groups" element={<StudyGroups />} />
                             <Route path="/gamification" element={<GamificationHub />} />
+                            <Route path="/study-streak" element={<StudyStreakPage />} />
 
                             {/* Phase 4: Next-Gen Features */}
                             <Route path="/ai-study-buddy" element={<AIStudyBuddy />} />

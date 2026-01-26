@@ -309,11 +309,14 @@ const TakeQuiz = () => {
 
                 // Update daily activity for streak tracking
                 try {
-                    await axios.post('/api/users/streak/activity', {
-                        timeSpentSeconds: totalTimeSpent
+                    // Ensure we have at least 1 second to avoid 0 time
+                    const timeToSend = Math.max(1, totalTimeSpent || 1);
+                    const response = await axios.post('/api/users/streak/activity', {
+                        timeSpentSeconds: timeToSend
                     });
+                    console.log('Daily activity updated (auto-submit):', response.data);
                 } catch (streakError) {
-                    console.warn("Could not update daily activity:", streakError.message);
+                    console.error("Could not update daily activity (auto-submit):", streakError.response?.data || streakError.message);
                 }
             } catch (statsError) {
                 console.warn("Could not update quiz stats:", statsError.message);
@@ -581,11 +584,14 @@ const TakeQuiz = () => {
 
             // Update daily activity for streak tracking
             try {
-                await axios.post('/api/users/streak/activity', {
-                    timeSpentSeconds: totalTimeSpent
+                // Ensure we have at least 1 second to avoid 0 time
+                const timeToSend = Math.max(1, totalTimeSpent || 1);
+                const response = await axios.post('/api/users/streak/activity', {
+                    timeSpentSeconds: timeToSend
                 });
+                console.log('Daily activity updated:', response.data);
             } catch (streakError) {
-                console.warn("Could not update daily activity:", streakError.message);
+                console.error("Could not update daily activity:", streakError.response?.data || streakError.message);
             }
 
             // Phase 2: Update user preferences and performance tracking
@@ -793,7 +799,7 @@ const TakeQuiz = () => {
                     onClick={handleSubmit}
                     disabled={isSubmitting || hasAutoSubmitted || isSubmittingRef.current}
                 >
-                    {isSubmitting || isSubmittingRef.current ? 'Submitting...' : 'Submit Quiz'}
+                    {isSubmitting || isSubmittingRef.current ? 'Submitting' : 'Submit Quiz'}
                 </button>
                 </div>
             </div>

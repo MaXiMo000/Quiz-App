@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
 import { useNotification } from '../hooks/useNotification';
 import NotificationModal from './NotificationModal';
-import StudyStreakGoals from './StudyStreakGoals';
 import './GamificationHub.css';
 
 const GamificationHub = () => {
@@ -284,8 +283,6 @@ const GamificationHub = () => {
             fetchTournaments();
         } else if (activeTab === 'completed-challenges') {
             fetchCompletedChallenges();
-        } else if (activeTab === 'streak') {
-            // Streak data is fetched by StudyStreakGoals component
         } else if (activeTab === 'completed-tournaments') {
             fetchCompletedTournaments();
         } else if (activeTab === 'history') {
@@ -1275,12 +1272,6 @@ const GamificationHub = () => {
                     🏆 Tournaments
                 </button>
                 <button
-                    className={`tab-button ${activeTab === 'streak' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('streak')}
-                >
-                    🔥 Study Streak
-                </button>
-                <button
                     className={`tab-button ${activeTab === 'completed-tournaments' ? 'active' : ''}`}
                     onClick={() => setActiveTab('completed-tournaments')}
                 >
@@ -1367,18 +1358,6 @@ const GamificationHub = () => {
                                 )}
                             </motion.div>
                         )}
-                    </motion.div>
-                )}
-
-                {activeTab === 'streak' && (
-                    <motion.div
-                        key="streak-tab"
-                        className="tab-content"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                    >
-                        <StudyStreakGoals />
                     </motion.div>
                 )}
 

@@ -328,6 +328,6 @@ router.delete("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"
 // Streak & Goals routes
 router.get("/streak/goals", verifyToken, getStreakAndGoals);
 router.put("/streak/goals", verifyToken, clearCacheByPattern("/api/users"), updateDailyGoals);
-router.post("/streak/activity", verifyToken, clearCacheByPattern("/api/users"), updateDailyActivity);
+router.post("/streak/activity", verifyToken, clearCacheByPattern("/api/users"), clearCacheByPattern("/api/users/streak"), updateDailyActivity);
 
 export default router;
