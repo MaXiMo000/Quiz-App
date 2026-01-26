@@ -175,7 +175,22 @@ const userSchema = new mongoose.Schema({
         isActive: { type: Boolean, default: true },
         source: { type: String, enum: ["ai_study_buddy", "manual", "system"], default: "manual" },
         notificationSent: { type: Boolean, default: false }
-    }]
+    }],
+
+    // Daily Goals & Activity Tracking
+    dailyGoals: {
+        quizzes: { type: Number, default: 3 },
+        xp: { type: Number, default: 200 },
+        timeMinutes: { type: Number, default: 30 }
+    },
+    dailyActivity: {
+        date: { type: Date },
+        quizzesToday: { type: Number, default: 0 },
+        timeSpentMinutes: { type: Number, default: 0 }
+    },
+    stats: {
+        longestStreak: { type: Number, default: 0 }
+    }
 }, { timestamps: true });
 
 export default mongoose.model("UserQuiz", userSchema);

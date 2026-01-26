@@ -138,8 +138,8 @@
     }
 
     .offline-banner.offline {
-        background: #dc3545;
-        color: white;
+        background: var(--danger);
+        color: var(--text-light);
     }
 
     .offline-banner.slow-connection {

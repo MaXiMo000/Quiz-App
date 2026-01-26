@@ -531,7 +531,7 @@
 }
 
 .achievement-error p:first-child {
-  color: #ff6b6b;
+  color: var(--danger);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
@@ -599,12 +599,12 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+  background: linear-gradient(90deg, var(--warning), var(--warning-light), var(--warning));
   animation: shimmer 3s infinite;
 }
 
 .near-impossible-title {
-  color: #fbbf24;
+  color: var(--warning);
   text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
 }
 
