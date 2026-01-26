@@ -1,0 +1,128 @@
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-lg);
+  background: var(--bg-dark);
+}
+
+.error-boundary-content {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  background: var(--card-bg-glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--card-border);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-2xl);
+}
+
+.error-boundary-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-lg);
+  animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.error-boundary-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: var(--space-md);
+}
+
+.error-boundary-message {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+}
+
+.error-boundary-details {
+  text-align: left;
+  margin-bottom: var(--space-lg);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  border: 1px solid var(--card-border);
+}
+
+.error-boundary-details summary {
+  cursor: pointer;
+  color: var(--text-light);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.error-boundary-stack {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: var(--space-sm);
+}
+
+.error-boundary-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-boundary-button {
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg-glass);
+  color: var(--text-light);
+  backdrop-filter: blur(10px);
+}
+
+.error-boundary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: var(--accent-light);
+}
+
+.error-boundary-button-primary {
+  background: var(--gradient-primary);
+  border-color: var(--accent);
+}
+
+.error-boundary-button-primary:hover {
+  background: var(--accent-hover);
+}
+
+@media (max-width: 768px) {
+  .error-boundary-content {
+    padding: var(--space-lg);
+  }
+
+  .error-boundary-title {
+    font-size: 1.5rem;
+  }
+
+  .error-boundary-message {
+    font-size: 1rem;
+  }
+
+  .error-boundary-actions {
+    flex-direction: column;
+  }
+
+  .error-boundary-button {
+    width: 100%;
+  }
+}

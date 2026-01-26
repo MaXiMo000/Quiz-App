@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '../components/Loading';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './HelpGuide.css';
 
 const HelpGuide = () => {
@@ -9,6 +10,29 @@ const HelpGuide = () => {
     const [activeSubSection, setActiveSubSection] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredSections, setFilteredSections] = useState([]);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (searchQuery) {
+                setSearchQuery('');
+            }
+        },
+        'Ctrl+F': (e) => {
+            // Only prevent browser's find dialog if we have a search input on the page
+            const searchInput = document.querySelector('.help-search-input');
+            if (searchInput) {
+                e.preventDefault();
+                e.stopPropagation();
+                searchInput.focus();
+                // Select all text for easy replacement
+                if (searchInput.select) {
+                    searchInput.select();
+                }
+            }
+            // If no search input, let browser's default Ctrl+F work
+        },
+    }, [searchQuery]);
 
     React.useEffect(() => {
         // Simulate loading time for smooth transition
@@ -552,11 +576,17 @@ const HelpGuide = () => {
                                 value={searchQuery}
                                 onChange={(e) => handleSearch(e.target.value)}
                                 className="help-search-input"
+                                aria-label="Search help topics"
+                                aria-describedby="help-search-description"
                             />
+                            <span id="help-search-description" className="sr-only">
+                                Search help guide topics and sections (Ctrl+F)
+                            </span>
                             {searchQuery && (
                                 <button
                                     className="search-clear-btn"
                                     onClick={() => handleSearch('')}
+                                    aria-label="Clear search"
                                 >
                                     ✕
                                 </button>
@@ -575,6 +605,8 @@ const HelpGuide = () => {
                                 }}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
+                                aria-label={`Go to ${section.title} section`}
+                                aria-pressed={activeSection === section.id}
                             >
                                 <span className="nav-icon">{section.icon}</span>
                                 <span className="nav-text">{section.title}</span>
@@ -587,6 +619,7 @@ const HelpGuide = () => {
                                 <button
                                     className="clear-search-btn"
                                     onClick={() => handleSearch('')}
+                                    aria-label="Clear search and show all sections"
                                 >
                                     Clear search
                                 </button>
@@ -787,6 +820,7 @@ const HelpGuide = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection('troubleshooting')}
+                            aria-label="Go to troubleshooting section"
                         >
                             🔧 Need Help?
                         </motion.button>
@@ -795,6 +829,7 @@ const HelpGuide = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection('user-types')}
+                            aria-label="Go to user types section"
                         >
                             👥 User Types
                         </motion.button>
@@ -803,6 +838,7 @@ const HelpGuide = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection('advanced-features')}
+                            aria-label="Go to advanced features section"
                         >
                             🚀 Advanced Features
                         </motion.button>
@@ -811,6 +847,7 @@ const HelpGuide = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection('mobile-pwa')}
+                            aria-label="Go to mobile and PWA section"
                         >
                             📱 Mobile & PWA
                         </motion.button>
@@ -827,6 +864,7 @@ const HelpGuide = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection('analytics-insights')}
+                            aria-label="Go to analytics and insights section"
                         >
                             📊 Analytics
                         </motion.button>

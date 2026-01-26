@@ -617,14 +617,15 @@
     width: 100%;
     max-width: 600px;
     min-width: 280px;
-    padding: 2.5rem;
+    padding: 2rem 2.5rem;
     text-align: center;
     margin: 0;
     position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
+    justify-content: flex-start;
 }
 
 .result-modal > * {
@@ -633,7 +634,7 @@
 }
 
 .result-header {
-    margin-bottom: var(--space-lg);
+    margin-bottom: 0.5rem;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -643,7 +644,7 @@
 
 .result-icon {
     font-size: 3rem;
-    margin-bottom: var(--space-sm);
+    margin-bottom: 0.25rem;
     display: block;
     text-align: center;
     /* animation: bounce 1s ease-in-out; */
@@ -733,7 +734,9 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    margin-bottom: var(--space-md);
+    margin-bottom: 0.5rem;
+    width: 100%;
+    min-height: 60px;
 }
 
 .score-number {
@@ -741,18 +744,30 @@
     font-weight: 800;
     color: var(--accent);
     text-shadow: 0 0 10px var(--accent-light);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .score-divider {
     font-size: 2rem;
     color: var(--text-secondary);
     font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .total-score {
     font-size: 2rem;
     font-weight: 700;
     color: var(--text-light);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .percentage-score {
@@ -1013,18 +1028,18 @@
     .result-modal {
         min-width: 300px;
         max-width: 500px;
-        padding: 2rem;
-        gap: 1.25rem;
+        padding: 1.5rem 2rem;
+        gap: 0.75rem;
     }
 
     .result-header {
-        margin-bottom: var(--space-md);
+        margin-bottom: 0.25rem;
         text-align: center;
     }
 
     .result-icon {
         font-size: 2.5rem;
-        margin-bottom: var(--space-xs);
+        margin-bottom: 0.125rem;
         text-align: center;
     }
 
@@ -1038,16 +1053,33 @@
         margin-bottom: var(--space-sm);
     }
 
+    .score-circle {
+        width: 100%;
+        min-height: 55px;
+    }
+
     .score-number {
         font-size: 2rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .total-score {
         font-size: 1.7rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .score-divider {
         font-size: 1.7rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .percentage-score {
@@ -1112,9 +1144,9 @@
     .result-modal {
         min-width: 280px;
         max-width: 95vw;
-        padding: 1.5rem;
+        padding: 1.25rem 1.5rem;
         max-height: 90vh;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
     .modal-overlay {
@@ -1124,13 +1156,13 @@
     }
 
     .result-header {
-        margin-bottom: var(--space-sm);
+        margin-bottom: 0.25rem;
         text-align: center;
     }
 
     .result-icon {
         font-size: 2.2rem;
-        margin-bottom: var(--space-xs);
+        margin-bottom: 0.125rem;
         text-align: center;
     }
 
@@ -1163,20 +1195,34 @@
     }
 
     .score-circle {
-        margin-bottom: var(--space-xs);
+        margin-bottom: 0.25rem;
         gap: 0.3rem;
+        width: 100%;
+        min-height: 50px;
     }
 
     .score-number {
         font-size: 1.8rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .total-score {
         font-size: 1.5rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .score-divider {
         font-size: 1.5rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .percentage-score {
@@ -1259,9 +1305,9 @@
     .result-modal {
         min-width: 260px;
         max-width: 95vw;
-        padding: 1.25rem;
+        padding: 1rem 1.25rem;
         max-height: 90vh;
-        gap: 0.875rem;
+        gap: 0.625rem;
     }
 
     .modal-overlay {
@@ -1285,13 +1331,13 @@
     }
 
     .result-header {
-        margin-bottom: var(--space-xs);
+        margin-bottom: 0.125rem;
         text-align: center;
     }
 
     .result-icon {
         font-size: 2rem;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.125rem;
         text-align: center;
     }
 
@@ -1320,24 +1366,38 @@
 
     .score-display {
         padding: var(--space-sm);
-        margin-bottom: var(--space-xs);
+        margin-bottom: 0.125rem;
     }
 
     .score-circle {
         margin-bottom: 0.25rem;
         gap: 0.25rem;
+        width: 100%;
+        min-height: 45px;
     }
 
     .score-number {
         font-size: 1.6rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .total-score {
         font-size: 1.3rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .score-divider {
         font-size: 1.3rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .percentage-score {

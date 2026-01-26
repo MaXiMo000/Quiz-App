@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import "./UserReports.css"; // Import the specific CSS file for UserReports
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const UserReports = () => {
     const [reports, setReports] = useState([]);
@@ -23,6 +24,30 @@ const UserReports = () => {
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Close any open modals or clear filters
+            if (searchQuery) {
+                setSearchQuery("");
+            }
+        },
+        'Ctrl+F': (e) => {
+            // Only prevent browser's find dialog if we have a search input on the page
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                e.preventDefault();
+                e.stopPropagation();
+                searchInput.focus();
+                // Select all text for easy replacement
+                if (searchInput.select) {
+                    searchInput.select();
+                }
+            }
+            // If no search input, let browser's default Ctrl+F work
+        },
+    }, [searchQuery]);
+
     // Initialize user from localStorage once
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -36,8 +61,8 @@ const UserReports = () => {
             const response = await axios.get(`/api/reports/user?username=${user.name}`); // auto-token
             setReports(response.data);
         } catch (error) {
-            console.error("Error fetching quizzes:", error);
-            setError("Error fetching Quiz. Try again later.");
+            console.error("Error fetching reports:", error);
+            setError("Error fetching reports. Try again later.");
         }
         finally{
             setLoading(false);
@@ -45,9 +70,20 @@ const UserReports = () => {
     }, [user?.name]);
 
     useEffect(() => {
+        let isMounted = true; // Flag to prevent state updates if component unmounts
+
         if (user?.name) {
-            getReport();
+            getReport().then(() => {
+                // Ensure we don't update state if component unmounted
+                if (!isMounted) {
+                    return;
+                }
+            });
         }
+
+        return () => {
+            isMounted = false; // Cleanup: prevent state updates after unmount
+        };
     }, [user?.name, getReport]); // ✅ Include getReport in dependencies
 
     // Add class to body for full-page scrolling
@@ -225,7 +261,12 @@ const UserReports = () => {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="search-input"
+                            aria-label="Search reports"
+                            aria-describedby="reports-search-description"
                         />
+                        <span id="reports-search-description" className="sr-only">
+                            Search reports by quiz name, date, or score
+                        </span>
                     </div>
 
                     <div className="filter-controls">
@@ -233,6 +274,7 @@ const UserReports = () => {
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="filter-select"
+                            aria-label="Filter reports by status"
                         >
                             <option value="all">All Status</option>
                             <option value="passed">Passed</option>
@@ -243,6 +285,7 @@ const UserReports = () => {
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
                             className="sort-select"
+                            aria-label="Sort reports by"
                         >
                             <option value="date">Sort by Date</option>
                             <option value="score">Sort by Score</option>
@@ -253,6 +296,8 @@ const UserReports = () => {
                             className="sort-order-btn"
                             onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
                             title={`Sort ${sortOrder === "asc" ? "Descending" : "Ascending"}`}
+                            aria-label={`Sort ${sortOrder === "asc" ? "Descending" : "Ascending"}`}
+                            aria-pressed={sortOrder === "desc"}
                         >
                             {sortOrder === "asc" ? "↑" : "↓"}
                         </button>
@@ -335,12 +380,19 @@ const UserReports = () => {
                                     </td>
                                     <td className="actions-cell">
                                         <Link to={`/report/${report._id}`}>
-                                            <button className="view-btn" title="View detailed report">📊</button>
+                                            <button
+                                                className="view-btn"
+                                                title="View detailed report"
+                                                aria-label="View detailed report"
+                                            >
+                                                📊
+                                            </button>
                                         </Link>
                                         <button
                                             className="delete-btn"
                                             onClick={() => deleteReport(report._id)}
                                             title="Delete report"
+                                            aria-label={`Delete report for ${report.quizName}`}
                                         >
                                             🗑️
                                         </button>

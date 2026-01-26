@@ -749,7 +749,7 @@ const AIStudyBuddy = () => {
                                 outline: 'none',
                                 pointerEvents: 'auto',
                                 userSelect: 'text',
-                                color: '#2d3748',
+                                color: 'var(--text-color, #2d3748)',
                                 fontWeight: '500'
                             }}
                             autoComplete="off"

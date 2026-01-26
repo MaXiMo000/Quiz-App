@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import "../App.css";
 import "./AdminQuizzes.css"; // ✅ Use the enhanced styles as AdminQuizzes
 
@@ -20,6 +23,21 @@ const AdminWrittenTests = () => {
     const [deletingTitle, setDeletingTitle] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showQuestionModal, setShowQuestionModal] = useState(false);
+
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (showCreateModal) {
+                setShowCreateModal(false);
+            }
+            if (showQuestionModal) {
+                setShowQuestionModal(false);
+            }
+        },
+    }, [showCreateModal, showQuestionModal]);
 
     // ✅ Animation variants for enhanced user experience
     const containerVariants = {
@@ -66,7 +84,9 @@ const AdminWrittenTests = () => {
             setError("");
         } catch (error) {
             console.error("Error fetching written tests:", error);
-            setError("Error fetching Tests. Try again later.");
+            const errorMsg = "Error fetching Tests. Try again later.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -92,9 +112,12 @@ const AdminWrittenTests = () => {
             setCategory("");
             setDuration(30);
             setShowCreateModal(false);
+            showSuccess("Written test created successfully!");
         } catch (error) {
             console.error("Error creating written test:", error);
-            setError("Failed to create written test.");
+            const errorMsg = "Failed to create written test.";
+            setError(errorMsg);
+            showError(errorMsg);
         }
     }, [title, category, duration, fetchTests]);
 
@@ -108,7 +131,9 @@ const AdminWrittenTests = () => {
     const addQuestion = useCallback(async (event) => {
         event.preventDefault();
         if (!selectedTestId) {
-            setError("No test selected!");
+            const errorMsg = "No test selected!";
+            setError(errorMsg);
+            showError(errorMsg);
             return;
         }
 
@@ -121,15 +146,20 @@ const AdminWrittenTests = () => {
             setNewQuestion("");
             setNewMarks(10);
             setShowQuestionModal(false);
+            showSuccess("Question added successfully!");
         } catch (error) {
             console.error("Error adding question:", error);
-            setError("Failed to add question.");
+            const errorMsg = "Failed to add question.";
+            setError(errorMsg);
+            showError(errorMsg);
         }
     }, [selectedTestId, newQuestion, newMarks, fetchTests]);
 
     const deleteQuiz = useCallback(async (title) => {
         if (!title) {
-            setError("Quiz title is missing!");
+            const errorMsg = "Quiz title is missing!";
+            setError(errorMsg);
+            showError(errorMsg);
             return;
         }
 
@@ -139,10 +169,13 @@ const AdminWrittenTests = () => {
 
             if (response.status === 200) {
                 await fetchTests();
+                showSuccess("Test deleted successfully!");
             }
         } catch (error) {
             console.error("Error deleting quiz:", error);
-            setError("Failed to delete quiz. Check the API response.");
+            const errorMsg = "Failed to delete quiz. Check the API response.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setDeletingTitle(null);
         }
@@ -193,6 +226,7 @@ const AdminWrittenTests = () => {
                     whileHover={{ scale: 1.05, backgroundColor: "#4f46e5" }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.2 }}
+                    aria-label="Create a new written test"
                 >
                     ➕ Create Written Test
                 </motion.button>
@@ -220,7 +254,7 @@ const AdminWrittenTests = () => {
                             <p>Duration: {test.duration} minutes</p>
                             <p>Total Questions: {test.questions.length}</p>
 
-                            <div className="quiz-actions">
+                            <div className="quiz-actions" role="group" aria-label={`Actions for test: ${test.title}`}>
                                 <motion.button
                                     className="delete-btn"
                                     onClick={() => deleteQuiz(test.title)}
@@ -228,6 +262,8 @@ const AdminWrittenTests = () => {
                                     whileHover={{ scale: 1.05, backgroundColor: "#ef4444" }}
                                     whileTap={{ scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label={`Delete written test: ${test.title}`}
+                                    aria-busy={deletingTitle === test.title}
                                 >
                                     {deletingTitle === test.title ? "Deleting..." : "🗑️ Delete"}
                                 </motion.button>
@@ -238,6 +274,7 @@ const AdminWrittenTests = () => {
                                     whileHover={{ scale: 1.05, backgroundColor: "#10b981" }}
                                     whileTap={{ scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label={`Add question to ${test.title}`}
                                 >
                                     ➕ Add Question
                                 </motion.button>
@@ -248,6 +285,7 @@ const AdminWrittenTests = () => {
                                     whileHover={{ scale: 1.05, backgroundColor: "#8b5cf6" }}
                                     whileTap={{ scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label={`View and manage questions for ${test.title}`}
                                 >
                                     📜 View Questions
                                 </motion.button>
@@ -301,6 +339,8 @@ const AdminWrittenTests = () => {
                                     onClick={() => setShowCreateModal(false)}
                                     whileHover={{ scale: 1.1, rotate: 90 }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Close create test modal (Escape)"
+                                    title="Close Modal (Escape)"
                                 >
                                     ✕
                                 </motion.button>
@@ -314,6 +354,8 @@ const AdminWrittenTests = () => {
                                     required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Test title"
+                                    aria-required="true"
                                 />
                                 <motion.input
                                     type="text"
@@ -324,6 +366,8 @@ const AdminWrittenTests = () => {
                                     required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Test category"
+                                    aria-required="true"
                                 />
                                 <motion.input
                                     type="number"
@@ -335,6 +379,8 @@ const AdminWrittenTests = () => {
                                     min="1"
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Test duration in minutes"
+                                    aria-required="true"
                                 />
                                 <motion.button
                                     className="submit-btn"
@@ -342,6 +388,7 @@ const AdminWrittenTests = () => {
                                     whileHover={{ scale: 1.05, backgroundColor: "#4f46e5" }}
                                     whileTap={{ scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Create written test"
                                 >
                                     Create Test
                                 </motion.button>
@@ -376,6 +423,8 @@ const AdminWrittenTests = () => {
                                     onClick={() => setShowQuestionModal(false)}
                                     whileHover={{ scale: 1.1, rotate: 90 }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Close add question modal (Escape)"
+                                    title="Close Modal (Escape)"
                                 >
                                     ✕
                                 </motion.button>
@@ -388,6 +437,8 @@ const AdminWrittenTests = () => {
                                     required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Question text"
+                                    aria-required="true"
                                 />
                                 <motion.input
                                     type="number"
@@ -398,6 +449,8 @@ const AdminWrittenTests = () => {
                                     required
                                     whileFocus={{ scale: 1.02, borderColor: "#6366f1" }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Question marks"
+                                    aria-required="true"
                                 />
                                 <motion.button
                                     className="submit-btn"
@@ -405,6 +458,7 @@ const AdminWrittenTests = () => {
                                     whileHover={{ scale: 1.05, backgroundColor: "#4f46e5" }}
                                     whileTap={{ scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
+                                    aria-label="Add question to test"
                                 >
                                     Add Question
                                 </motion.button>
@@ -413,6 +467,15 @@ const AdminWrittenTests = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

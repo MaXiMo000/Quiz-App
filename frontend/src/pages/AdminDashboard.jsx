@@ -6,12 +6,25 @@ import "./AdminDashboard.css";
 import Spinner from "../components/Spinner";
 import MigrationPanel from "../components/MigrationPanel";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [quizs, setQuizs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -20,7 +33,9 @@ const AdminDashboard = () => {
                 setUsers(res.data);
             } catch (error) {
                 console.error("Error fetching users:", error);
-                setError("Error fetching users. Try again later.");
+                const errorMsg = "Error fetching users. Try again later.";
+                setError(errorMsg);
+                showError(errorMsg);
             }
             finally{
                 setLoading(false);
@@ -33,7 +48,9 @@ const AdminDashboard = () => {
                 setQuizs(res.data);
             } catch (error) {
                 console.error("Error fetching quizzes:", error);
-                setError("Error fetching users. Try again later.");
+                const errorMsg = "Error fetching quizzes. Try again later.";
+                setError(errorMsg);
+                showError(errorMsg);
             }
             finally{
                 setLoading(false);
@@ -328,6 +345,14 @@ const AdminDashboard = () => {
                 </motion.div>
             </div>
 
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

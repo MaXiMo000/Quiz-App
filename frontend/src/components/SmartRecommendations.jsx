@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from '../utils/axios';
 import Loading from './Loading';
+import NotificationModal from './NotificationModal';
+import { useNotification } from '../hooks/useNotification';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './SmartRecommendations.css';
 
 const SmartRecommendations = ({ user }) => {
@@ -9,6 +12,16 @@ const SmartRecommendations = ({ user }) => {
     const [userProfile, setUserProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -21,14 +34,16 @@ const SmartRecommendations = ({ user }) => {
                 setUserProfile(response.data.userProfile || null);
             } catch (err) {
                 console.error('Error fetching recommendations:', err);
-                setError('Failed to load recommendations');
+                const errorMsg = 'Failed to load recommendations';
+                setError(errorMsg);
+                showError(errorMsg);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchRecommendations();
-    }, [user]);
+    }, [user, showError]);
 
     const getReasonIcon = (reason) => {
         switch (reason) {
@@ -79,7 +94,7 @@ const SmartRecommendations = ({ user }) => {
     }
 
     return (
-        <div className="smart-recommendations">
+        <div className="smart-recommendations" role="region" aria-label="Smart Recommendations">
 
             <div className="recommendations-header">
                 <h3>🎯 Smart Recommendations</h3>
@@ -106,6 +121,15 @@ const SmartRecommendations = ({ user }) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
                         onClick={() => handleQuizSelect(rec.quiz)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Take quiz: ${rec.quiz.title} - ${rec.description}`}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                handleQuizSelect(rec.quiz);
+                            }
+                        }}
                     >
                         <div className="recommendation-header">
                             <div className="quiz-title">
@@ -150,7 +174,10 @@ const SmartRecommendations = ({ user }) => {
                             >
                                 {Math.round(rec.confidence * 100)}% match
                             </div>
-                            <button className="take-quiz-btn">
+                            <button
+                                className="take-quiz-btn"
+                                aria-label={`Take quiz: ${rec.quiz.title}`}
+                            >
                                 Take Quiz →
                             </button>
                         </div>
@@ -189,6 +216,15 @@ const SmartRecommendations = ({ user }) => {
                     </div>
                 </div>
             )}
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

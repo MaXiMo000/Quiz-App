@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose = true }) => {
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen) {
+                onClose();
+            }
+        },
+    }, [isOpen]);
+
     // Auto-close after 4 seconds if autoClose is true
-    React.useEffect(() => {
+    useEffect(() => {
         if (isOpen && autoClose) {
             const timer = setTimeout(() => {
                 onClose();
@@ -64,6 +74,11 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     onClick={onClose}
+                    role="alertdialog"
+                    aria-modal="true"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    aria-label={`${type} notification`}
                 >
                     <motion.div
                         className="notification-modal-content"
@@ -127,6 +142,7 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                                 type: "spring",
                                 stiffness: 300
                             }}
+                            aria-hidden="true"
                         >
                             <motion.span
                                 animate={{
@@ -149,6 +165,8 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.4 }}
+                            role="alert"
+                            aria-live="polite"
                         >
                             {message}
                         </motion.div>
@@ -166,6 +184,7 @@ const NotificationModal = ({ isOpen, message, type = "info", onClose, autoClose 
                                 backgroundColor: config.backgroundColor
                             }}
                             whileTap={{ scale: 0.9 }}
+                            aria-label="Close notification"
                         >
                             ✕
                         </motion.button>

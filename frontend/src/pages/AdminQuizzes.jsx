@@ -6,6 +6,7 @@ import "../App.css";
 import "./AdminQuizzes.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const AdminQuizzes = () => {
@@ -20,6 +21,20 @@ const AdminQuizzes = () => {
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Close any open modals
+            const modals = ['ai_question_modal', 'create_quiz_modal', 'add_question_modal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal && modal.hasAttribute('open')) {
+                    modal.close();
+                }
+            });
+        },
+    }, []);
 
     const getQuiz = async () => {
         try {
@@ -208,6 +223,7 @@ const AdminQuizzes = () => {
                 <button
                     className="create-btn"
                     onClick={() => document.getElementById("create_quiz_modal").showModal()}
+                    aria-label="Create a new quiz"
                 >
                     <span>
                         ➕
@@ -294,9 +310,10 @@ const AdminQuizzes = () => {
                                         </p>
                                     </div>
 
-                                    <div className="quiz-actions">
+                                    <div className="quiz-actions" role="group" aria-label={`Actions for quiz: ${quiz.title}`}>
                                         <button
                                             className="delete-btn admin-delete-btn"
+                                            aria-label={`Delete quiz: ${quiz.title}`}
                                             onClick={() => deleteQuiz(quiz.title)}
                                         >
                                             🗑️ Delete
@@ -305,6 +322,7 @@ const AdminQuizzes = () => {
                                         <button
                                             className="add-ai-btn admin-ai-btn"
                                             onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
+                                            aria-label={`Generate AI questions for ${quiz.title}`}
                                         >
                                             <span>
                                                 🤖
@@ -315,6 +333,7 @@ const AdminQuizzes = () => {
                                         <button
                                             className="add-question-btn admin-add-btn"
                                             onClick={() => openAddQuestionModal(quiz._id)}
+                                            aria-label={`Add manual question to ${quiz.title}`}
                                         >
                                             ➕ Add Question
                                         </button>
@@ -322,6 +341,7 @@ const AdminQuizzes = () => {
                                         <button
                                             className="view-questions-btn admin-view-btn"
                                             onClick={() => navigate(`/admin/quiz/${quiz._id}`)}
+                                            aria-label={`View and manage questions for ${quiz.title}`}
                                         >
                                             📜 View Questions
                                         </button>

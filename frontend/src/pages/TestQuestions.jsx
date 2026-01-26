@@ -5,6 +5,7 @@ import "../App.css";
 import "./QuizQuestions.css"; // ✅ Use the same styles as QuizQuestions
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const TestQuestions = () => {
@@ -16,6 +17,13 @@ const TestQuestions = () => {
 
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            navigate("/admin/written-tests");
+        },
+    }, [navigate]);
 
 
     // ✅ Fetch test details
@@ -55,7 +63,14 @@ const TestQuestions = () => {
 
     return (
         <div className="quiz-questions-container">
-            <button className="back-btn" onClick={() => navigate("/admin/written-tests")}>🔙 Back to Tests</button>
+            <button
+                className="back-btn"
+                onClick={() => navigate("/admin/written-tests")}
+                aria-label="Go back to admin written tests page (Escape)"
+                title="Back to Tests (Escape)"
+            >
+                🔙 Back to Tests
+            </button>
 
             {test ? (
                 <div className="quiz-details">
@@ -70,7 +85,13 @@ const TestQuestions = () => {
                                 <div key={index} className="question-box">
                                     <h3>{index + 1}. {q.question}</h3>
                                     <p><strong>Marks:</strong> {q.marks}</p>
-                                    <button className="delete-btn" onClick={() => deleteQuestion(index)}>🗑️ Delete Question</button>
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() => deleteQuestion(index)}
+                                        aria-label={`Delete question ${index + 1}`}
+                                    >
+                                        🗑️ Delete Question
+                                    </button>
                                 </div>
                             ))
                         ) : (

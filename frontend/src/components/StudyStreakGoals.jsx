@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
 import { useNotification } from '../hooks/useNotification';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import Loading from './Loading';
 import './StudyStreakGoals.css';
 
@@ -11,6 +12,50 @@ const StudyStreakGoals = () => {
     const [showGoalsModal, setShowGoalsModal] = useState(false);
     const [goals, setGoals] = useState({ quizzes: 3, xp: 200, timeMinutes: 30 });
     const { showSuccess, showError } = useNotification();
+
+    const fetchStreakData = useCallback(async () => {
+        try {
+            const response = await axios.get('/api/users/streak/goals');
+            setStreakData(response.data);
+            setGoals(response.data.dailyGoals || { quizzes: 3, xp: 200, timeMinutes: 30 });
+        } catch (error) {
+            console.error('Error fetching streak data:', error);
+            showError('Failed to load streak data');
+        } finally {
+            setLoading(false);
+        }
+    }, [showError]);
+
+    const updateGoals = useCallback(async () => {
+        try {
+            await axios.put('/api/users/streak/goals', goals);
+            showSuccess('Daily goals updated successfully!');
+            setShowGoalsModal(false);
+            fetchStreakData();
+        } catch (error) {
+            console.error('Error updating goals:', error);
+            showError('Failed to update goals');
+        }
+    }, [goals, showSuccess, showError, fetchStreakData]);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (showGoalsModal) {
+                setShowGoalsModal(false);
+            }
+        },
+        'Enter': (e) => {
+            if (showGoalsModal) {
+                const target = e.target;
+                const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+                if (!isInputElement) {
+                    e.preventDefault();
+                    updateGoals();
+                }
+            }
+        },
+    }, [showGoalsModal, updateGoals]);
 
     useEffect(() => {
         fetchStreakData();
@@ -33,32 +78,7 @@ const StudyStreakGoals = () => {
             clearInterval(interval);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, []);
-
-    const fetchStreakData = async () => {
-        try {
-            const response = await axios.get('/api/users/streak/goals');
-            setStreakData(response.data);
-            setGoals(response.data.dailyGoals || { quizzes: 3, xp: 200, timeMinutes: 30 });
-        } catch (error) {
-            console.error('Error fetching streak data:', error);
-            showError('Failed to load streak data');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const updateGoals = async () => {
-        try {
-            await axios.put('/api/users/streak/goals', goals);
-            showSuccess('Daily goals updated successfully!');
-            setShowGoalsModal(false);
-            fetchStreakData();
-        } catch (error) {
-            console.error('Error updating goals:', error);
-            showError('Failed to update goals');
-        }
-    };
+    }, [fetchStreakData]);
 
     const generateCalendarDays = () => {
         const days = [];
@@ -108,6 +128,7 @@ const StudyStreakGoals = () => {
                     className="edit-goals-btn"
                     onClick={() => setShowGoalsModal(true)}
                     title="Edit daily goals"
+                    aria-label="Edit daily goals"
                 >
                     ⚙️
                 </button>
@@ -182,6 +203,8 @@ const StudyStreakGoals = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.2, delay: index * 0.01 }}
                             title={day.hasActivity ? `${day.quizCount} quiz(es), ${day.xp} XP` : 'No activity'}
+                            role="gridcell"
+                            aria-label={day.isToday ? `Today, ${day.date.toLocaleDateString()}: ${day.hasActivity ? `${day.quizCount} quiz(es), ${day.xp} XP` : 'No activity'}` : `${day.date.toLocaleDateString()}: ${day.hasActivity ? `${day.quizCount} quiz(es), ${day.xp} XP` : 'No activity'}`}
                         >
                             <div className="day-number">{day.date.getDate()}</div>
                             {day.hasActivity && (
@@ -213,6 +236,9 @@ const StudyStreakGoals = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setShowGoalsModal(false)}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="goals-modal-title"
                     >
                         <motion.div
                             className="goals-modal"
@@ -223,64 +249,74 @@ const StudyStreakGoals = () => {
                             style={{ textAlign: 'center' }}
                         >
                             <div className="modal-header">
-                                <h3>Edit Daily Goals</h3>
+                                <h3 id="goals-modal-title">Edit Daily Goals</h3>
                                 <button
                                     className="close-btn"
                                     onClick={() => setShowGoalsModal(false)}
+                                    aria-label="Close edit goals modal"
                                 >
                                     ✕
                                 </button>
                             </div>
                             <div className="modal-content">
                                 <div className="goal-input-group">
-                                    <label>
+                                    <label htmlFor="quizzes-goal">
                                         <span className="goal-icon">📝</span>
                                         Quizzes per day
                                     </label>
                                     <div className="input-wrapper">
                                         <input
+                                            id="quizzes-goal"
                                             type="number"
                                             min="1"
                                             max="20"
                                             value={goals.quizzes}
                                             onChange={(e) => setGoals({ ...goals, quizzes: parseInt(e.target.value) || 1 })}
                                             placeholder="Enter number of quizzes"
+                                            aria-label="Quizzes per day goal"
+                                            aria-describedby="quizzes-hint"
                                         />
-                                        <span className="input-hint">1-20 quizzes</span>
+                                        <span id="quizzes-hint" className="input-hint">1-20 quizzes</span>
                                     </div>
                                 </div>
                                 <div className="goal-input-group">
-                                    <label>
+                                    <label htmlFor="xp-goal">
                                         <span className="goal-icon">⭐</span>
                                         XP per day
                                     </label>
                                     <div className="input-wrapper">
                                         <input
+                                            id="xp-goal"
                                             type="number"
                                             min="50"
                                             max="2000"
                                             value={goals.xp}
                                             onChange={(e) => setGoals({ ...goals, xp: parseInt(e.target.value) || 50 })}
                                             placeholder="Enter XP target"
+                                            aria-label="XP per day goal"
+                                            aria-describedby="xp-hint"
                                         />
-                                        <span className="input-hint">50-2000 XP</span>
+                                        <span id="xp-hint" className="input-hint">50-2000 XP</span>
                                     </div>
                                 </div>
                                 <div className="goal-input-group">
-                                    <label>
+                                    <label htmlFor="time-goal">
                                         <span className="goal-icon">⏱️</span>
                                         Study time (minutes)
                                     </label>
                                     <div className="input-wrapper">
                                         <input
+                                            id="time-goal"
                                             type="number"
                                             min="5"
                                             max="300"
                                             value={goals.timeMinutes}
                                             onChange={(e) => setGoals({ ...goals, timeMinutes: parseInt(e.target.value) || 5 })}
                                             placeholder="Enter study time"
+                                            aria-label="Study time goal in minutes"
+                                            aria-describedby="time-hint"
                                         />
-                                        <span className="input-hint">5-300 minutes</span>
+                                        <span id="time-hint" className="input-hint">5-300 minutes</span>
                                     </div>
                                 </div>
                             </div>
@@ -288,12 +324,14 @@ const StudyStreakGoals = () => {
                                 <button
                                     className="cancel-btn"
                                     onClick={() => setShowGoalsModal(false)}
+                                    aria-label="Cancel editing goals"
                                 >
                                     <span>Cancel</span>
                                 </button>
                                 <button
                                     className="save-btn"
                                     onClick={updateGoals}
+                                    aria-label="Save daily goals"
                                 >
                                     <span>💾 Save Goals</span>
                                 </button>

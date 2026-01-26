@@ -9,6 +9,7 @@ import ShareQuizModal from "../components/ShareQuizModal";
 import Loading from "../components/Loading";
 import { useNotification } from "../hooks/useNotification";
 import NotificationModal from "../components/NotificationModal";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const UserQuiz = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -27,16 +28,24 @@ const UserQuiz = () => {
     const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     useEffect(() => {
+        let isMounted = true; // Flag to prevent state updates if component unmounts
+
         const fetchQuizzes = async () => {
             try {
                 const response = await axios.get(`/api/quizzes`); // auto-token
-                setQuizzes(response.data);
+                if (isMounted) {
+                    setQuizzes(response.data);
+                }
             } catch (error) {
                 console.error("Error fetching quizzes:", error);
-                setError("Error fetching Quiz. Try again later.");
+                if (isMounted) {
+                    setError("Error fetching Quiz. Try again later.");
+                }
             }
             finally{
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
@@ -80,27 +89,66 @@ const UserQuiz = () => {
         fetchBookmarks();
     }, []);
 
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (shareModalOpen) {
+                setShareModalOpen(false);
+            }
+        },
+        'Ctrl+F': (e) => {
+            // Only prevent browser's find dialog if we have a search input on the page
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                e.preventDefault();
+                e.stopPropagation();
+                searchInput.focus();
+                // Select all text for easy replacement
+                if (searchInput.select) {
+                    searchInput.select();
+                }
+            }
+            // If no search input, let browser's default Ctrl+F work
+        },
+    }, [shareModalOpen]);
+
     const handleQuizShared = (groupCount) => {
         // Show success message
         alert(`Quiz shared successfully with ${groupCount} group${groupCount !== 1 ? 's' : ''}!`);
     };
 
     const handleBookmark = async (quizId, isBookmarked) => {
+        // Optimistic UI update - update UI immediately
+        const previousState = bookmarkedQuizIds.has(quizId);
+        setBookmarkedQuizIds(prev => {
+            const newSet = new Set(prev);
+            if (isBookmarked) {
+                newSet.delete(quizId);
+            } else {
+                newSet.add(quizId);
+            }
+            return newSet;
+        });
+
         try {
             if (isBookmarked) {
                 await axios.delete(`/api/users/bookmarks`, { data: { quizId } });
-                setBookmarkedQuizIds(prev => {
-                    const newSet = new Set(prev);
-                    newSet.delete(quizId);
-                    return newSet;
-                });
                 showSuccess("Bookmark removed");
             } else {
                 await axios.post(`/api/users/bookmarks`, { quizId });
-                setBookmarkedQuizIds(prev => new Set(prev).add(quizId));
                 showSuccess("Quiz bookmarked");
             }
         } catch (error) {
+            // Revert optimistic update on error
+            setBookmarkedQuizIds(prev => {
+                const newSet = new Set(prev);
+                if (previousState) {
+                    newSet.add(quizId);
+                } else {
+                    newSet.delete(quizId);
+                }
+                return newSet;
+            });
             console.error("Error toggling bookmark:", error);
             showError(error.response?.data?.error || "Failed to update bookmark");
         }
@@ -186,7 +234,12 @@ const UserQuiz = () => {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="search-input"
+                        aria-label="Search quizzes"
+                        aria-describedby="search-description"
                     />
+                    <span id="search-description" className="sr-only">
+                        Search quizzes by title, category, or description
+                    </span>
                 </div>
 
                 <div className="filter-controls">
@@ -267,6 +320,8 @@ const UserQuiz = () => {
                                                 handleBookmark(quiz._id, isBookmarked);
                                             }}
                                             title={isBookmarked ? "Remove bookmark" : "Bookmark quiz"}
+                                            aria-label={isBookmarked ? "Remove bookmark" : "Bookmark quiz"}
+                                            aria-pressed={isBookmarked}
                                         >
                                             {isBookmarked ? "⭐" : "☆"}
                                         </button>

@@ -2,12 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from '../utils/axios';
 import Loading from './Loading';
+import NotificationModal from './NotificationModal';
+import { useNotification } from '../hooks/useNotification';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './AdaptiveDifficulty.css';
 
 const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
     const [adaptiveData, setAdaptiveData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('general');
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     const categories = [
         'general', 'mathematics', 'science', 'history',
@@ -30,20 +43,22 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
             } catch (err) {
                 console.error('Error fetching adaptive difficulty:', err);
                 console.error('Error details:', err.response?.data || err.message);
+                showError('Failed to load difficulty recommendations');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchAdaptiveDifficulty();
-    }, [user, selectedCategory, onDifficultyChange]);
+    }, [user, selectedCategory, onDifficultyChange, showError]);
 
     const getDifficultyColor = (difficulty) => {
+        // Use CSS variables for theming support
         switch (difficulty) {
-            case 'easy': return '#4CAF50';
-            case 'medium': return '#FF9800';
-            case 'hard': return '#f44336';
-            default: return '#2196F3';
+            case 'easy': return 'var(--success, #10b981)';
+            case 'medium': return 'var(--warning, #f59e0b)';
+            case 'hard': return 'var(--danger, #ef4444)';
+            default: return 'var(--info, #06b6d4)';
         }
     };
 
@@ -70,7 +85,7 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
     }
 
     return (
-        <div className="adaptive-difficulty">
+        <div className="adaptive-difficulty" role="region" aria-label="Adaptive Difficulty Recommendations">
 
             <div className="difficulty-header">
                 <h4>🎯 Smart Difficulty Recommendation</h4>
@@ -84,6 +99,7 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="category-dropdown"
+                    aria-label="Select category for difficulty recommendation"
                 >
                     {categories.map(category => (
                         <option key={category} value={category}>
@@ -153,6 +169,15 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
                         "Excellent work! Your strong performance indicates you're ready for challenging questions that will push your limits and accelerate learning."}
                 </p>
             </div>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

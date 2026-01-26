@@ -7,6 +7,7 @@ import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const TakeQuiz = () => {
     const { id } = useParams();
@@ -43,6 +44,114 @@ const TakeQuiz = () => {
 
     // Notification system
     const { notification, showError, hideNotification } = useNotification();
+
+    // Record answer time function
+    const recordAnswerTime = useCallback(() => {
+        const timeSpent = (Date.now() - questionStartTime) / 1000;
+        setAnswerTimes(prev => ({
+        ...prev,
+        [currentQuestion]: (prev[currentQuestion] || 0) + timeSpent
+        }));
+        setQuestionStartTime(Date.now());
+    }, [questionStartTime, currentQuestion]);
+
+    // ✅ Exit Fullscreen Mode (must be defined before keyboard shortcuts)
+    // This function exits fullscreen and optionally triggers auto-submit if needed
+    const exitFullScreen = useCallback(() => {
+        // Auto-submit before exiting fullscreen (if ref is set)
+        if (!hasAutoSubmitted && !isSubmittingRef.current && autoSubmitQuizRef.current) {
+            autoSubmitQuizRef.current("Close button clicked");
+        }
+
+        // Exit fullscreen with error handling
+        try {
+            // Check if document is still active before trying to exit fullscreen
+            if (document.visibilityState === 'visible' && document.hasFocus()) {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
+            }
+        } catch {
+            // Silently handle fullscreen exit errors
+        }
+        setIsFullScreen(false);
+    }, [hasAutoSubmitted]);
+
+    // Navigation handlers (must be defined before keyboard shortcuts)
+    const handleNext = useCallback(() => {
+        recordAnswerTime();
+        if (currentQuestion < quiz?.questions?.length - 1) {
+            setCurrentQuestion(prev => prev + 1);
+        }
+    }, [currentQuestion, quiz, recordAnswerTime]);
+
+    const handlePrev = useCallback(() => {
+        recordAnswerTime();
+        if (currentQuestion > 0) {
+            setCurrentQuestion(prev => prev - 1);
+        }
+    }, [currentQuestion, recordAnswerTime]);
+
+    // Keyboard shortcuts for quiz navigation
+    useKeyboardShortcuts({
+        'Escape': (e) => {
+            // Handle Escape key for various scenarios
+            // Check actual fullscreen state from DOM (more reliable than React state)
+            const isCurrentlyFullscreen = !!(
+                document.fullscreenElement ||
+                document.mozFullScreenElement ||
+                document.webkitFullscreenElement ||
+                document.msFullscreenElement
+            );
+
+            if (showReviewModal) {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowReviewModal(false);
+                navigate("/user/test");
+            } else if (showResultModal) {
+                // Result modal is handled by its own close button
+                // Don't prevent default to allow normal modal behavior
+            } else if (isCurrentlyFullscreen) {
+                // Always exit fullscreen when Escape is pressed (unless submitting)
+                if (!hasAutoSubmitted && !isSubmittingRef.current) {
+                    // Trigger auto-submit if needed (for quiz security)
+                    if (autoSubmitQuizRef.current && !showResultModal && !showReviewModal) {
+                        autoSubmitQuizRef.current("Escape key pressed");
+                    }
+                    // Exit fullscreen
+                    e.preventDefault();
+                    e.stopPropagation();
+                    exitFullScreen();
+                }
+            }
+        },
+        'ArrowLeft': (e) => {
+            // Only prevent default if not typing in an input/textarea
+            const target = e.target;
+            const isInputElement = target.tagName === 'INPUT' ||
+                                  target.tagName === 'TEXTAREA' ||
+                                  target.isContentEditable;
+
+            if (!showResultModal && !showReviewModal && currentQuestion > 0 && !isInputElement) {
+                e.preventDefault();
+                handlePrev();
+            }
+        },
+        'ArrowRight': (e) => {
+            // Only prevent default if not typing in an input/textarea
+            const target = e.target;
+            const isInputElement = target.tagName === 'INPUT' ||
+                                  target.tagName === 'TEXTAREA' ||
+                                  target.isContentEditable;
+
+            if (!showResultModal && !showReviewModal && currentQuestion < quiz?.questions?.length - 1 && !isInputElement) {
+                e.preventDefault();
+                handleNext();
+            }
+        },
+    }, [showReviewModal, showResultModal, currentQuestion, quiz, exitFullScreen, navigate, hasAutoSubmitted, handlePrev, handleNext]);
 
     const optionLetters = useMemo(() => ["A", "B", "C", "D"], []);
     const currentQ = useMemo(() => quiz?.questions?.[currentQuestion], [quiz, currentQuestion]);
@@ -90,27 +199,6 @@ const TakeQuiz = () => {
         fetchQuiz();
     }, [fetchQuiz]);
 
-    // Define exitFullScreen early to avoid circular dependency
-    const exitFullScreen = useCallback(() => {
-        // Auto-submit before exiting fullscreen
-        if (!hasAutoSubmitted && !isSubmittingRef.current && autoSubmitQuizRef.current) {
-            autoSubmitQuizRef.current("Close button clicked");
-        }
-
-        // Exit fullscreen with error handling
-        try {
-            // Check if document is still active before trying to exit fullscreen
-            if (document.visibilityState === 'visible' && document.hasFocus()) {
-        if (document.exitFullscreen) document.exitFullscreen();
-        else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-        else if (document.msExitFullscreen) document.msExitFullscreen();
-            }
-        } catch {
-            // Silently handle fullscreen exit errors
-        }
-        setIsFullScreen(false);
-    }, [hasAutoSubmitted]);
 
     // Listen for fullscreen changes
     useEffect(() => {
@@ -177,22 +265,25 @@ const TakeQuiz = () => {
         // Check initial state with a small delay to ensure proper detection after navigation
         setTimeout(checkInitialFullscreen, 100);
 
+        // Legacy Escape handler for auto-submit in fullscreen mode
+        // This works alongside useKeyboardShortcuts hook
+        // Priority: Hook handles exit fullscreen, this handles auto-submit before exit
         const handleKeyDown = (event) => {
-            if (event.key === 'Escape') {
-                if (autoSubmitQuizRef.current) {
-                    autoSubmitQuizRef.current("Escape key pressed");
-                } else {
-                    exitFullScreen();
-                }
-                // Still exit fullscreen after auto-submit
+            // Only handle Escape for auto-submit if quiz is active and in fullscreen
+            if (event.key === 'Escape' && !hasAutoSubmitted && !isSubmittingRef.current) {
                 const isCurrentlyFullscreen = !!(
                     document.fullscreenElement ||
                     document.mozFullScreenElement ||
                     document.webkitFullscreenElement ||
                     document.msFullscreenElement
                 );
-                if (isCurrentlyFullscreen) {
-                    exitFullScreen();
+
+                // Auto-submit on Escape in fullscreen (legacy behavior for quiz security)
+                // Note: The useKeyboardShortcuts hook will handle exiting fullscreen
+                if (isCurrentlyFullscreen && autoSubmitQuizRef.current && !showResultModal && !showReviewModal) {
+                    // Trigger auto-submit, but don't prevent the hook handler from exiting fullscreen
+                    autoSubmitQuizRef.current("Escape key pressed");
+                    // The hook handler will call exitFullScreen() after this
                 }
             }
         };
@@ -216,17 +307,7 @@ const TakeQuiz = () => {
             document.body.style.overflow = '';
             document.documentElement.style.touchAction = '';
         };
-    }, [exitFullScreen, hasAutoSubmitted]); // Add exitFullScreen and hasAutoSubmitted dependencies
-
-    // Record answer time function
-    const recordAnswerTime = useCallback(() => {
-        const timeSpent = (Date.now() - questionStartTime) / 1000;
-        setAnswerTimes(prev => ({
-        ...prev,
-        [currentQuestion]: (prev[currentQuestion] || 0) + timeSpent
-        }));
-        setQuestionStartTime(Date.now());
-    }, [questionStartTime, currentQuestion]);
+        }, [exitFullScreen, hasAutoSubmitted, showResultModal, showReviewModal, isFullScreen]); // Add all dependencies
 
     // Auto-submit function for interruption scenarios
     const autoSubmitQuiz = useCallback(async (reason = "Quiz interrupted") => {
@@ -703,20 +784,6 @@ const TakeQuiz = () => {
         });
     };
 
-    const handleNext = () => {
-        recordAnswerTime();
-        if (currentQuestion < quiz.questions.length - 1) {
-        setCurrentQuestion(prev => prev + 1);
-        }
-    };
-
-    const handlePrev = () => {
-        recordAnswerTime();
-        if (currentQuestion > 0) {
-            setCurrentQuestion(prev => prev - 1);
-        }
-    };
-
     if (loading) return <Loading fullScreen={true} />;
     if (error) return (
         <div className="error-container">
@@ -726,6 +793,8 @@ const TakeQuiz = () => {
                     className="retry-button"
                     onClick={() => fetchQuiz(true)}
                     disabled={loading}
+                    aria-label="Retry fetching quiz"
+                    aria-busy={loading}
                 >
                     {loading ? 'Retrying...' : 'Retry'}
                 </button>
@@ -738,6 +807,8 @@ const TakeQuiz = () => {
                         fetchQuiz(true);
                     }}
                     disabled={loading}
+                    aria-label="Try again to fetch quiz"
+                    aria-busy={loading}
                 >
                     Try Again
                 </button>
@@ -757,7 +828,8 @@ const TakeQuiz = () => {
                 <button
                     className="exit-fullscreen-btn"
                     onClick={exitFullScreen}
-                    title="Exit Fullscreen"
+                    title="Exit Fullscreen (Escape)"
+                    aria-label="Exit fullscreen mode"
                 >
                     ✕
                 </button>
@@ -771,38 +843,53 @@ const TakeQuiz = () => {
 
             <div className="question-box">
                 <p className="question">{currentQ.question}</p>
-                <div className="options">
+                <div className="options" role="radiogroup" aria-label="Answer options">
                     {currentQ.options.map((option, i) => (
                         <button
                             key={`q${currentQuestion}-opt${i}`}
                             className={answers[currentQuestion] === i ? "selected" : ""}
                             onClick={() => handleAnswer(i)}
+                            aria-label={`Option ${optionLetters[i]}: ${option}`}
+                            aria-pressed={answers[currentQuestion] === i}
+                            role="radio"
                         >
-                            {option}
+                            <span className="option-letter">{optionLetters[i]}:</span> {option}
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div className="navigation-buttons">
+            <div className="navigation-buttons" role="toolbar" aria-label="Quiz navigation">
                 <button
                     onClick={handlePrev}
                     disabled={currentQuestion === 0}
                     className={`navigation-button ${currentQuestion === 0 ? "disabled-btn" : ""}`}
+                    aria-label="Go to previous question (Left Arrow)"
+                    title="Previous Question (Left Arrow)"
                 >
                     Previous
                 </button>
-                <button onClick={handleClearAnswer}>Clear Answer</button>
+                <button
+                    onClick={handleClearAnswer}
+                    aria-label="Clear current answer"
+                    title="Clear Answer"
+                >
+                    Clear Answer
+                </button>
                 <button
                     onClick={handleNext}
                     disabled={currentQuestion === quiz.questions.length - 1}
                     className={`navigation-button ${currentQuestion === quiz.questions.length - 1 ? "disabled-btn" : ""}`}
+                    aria-label="Go to next question (Right Arrow)"
+                    title="Next Question (Right Arrow)"
                 >
                     Next
                 </button>
                 <button
                     onClick={handleSubmit}
                     disabled={isSubmitting || hasAutoSubmitted || isSubmittingRef.current}
+                    aria-label="Submit quiz and view results"
+                    aria-busy={isSubmitting || isSubmittingRef.current}
                 >
                     {isSubmitting || isSubmittingRef.current ? 'Submitting' : 'Submit Quiz'}
                 </button>
@@ -850,25 +937,28 @@ const TakeQuiz = () => {
                             Would you like to generate more questions based on your performance?
                         </p>
 
-                        <div className="modal-actions">
+                        <div className="modal-actions" role="group" aria-label="Quiz completion actions">
                             <button
                                 className="review-btn"
                                 onClick={() => {
                                     setShowResultModal(false);
                                     setShowReviewModal(true);
                                 }}
+                                aria-label="Review quiz answers and explanations"
                             >
                                 📖 Review Quiz
                             </button>
                             <button
                                 className="generate-btn"
                                 onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}
+                                aria-label="Generate more adaptive quiz questions"
                             >
                                 🚀 Generate More
                             </button>
                             <button
                                 className="reports-btn"
                                 onClick={() => navigate("/user/report")}
+                                aria-label="View all quiz reports"
                             >
                                 📊 Go to Reports
                             </button>
@@ -886,10 +976,17 @@ const TakeQuiz = () => {
                     <div className="modal-content review-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="review-header">
                             <h2>📖 Quiz Review</h2>
-                            <button className="close-review-btn" onClick={() => {
-                                setShowReviewModal(false);
-                                navigate("/user/test");
-                            }}>✕</button>
+                            <button
+                                className="close-review-btn"
+                                onClick={() => {
+                                    setShowReviewModal(false);
+                                    navigate("/user/test");
+                                }}
+                                aria-label="Close review and return to quiz list (Escape)"
+                                title="Close Review (Escape)"
+                            >
+                                ✕
+                            </button>
                         </div>
                         <div className="review-content">
                             {reviewQuestions.map((q, idx) => {
@@ -934,10 +1031,14 @@ const TakeQuiz = () => {
                             })}
                         </div>
                         <div className="review-footer">
-                            <button className="close-review-btn-large" onClick={() => {
-                                setShowReviewModal(false);
-                                navigate("/user/test");
-                            }}>
+                            <button
+                                className="close-review-btn-large"
+                                onClick={() => {
+                                    setShowReviewModal(false);
+                                    navigate("/user/test");
+                                }}
+                                aria-label="Close review and return to quiz list"
+                            >
                                 Close Review
                             </button>
                         </div>

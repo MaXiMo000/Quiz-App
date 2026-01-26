@@ -55,6 +55,7 @@
   --text-light: #ffffff;
   --text-muted: #94a3b8;
   --text-disabled: #64748b;
+  --text-muted-transparent: rgba(148, 163, 184, 0.3);
 
   --accent: #6366f1;
   --accent2: #8b5cf6;
@@ -138,6 +139,43 @@
 
   --color-close-btn: var(--text-color);
   --color-close-btn-hover: var(--danger);
+}
+
+/* Accessibility - Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent);
+  color: var(--text-light);
+  padding: var(--space-sm) var(--space-md);
+  z-index: 10000;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-to-main:focus {
+  top: 0;
 }
 
 /* body:not([data-theme]) {

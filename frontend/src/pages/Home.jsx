@@ -8,6 +8,9 @@ import ThemeSelector from "../components/ThemeSelector";
 import AdvancedThemeSelector from "../components/AdvancedThemeSelector";
 import { ThemeContext } from "../context/ThemeContext";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -25,6 +28,16 @@ const Home = () => {
         averageScore: 0,
         totalXP: 0
     });
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     const fetchUserData = useCallback(async () => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -89,7 +102,9 @@ const Home = () => {
                 localStorage.setItem("user", JSON.stringify(data));
             } catch (fallbackError) {
                 console.error("Error with fallback user data fetch:", fallbackError);
-                setError("Error fetching user data. Try again later.");
+                const errorMsg = "Error fetching user data. Try again later.";
+                setError(errorMsg);
+                showError(errorMsg);
             }
         } finally {
             setLoading(false);
@@ -390,6 +405,7 @@ const Home = () => {
                         transition={{ delay: 1.0, duration: 0.5 }}
                         whileHover={{ scale: 1.05, y: -5 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="Start a new quiz"
                     >
                         <span className="btn-icon">🚀</span>
                         <span className="btn-text">Start Quiz</span>
@@ -404,6 +420,7 @@ const Home = () => {
                             transition={{ delay: 1.1, duration: 0.5 }}
                             whileHover={{ scale: 1.05, y: -5 }}
                             whileTap={{ scale: 0.95 }}
+                            aria-label="Open Intelligence Dashboard for AI-powered insights"
                         >
                             <span className="btn-icon">🧠</span>
                             <span className="btn-text">Intelligence Dashboard</span>
@@ -418,6 +435,7 @@ const Home = () => {
                         transition={{ delay: 1.2, duration: 0.5 }}
                         whileHover={{ scale: 1.05, y: -5 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="Open Enhanced Dashboard with analytics"
                     >
                         <span className="btn-icon">📊</span>
                         <span className="btn-text">View Analytics</span>
@@ -472,6 +490,15 @@ const Home = () => {
                     />
                 </div>
             </motion.div>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

@@ -7,12 +7,25 @@ import LearningAnalytics from "../components/LearningAnalytics";
 import AdaptiveDifficulty from "../components/AdaptiveDifficulty";
 import axios from "../utils/axios";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const IntelligenceDashboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            navigate('/');
+        },
+    }, [navigate]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -34,7 +47,9 @@ const IntelligenceDashboard = () => {
                 setUser(res.data);
             } catch (error) {
                 console.error("Error fetching user data:", error);
-                setError("Error loading dashboard. Please try again.");
+                const errorMsg = "Error loading dashboard. Please try again.";
+                setError(errorMsg);
+                showError(errorMsg);
             } finally {
                 setLoading(false);
             }
@@ -154,6 +169,7 @@ const IntelligenceDashboard = () => {
                         onClick={() => navigate("/user/test")}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="Take a smart adaptive quiz"
                     >
                         🎯 Take Smart Quiz
                     </motion.button>
@@ -162,6 +178,7 @@ const IntelligenceDashboard = () => {
                         onClick={() => navigate("/user/report")}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="View your quiz reports"
                     >
                         📊 View Reports
                     </motion.button>
@@ -170,6 +187,7 @@ const IntelligenceDashboard = () => {
                         onClick={() => navigate("/premium/quizzes")}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="Browse premium quizzes"
                     >
                         🌟 Premium Quizzes
                     </motion.button>
@@ -178,11 +196,21 @@ const IntelligenceDashboard = () => {
                         onClick={() => navigate("/")}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="Return to home page"
                     >
                         🏠 Back to Home
                     </motion.button>
                 </div>
             </motion.div>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };
