@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
 import { useNotification } from '../hooks/useNotification';
+import Loading from './Loading';
 import './StudyStreakGoals.css';
 
 const StudyStreakGoals = () => {
@@ -13,6 +14,25 @@ const StudyStreakGoals = () => {
 
     useEffect(() => {
         fetchStreakData();
+
+        // Refresh data every 30 seconds to show updated activity
+        const interval = setInterval(() => {
+            fetchStreakData();
+        }, 30000);
+
+        // Also refresh when page becomes visible (user switches back to tab)
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                fetchStreakData();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, []);
 
     const fetchStreakData = async () => {
@@ -67,11 +87,7 @@ const StudyStreakGoals = () => {
     };
 
     if (loading) {
-        return (
-            <div className="study-streak-container">
-                <div className="loading-spinner">Loading...</div>
-            </div>
-        );
+        return <Loading fullScreen={false} size="medium" />;
     }
 
     if (!streakData) {
@@ -204,6 +220,7 @@ const StudyStreakGoals = () => {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
+                            style={{ textAlign: 'center' }}
                         >
                             <div className="modal-header">
                                 <h3>Edit Daily Goals</h3>
@@ -220,39 +237,51 @@ const StudyStreakGoals = () => {
                                         <span className="goal-icon">📝</span>
                                         Quizzes per day
                                     </label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        max="20"
-                                        value={goals.quizzes}
-                                        onChange={(e) => setGoals({ ...goals, quizzes: parseInt(e.target.value) || 1 })}
-                                    />
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max="20"
+                                            value={goals.quizzes}
+                                            onChange={(e) => setGoals({ ...goals, quizzes: parseInt(e.target.value) || 1 })}
+                                            placeholder="Enter number of quizzes"
+                                        />
+                                        <span className="input-hint">1-20 quizzes</span>
+                                    </div>
                                 </div>
                                 <div className="goal-input-group">
                                     <label>
                                         <span className="goal-icon">⭐</span>
                                         XP per day
                                     </label>
-                                    <input
-                                        type="number"
-                                        min="50"
-                                        max="2000"
-                                        value={goals.xp}
-                                        onChange={(e) => setGoals({ ...goals, xp: parseInt(e.target.value) || 50 })}
-                                    />
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="number"
+                                            min="50"
+                                            max="2000"
+                                            value={goals.xp}
+                                            onChange={(e) => setGoals({ ...goals, xp: parseInt(e.target.value) || 50 })}
+                                            placeholder="Enter XP target"
+                                        />
+                                        <span className="input-hint">50-2000 XP</span>
+                                    </div>
                                 </div>
                                 <div className="goal-input-group">
                                     <label>
                                         <span className="goal-icon">⏱️</span>
                                         Study time (minutes)
                                     </label>
-                                    <input
-                                        type="number"
-                                        min="5"
-                                        max="300"
-                                        value={goals.timeMinutes}
-                                        onChange={(e) => setGoals({ ...goals, timeMinutes: parseInt(e.target.value) || 5 })}
-                                    />
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="number"
+                                            min="5"
+                                            max="300"
+                                            value={goals.timeMinutes}
+                                            onChange={(e) => setGoals({ ...goals, timeMinutes: parseInt(e.target.value) || 5 })}
+                                            placeholder="Enter study time"
+                                        />
+                                        <span className="input-hint">5-300 minutes</span>
+                                    </div>
                                 </div>
                             </div>
                             <div className="modal-actions">
@@ -260,13 +289,13 @@ const StudyStreakGoals = () => {
                                     className="cancel-btn"
                                     onClick={() => setShowGoalsModal(false)}
                                 >
-                                    Cancel
+                                    <span>Cancel</span>
                                 </button>
                                 <button
                                     className="save-btn"
                                     onClick={updateGoals}
                                 >
-                                    Save Goals
+                                    <span>💾 Save Goals</span>
                                 </button>
                             </div>
                         </motion.div>

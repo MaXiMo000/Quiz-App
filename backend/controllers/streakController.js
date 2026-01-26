@@ -14,19 +14,26 @@ export const getStreakAndGoals = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Calculate current streak
+        // Calculate current streak - use UTC to avoid timezone issues
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        // Use UTC methods to get today's date in UTC
+        const todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+        const todayMidnight = new Date(todayUTC);
+        todayMidnight.setUTCHours(0, 0, 0, 0);
 
         const lastQuizDate = user.lastQuizDate ? new Date(user.lastQuizDate) : null;
-        const lastQuizMidnight = lastQuizDate ? new Date(lastQuizDate.setHours(0, 0, 0, 0)) : null;
+        let lastQuizMidnight = null;
+        if (lastQuizDate) {
+            lastQuizMidnight = new Date(Date.UTC(lastQuizDate.getUTCFullYear(), lastQuizDate.getUTCMonth(), lastQuizDate.getUTCDate()));
+            lastQuizMidnight.setUTCHours(0, 0, 0, 0);
+        }
 
         let currentStreak = user.quizStreak || 0;
-        const oneDayAgo = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+        const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
 
         // Check if streak should continue or reset
         if (lastQuizMidnight) {
-            if (lastQuizMidnight.getTime() === today.getTime()) {
+            if (lastQuizMidnight.getTime() === todayMidnight.getTime()) {
                 // Quiz taken today - streak continues
                 currentStreak = Math.max(currentStreak, 1);
             } else if (lastQuizMidnight.getTime() === oneDayAgo.getTime()) {
@@ -38,17 +45,17 @@ export const getStreakAndGoals = async (req, res) => {
             }
         }
 
-        // Get today's activity
-        const todayStart = new Date(today);
-        const todayEnd = new Date(today);
-        todayEnd.setHours(23, 59, 59, 999);
+        // Get today's activity - use UTC dates
+        const todayStart = new Date(todayMidnight);
+        const todayEnd = new Date(todayMidnight);
+        todayEnd.setUTCHours(23, 59, 59, 999);
 
-        // Get today's XP from XPLog
+        // Get today's XP from XPLog - use 'date' field, not 'createdAt'
         const todayXP = await XPLog.aggregate([
             {
                 $match: {
                     user: user._id,
-                    createdAt: { $gte: todayStart, $lte: todayEnd }
+                    date: { $gte: todayStart, $lte: todayEnd }
                 }
             },
             {
@@ -68,9 +75,22 @@ export const getStreakAndGoals = async (req, res) => {
             timeMinutes: 30
         };
 
-        // Calculate progress
-        const quizzesToday = user.dailyActivity?.quizzesToday || 0;
-        const timeSpentToday = user.dailyActivity?.timeSpentMinutes || 0;
+        // Calculate progress - only use dailyActivity if it's for today
+        let quizzesToday = 0;
+        let timeSpentToday = 0;
+
+        if (user.dailyActivity && user.dailyActivity.date) {
+            const activityDate = new Date(user.dailyActivity.date);
+            // Use UTC dates for comparison to avoid timezone issues
+            const activityDateMidnight = new Date(Date.UTC(activityDate.getUTCFullYear(), activityDate.getUTCMonth(), activityDate.getUTCDate()));
+            activityDateMidnight.setUTCHours(0, 0, 0, 0);
+
+            // Only use dailyActivity if it's for today
+            if (activityDateMidnight.getTime() === todayMidnight.getTime()) {
+                quizzesToday = user.dailyActivity.quizzesToday || 0;
+                timeSpentToday = user.dailyActivity.timeSpentMinutes || 0;
+            }
+        }
 
         const goalsProgress = {
             quizzes: {
@@ -90,22 +110,22 @@ export const getStreakAndGoals = async (req, res) => {
             }
         };
 
-        // Get streak history (last 30 days)
-        const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        // Get streak history (last 30 days) - use 'date' field, not 'createdAt'
+        const thirtyDaysAgo = new Date(todayMidnight.getTime() - 30 * 24 * 60 * 60 * 1000);
         const streakHistory = await XPLog.aggregate([
             {
                 $match: {
                     user: user._id,
-                    createdAt: { $gte: thirtyDaysAgo },
+                    date: { $gte: thirtyDaysAgo },
                     source: { $in: ['quiz', 'challenge', 'tournament'] }
                 }
             },
             {
                 $group: {
                     _id: {
-                        year: { $year: '$createdAt' },
-                        month: { $month: '$createdAt' },
-                        day: { $dayOfMonth: '$createdAt' }
+                        year: { $year: '$date' },
+                        month: { $month: '$date' },
+                        day: { $dayOfMonth: '$date' }
                     },
                     count: { $sum: 1 },
                     xp: { $sum: '$xp' }
@@ -191,44 +211,57 @@ export const updateDailyActivity = async (req, res) => {
         const userId = req.user.id;
         const { timeSpentSeconds } = req.body;
 
+
         const user = await UserQuiz.findById(userId);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        // Use UTC dates to avoid timezone issues
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+        const todayMidnight = new Date(todayUTC);
+        todayMidnight.setUTCHours(0, 0, 0, 0);
 
         // Initialize daily activity if not exists
         if (!user.dailyActivity) {
             user.dailyActivity = {
-                date: today,
+                date: todayMidnight,
                 quizzesToday: 0,
                 timeSpentMinutes: 0
             };
         }
 
-        // Check if it's a new day
+        // Check if it's a new day - use UTC dates for comparison
         const lastActivityDate = user.dailyActivity.date ? new Date(user.dailyActivity.date) : null;
-        const lastActivityMidnight = lastActivityDate ? new Date(lastActivityDate.setHours(0, 0, 0, 0)) : null;
-        const todayMidnight = new Date(today);
+        let lastActivityMidnight = null;
+        if (lastActivityDate) {
+            lastActivityMidnight = new Date(Date.UTC(lastActivityDate.getUTCFullYear(), lastActivityDate.getUTCMonth(), lastActivityDate.getUTCDate()));
+            lastActivityMidnight.setUTCHours(0, 0, 0, 0);
+        }
 
         if (!lastActivityMidnight || lastActivityMidnight.getTime() !== todayMidnight.getTime()) {
             // New day - reset counters
             user.dailyActivity = {
-                date: today,
+                date: todayMidnight,
                 quizzesToday: 1,
-                timeSpentMinutes: Math.round(timeSpentSeconds / 60)
+                timeSpentMinutes: Math.max(1, Math.round(timeSpentSeconds / 60))
             };
         } else {
             // Same day - increment
-            user.dailyActivity.quizzesToday += 1;
-            user.dailyActivity.timeSpentMinutes += Math.round(timeSpentSeconds / 60);
+            user.dailyActivity.quizzesToday = (user.dailyActivity.quizzesToday || 0) + 1;
+            const timeToAdd = Math.max(1, Math.round(timeSpentSeconds / 60));
+            user.dailyActivity.timeSpentMinutes = (user.dailyActivity.timeSpentMinutes || 0) + timeToAdd;
+            user.dailyActivity.date = todayMidnight;
         }
 
         // Update quiz streak
         const lastQuizDate = user.lastQuizDate ? new Date(user.lastQuizDate) : null;
-        const lastQuizMidnight = lastQuizDate ? new Date(lastQuizDate.setHours(0, 0, 0, 0)) : null;
+        let lastQuizMidnight = null;
+        if (lastQuizDate) {
+            lastQuizMidnight = new Date(Date.UTC(lastQuizDate.getUTCFullYear(), lastQuizDate.getUTCMonth(), lastQuizDate.getUTCDate()));
+            lastQuizMidnight.setUTCHours(0, 0, 0, 0);
+        }
         const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
 
         if (!lastQuizMidnight || lastQuizMidnight.getTime() === oneDayAgo.getTime()) {

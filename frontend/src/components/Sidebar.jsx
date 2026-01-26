@@ -298,6 +298,14 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 >
                                     <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
                                 </motion.div>
+                                <motion.div
+                                    key="admin-study-streak"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.05, duration: 0.4 }}
+                                >
+                                    <Link to="/study-streak" onClick={handleLinkClick}>🔥 Study Streak</Link>
+                                </motion.div>
                                 {/* <Link to="/admin/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link>
                                 <Link to="/admin/written-test/report" onClick={handleLinkClick}>📄 Tests Reports</Link> */}
                             </>
@@ -393,6 +401,14 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 1.15, duration: 0.4 }}
                                 >
                                     <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
+                                </motion.div>
+                                <motion.div
+                                    key="premium-study-streak"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.2, duration: 0.4 }}
+                                >
+                                    <Link to="/study-streak" onClick={handleLinkClick}>🔥 Study Streak</Link>
                                 </motion.div>
 
                                 {/* Phase 4: Next-Gen Features */}
@@ -543,6 +559,14 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 1.15, duration: 0.4 }}
                                 >
                                     <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
+                                </motion.div>
+                                <motion.div
+                                    key="user-study-streak"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.2, duration: 0.4 }}
+                                >
+                                    <Link to="/study-streak" onClick={handleLinkClick}>🔥 Study Streak</Link>
                                 </motion.div>
 
                                 <motion.button
