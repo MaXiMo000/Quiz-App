@@ -179,6 +179,16 @@
     line-height: 1.2;
 }
 
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    margin: 0 auto var(--space-xl) auto;
+    flex-wrap: wrap;
+}
+
 .timer {
     font-size: 1.5rem;
     font-weight: 600;
@@ -187,13 +197,123 @@
     padding: var(--space-sm) var(--space-lg);
     border-radius: var(--radius-full);
     border: 2px solid var(--accent);
-    margin: 0 auto var(--space-xl) auto;
     box-shadow: 0 4px 12px var(--accent-light);
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
     width: fit-content;
     text-align: center;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.timer-control-btn {
+    margin-top: 1rem;
+}
+
+/* Desktop/Laptop: Add even more spacing between timer and control button */
+@media (min-width: 769px) {
+    .timer-container {
+        gap: 3.5rem;
+    }
+
+    .timer {
+        margin-bottom: 2rem;
+    }
+
+    .timer-control-btn {
+        margin-top: 1.5rem;
+    }
+}
+
+.timer.paused {
+    background: var(--warning-light);
+    border-color: var(--warning);
+    color: var(--warning);
+    animation: pulse-paused 2s ease-in-out infinite;
+}
+
+.timer.paused .paused-indicator {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+@keyframes pulse-paused {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 4px 12px var(--warning-light);
+    }
+    50% {
+        opacity: 0.8;
+        box-shadow: 0 4px 20px var(--warning-light);
+    }
+}
+
+.timer-control-btn {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border: 2px solid var(--accent);
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-full);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.timer-control-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    filter: brightness(1.1);
+}
+
+.timer-control-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.timer-control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.timer-control-btn.resume {
+    background: var(--gradient-success);
+    border-color: var(--success);
+}
+
+.timer-control-btn.resume:hover:not(:disabled) {
+    background: var(--gradient-success);
+    filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+    .timer-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .timer {
+        font-size: 1.2rem;
+        padding: var(--space-xs) var(--space-md);
+        margin-bottom: 0.25rem;
+    }
+
+    .timer-control-btn {
+        font-size: 0.85rem;
+        padding: var(--space-xs) var(--space-md);
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
+        margin-top: 0.25rem;
+    }
 }
 
 /* ✨ Optimized Question Card ✨ */

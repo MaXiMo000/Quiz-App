@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import MobileNavBar from "./MobileNavBar";
 import ParticleBackground from "./ParticleBackground";
+import QuickThemeSwitcher from "./QuickThemeSwitcher";
+import KeyboardShortcutsGuide from "./KeyboardShortcutsGuide";
 import { Outlet } from "react-router-dom"; // ✅ Required to render child routes
 
 const Layout = () => {
@@ -20,6 +22,8 @@ const Layout = () => {
                 <Outlet />  {/* 🔥 This is where child routes get injected */}
             </div>
             <MobileNavBar onMenuClick={toggleSidebar} />
+            <QuickThemeSwitcher />
+            {/* <KeyboardShortcutsGuide /> */}
         </>
     );
 };

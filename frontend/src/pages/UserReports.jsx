@@ -8,10 +8,18 @@ import "./UserReports.css"; // Import the specific CSS file for UserReports
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { exportReportsSummaryAsCSV, exportReportAsPDF, exportReportAsCSV } from "../utils/exportUtils";
 
 const UserReports = () => {
     const [reports, setReports] = useState([]);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        // Initialize user from localStorage
+        try {
+            return JSON.parse(localStorage.getItem("user"));
+        } catch {
+            return null;
+        }
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -48,43 +56,84 @@ const UserReports = () => {
         },
     }, [searchQuery]);
 
-    // Initialize user from localStorage once
-    useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        setUser(storedUser);
-    }, []);
-
     const getReport = useCallback(async () => {
-        if (!user?.name) return;
+        const currentUser = user || JSON.parse(localStorage.getItem("user"));
+        if (!currentUser?.name) {
+            setLoading(false);
+            setError("Please log in to view reports.");
+            return;
+        }
 
         try {
-            const response = await axios.get(`/api/reports/user?username=${user.name}`); // auto-token
-            setReports(response.data);
+            setLoading(true);
+            const response = await axios.get(`/api/reports/user?username=${currentUser.name}`); // auto-token
+            setReports(response.data || []);
+            setError("");
         } catch (error) {
             console.error("Error fetching reports:", error);
             setError("Error fetching reports. Try again later.");
-        }
-        finally{
+            showError("Error fetching reports. Try again later.");
+        } finally {
             setLoading(false);
         }
-    }, [user?.name]);
+    }, [user, showError]);
 
+    // Initialize user and fetch reports
     useEffect(() => {
-        let isMounted = true; // Flag to prevent state updates if component unmounts
+        let isMounted = true;
 
-        if (user?.name) {
-            getReport().then(() => {
-                // Ensure we don't update state if component unmounted
-                if (!isMounted) {
+        const initializeAndFetch = async () => {
+            // Get user from localStorage if not set
+            if (!user) {
+                try {
+                    const storedUser = JSON.parse(localStorage.getItem("user"));
+                    if (storedUser) {
+                        setUser(storedUser);
+                    } else {
+                        if (isMounted) {
+                            setError("Please log in to view reports.");
+                            setLoading(false);
+                        }
+                        return;
+                    }
+                } catch (err) {
+                    if (isMounted) {
+                        setError("Error loading user data.");
+                        setLoading(false);
+                    }
                     return;
                 }
-            });
-        }
+            }
+
+            // Fetch reports
+            const currentUser = user || JSON.parse(localStorage.getItem("user"));
+            if (currentUser?.name && isMounted) {
+                await getReport();
+            } else if (isMounted) {
+                setLoading(false);
+            }
+        };
+
+        initializeAndFetch();
 
         return () => {
-            isMounted = false; // Cleanup: prevent state updates after unmount
+            isMounted = false;
         };
-    }, [user?.name, getReport]); // ✅ Include getReport in dependencies
+    }, []); // Run only once on mount
+
+    // Close dropdowns when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.quick-actions-dropdown')) {
+                document.querySelectorAll('.quick-actions-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
 
     // Add class to body for full-page scrolling
     useEffect(() => {
@@ -203,8 +252,32 @@ const UserReports = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <h1>📄 My Quiz Reports</h1>
-                <p className="reports-subtitle">Track your quiz performance and progress</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', width: '100%' }}>
+                    <div>
+                        <h1>📄 My Quiz Reports</h1>
+                        <p className="reports-subtitle">Track your quiz performance and progress</p>
+                    </div>
+                    {reports.length > 0 && (
+                        <motion.button
+                            className="export-summary-btn"
+                            onClick={() => {
+                                try {
+                                    exportReportsSummaryAsCSV(reports);
+                                    showSuccess(`Exported ${reports.length} reports successfully!`);
+                                } catch (error) {
+                                    console.error('Export error:', error);
+                                    showError('Failed to export reports. Please try again.');
+                                }
+                            }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            title="Export all reports as CSV"
+                            aria-label="Export all reports summary as CSV"
+                        >
+                            📊 Export All
+                        </motion.button>
+                    )}
+                </div>
             </motion.div>
 
             {/* Statistics Cards */}
@@ -379,23 +452,65 @@ const UserReports = () => {
                                         </span>
                                     </td>
                                     <td className="actions-cell">
-                                        <Link to={`/report/${report._id}`}>
+                                        <div className="report-actions">
+                                            <Link to={`/report/${report._id}`}>
+                                                <button
+                                                    className="view-btn"
+                                                    title="View detailed report"
+                                                    aria-label="View detailed report"
+                                                >
+                                                    📊
+                                                </button>
+                                            </Link>
+                                            {/* <div className="quick-actions-dropdown">
+                                                <button
+                                                    className="quick-actions-btn"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        const dropdown = e.currentTarget.nextElementSibling;
+                                                        if (dropdown) {
+                                                            dropdown.classList.toggle('show');
+                                                        }
+                                                    }}
+                                                    aria-label="Quick actions menu"
+                                                    title="Quick actions (Export PDF/CSV)"
+                                                >
+                                                    ⋯
+                                                </button>
+                                                <div className="quick-actions-menu">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            exportReportAsPDF(report);
+                                                            const menu = e.currentTarget.closest('.quick-actions-menu');
+                                                            if (menu) menu.classList.remove('show');
+                                                        }}
+                                                        aria-label="Export as PDF"
+                                                    >
+                                                        📄 PDF
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            exportReportAsCSV(report);
+                                                            const menu = e.currentTarget.closest('.quick-actions-menu');
+                                                            if (menu) menu.classList.remove('show');
+                                                        }}
+                                                        aria-label="Export as CSV"
+                                                    >
+                                                        📊 CSV
+                                                    </button>
+                                                </div>
+                                            </div> */}
                                             <button
-                                                className="view-btn"
-                                                title="View detailed report"
-                                                aria-label="View detailed report"
+                                                className="delete-btn"
+                                                onClick={() => deleteReport(report._id)}
+                                                title="Delete report"
+                                                aria-label={`Delete report for ${report.quizName}`}
                                             >
-                                                📊
+                                                🗑️
                                             </button>
-                                        </Link>
-                                        <button
-                                            className="delete-btn"
-                                            onClick={() => deleteReport(report._id)}
-                                            title="Delete report"
-                                            aria-label={`Delete report for ${report.quizName}`}
-                                        >
-                                            🗑️
-                                        </button>
+                                        </div>
                                     </td>
                                 </motion.tr>
                             );

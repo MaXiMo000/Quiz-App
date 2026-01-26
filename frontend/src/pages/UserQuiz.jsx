@@ -10,6 +10,7 @@ import Loading from "../components/Loading";
 import { useNotification } from "../hooks/useNotification";
 import NotificationModal from "../components/NotificationModal";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { addToQuizHistory } from "../utils/quizHistory";
 
 const UserQuiz = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -303,6 +304,20 @@ const UserQuiz = () => {
                                     delay: index * 0.02
                                 }}
                                 whileHover={{ y: -4 }}
+                                onClick={() => {
+                                    addToQuizHistory(quiz);
+                                    navigate(`/user/test/${quiz._id}`);
+                                }}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        addToQuizHistory(quiz);
+                                        navigate(`/user/test/${quiz._id}`);
+                                    }
+                                }}
+                                aria-label={`Start quiz: ${quiz.title}`}
                             >
                                 <div className="quiz-card-content">
                                     <div className="quiz-icon">
@@ -347,7 +362,9 @@ const UserQuiz = () => {
                                     <div className="quiz-actions">
                                         <button
                                             className="start-quiz-btn"
-                                            onClick={() => {
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                addToQuizHistory(quiz);
                                                 // Enter fullscreen first, then navigate
                                                 const enterFullScreen = () => {
                                                     const element = document.documentElement;

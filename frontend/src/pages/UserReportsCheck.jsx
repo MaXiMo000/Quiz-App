@@ -6,6 +6,7 @@ import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { exportReportAsPDF, exportReportAsCSV } from "../utils/exportUtils";
 import "../App.css";
 import "./UserReportsCheck.css";
 
@@ -17,7 +18,7 @@ export default function UserReportsCheck() {
     const [error, setError] = useState("");
 
     // Notification system
-    const { notification, showError, hideNotification } = useNotification();
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     const fetchReport = useCallback(async () => {
         try {
@@ -76,52 +77,58 @@ export default function UserReportsCheck() {
         }
     };
 
+    if (loading) {
+        return <Loading fullScreen={true} />;
+    }
+
+    if (error) {
+        return (
+            <motion.div
+                className="error-container"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+            >
+                <p className="error-message">{error}</p>
+                <motion.button
+                    className="back-btn"
+                    onClick={() => navigate("/user/report")}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    Back to Reports
+                </motion.button>
+            </motion.div>
+        );
+    }
+
+    if (!report) {
+        return (
+            <motion.div
+                className="error-container"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+            >
+                <p className="error-message">Report not found</p>
+                <motion.button
+                    className="back-btn"
+                    onClick={() => navigate("/user/report")}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    Back to Reports
+                </motion.button>
+            </motion.div>
+        );
+    }
+
     return (
-        <AnimatePresence mode="wait">
-                {loading ? (
-                    <Loading fullScreen={true} />
-                ) : error ? (
-                <motion.div
-                    className="error-container"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    key="error"
-                >
-                    <p className="error-message">{error}</p>
-                    <motion.button
-                        className="back-btn"
-                        onClick={() => navigate("/user/report")}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        Back to Reports
-                    </motion.button>
-                </motion.div>
-            ) : !report ? (
-                <motion.div
-                    className="error-container"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    key="not-found"
-                >
-                    <p className="error-message">Report not found</p>
-                    <motion.button
-                        className="back-btn"
-                        onClick={() => navigate("/user/report")}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        Back to Reports
-                    </motion.button>
-                </motion.div>
-            ) : (
-                <motion.div
-                    className="report-container main-content"
-                    initial="hidden"
-                    animate="visible"
-                    variants={containerVariants}
-                    key="report-content"
-                >
+        <>
+            <motion.div
+                className="report-container main-content"
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
+            >
                     {/* Floating Decorative Elements */}
                     <div className="floating-orb floating-orb-1"></div>
                     <div className="floating-orb floating-orb-2"></div>
@@ -146,6 +153,51 @@ export default function UserReportsCheck() {
                         >
                             📄 Quiz Report: {report.quizName}
                         </motion.h2>
+
+                        {/* Export Actions */}
+                        <motion.div
+                            className="export-actions"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            <motion.button
+                                className="export-btn"
+                                onClick={() => {
+                                    try {
+                                        exportReportAsPDF(report);
+                                        showSuccess('PDF export started! Check your print dialog.');
+                                    } catch (error) {
+                                        console.error('PDF export error:', error);
+                                        showError('Failed to export PDF. Please try again.');
+                                    }
+                                }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                title="Export as PDF"
+                                aria-label="Export report as PDF"
+                            >
+                                📄 PDF
+                            </motion.button>
+                            <motion.button
+                                className="export-btn"
+                                onClick={() => {
+                                    try {
+                                        exportReportAsCSV(report);
+                                        showSuccess('CSV file downloaded successfully!');
+                                    } catch (error) {
+                                        console.error('CSV export error:', error);
+                                        showError('Failed to export CSV. Please try again.');
+                                    }
+                                }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                title="Export as CSV"
+                                aria-label="Export report as CSV"
+                            >
+                                📊 CSV
+                            </motion.button>
+                        </motion.div>
                     </motion.div>
 
                     <motion.div
@@ -240,8 +292,7 @@ export default function UserReportsCheck() {
                             ))}
                         </AnimatePresence>
                     </motion.div>
-                </motion.div>
-            )}
+            </motion.div>
 
             {/* Notification Modal */}
             <NotificationModal
@@ -251,6 +302,6 @@ export default function UserReportsCheck() {
                 onClose={hideNotification}
                 autoClose={notification.autoClose}
             />
-        </AnimatePresence>
+        </>
     );
 }

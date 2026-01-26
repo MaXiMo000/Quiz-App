@@ -1766,6 +1766,7 @@
 
 /* ✨ Recent Quizzes Section ✨ */
 .recent-quizzes-section,
+.recently-viewed-section,
 .recent-activity-section {
     margin-bottom: 3rem;
     position: relative;
@@ -1914,6 +1915,23 @@
     border-radius: var(--radius-md);
     display: inline-block;
     margin-top: 0.5rem;
+}
+
+.quiz-preview-card.recently-viewed {
+    border-left: 4px solid var(--info);
+}
+
+.quiz-preview-card.recently-viewed::before {
+    background: var(--gradient-info);
+}
+
+.viewed-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--card-border);
+    opacity: 0.7;
 }
 
 /* ✨ Recent Activity Section ✨ */

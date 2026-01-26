@@ -110,6 +110,47 @@
     z-index: 1;
 }
 
+.export-summary-btn {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    white-space: nowrap;
+}
+
+.export-summary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    filter: brightness(1.1);
+}
+
+.export-summary-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .reports-header > div {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .export-summary-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 .reports-header h1 {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
@@ -363,11 +404,22 @@
 }
 
 .actions-cell {
+    width: 100%;
+    padding: 0.5rem !important;
+}
+
+.report-actions {
     display: flex;
-    gap: 0.5rem;
-    justify-content: center;
+    gap: 1rem;
+    justify-content: flex-start;
     align-items: center;
-    padding: 0.25rem 0;
+    width: 100%;
+    min-width: 100%;
+}
+
+.actions-cell a {
+    display: flex;
+    flex-shrink: 0;
 }
 
 .actions-cell .view-btn,
@@ -384,6 +436,29 @@
     overflow: hidden;
     box-sizing: border-box;
     line-height: 1;
+    flex-shrink: 0;
+}
+
+.actions-cell .quick-actions-dropdown {
+    flex: 1 1 0;
+    display: flex;
+    min-width: 0;
+}
+
+.actions-cell .quick-actions-btn {
+    padding: 0;
+    min-width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    line-height: 1;
+    flex: 1;
+    width: 100%;
 }
 
 /* ✨ Enhanced Mobile Cards ✨ */
@@ -628,12 +703,101 @@
 .report-actions {
     display: flex;
     gap: 0.5rem;
-    justify-content: stretch;
+    justify-content: space-between;
     flex-wrap: nowrap;
-    align-items: stretch;
+    align-items: center;
     width: 100%;
-    align-content: stretch;
-    align-self: stretch;
+}
+
+.quick-actions-dropdown {
+    position: relative;
+    flex: 1;
+    display: flex;
+}
+
+.quick-actions-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--card-border);
+    color: var(--text-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    flex: 1;
+    max-width: 50px;
+}
+
+.quick-actions-btn:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--text-light);
+}
+
+.quick-actions-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.25rem;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    min-width: 150px;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.quick-actions-menu.show {
+    display: flex;
+}
+
+.quick-actions-menu button {
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quick-actions-menu button:hover {
+    background: var(--accent-light);
+    color: var(--text-light);
+}
+
+.quick-actions-menu button:not(:last-child) {
+    border-bottom: 1px solid var(--card-border);
+}
+
+/* Close dropdown when clicking outside */
+body.user-reports-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    display: none;
+}
+
+body.user-reports-page.dropdown-open::before {
+    display: block;
 }
 
 /* ✨ Full Page Scrolling Support */
@@ -828,6 +992,12 @@ html.user-reports-page .container.user-reports-page {
     .table-container td.actions-cell {
         background: var(--card-bg-glass) !important;
         padding: 1.25rem 1.5rem !important;
+        width: 100%;
+    }
+
+    .table-container td.actions-cell .report-actions {
+        width: 100%;
+        min-width: 100%;
     }
 
     .table-container tr {
