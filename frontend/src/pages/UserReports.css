@@ -110,6 +110,47 @@
     z-index: 1;
 }
 
+.export-summary-btn {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    white-space: nowrap;
+}
+
+.export-summary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    filter: brightness(1.1);
+}
+
+.export-summary-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .reports-header > div {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .export-summary-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 .reports-header h1 {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
@@ -363,11 +404,24 @@
 }
 
 .actions-cell {
+    width: 100%;
+    padding: 0.5rem !important;
+    overflow: visible;
+    position: relative;
+}
+
+.report-actions {
     display: flex;
-    gap: 0.5rem;
-    justify-content: center;
+    gap: 1rem;
+    justify-content: flex-start;
     align-items: center;
-    padding: 0.25rem 0;
+    width: 100%;
+    min-width: 100%;
+}
+
+.actions-cell a {
+    display: flex;
+    flex-shrink: 0;
 }
 
 .actions-cell .view-btn,
@@ -384,6 +438,29 @@
     overflow: hidden;
     box-sizing: border-box;
     line-height: 1;
+    flex-shrink: 0;
+}
+
+.actions-cell .quick-actions-dropdown {
+    flex: 1 1 0;
+    display: flex;
+    min-width: 0;
+}
+
+.actions-cell .quick-actions-btn {
+    padding: 0;
+    min-width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    line-height: 1;
+    flex: 1;
+    width: 100%;
 }
 
 /* ✨ Enhanced Mobile Cards ✨ */
@@ -627,13 +704,131 @@
 
 .report-actions {
     display: flex;
-    gap: 0.5rem;
-    justify-content: stretch;
-    flex-wrap: nowrap;
-    align-items: stretch;
+    gap: 1rem;
+    justify-content: flex-start;
+    align-items: center;
     width: 100%;
-    align-content: stretch;
-    align-self: stretch;
+    min-width: 100%;
+}
+
+.quick-actions-dropdown {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    z-index: 1001;
+}
+
+.quick-actions-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--card-border);
+    color: var(--text-color);
+    padding: 0;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.quick-actions-btn:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--text-light);
+    transform: scale(1.05);
+}
+
+.quick-actions-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    min-width: 160px;
+    z-index: 1002;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+    max-height: none;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.quick-actions-menu.show {
+    display: flex;
+}
+
+.quick-actions-menu button {
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: flex !important;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+    width: 100%;
+    min-height: 44px;
+    visibility: visible;
+    opacity: 1;
+}
+
+.quick-actions-menu button:hover {
+    background: var(--accent-light);
+    color: var(--text-light);
+}
+
+.quick-actions-menu button:not(:last-child) {
+    border-bottom: 1px solid var(--card-border);
+}
+
+.quick-actions-menu button:first-child {
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+}
+
+.quick-actions-menu button:last-child {
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+}
+
+/* Close dropdown when clicking outside */
+body.user-reports-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    display: none;
+}
+
+body.user-reports-page.dropdown-open::before {
+    display: block;
 }
 
 /* ✨ Full Page Scrolling Support */
@@ -772,6 +967,15 @@ html.user-reports-page .container.user-reports-page {
         border-spacing: 0;
         font-size: 1rem;
         display: table;
+        overflow: visible;
+    }
+
+    .table-container tbody {
+        overflow: visible;
+    }
+
+    .table-container tbody tr {
+        overflow: visible;
     }
 
     .table-container th {
@@ -828,6 +1032,14 @@ html.user-reports-page .container.user-reports-page {
     .table-container td.actions-cell {
         background: var(--card-bg-glass) !important;
         padding: 1.25rem 1.5rem !important;
+        width: 100%;
+        overflow: visible !important;
+        position: relative;
+    }
+
+    .table-container td.actions-cell .report-actions {
+        width: 100%;
+        min-width: 100%;
     }
 
     .table-container tr {
@@ -1478,7 +1690,13 @@ html.user-reports-page .container.user-reports-page {
     }
 
     .report-actions {
-        gap: 0.5rem;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-actions-menu {
+        min-width: 140px;
+        right: 0;
     }
 
     .view-btn,

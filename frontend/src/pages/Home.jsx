@@ -11,6 +11,7 @@ import Loading from "../components/Loading";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { getRecentQuizzes } from "../utils/quizHistory";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [recentQuizzes, setRecentQuizzes] = useState([]);
+    const [recentlyViewedQuizzes, setRecentlyViewedQuizzes] = useState([]);
     const [recentReports, setRecentReports] = useState([]);
     const [stats, setStats] = useState({
         totalQuizzes: 0,
@@ -64,6 +66,19 @@ const Home = () => {
                 const quizzesRes = await axios.get(`/api/quizzes`);
                 quizzes = quizzesRes.data || [];
                 setRecentQuizzes(quizzes.slice(0, 6)); // Show 6 most recent
+
+                // Load recently viewed quizzes from history
+                const history = getRecentQuizzes(6);
+                if (history.length > 0) {
+                    // Match history items with actual quiz data
+                    const viewedQuizzes = history
+                        .map(historyItem => {
+                            const quiz = quizzes.find(q => q._id === historyItem.quizId);
+                            return quiz ? { ...quiz, viewedAt: historyItem.viewedAt } : null;
+                        })
+                        .filter(Boolean);
+                    setRecentlyViewedQuizzes(viewedQuizzes);
+                }
             } catch (quizError) {
                 console.error("Error fetching quizzes:", quizError);
             }
@@ -322,6 +337,73 @@ const Home = () => {
                 </motion.div>
             )}
 
+            {/* Recently Viewed Quizzes Section */}
+            {recentlyViewedQuizzes.length > 0 && (
+                <motion.div
+                    className="recently-viewed-section"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.25, duration: 0.6 }}
+                >
+                    <div className="section-header">
+                        <h2 className="section-title">🕒 Recently Viewed</h2>
+                        <button
+                            className="view-all-btn"
+                            onClick={() => navigate("/user/test")}
+                            aria-label="View all quizzes"
+                        >
+                            View All →
+                        </button>
+                    </div>
+                    <div className="quizzes-grid">
+                        {recentlyViewedQuizzes.map((quiz, index) => (
+                            <motion.div
+                                key={quiz._id}
+                                className="quiz-preview-card recently-viewed"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 1.3 + (index * 0.1), duration: 0.5 }}
+                                whileHover={{ scale: 1.05, y: -5 }}
+                                onClick={() => {
+                                    const element = document.documentElement;
+                                    if (element.requestFullscreen) {
+                                        element.requestFullscreen().then(() => {
+                                            navigate(`/user/test/${quiz._id}`);
+                                        }).catch(() => {
+                                            navigate(`/user/test/${quiz._id}`);
+                                        });
+                                    } else {
+                                        navigate(`/user/test/${quiz._id}`);
+                                    }
+                                }}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        navigate(`/user/test/${quiz._id}`);
+                                    }
+                                }}
+                                aria-label={`Continue quiz: ${quiz.title}`}
+                            >
+                                <div className="quiz-preview-icon">🕒</div>
+                                <h3 className="quiz-preview-title">{quiz.title}</h3>
+                                <div className="quiz-preview-meta">
+                                    <span>⏱️ {quiz.duration || 0} min</span>
+                                    <span>📝 {quiz.questions?.length || 0} Qs</span>
+                                </div>
+                                <div className="quiz-preview-category">{quiz.category || "General"}</div>
+                                {quiz.viewedAt && (
+                                    <div className="viewed-time">
+                                        Viewed {new Date(quiz.viewedAt).toLocaleDateString()}
+                                    </div>
+                                )}
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+
             {/* Recent Activity Section */}
             {recentReports.filter(report =>
                 report &&
@@ -336,7 +418,7 @@ const Home = () => {
                     className="recent-activity-section"
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.3, duration: 0.6 }}
+                    transition={{ delay: 1.4, duration: 0.6 }}
                 >
                     <div className="section-header">
                         <h2 className="section-title">📋 Recent Activity</h2>

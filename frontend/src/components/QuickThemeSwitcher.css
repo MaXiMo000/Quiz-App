@@ -1,0 +1,200 @@
+/* Quick Theme Switcher - Floating Button */
+.quick-theme-switcher {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9998;
+}
+
+.theme-switcher-toggle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    border: 2px solid var(--accent);
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.theme-switcher-toggle:hover {
+    box-shadow: var(--shadow-xl);
+    filter: brightness(1.1);
+    transform: rotate(15deg);
+}
+
+.theme-switcher-panel {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 280px;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.theme-switcher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.theme-switcher-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-light);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.close-theme-switcher {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-theme-switcher:hover {
+    background: var(--danger-light);
+    color: var(--danger);
+    transform: rotate(90deg);
+}
+
+.theme-switcher-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.theme-option:hover:not(:disabled) {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--text-light);
+}
+
+.theme-option.active {
+    background: var(--gradient-primary);
+    border-color: var(--accent);
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.theme-option.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.theme-name {
+    flex: 1;
+}
+
+.active-indicator {
+    color: var(--success);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+.lock-icon {
+    margin-left: auto;
+    font-size: 0.9rem;
+}
+
+.theme-switcher-footer {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.view-all-themes-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-all-themes-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    filter: brightness(1.1);
+}
+
+/* Mobile Responsive - Hide on mobile devices */
+@media (max-width: 768px) {
+    .quick-theme-switcher {
+        display: none !important;
+    }
+}
+
+/* Scrollbar styling */
+.theme-switcher-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.theme-switcher-panel::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.theme-switcher-panel::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+}
+
+.theme-switcher-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--accent2);
+}

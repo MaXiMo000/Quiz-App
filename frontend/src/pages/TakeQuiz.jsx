@@ -18,6 +18,8 @@ const TakeQuiz = () => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [timeLeft, setTimeLeft] = useState(null);
+    const [isTimerPaused, setIsTimerPaused] = useState(false);
+    const [pausedAt, setPausedAt] = useState(null); // Track when timer was paused
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [showResultModal, setShowResultModal] = useState(false);
@@ -43,7 +45,7 @@ const TakeQuiz = () => {
     const isSubmitButtonClicked = useRef(false);
 
     // Notification system
-    const { notification, showError, hideNotification } = useNotification();
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
 
     // Record answer time function
     const recordAnswerTime = useCallback(() => {
@@ -92,6 +94,30 @@ const TakeQuiz = () => {
             setCurrentQuestion(prev => prev - 1);
         }
     }, [currentQuestion, recordAnswerTime]);
+
+    // Timer pause/resume functions (must be defined before useKeyboardShortcuts)
+    const handlePauseTimer = useCallback(() => {
+        if (!isTimerPaused && timeLeft > 0 && !isQuizCompleted && !hasAutoSubmitted && !showResultModal) {
+            setIsTimerPaused(true);
+            setPausedAt(Date.now());
+        }
+    }, [isTimerPaused, timeLeft, isQuizCompleted, hasAutoSubmitted, showResultModal]);
+
+    const handleResumeTimer = useCallback(() => {
+        if (isTimerPaused && pausedAt) {
+            setIsTimerPaused(false);
+            setPausedAt(null);
+        }
+    }, [isTimerPaused, pausedAt]);
+
+    const toggleTimerPause = useCallback(() => {
+        if (isTimerPaused) {
+            handleResumeTimer();
+        } else {
+            handlePauseTimer();
+        }
+    }, [isTimerPaused, handlePauseTimer, handleResumeTimer]);
+
 
     // Keyboard shortcuts for quiz navigation
     useKeyboardShortcuts({
@@ -151,7 +177,19 @@ const TakeQuiz = () => {
                 handleNext();
             }
         },
-    }, [showReviewModal, showResultModal, currentQuestion, quiz, exitFullScreen, navigate, hasAutoSubmitted, handlePrev, handleNext]);
+        'Space': (e) => {
+            // Pause/Resume timer with Space bar (only when not in input fields)
+            const target = e.target;
+            const isInputElement = target.tagName === 'INPUT' ||
+                                  target.tagName === 'TEXTAREA' ||
+                                  target.isContentEditable;
+
+            if (!isInputElement && !showResultModal && !showReviewModal && !isQuizCompleted && !hasAutoSubmitted && timeLeft > 0) {
+                e.preventDefault();
+                toggleTimerPause();
+            }
+        },
+    }, [showReviewModal, showResultModal, currentQuestion, quiz, exitFullScreen, navigate, hasAutoSubmitted, handlePrev, handleNext, toggleTimerPause, isQuizCompleted, timeLeft]);
 
     const optionLetters = useMemo(() => ["A", "B", "C", "D"], []);
     const currentQ = useMemo(() => quiz?.questions?.[currentQuestion], [quiz, currentQuestion]);
@@ -742,17 +780,23 @@ const TakeQuiz = () => {
             return;
         }
 
-        // Stop timer if quiz is completed, submitted, or result modal is showing
-        if (isQuizCompleted || hasAutoSubmitted || showResultModal || isSubmittingRef.current) {
+        // Stop timer if quiz is completed, submitted, result modal is showing, or timer is paused
+        if (isQuizCompleted || hasAutoSubmitted || showResultModal || isSubmittingRef.current || isTimerPaused) {
             return;
         }
 
         const timer = setInterval(() => {
-            setTimeLeft(prev => prev - 1);
+            setTimeLeft(prev => {
+                if (prev <= 1) {
+                    handleSubmit();
+                    return 0;
+                }
+                return prev - 1;
+            });
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, handleSubmit, isQuizCompleted, hasAutoSubmitted, showResultModal]);
+    }, [timeLeft, handleSubmit, isQuizCompleted, hasAutoSubmitted, showResultModal, isTimerPaused]);
 
 
 
@@ -838,7 +882,21 @@ const TakeQuiz = () => {
             <div className="quiz-content">
             <h1>{quiz.title}</h1>
             {!isQuizCompleted && !showResultModal && (
-                <div className="timer">Time Left: {formatTime(timeLeft)}</div>
+                <div className="timer-container">
+                    <div className={`timer ${isTimerPaused ? 'paused' : ''}`}>
+                        {isTimerPaused && <span className="paused-indicator">⏸️ PAUSED</span>}
+                        <span>Time Left: {formatTime(timeLeft)}</span>
+                    </div>
+                    <button
+                        className={`timer-control-btn ${isTimerPaused ? 'resume' : 'pause'}`}
+                        onClick={toggleTimerPause}
+                        aria-label={isTimerPaused ? "Resume timer (Space)" : "Pause timer (Space)"}
+                        title={isTimerPaused ? "Resume Timer (Space)" : "Pause Timer (Space)"}
+                        disabled={isQuizCompleted || hasAutoSubmitted || showResultModal}
+                    >
+                        {isTimerPaused ? '▶️ Resume' : '⏸️ Pause'}
+                    </button>
+                </div>
             )}
 
             <div className="question-box">
