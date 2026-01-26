@@ -493,6 +493,33 @@ export const createSampleDailyChallenge = async (req, res) => {
 
 // ===================== TOURNAMENTS =====================
 
+// Helper function to calculate actual tournament status based on dates
+const calculateTournamentStatus = (tournament) => {
+    const now = new Date();
+    const registrationStart = new Date(tournament.registrationStart);
+    const registrationEnd = new Date(tournament.registrationEnd);
+    const tournamentStart = new Date(tournament.tournamentStart);
+    const tournamentEnd = new Date(tournament.tournamentEnd);
+
+    // If tournament has ended
+    if (now > tournamentEnd) {
+        return 'completed';
+    }
+
+    // If tournament is in progress
+    if (now >= tournamentStart && now <= tournamentEnd) {
+        return 'in_progress';
+    }
+
+    // If registration period is open
+    if (now >= registrationStart && now <= registrationEnd) {
+        return 'registration_open';
+    }
+
+    // If registration hasn't started yet or registration ended but tournament hasn't started
+    return 'upcoming';
+};
+
 // Get available tournaments
 export const getAvailableTournaments = async (req, res) => {
     logger.info(`Getting available tournaments for user ${req.user.id}`);
@@ -501,48 +528,27 @@ export const getAvailableTournaments = async (req, res) => {
         const userId = req.user.id;
         const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
 
-        // Find tournaments that are active and not completed by the user
+        // Find tournaments that haven't ended more than 2 days ago
+        // We'll filter by actual status based on dates below
         const tournaments = await Tournament.find({
-            $and: [
-                {
-                    $or: [
-                        { status: "upcoming" },
-                        { status: "registration_open" },
-                        { status: "in_progress" }
-                    ]
-                },
-                // Exclude tournaments that are completed or ended more than 2 days ago
-                {
-                    $or: [
-                        { status: { $ne: "completed" } },
-                        { tournamentEnd: { $gte: twoDaysAgo } }
-                    ]
-                }
-            ]
+            tournamentEnd: { $gte: twoDaysAgo }
         })
         .populate("createdBy", "name email")
         .populate("quizzes") // Populate quizzes to show count
         .sort({ tournamentStart: 1 });
 
-        // Filter out tournaments where user has already completed participation
+        // Filter tournaments based on actual calculated status (not stored status)
         const activeTournaments = tournaments.filter(tournament => {
-            const userParticipation = tournament.participants.find(p =>
-                p.user.toString() === userId
-            );
+            const actualStatus = calculateTournamentStatus(tournament);
 
-            // Include tournament if:
-            // 1. User hasn't participated yet, OR
-            // 2. User participated but tournament is still active and not completed
-            if (!userParticipation) {
-                return true; // User hasn't joined yet
-            }
-
-            // If tournament is completed or ended more than 2 days ago, exclude it
-            if (tournament.status === "completed" || tournament.tournamentEnd < twoDaysAgo) {
+            // Only include tournaments that are upcoming, registration_open, or in_progress
+            // Exclude completed tournaments (where tournament has ended)
+            if (actualStatus === 'completed') {
                 return false;
             }
 
-            return true; // Tournament is still active
+            // Tournament is still active (upcoming, registration_open, or in_progress)
+            return true;
         });
 
         // Add user progress data to each tournament

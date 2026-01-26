@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
 import { useNotification } from '../hooks/useNotification';
 import NotificationModal from './NotificationModal';
+import StudyStreakGoals from './StudyStreakGoals';
 import './GamificationHub.css';
 
 const GamificationHub = () => {
@@ -21,6 +22,12 @@ const GamificationHub = () => {
     const [tournamentHistory, setTournamentHistory] = useState([]);
     const [selectedChallengeHistory, setSelectedChallengeHistory] = useState(null);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
+
+    // Leaderboard states
+    const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
+    const [selectedTournamentId, setSelectedTournamentId] = useState(null);
+    const [leaderboardData, setLeaderboardData] = useState(null);
+    const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
     // Quiz taking states
     const [currentQuizData, setCurrentQuizData] = useState(null);
@@ -146,6 +153,22 @@ const GamificationHub = () => {
         }
     };
 
+    const fetchTournamentLeaderboard = async (tournamentId) => {
+        setLoadingLeaderboard(true);
+        try {
+            const response = await axios.get(`/api/gamification/tournaments/${tournamentId}/leaderboard`);
+            setLeaderboardData(response.data);
+            setSelectedTournamentId(tournamentId);
+            setShowLeaderboardModal(true);
+        } catch (error) {
+            console.error('Error fetching tournament leaderboard:', error);
+            const errorMessage = error.response?.data?.message || 'Failed to load leaderboard';
+            showError(errorMessage);
+        } finally {
+            setLoadingLeaderboard(false);
+        }
+    };
+
     const getChallengeTypeIcon = (type) => {
         const icons = {
             'quiz_completion': '📝',
@@ -172,6 +195,33 @@ const GamificationHub = () => {
             default:
                 return 'Complete the challenge requirements';
         }
+    };
+
+    // Calculate actual tournament status based on current date and tournament dates
+    const getTournamentStatus = (tournament) => {
+        const now = new Date();
+        const registrationStart = new Date(tournament.registrationStart);
+        const registrationEnd = new Date(tournament.registrationEnd);
+        const tournamentStart = new Date(tournament.tournamentStart);
+        const tournamentEnd = new Date(tournament.tournamentEnd);
+
+        // If tournament has ended
+        if (now > tournamentEnd) {
+            return 'completed';
+        }
+
+        // If tournament is in progress
+        if (now >= tournamentStart && now <= tournamentEnd) {
+            return 'in_progress';
+        }
+
+        // If registration period is open
+        if (now >= registrationStart && now <= registrationEnd) {
+            return 'registration_open';
+        }
+
+        // If registration hasn't started yet or registration ended but tournament hasn't started
+        return 'upcoming';
     };
 
     const getTournamentStatusColor = (status) => {
@@ -234,6 +284,8 @@ const GamificationHub = () => {
             fetchTournaments();
         } else if (activeTab === 'completed-challenges') {
             fetchCompletedChallenges();
+        } else if (activeTab === 'streak') {
+            // Streak data is fetched by StudyStreakGoals component
         } else if (activeTab === 'completed-tournaments') {
             fetchCompletedTournaments();
         } else if (activeTab === 'history') {
@@ -719,6 +771,9 @@ const GamificationHub = () => {
     const TournamentCard = ({ tournament }) => {
         const userId = user?.id || user?._id;
 
+        // Calculate actual status based on dates
+        const actualStatus = getTournamentStatus(tournament);
+
         // Check if user is registered and get their progress data
         let isRegistered = false;
         let userProgress = null;
@@ -746,9 +801,9 @@ const GamificationHub = () => {
                             <span className="tournament-type">{tournament.type.replace('_', ' ')}</span>
                             <span
                                 className="tournament-status"
-                                style={{ color: getTournamentStatusColor(tournament.status) }}
+                                style={{ color: getTournamentStatusColor(actualStatus) }}
                             >
-                                {tournament.status.replace('_', ' ')}
+                                {actualStatus.replace('_', ' ').toUpperCase()}
                             </span>
                         </div>
                     </div>
@@ -853,14 +908,14 @@ const GamificationHub = () => {
                 </div>
 
                 <div className="tournament-actions">
-                    {tournament.status === 'registration_open' && !isRegistered ? (
+                    {actualStatus === 'registration_open' && !isRegistered ? (
                         <button
                             className="register-btn"
                             onClick={() => registerForTournament(tournament._id)}
                         >
                             🎯 Register Now
                         </button>
-                    ) : isRegistered && tournament.status === 'in_progress' ? (
+                    ) : isRegistered && actualStatus === 'in_progress' ? (
                         <div className="tournament-progress-actions">
                             <div className="tournament-progress-info">
                                 <div className="quiz-progress-display">
@@ -896,8 +951,12 @@ const GamificationHub = () => {
                             Registration Closed
                         </button>
                     )}
-                    <button className="leaderboard-btn">
-                        📊 View Leaderboard
+                    <button
+                        className="leaderboard-btn"
+                        onClick={() => fetchTournamentLeaderboard(tournament._id)}
+                        disabled={loadingLeaderboard}
+                    >
+                        {loadingLeaderboard ? '⏳ Loading...' : '📊 View Leaderboard'}
                     </button>
 
                     {user?.role === 'admin' && (
@@ -1216,6 +1275,12 @@ const GamificationHub = () => {
                     🏆 Tournaments
                 </button>
                 <button
+                    className={`tab-button ${activeTab === 'streak' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('streak')}
+                >
+                    🔥 Study Streak
+                </button>
+                <button
                     className={`tab-button ${activeTab === 'completed-tournaments' ? 'active' : ''}`}
                     onClick={() => setActiveTab('completed-tournaments')}
                 >
@@ -1302,6 +1367,18 @@ const GamificationHub = () => {
                                 )}
                             </motion.div>
                         )}
+                    </motion.div>
+                )}
+
+                {activeTab === 'streak' && (
+                    <motion.div
+                        key="streak-tab"
+                        className="tab-content"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                    >
+                        <StudyStreakGoals />
                     </motion.div>
                 )}
 
@@ -1620,6 +1697,84 @@ const GamificationHub = () => {
                             )}
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Tournament Leaderboard Modal */}
+            {showLeaderboardModal && leaderboardData && (
+                <div className="modal-overlay" onClick={() => {
+                    setShowLeaderboardModal(false);
+                    setLeaderboardData(null);
+                    setSelectedTournamentId(null);
+                }}>
+                    <motion.div
+                        className="modal-content leaderboard-modal"
+                        onClick={e => e.stopPropagation()}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                    >
+                        <div className="modal-header">
+                            <h3>🏆 Leaderboard: {leaderboardData.tournament?.name || 'Tournament'}</h3>
+                            <button
+                                className="close-btn"
+                                onClick={() => {
+                                    setShowLeaderboardModal(false);
+                                    setLeaderboardData(null);
+                                    setSelectedTournamentId(null);
+                                }}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className="modal-body">
+                            {leaderboardData.leaderboard && leaderboardData.leaderboard.length > 0 ? (
+                                <div className="leaderboard-list">
+                                    <div className="leaderboard-header">
+                                        <div className="rank-col">Rank</div>
+                                        <div className="name-col">Player</div>
+                                        <div className="score-col">Score</div>
+                                        <div className="quizzes-col">Quizzes</div>
+                                        <div className="time-col">Time</div>
+                                    </div>
+                                    {leaderboardData.leaderboard.map((entry, index) => {
+                                        const isCurrentUser = entry.user?._id === user?.id || entry.user?._id === user?._id;
+                                        return (
+                                            <motion.div
+                                                key={entry.user?._id || index}
+                                                className={`leaderboard-row ${isCurrentUser ? 'current-user' : ''} ${index < 3 ? `rank-${index + 1}` : ''}`}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: index * 0.05 }}
+                                            >
+                                                <div className="rank-col">
+                                                    {index === 0 && '🥇'}
+                                                    {index === 1 && '🥈'}
+                                                    {index === 2 && '🥉'}
+                                                    {index > 2 && `#${entry.rank}`}
+                                                </div>
+                                                <div className="name-col">
+                                                    {entry.user?.name || 'Unknown'}
+                                                    {isCurrentUser && ' (You)'}
+                                                </div>
+                                                <div className="score-col">{entry.score || 0}</div>
+                                                <div className="quizzes-col">{entry.quizzesCompleted || 0}</div>
+                                                <div className="time-col">
+                                                    {entry.totalTime ? Math.round(entry.totalTime / 60) + 'm' : '0m'}
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="empty-leaderboard">
+                                    <div className="empty-icon">📊</div>
+                                    <p>No participants yet. Be the first to join!</p>
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
                 </div>
             )}
 

@@ -310,7 +310,7 @@
     padding-bottom: 8px;
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    scrollbar-color: #cbd5e0 transparent;
+    scrollbar-color: var(--text-muted) transparent;
 }
 
 .recommendations-list::-webkit-scrollbar {
@@ -322,12 +322,12 @@
 }
 
 .recommendations-list::-webkit-scrollbar-thumb {
-    background: #cbd5e0;
+    background: var(--text-muted);
     border-radius: 2px;
 }
 
 .recommendations-list::-webkit-scrollbar-thumb:hover {
-    background: #a0aec0;
+    background: var(--text-disabled);
 }
 
 .recommendation {
@@ -694,7 +694,7 @@
 .typing-dots span {
     width: 8px;
     height: 8px;
-    background: #a0aec0;
+    background: var(--text-disabled);
     border-radius: 50%;
     animation: typing 1.4s infinite ease-in-out both;
 }

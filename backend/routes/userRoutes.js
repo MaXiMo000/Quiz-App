@@ -1,5 +1,6 @@
 import express from "express";
 import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme, logoutUser, saveCustomTheme, getCustomThemes, deleteCustomTheme } from "../controllers/userController.js";
+import { getStreakAndGoals, updateDailyGoals, updateDailyActivity } from "../controllers/streakController.js";
 import { verifyToken } from "../middleware/auth.js";
 import { roleUpdateLimiter } from "../middleware/rateLimiting.js";
 import mongoose from "mongoose";
@@ -323,5 +324,10 @@ router.post("/:id/theme", verifyToken, clearCacheByPattern("/api/users"), update
 router.post("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), saveCustomTheme);
 router.get("/:id/custom-themes", verifyToken, getCustomThemes);
 router.delete("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), deleteCustomTheme);
+
+// Streak & Goals routes
+router.get("/streak/goals", verifyToken, getStreakAndGoals);
+router.put("/streak/goals", verifyToken, clearCacheByPattern("/api/users"), updateDailyGoals);
+router.post("/streak/activity", verifyToken, clearCacheByPattern("/api/users"), updateDailyActivity);
 
 export default router;

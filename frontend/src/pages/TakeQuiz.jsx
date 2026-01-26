@@ -306,6 +306,15 @@ const TakeQuiz = () => {
                     totalQuestions: quiz.questions.length,
                     timeSpent: totalTimeSpent
                 });
+
+                // Update daily activity for streak tracking
+                try {
+                    await axios.post('/api/users/streak/activity', {
+                        timeSpentSeconds: totalTimeSpent
+                    });
+                } catch (streakError) {
+                    console.warn("Could not update daily activity:", streakError.message);
+                }
             } catch (statsError) {
                 console.warn("Could not update quiz stats:", statsError.message);
             }
@@ -569,6 +578,15 @@ const TakeQuiz = () => {
                 totalQuestions: quiz.questions.length,
                 timeSpent: totalTimeSpent
             });
+
+            // Update daily activity for streak tracking
+            try {
+                await axios.post('/api/users/streak/activity', {
+                    timeSpentSeconds: totalTimeSpent
+                });
+            } catch (streakError) {
+                console.warn("Could not update daily activity:", streakError.message);
+            }
 
             // Phase 2: Update user preferences and performance tracking
             if (user?._id) {
