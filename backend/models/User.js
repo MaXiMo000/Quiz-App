@@ -190,7 +190,13 @@ const userSchema = new mongoose.Schema({
     },
     stats: {
         longestStreak: { type: Number, default: 0 }
-    }
+    },
+
+    // Quiz Bookmarks/Favorites
+    bookmarkedQuizzes: [{
+        quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz", required: true },
+        bookmarkedAt: { type: Date, default: Date.now }
+    }]
 }, { timestamps: true });
 
 export default mongoose.model("UserQuiz", userSchema);

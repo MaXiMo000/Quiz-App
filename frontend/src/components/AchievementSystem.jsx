@@ -275,28 +275,60 @@ const AchievementSystem = ({ _userId }) => {
                         border: rarityStyle.border,
                         boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
                       }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
-                      whileHover={{ scale: 1.02, y: -4 }}
+                      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        rotate: achievement.unlocked ? [0, -5, 5, -5, 0] : 0
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.1,
+                        rotate: achievement.unlocked ? { duration: 0.6, delay: index * 0.1 + 0.3 } : 0
+                      }}
+                      whileHover={{ scale: 1.05, y: -6 }}
                     >
-                      <div className="achievement-card-bg"></div>
+                      <div className={`achievement-card-bg ${achievement.unlocked ? 'unlocked-bg' : ''}`}></div>
+
+                      {achievement.unlocked && (
+                        <div className="unlock-particles">
+                          {[...Array(12)].map((_, i) => (
+                            <div key={i} className="particle" style={{
+                              '--angle': `${i * 30}deg`,
+                              '--delay': `${i * 0.05}s`
+                            }}></div>
+                          ))}
+                        </div>
+                      )}
 
                       <div className="achievement-icon-wrapper">
-                        <div className="achievement-icon">
+                        <motion.div
+                          className={`achievement-icon ${achievement.unlocked ? 'unlocked-icon' : 'locked-icon'}`}
+                          animate={achievement.unlocked ? {
+                            scale: [1, 1.2, 1],
+                            rotate: [0, 10, -10, 0]
+                          } : {}}
+                          transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+                        >
                           {iconEmoji}
-                        </div>
+                        </motion.div>
                         {achievement.unlocked && (
-                          <div className="unlock-badge">
+                          <motion.div
+                            className="unlock-badge"
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 200, delay: index * 0.1 + 0.4 }}
+                          >
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                               <path d="M16.7071 5.29289C17.0976 5.68342 17.0976 6.31658 16.7071 6.70711L8.70711 14.7071C8.31658 15.0976 7.68342 15.0976 7.29289 14.7071L3.29289 10.7071C2.90237 10.3166 2.90237 9.68342 3.29289 9.29289C3.68342 8.90237 4.31658 8.90237 4.70711 9.29289L8 12.5858L15.2929 5.29289C15.6834 4.90237 16.3166 4.90237 16.7071 5.29289Z" fill="currentColor"/>
                             </svg>
-                          </div>
+                          </motion.div>
                         )}
                       </div>
 
                       <div className="achievement-content">
-                        <h4 className="achievement-title">
+                        <h4 className={`achievement-title ${achievement.unlocked ? 'unlocked-title' : ''}`}>
                           {titleText}
                         </h4>
                         <p className="achievement-description">{achievement.description}</p>
@@ -304,15 +336,19 @@ const AchievementSystem = ({ _userId }) => {
                           <span className={`rarity-badge rarity-${achievement.rarity}`}>
                             {achievement.rarity}
                           </span>
-                          {!achievement.unlocked && achievement.progress !== undefined && (
+                          {achievement.progress !== undefined && (
                             <div className="progress-container">
                               <div className="progress-bar">
-                                <div
-                                  className="progress-fill"
-                                  style={{ width: `${achievement.progress}%` }}
-                                ></div>
+                                <motion.div
+                                  className={`progress-fill ${achievement.unlocked ? 'completed' : ''}`}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${achievement.progress}%` }}
+                                  transition={{ duration: 0.8, delay: index * 0.1 + 0.2 }}
+                                ></motion.div>
                               </div>
-                              <span className="progress-text">{Math.round(achievement.progress)}%</span>
+                              <span className="progress-text">
+                                {achievement.unlocked ? '✓ Complete' : `${Math.round(achievement.progress)}%`}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -346,54 +382,90 @@ const AchievementSystem = ({ _userId }) => {
                 const titleText = achievement.title.replace(/^[^\w\s]+/, '').trim();
 
                 return (
-                  <motion.div
-                    key={achievement.id}
-                    className={`achievement-card near-impossible-card ${achievement.unlocked ? 'unlocked' : 'locked'}`}
-                    style={{
-                      border: rarityStyle.border,
-                      boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
-                    }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <div className="achievement-card-bg"></div>
+                    <motion.div
+                      key={achievement.id}
+                      className={`achievement-card near-impossible-card ${achievement.unlocked ? 'unlocked' : 'locked'}`}
+                      style={{
+                        border: rarityStyle.border,
+                        boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
+                      }}
+                      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        rotate: achievement.unlocked ? [0, -5, 5, -5, 0] : 0
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.1,
+                        rotate: achievement.unlocked ? { duration: 0.6, delay: index * 0.1 + 0.3 } : 0
+                      }}
+                      whileHover={{ scale: 1.05, y: -6 }}
+                    >
+                    <div className={`achievement-card-bg ${achievement.unlocked ? 'unlocked-bg' : ''}`}></div>
+
+                    {achievement.unlocked && (
+                      <div className="unlock-particles">
+                        {[...Array(12)].map((_, i) => (
+                          <div key={i} className="particle" style={{
+                            '--angle': `${i * 30}deg`,
+                            '--delay': `${i * 0.05}s`
+                          }}></div>
+                        ))}
+                      </div>
+                    )}
 
                     <div className="achievement-icon-wrapper">
-                      <div className="achievement-icon">
+                      <motion.div
+                        className={`achievement-icon ${achievement.unlocked ? 'unlocked-icon' : 'locked-icon'}`}
+                        animate={achievement.unlocked ? {
+                          scale: [1, 1.2, 1],
+                          rotate: [0, 10, -10, 0]
+                        } : {}}
+                        transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+                      >
                         {iconEmoji}
-                      </div>
+                      </motion.div>
                       {achievement.unlocked && (
-                        <div className="unlock-badge">
+                        <motion.div
+                          className="unlock-badge"
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ type: "spring", stiffness: 200, delay: index * 0.1 + 0.4 }}
+                        >
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M16.7071 5.29289C17.0976 5.68342 17.0976 6.31658 16.7071 6.70711L8.70711 14.7071C8.31658 15.0976 7.68342 15.0976 7.29289 14.7071L3.29289 10.7071C2.90237 10.3166 2.90237 9.68342 3.29289 9.29289C3.68342 8.90237 4.31658 8.90237 4.70711 9.29289L8 12.5858L15.2929 5.29289C15.6834 4.90237 16.3166 4.90237 16.7071 5.29289Z" fill="currentColor"/>
                           </svg>
-                        </div>
+                        </motion.div>
                       )}
                     </div>
 
                     <div className="achievement-content">
-                      <h4 className="achievement-title">
-                        {titleText}
-                      </h4>
-                      <p className="achievement-description">{achievement.description}</p>
-                      <div className="achievement-meta">
-                        <span className={`rarity-badge rarity-${achievement.rarity}`}>
-                          {achievement.rarity}
-                        </span>
-                        {!achievement.unlocked && achievement.progress !== undefined && (
-                          <div className="progress-container">
-                            <div className="progress-bar">
-                              <div
-                                className="progress-fill"
-                                style={{ width: `${achievement.progress}%` }}
-                              ></div>
+                        <h4 className={`achievement-title ${achievement.unlocked ? 'unlocked-title' : ''}`}>
+                          {titleText}
+                        </h4>
+                        <p className="achievement-description">{achievement.description}</p>
+                        <div className="achievement-meta">
+                          <span className={`rarity-badge rarity-${achievement.rarity}`}>
+                            {achievement.rarity}
+                          </span>
+                          {achievement.progress !== undefined && (
+                            <div className="progress-container">
+                              <div className="progress-bar">
+                                <motion.div
+                                  className={`progress-fill ${achievement.unlocked ? 'completed' : ''}`}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${achievement.progress}%` }}
+                                  transition={{ duration: 0.8, delay: index * 0.1 + 0.2 }}
+                                ></motion.div>
+                              </div>
+                              <span className="progress-text">
+                                {achievement.unlocked ? '✓ Complete' : `${Math.round(achievement.progress)}%`}
+                              </span>
                             </div>
-                            <span className="progress-text">{Math.round(achievement.progress)}%</span>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
                     </div>
                   </motion.div>
                 );

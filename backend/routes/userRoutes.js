@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme, logoutUser, saveCustomTheme, getCustomThemes, deleteCustomTheme } from "../controllers/userController.js";
+import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme, logoutUser, saveCustomTheme, getCustomThemes, deleteCustomTheme, bookmarkQuiz, removeBookmark, getBookmarkedQuizzes } from "../controllers/userController.js";
 import { getStreakAndGoals, updateDailyGoals, updateDailyActivity } from "../controllers/streakController.js";
 import { verifyToken } from "../middleware/auth.js";
 import { roleUpdateLimiter } from "../middleware/rateLimiting.js";
@@ -290,6 +290,23 @@ router.get("/me", verifyToken, async (req, res) => {
     }
 });
 
+// Streak & Goals routes (must come before /:id to avoid conflicts)
+router.get("/streak/goals", verifyToken, getStreakAndGoals);
+router.put("/streak/goals", verifyToken, clearCacheByPattern("/api/users"), updateDailyGoals);
+router.post("/streak/activity", verifyToken, clearCacheByPattern("/api/users"), clearCacheByPattern("/api/users/streak"), updateDailyActivity);
+
+// Bookmark routes (must come before /:id to avoid conflicts)
+router.post("/bookmarks", verifyToken, clearCacheByPattern("/api/users"), bookmarkQuiz);
+router.delete("/bookmarks", verifyToken, clearCacheByPattern("/api/users"), removeBookmark);
+router.get("/bookmarks", verifyToken, getBookmarkedQuizzes);
+
+router.patch("/update-role", roleUpdateLimiter, verifyToken, clearCacheByPattern("/api/users"), updateUserRole);
+router.post("/:id/theme", verifyToken, clearCacheByPattern("/api/users"), updateUserTheme);
+router.post("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), saveCustomTheme);
+router.get("/:id/custom-themes", verifyToken, getCustomThemes);
+router.delete("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), deleteCustomTheme);
+
+// This catch-all route MUST come last to avoid matching specific routes like /bookmarks, /me, /streak, etc.
 router.get("/:id", verifyToken, cache, async (req, res) => {
     try {
         const user = await UserQuiz.findById(req.params.id).select("-password");
@@ -318,16 +335,5 @@ router.get("/:id", verifyToken, cache, async (req, res) => {
         res.status(500).json({ error: "User not found" });
     }
 });
-
-router.patch("/update-role", roleUpdateLimiter, verifyToken, clearCacheByPattern("/api/users"), updateUserRole);
-router.post("/:id/theme", verifyToken, clearCacheByPattern("/api/users"), updateUserTheme);
-router.post("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), saveCustomTheme);
-router.get("/:id/custom-themes", verifyToken, getCustomThemes);
-router.delete("/:id/custom-theme", verifyToken, clearCacheByPattern("/api/users"), deleteCustomTheme);
-
-// Streak & Goals routes
-router.get("/streak/goals", verifyToken, getStreakAndGoals);
-router.put("/streak/goals", verifyToken, clearCacheByPattern("/api/users"), updateDailyGoals);
-router.post("/streak/activity", verifyToken, clearCacheByPattern("/api/users"), clearCacheByPattern("/api/users/streak"), updateDailyActivity);
 
 export default router;

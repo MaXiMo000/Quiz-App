@@ -36,6 +36,7 @@ const USER_SPECIFIC_ENDPOINTS = [
   '/learning-paths',    // User-specific learning paths (progress tracking)
   '/learning-paths/',   // Specific learning path (user-specific progress)
   '/competencies/user', // User-specific competencies
+  '/users/bookmarks',   // User-specific bookmarks
 ];
 
 /**

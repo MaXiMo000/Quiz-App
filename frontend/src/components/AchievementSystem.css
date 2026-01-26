@@ -330,18 +330,107 @@
 }
 
 .achievement-card.unlocked {
-  background: var(--accent-light);
-  border-color: var(--accent-light);
+  background: linear-gradient(135deg, var(--card-bg-glass) 0%, var(--success-light) 100%);
+  border-color: var(--success);
+  box-shadow: 0 8px 32px var(--success-light);
+  animation: unlockPulse 2s ease-in-out infinite;
+}
+
+@keyframes unlockPulse {
+  0%, 100% {
+    box-shadow: 0 8px 32px var(--success-light);
+  }
+  50% {
+    box-shadow: 0 8px 40px var(--success-light), 0 0 20px var(--success-light);
+  }
+}
+
+.achievement-card-bg.unlocked-bg {
+  background: radial-gradient(circle at center, var(--success-light) 0%, transparent 70%);
+  opacity: 0.3;
+  animation: bgPulse 3s ease-in-out infinite;
+}
+
+@keyframes bgPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
 }
 
 .achievement-card.locked {
-  opacity: 0.75;
-  filter: grayscale(0.4);
+  opacity: 0.7;
+  filter: grayscale(0.3);
 }
 
 .achievement-card.locked:hover {
   opacity: 0.9;
-  filter: grayscale(0.2);
+  filter: grayscale(0.1);
+}
+
+/* ✨ Unlock Particles Animation ✨ */
+.unlock-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--success);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  animation: particleExplode 1s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes particleExplode {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(60px) scale(0);
+    opacity: 0;
+  }
+}
+
+.achievement-icon.unlocked-icon {
+  animation: iconCelebrate 0.8s ease-out;
+  filter: drop-shadow(0 0 10px var(--success-light));
+}
+
+@keyframes iconCelebrate {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.3) rotate(-10deg); }
+  50% { transform: scale(1.2) rotate(10deg); }
+  75% { transform: scale(1.1) rotate(-5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.achievement-icon.locked-icon {
+  filter: grayscale(0.5);
+  opacity: 0.7;
+}
+
+.achievement-title.unlocked-title {
+  background: var(--gradient-success);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleShimmer 2s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes titleShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .achievement-icon-wrapper {
@@ -483,21 +572,22 @@
 
 .progress-bar {
   flex: 1;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  height: 10px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
   overflow: hidden;
   position: relative;
   min-width: 80px;
+  border: 1px solid var(--card-border);
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
-  border-radius: 4px;
-  transition: width 0.8s ease;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-md);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 10px var(--accent-transparent-40);
 }
 
 .progress-fill::after {
@@ -507,13 +597,24 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, transparent, var(--white-transparent-20), transparent);
+  animation: progressShimmer 2s ease-in-out infinite;
 }
 
-@keyframes shimmer {
+@keyframes progressShimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
+}
+
+.progress-fill.completed {
+  background: var(--gradient-success);
+  animation: progressComplete 0.6s ease-out;
+}
+
+@keyframes progressComplete {
+  0% { transform: scaleX(0.8); }
+  50% { transform: scaleX(1.1); }
+  100% { transform: scaleX(1); }
 }
 
 .progress-text {

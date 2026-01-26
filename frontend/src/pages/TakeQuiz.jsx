@@ -33,6 +33,8 @@ const TakeQuiz = () => {
     const [isQuizCompleted, setIsQuizCompleted] = useState(false);
     const [retryCount, setRetryCount] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [reviewQuestions, setReviewQuestions] = useState([]);
     const autoSubmitRef = useRef(false);
     const isSubmittingRef = useRef(false);
     const autoSubmitQuizRef = useRef(null);
@@ -635,6 +637,9 @@ const TakeQuiz = () => {
                 console.warn("Could not refresh user data:", userError);
             }
 
+            // Store questions for review
+            setReviewQuestions(detailedQuestions);
+
             // Mark quiz as completed and stop timer
             setIsQuizCompleted(true);
             setShowResultModal(true);
@@ -847,6 +852,15 @@ const TakeQuiz = () => {
 
                         <div className="modal-actions">
                             <button
+                                className="review-btn"
+                                onClick={() => {
+                                    setShowResultModal(false);
+                                    setShowReviewModal(true);
+                                }}
+                            >
+                                📖 Review Quiz
+                            </button>
+                            <button
                                 className="generate-btn"
                                 onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}
                             >
@@ -857,6 +871,74 @@ const TakeQuiz = () => {
                                 onClick={() => navigate("/user/report")}
                             >
                                 📊 Go to Reports
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Quiz Review Modal */}
+            {showReviewModal && (
+                <div className="modal-overlay" onClick={() => {
+                    setShowReviewModal(false);
+                    navigate("/user/test");
+                }}>
+                    <div className="modal-content review-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="review-header">
+                            <h2>📖 Quiz Review</h2>
+                            <button className="close-review-btn" onClick={() => {
+                                setShowReviewModal(false);
+                                navigate("/user/test");
+                            }}>✕</button>
+                        </div>
+                        <div className="review-content">
+                            {reviewQuestions.map((q, idx) => {
+                                const isCorrect = q.userAnswer === q.correctAnswer;
+                                const userOptionIndex = optionLetters.indexOf(q.userAnswer);
+                                const correctOptionIndex = optionLetters.indexOf(q.correctAnswer);
+                                return (
+                                    <div key={idx} className={`review-question-card ${isCorrect ? 'correct' : 'incorrect'}`}>
+                                        <div className="review-question-header">
+                                            <span className="question-number">Question {idx + 1}</span>
+                                            <span className={`question-status ${isCorrect ? 'correct' : 'incorrect'}`}>
+                                                {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                                            </span>
+                                        </div>
+                                        <h3 className="review-question-text">{q.questionText}</h3>
+                                        <div className="review-options">
+                                            {q.options.map((option, optIdx) => {
+                                                const letter = optionLetters[optIdx];
+                                                const isUserAnswer = letter === q.userAnswer;
+                                                const isCorrectAnswer = letter === q.correctAnswer;
+                                                return (
+                                                    <div
+                                                        key={optIdx}
+                                                        className={`review-option ${
+                                                            isCorrectAnswer ? 'correct-answer' :
+                                                            isUserAnswer && !isCorrect ? 'wrong-answer' : ''
+                                                        }`}
+                                                    >
+                                                        <span className="option-letter">{letter}.</span>
+                                                        <span className="option-text">{option}</span>
+                                                        {isCorrectAnswer && <span className="correct-badge">✓ Correct</span>}
+                                                        {isUserAnswer && !isCorrect && <span className="wrong-badge">Your Answer</span>}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="review-stats">
+                                            <span>Time: {Math.round(q.answerTime)}s</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div className="review-footer">
+                            <button className="close-review-btn-large" onClick={() => {
+                                setShowReviewModal(false);
+                                navigate("/user/test");
+                            }}>
+                                Close Review
                             </button>
                         </div>
                     </div>

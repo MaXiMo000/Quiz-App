@@ -1,4 +1,5 @@
 import UserQuiz from "../models/User.js";
+import Quiz from "../models/Quiz.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import XPLog from "../models/XPLog.js";
@@ -656,5 +657,198 @@ export const deleteCustomTheme = async (req, res) => {
     } catch (err) {
         logger.error({ message: `Error deleting custom theme for user ${req.params.id}`, error: err.message, stack: err.stack });
         res.status(500).json({ error: "Error deleting custom theme" });
+    }
+};
+
+// ✅ Bookmark a quiz
+export const bookmarkQuiz = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { quizId } = req.body;
+
+        if (!quizId) {
+            return res.status(400).json({ error: "Quiz ID is required" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(quizId)) {
+            return res.status(400).json({ error: "Invalid quiz ID format" });
+        }
+
+        const user = await UserQuiz.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Check if already bookmarked
+        const existingBookmark = user.bookmarkedQuizzes.find(
+            bookmark => bookmark.quizId.toString() === quizId
+        );
+
+        if (existingBookmark) {
+            return res.status(400).json({ error: "Quiz already bookmarked" });
+        }
+
+        // Add bookmark
+        user.bookmarkedQuizzes.push({
+            quizId: quizId,
+            bookmarkedAt: new Date()
+        });
+
+        await user.save();
+
+        logger.info(`User ${userId} bookmarked quiz ${quizId}`);
+        res.json({
+            message: "Quiz bookmarked successfully",
+            bookmarkedQuizzes: user.bookmarkedQuizzes
+        });
+    } catch (err) {
+        logger.error({ message: `Error bookmarking quiz for user ${req.user.id}`, error: err.message, stack: err.stack });
+        res.status(500).json({ error: "Error bookmarking quiz" });
+    }
+};
+
+// ✅ Remove bookmark
+export const removeBookmark = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { quizId } = req.body;
+
+        if (!quizId) {
+            return res.status(400).json({ error: "Quiz ID is required" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(quizId)) {
+            return res.status(400).json({ error: "Invalid quiz ID format" });
+        }
+
+        const user = await UserQuiz.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const bookmarkIndex = user.bookmarkedQuizzes.findIndex(
+            bookmark => bookmark.quizId.toString() === quizId
+        );
+
+        if (bookmarkIndex === -1) {
+            return res.status(404).json({ error: "Quiz not bookmarked" });
+        }
+
+        user.bookmarkedQuizzes.splice(bookmarkIndex, 1);
+        await user.save();
+
+        logger.info(`User ${userId} removed bookmark for quiz ${quizId}`);
+        res.json({
+            message: "Bookmark removed successfully",
+            bookmarkedQuizzes: user.bookmarkedQuizzes
+        });
+    } catch (err) {
+        logger.error({ message: `Error removing bookmark for user ${req.user.id}`, error: err.message, stack: err.stack });
+        res.status(500).json({ error: "Error removing bookmark" });
+    }
+};
+
+// ✅ Get bookmarked quizzes
+export const getBookmarkedQuizzes = async (req, res) => {
+    try {
+        const userId = req.user?.id;
+
+        if (!userId) {
+            logger.error('No user ID in request');
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            logger.error(`Invalid user ID format: ${userId}`);
+            return res.status(400).json({ error: "Invalid user ID format" });
+        }
+
+        const user = await UserQuiz.findById(userId).select('bookmarkedQuizzes');
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // If no bookmarks, return empty array
+        if (!user.bookmarkedQuizzes || !Array.isArray(user.bookmarkedQuizzes) || user.bookmarkedQuizzes.length === 0) {
+            return res.json({
+                bookmarkedQuizzes: [],
+                count: 0
+            });
+        }
+
+        // Populate quiz data for each bookmark
+        const populatedBookmarks = await Promise.all(
+            user.bookmarkedQuizzes.map(async (bookmark) => {
+                try {
+                    // Validate bookmark structure
+                    if (!bookmark || !bookmark.quizId) {
+                        logger.warn(`Invalid bookmark structure: ${JSON.stringify(bookmark)}`);
+                        return null;
+                    }
+
+                    // Handle both ObjectId and string quizId
+                    let quizIdValue = bookmark.quizId;
+
+                    // If quizId is an object with _id, extract it
+                    if (quizIdValue && typeof quizIdValue === 'object' && quizIdValue._id) {
+                        quizIdValue = quizIdValue._id;
+                    }
+
+                    // Convert to string for validation
+                    const quizIdString = quizIdValue?.toString() || quizIdValue;
+
+                    // Check if quizId is valid ObjectId
+                    if (!quizIdString || !mongoose.Types.ObjectId.isValid(quizIdString)) {
+                        logger.warn(`Invalid quizId in bookmark: ${quizIdString}`);
+                        return null;
+                    }
+
+                    // Convert to ObjectId for query
+                    const quizObjectId = new mongoose.Types.ObjectId(quizIdString);
+                    const quiz = await Quiz.findById(quizObjectId).lean();
+
+                    if (!quiz) {
+                        logger.debug(`Quiz ${quizIdString} not found (may have been deleted)`);
+                        return null; // Quiz was deleted
+                    }
+
+                    return {
+                        _id: bookmark._id,
+                        quizId: {
+                            _id: quiz._id.toString(),
+                            title: quiz.title,
+                            category: quiz.category,
+                            duration: quiz.duration,
+                            totalMarks: quiz.totalMarks,
+                            questions: quiz.questions?.length || 0
+                        },
+                        bookmarkedAt: bookmark.bookmarkedAt
+                    };
+                } catch (populateError) {
+                    logger.warn(`Error populating quiz for bookmark ${bookmark?._id || 'unknown'}: ${populateError.message}`);
+                    return null; // Skip invalid bookmarks
+                }
+            })
+        );
+
+        // Filter out null values (deleted quizzes or invalid bookmarks)
+        const validBookmarks = populatedBookmarks.filter(bookmark => bookmark !== null);
+
+        logger.info(`User ${userId} fetched ${validBookmarks.length} bookmarked quizzes`);
+        res.json({
+            bookmarkedQuizzes: validBookmarks,
+            count: validBookmarks.length
+        });
+    } catch (err) {
+        logger.error({
+            message: `Error fetching bookmarked quizzes for user ${req.user?.id || 'unknown'}`,
+            error: err.message,
+            stack: err.stack,
+            userId: req.user?.id,
+            url: req.url,
+            method: req.method
+        });
+        res.status(500).json({ error: "Error fetching bookmarked quizzes" });
     }
 };

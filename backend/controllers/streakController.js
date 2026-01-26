@@ -136,10 +136,11 @@ export const getStreakAndGoals = async (req, res) => {
             }
         ]);
 
-        // Format streak history for calendar
+        // Format streak history for calendar - use UTC to match date field
         const calendarData = {};
         streakHistory.forEach(item => {
-            const date = new Date(item._id.year, item._id.month - 1, item._id.day);
+            // Use UTC date constructor to match the date field in XPLog
+            const date = new Date(Date.UTC(item._id.year, item._id.month - 1, item._id.day));
             const dateKey = date.toISOString().split('T')[0];
             calendarData[dateKey] = {
                 hasActivity: true,
