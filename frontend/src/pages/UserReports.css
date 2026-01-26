@@ -406,6 +406,8 @@
 .actions-cell {
     width: 100%;
     padding: 0.5rem !important;
+    overflow: visible;
+    position: relative;
 }
 
 .report-actions {
@@ -702,24 +704,25 @@
 
 .report-actions {
     display: flex;
-    gap: 0.5rem;
-    justify-content: space-between;
-    flex-wrap: nowrap;
+    gap: 1rem;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
+    min-width: 100%;
 }
 
 .quick-actions-dropdown {
     position: relative;
-    flex: 1;
     display: flex;
+    flex-shrink: 0;
+    z-index: 1001;
 }
 
 .quick-actions-btn {
     background: var(--bg-secondary);
     border: 1px solid var(--card-border);
     color: var(--text-color);
-    padding: 0.5rem 0.75rem;
+    padding: 0;
     border-radius: var(--radius-md);
     cursor: pointer;
     font-size: 1.2rem;
@@ -728,33 +731,46 @@
     align-items: center;
     justify-content: center;
     min-width: 40px;
+    width: 40px;
     height: 40px;
-    flex: 1;
-    max-width: 50px;
+    flex-shrink: 0;
 }
 
 .quick-actions-btn:hover {
     background: var(--accent-light);
     border-color: var(--accent);
     color: var(--text-light);
+    transform: scale(1.05);
 }
 
 .quick-actions-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 0.5rem);
     right: 0;
-    margin-top: 0.25rem;
     background: var(--card-bg-glass);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    min-width: 150px;
-    z-index: 1000;
+    box-shadow: var(--shadow-xl);
+    min-width: 160px;
+    z-index: 1002;
     display: none;
     flex-direction: column;
     overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+    max-height: none;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .quick-actions-menu.show {
@@ -770,9 +786,14 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.9rem;
-    display: flex;
+    display: flex !important;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    white-space: nowrap;
+    width: 100%;
+    min-height: 44px;
+    visibility: visible;
+    opacity: 1;
 }
 
 .quick-actions-menu button:hover {
@@ -782,6 +803,16 @@
 
 .quick-actions-menu button:not(:last-child) {
     border-bottom: 1px solid var(--card-border);
+}
+
+.quick-actions-menu button:first-child {
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+}
+
+.quick-actions-menu button:last-child {
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
 }
 
 /* Close dropdown when clicking outside */
@@ -936,6 +967,15 @@ html.user-reports-page .container.user-reports-page {
         border-spacing: 0;
         font-size: 1rem;
         display: table;
+        overflow: visible;
+    }
+
+    .table-container tbody {
+        overflow: visible;
+    }
+
+    .table-container tbody tr {
+        overflow: visible;
     }
 
     .table-container th {
@@ -993,6 +1033,8 @@ html.user-reports-page .container.user-reports-page {
         background: var(--card-bg-glass) !important;
         padding: 1.25rem 1.5rem !important;
         width: 100%;
+        overflow: visible !important;
+        position: relative;
     }
 
     .table-container td.actions-cell .report-actions {
@@ -1648,7 +1690,13 @@ html.user-reports-page .container.user-reports-page {
     }
 
     .report-actions {
-        gap: 0.5rem;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-actions-menu {
+        min-width: 140px;
+        right: 0;
     }
 
     .view-btn,

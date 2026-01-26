@@ -462,7 +462,7 @@ const UserReports = () => {
                                                     📊
                                                 </button>
                                             </Link>
-                                            {/* <div className="quick-actions-dropdown">
+                                            <div className="quick-actions-dropdown">
                                                 <button
                                                     className="quick-actions-btn"
                                                     onClick={(e) => {
@@ -501,7 +501,7 @@ const UserReports = () => {
                                                         📊 CSV
                                                     </button>
                                                 </div>
-                                            </div> */}
+                                            </div>
                                             <button
                                                 className="delete-btn"
                                                 onClick={() => deleteReport(report._id)}
