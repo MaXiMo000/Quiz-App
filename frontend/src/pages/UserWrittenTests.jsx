@@ -4,6 +4,8 @@ import "../App.css";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 import "./UserWrittenTests.css"; // ✅ Import the new CSS file
 
 const UserWrittenTests = () => {
@@ -12,14 +14,19 @@ const UserWrittenTests = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
     useEffect(() => {
         const fetchTests = async () => {
             try {
                 const res = await axios.get('/api/written-tests');
                 setTests(res.data);
             } catch (error) {
-                console.error("Error fetching users:", error);
-                setError("Error fetching users. Try again later.");
+                console.error("Error fetching tests:", error);
+                const errorMsg = "Error fetching tests. Try again later.";
+                setError(errorMsg);
+                showError(errorMsg);
             }
             finally{
                 setLoading(false);
@@ -56,7 +63,13 @@ const UserWrittenTests = () => {
                                     <td>{test.category}</td>
                                     <td>{test.duration} minutes</td>
                                     <td>
-                                        <button className="start-test-btn" onClick={() => navigate(`/take-written-test/${test._id}`)}>Start Test</button>
+                                        <button
+                                            className="start-test-btn"
+                                            onClick={() => navigate(`/take-written-test/${test._id}`)}
+                                            aria-label={`Start written test: ${test.title}`}
+                                        >
+                                            Start Test
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -64,6 +77,15 @@ const UserWrittenTests = () => {
                     </table>
                 </div>
             )}
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

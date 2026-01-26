@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './AIStudyBuddyModals.css';
 
 // Quiz Creator Modal
@@ -11,6 +12,15 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
         ...initialData
     });
     const [isLoading, setIsLoading] = useState(false);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen && !isLoading) {
+                onClose();
+            }
+        },
+    }, [isOpen, isLoading]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,6 +50,9 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="quiz-creator-modal-title"
                 >
                     <motion.div
                         className="ai-modal-content"
@@ -50,10 +63,15 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="ai-modal-header">
-                            <h2 className="ai-modal-title">
+                            <h2 id="quiz-creator-modal-title" className="ai-modal-title">
                                 🎯 Create Custom Quiz
                             </h2>
-                            <button className="ai-modal-close" onClick={onClose}>
+                            <button
+                                className="ai-modal-close"
+                                onClick={onClose}
+                                aria-label="Close create quiz modal"
+                                disabled={isLoading}
+                            >
                                 ×
                             </button>
                         </div>
@@ -61,8 +79,9 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
                         <div className="ai-modal-body">
                             <form onSubmit={handleSubmit}>
                                 <div className="ai-form-group">
-                                    <label className="ai-form-label">📚 Topic</label>
+                                    <label htmlFor="quiz-topic" className="ai-form-label">📚 Topic</label>
                                     <input
+                                        id="quiz-topic"
                                         type="text"
                                         className="ai-form-input"
                                         placeholder="e.g., Mathematics, History, Science..."
@@ -70,16 +89,20 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
                                         onChange={(e) => handleInputChange('topic', e.target.value)}
                                         required
                                         autoFocus
+                                        aria-label="Quiz topic"
+                                        aria-required="true"
                                     />
                                 </div>
 
                                 <div className="quiz-options-grid">
                                     <div className="ai-form-group">
-                                        <label className="ai-form-label">🔢 Number of Questions</label>
+                                        <label htmlFor="question-count" className="ai-form-label">🔢 Number of Questions</label>
                                         <select
+                                            id="question-count"
                                             className="ai-form-select"
                                             value={formData.questionCount}
                                             onChange={(e) => handleInputChange('questionCount', parseInt(e.target.value))}
+                                            aria-label="Number of questions"
                                         >
                                             {[...Array(20)].map((_, i) => (
                                                 <option key={i + 1} value={i + 1}>
@@ -91,13 +114,15 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
 
                                     <div className="ai-form-group">
                                         <label className="ai-form-label">⚡ Difficulty Level</label>
-                                        <div className="difficulty-buttons">
+                                        <div className="difficulty-buttons" role="radiogroup" aria-label="Difficulty level">
                                             {['easy', 'medium', 'hard'].map((level) => (
                                                 <button
                                                     key={level}
                                                     type="button"
                                                     className={`difficulty-btn ${level} ${formData.difficulty === level ? 'active' : ''}`}
                                                     onClick={() => handleInputChange('difficulty', level)}
+                                                    aria-label={`Set difficulty to ${level}`}
+                                                    aria-pressed={formData.difficulty === level}
                                                 >
                                                     {level.charAt(0).toUpperCase() + level.slice(1)}
                                                 </button>
@@ -112,6 +137,7 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
                                         className="ai-btn ai-btn-secondary"
                                         onClick={onClose}
                                         disabled={isLoading}
+                                        aria-label="Cancel creating quiz"
                                     >
                                         Cancel
                                     </button>
@@ -119,6 +145,8 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
                                         type="submit"
                                         className={`ai-btn ai-btn-primary ${isLoading ? 'loading' : ''}`}
                                         disabled={!formData.topic.trim() || isLoading}
+                                        aria-label="Create quiz"
+                                        aria-busy={isLoading}
                                     >
                                         {isLoading ? '' : '🚀 Create Quiz'}
                                     </button>
@@ -138,6 +166,15 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
 
     const previewQuestions = quiz.questions?.slice(0, 2) || [];
 
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen) {
+                onClose();
+            }
+        },
+    }, [isOpen]);
+
     const handleTakeQuiz = () => {
         if (onTakeQuiz) {
             onTakeQuiz(quiz.id);
@@ -156,6 +193,9 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="quiz-preview-modal-title"
                 >
                     <motion.div
                         className="ai-modal-content quiz-preview-modal"
@@ -166,10 +206,14 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="ai-modal-header">
-                            <h2 className="ai-modal-title">
+                            <h2 id="quiz-preview-modal-title" className="ai-modal-title">
                                 👀 Quiz Preview
                             </h2>
-                            <button className="ai-modal-close" onClick={onClose}>
+                            <button
+                                className="ai-modal-close"
+                                onClick={onClose}
+                                aria-label="Close quiz preview modal"
+                            >
                                 ×
                             </button>
                         </div>
@@ -242,12 +286,14 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
                                 <button
                                     className="ai-btn ai-btn-secondary"
                                     onClick={onClose}
+                                    aria-label="Close quiz preview"
                                 >
                                     Close Preview
                                 </button>
                                 <button
                                     className="ai-btn ai-btn-primary"
                                     onClick={handleTakeQuiz}
+                                    aria-label={`Take full quiz: ${quiz.title}`}
                                 >
                                     🚀 Take Full Quiz
                                 </button>
@@ -264,6 +310,15 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
 export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' }) => {
     const [concept, setConcept] = useState(initialConcept);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen && !isLoading) {
+                onClose();
+            }
+        },
+    }, [isOpen, isLoading]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -289,6 +344,9 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="concept-modal-title"
                 >
                     <motion.div
                         className="ai-modal-content"
@@ -299,10 +357,15 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="ai-modal-header">
-                            <h2 className="ai-modal-title">
+                            <h2 id="concept-modal-title" className="ai-modal-title">
                                 💡 Explain Concept
                             </h2>
-                            <button className="ai-modal-close" onClick={onClose}>
+                            <button
+                                className="ai-modal-close"
+                                onClick={onClose}
+                                aria-label="Close concept explanation modal"
+                                disabled={isLoading}
+                            >
                                 ×
                             </button>
                         </div>
@@ -310,10 +373,11 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
                         <div className="ai-modal-body">
                             <form onSubmit={handleSubmit}>
                                 <div className="ai-form-group">
-                                    <label className="ai-form-label">
+                                    <label htmlFor="concept-input" className="ai-form-label">
                                         🤔 What concept would you like me to explain?
                                     </label>
                                     <textarea
+                                        id="concept-input"
                                         className="ai-form-textarea"
                                         placeholder="e.g., Quantum Physics, Photosynthesis, Machine Learning algorithms..."
                                         value={concept}
@@ -321,6 +385,8 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
                                         required
                                         autoFocus
                                         rows={4}
+                                        aria-label="Concept to explain"
+                                        aria-required="true"
                                     />
                                 </div>
 
@@ -330,6 +396,7 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
                                         className="ai-btn ai-btn-secondary"
                                         onClick={onClose}
                                         disabled={isLoading}
+                                        aria-label="Cancel concept explanation"
                                     >
                                         Cancel
                                     </button>
@@ -337,6 +404,8 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
                                         type="submit"
                                         className={`ai-btn ai-btn-primary ${isLoading ? 'loading' : ''}`}
                                         disabled={!concept.trim() || isLoading}
+                                        aria-label="Explain concept"
+                                        aria-busy={isLoading}
                                     >
                                         {isLoading ? '' : '💭 Explain It'}
                                     </button>
@@ -354,6 +423,15 @@ export const ConceptModal = ({ isOpen, onClose, onSubmit, initialConcept = '' })
 export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
     const [reminderText, setReminderText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen && !isLoading) {
+                onClose();
+            }
+        },
+    }, [isOpen, isLoading]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -386,6 +464,9 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="reminder-modal-title"
                 >
                     <motion.div
                         className="ai-modal-content"
@@ -396,10 +477,15 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="ai-modal-header">
-                            <h2 className="ai-modal-title">
+                            <h2 id="reminder-modal-title" className="ai-modal-title">
                                 ⏰ Set Study Reminder
                             </h2>
-                            <button className="ai-modal-close" onClick={onClose}>
+                            <button
+                                className="ai-modal-close"
+                                onClick={onClose}
+                                aria-label="Close reminder modal"
+                                disabled={isLoading}
+                            >
                                 ×
                             </button>
                         </div>
@@ -407,10 +493,11 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                         <div className="ai-modal-body">
                             <form onSubmit={handleSubmit}>
                                 <div className="ai-form-group">
-                                    <label className="ai-form-label">
+                                    <label htmlFor="reminder-input" className="ai-form-label">
                                         📅 When would you like to be reminded?
                                     </label>
                                     <input
+                                        id="reminder-input"
                                         type="text"
                                         className="ai-form-input"
                                         placeholder="e.g., daily at 7pm, every Monday at 10am"
@@ -418,6 +505,8 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                                         onChange={(e) => setReminderText(e.target.value)}
                                         required
                                         autoFocus
+                                        aria-label="Reminder time"
+                                        aria-required="true"
                                     />
                                 </div>
 
@@ -439,6 +528,7 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                                                     transition: 'all 0.2s ease'
                                                 }}
                                                 onClick={() => setReminderText(option)}
+                                                aria-label={`Set reminder to ${option}`}
                                                 onMouseOver={(e) => {
                                                     e.target.style.background = 'rgba(102, 126, 234, 0.2)';
                                                 }}
@@ -458,6 +548,7 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                                         className="ai-btn ai-btn-secondary"
                                         onClick={onClose}
                                         disabled={isLoading}
+                                        aria-label="Cancel setting reminder"
                                     >
                                         Cancel
                                     </button>
@@ -465,6 +556,8 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
                                         type="submit"
                                         className={`ai-btn ai-btn-primary ${isLoading ? 'loading' : ''}`}
                                         disabled={!reminderText.trim() || isLoading}
+                                        aria-label="Set reminder"
+                                        aria-busy={isLoading}
                                     >
                                         {isLoading ? '' : '🔔 Set Reminder'}
                                     </button>
@@ -480,6 +573,15 @@ export const ReminderModal = ({ isOpen, onClose, onSubmit }) => {
 
 // Error Modal (replaces alert)
 export const ErrorModal = ({ isOpen, onClose, message, title = "Error" }) => {
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen) {
+                onClose();
+            }
+        },
+    }, [isOpen]);
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -489,6 +591,10 @@ export const ErrorModal = ({ isOpen, onClose, message, title = "Error" }) => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
+                    role="alertdialog"
+                    aria-modal="true"
+                    aria-labelledby="error-modal-title"
+                    aria-describedby="error-modal-message"
                 >
                     <motion.div
                         className="ai-modal-content"
@@ -500,21 +606,28 @@ export const ErrorModal = ({ isOpen, onClose, message, title = "Error" }) => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="ai-modal-header">
-                            <h2 className="ai-modal-title" style={{ color: '#e53e3e' }}>
+                            <h2 id="error-modal-title" className="ai-modal-title" style={{ color: '#e53e3e' }}>
                                 ❌ {title}
                             </h2>
-                            <button className="ai-modal-close" onClick={onClose}>
+                            <button
+                                className="ai-modal-close"
+                                onClick={onClose}
+                                aria-label="Close error modal"
+                            >
                                 ×
                             </button>
                         </div>
 
                         <div className="ai-modal-body">
-                            <p style={{
-                                margin: '0 0 20px 0',
-                                color: '#4a5568',
-                                lineHeight: '1.6',
-                                fontSize: '1rem'
-                            }}>
+                            <p
+                                id="error-modal-message"
+                                style={{
+                                    margin: '0 0 20px 0',
+                                    color: '#4a5568',
+                                    lineHeight: '1.6',
+                                    fontSize: '1rem'
+                                }}
+                            >
                                 {message}
                             </p>
 
@@ -523,6 +636,7 @@ export const ErrorModal = ({ isOpen, onClose, message, title = "Error" }) => {
                                     className="ai-btn ai-btn-primary"
                                     onClick={onClose}
                                     style={{ width: '100%' }}
+                                    aria-label="Acknowledge error"
                                 >
                                     OK
                                 </button>

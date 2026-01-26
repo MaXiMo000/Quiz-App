@@ -8,6 +8,9 @@ import ThemeSelector from "../components/ThemeSelector";
 import AdvancedThemeSelector from "../components/AdvancedThemeSelector";
 import { ThemeContext } from "../context/ThemeContext";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -17,6 +20,24 @@ const Home = () => {
     const [level, setLevel] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [recentQuizzes, setRecentQuizzes] = useState([]);
+    const [recentReports, setRecentReports] = useState([]);
+    const [stats, setStats] = useState({
+        totalQuizzes: 0,
+        completedQuizzes: 0,
+        averageScore: 0,
+        totalXP: 0
+    });
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     const fetchUserData = useCallback(async () => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -36,6 +57,38 @@ const Home = () => {
             // Update user state with fresh data from API and localStorage
             setUser(data);
             localStorage.setItem("user", JSON.stringify(data));
+
+            // Fetch recent quizzes
+            let quizzes = [];
+            try {
+                const quizzesRes = await axios.get(`/api/quizzes`);
+                quizzes = quizzesRes.data || [];
+                setRecentQuizzes(quizzes.slice(0, 6)); // Show 6 most recent
+            } catch (quizError) {
+                console.error("Error fetching quizzes:", quizError);
+            }
+
+            // Fetch recent reports for stats
+            try {
+                const reportsRes = await axios.get(`/api/reports/user?username=${data.name}`);
+                const reports = reportsRes.data || [];
+                setRecentReports(reports.slice(0, 5)); // Show 5 most recent
+
+                // Calculate stats
+                const completed = reports.length;
+                const avgScore = completed > 0
+                    ? (reports.reduce((sum, r) => sum + r.score, 0) / completed).toFixed(1)
+                    : 0;
+
+                setStats({
+                    totalQuizzes: quizzes.length,
+                    completedQuizzes: completed,
+                    averageScore: parseFloat(avgScore),
+                    totalXP: Math.round(data.xp) || 0
+                });
+            } catch (reportError) {
+                console.error("Error fetching reports:", reportError);
+            }
         } catch (error) {
             console.error("Error fetching user data:", error);
             // Fallback to /:id endpoint if /me fails
@@ -49,7 +102,9 @@ const Home = () => {
                 localStorage.setItem("user", JSON.stringify(data));
             } catch (fallbackError) {
                 console.error("Error with fallback user data fetch:", fallbackError);
-                setError("Error fetching user data. Try again later.");
+                const errorMsg = "Error fetching user data. Try again later.";
+                setError(errorMsg);
+                showError(errorMsg);
             }
         } finally {
             setLoading(false);
@@ -180,7 +235,158 @@ const Home = () => {
                         <p className="stat-description">Consecutive quiz days</p>
                     </div>
                 </motion.div>
+
+                <motion.div
+                    className="stat-card"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.9, duration: 0.5 }}
+                >
+                    <div className="stat-icon completed-icon">📊</div>
+                    <div className="stat-content">
+                        <h3>Completed</h3>
+                        <div className="stat-value">{stats.completedQuizzes}</div>
+                        <p className="stat-description">Quizzes finished</p>
+                    </div>
+                </motion.div>
+
+                {stats.averageScore > 0 && (
+                    <motion.div
+                        className="stat-card"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1.0, duration: 0.5 }}
+                    >
+                        <div className="stat-icon avg-icon">📈</div>
+                        <div className="stat-content">
+                            <h3>Avg Score</h3>
+                            <div className="stat-value">{stats.averageScore}</div>
+                            <p className="stat-description">Your average</p>
+                        </div>
+                    </motion.div>
+                )}
             </motion.div>
+
+            {/* Recent Quizzes Section */}
+            {recentQuizzes.filter(quiz => quiz && quiz._id && quiz.title && quiz.title.trim() !== '').length > 0 && (
+                <motion.div
+                    className="recent-quizzes-section"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.1, duration: 0.6 }}
+                >
+                    <div className="section-header">
+                        <h2 className="section-title">📚 Available Quizzes</h2>
+                        {/* <button
+                            className="view-all-btn"
+                            onClick={() => navigate("/user/test")}
+                        >
+                            View All →
+                        </button> */}
+                    </div>
+                    <div className="quizzes-grid">
+                        {recentQuizzes
+                            .filter(quiz => quiz && quiz._id && quiz.title && quiz.title.trim() !== '')
+                            .slice(0, 6)
+                            .map((quiz, index) => (
+                            <motion.div
+                                key={quiz._id}
+                                className="quiz-preview-card"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 1.2 + (index * 0.1), duration: 0.5 }}
+                                whileHover={{ scale: 1.05, y: -5 }}
+                                onClick={() => {
+                                    const element = document.documentElement;
+                                    if (element.requestFullscreen) {
+                                        element.requestFullscreen().then(() => {
+                                            navigate(`/user/test/${quiz._id}`);
+                                        }).catch(() => {
+                                            navigate(`/user/test/${quiz._id}`);
+                                        });
+                                    } else {
+                                        navigate(`/user/test/${quiz._id}`);
+                                    }
+                                }}
+                            >
+                                <div className="quiz-preview-icon">🎯</div>
+                                <h3 className="quiz-preview-title">{quiz.title}</h3>
+                                <div className="quiz-preview-meta">
+                                    <span>⏱️ {quiz.duration || 0} min</span>
+                                    <span>📝 {quiz.questions?.length || 0} Qs</span>
+                                </div>
+                                <div className="quiz-preview-category">{quiz.category || "General"}</div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+
+            {/* Recent Activity Section */}
+            {recentReports.filter(report =>
+                report &&
+                report._id &&
+                report.quizName &&
+                report.quizName.trim() !== '' &&
+                typeof report.score === 'number' &&
+                typeof report.total === 'number' &&
+                report.total > 0
+            ).length > 0 && (
+                <motion.div
+                    className="recent-activity-section"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.3, duration: 0.6 }}
+                >
+                    <div className="section-header">
+                        <h2 className="section-title">📋 Recent Activity</h2>
+                        {/* <button
+                            className="view-all-btn"
+                            onClick={() => navigate("/user/report")}
+                        >
+                            View All →
+                        </button> */}
+                    </div>
+                    <div className="activity-list">
+                        {recentReports
+                            .filter(report =>
+                                report &&
+                                report._id &&
+                                report.quizName &&
+                                report.quizName.trim() !== '' &&
+                                typeof report.score === 'number' &&
+                                typeof report.total === 'number' &&
+                                report.total > 0
+                            )
+                            .map((report, index) => {
+                            const percentage = Math.round((report.score / report.total) * 100);
+                            const passed = report.score >= report.total * 0.5;
+                            return (
+                                <motion.div
+                                    key={report._id || index}
+                                    className="activity-item"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.4 + (index * 0.1), duration: 0.5 }}
+                                    onClick={() => navigate(`/report/${report._id}`)}
+                                >
+                                    <div className="activity-icon">{passed ? "✅" : "❌"}</div>
+                                    <div className="activity-content">
+                                        <h4 className="activity-title">{report.quizName}</h4>
+                                        <div className="activity-meta">
+                                            <span className="activity-score">{report.score.toFixed(1)}/{report.total}</span>
+                                            <span className={`activity-percentage ${passed ? 'passed' : 'failed'}`}>
+                                                {percentage}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="activity-arrow">→</div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </motion.div>
+            )}
 
             {/* Quick Actions */}
             <motion.div
@@ -199,6 +405,7 @@ const Home = () => {
                         transition={{ delay: 1.0, duration: 0.5 }}
                         whileHover={{ scale: 1.05, y: -5 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="Start a new quiz"
                     >
                         <span className="btn-icon">🚀</span>
                         <span className="btn-text">Start Quiz</span>
@@ -213,6 +420,7 @@ const Home = () => {
                             transition={{ delay: 1.1, duration: 0.5 }}
                             whileHover={{ scale: 1.05, y: -5 }}
                             whileTap={{ scale: 0.95 }}
+                            aria-label="Open Intelligence Dashboard for AI-powered insights"
                         >
                             <span className="btn-icon">🧠</span>
                             <span className="btn-text">Intelligence Dashboard</span>
@@ -227,6 +435,7 @@ const Home = () => {
                         transition={{ delay: 1.2, duration: 0.5 }}
                         whileHover={{ scale: 1.05, y: -5 }}
                         whileTap={{ scale: 0.95 }}
+                        aria-label="Open Enhanced Dashboard with analytics"
                     >
                         <span className="btn-icon">📊</span>
                         <span className="btn-text">View Analytics</span>
@@ -281,6 +490,15 @@ const Home = () => {
                     />
                 </div>
             </motion.div>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

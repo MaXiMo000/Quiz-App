@@ -160,8 +160,30 @@ self.addEventListener('fetch', event => {
 
     // Handle different types of requests
     if (request.url.includes('/api/')) {
-        // API requests - Network First with cache fallback
-        event.respondWith(handleApiRequest(request));
+        // API requests - Only intercept if NOT from main thread (axios/fetch)
+        // Check if request is from main thread (has X-Requested-With header from axios)
+        const isFromMainThread = request.headers.get('X-Requested-With') === 'XMLHttpRequest' ||
+                                 request.headers.get('Authorization');
+
+        if (isFromMainThread) {
+            // Request is from axios/main thread - let it pass through without interception
+            // This prevents duplicate API calls
+            // Only serve from cache if network completely fails
+            event.respondWith(
+                fetch(request.clone()).catch(async () => {
+                    // Network failed, try cache as fallback
+                    const cached = await caches.match(request);
+                    if (cached) {
+                        return cached;
+                    }
+                    // No cache, return network error
+                    throw new Error('Network request failed');
+                })
+            );
+        } else {
+            // Background/prefetch request (not from main thread) - use Network First with cache fallback
+            event.respondWith(handleApiRequest(request));
+        }
     } else if (request.destination === 'image') {
         // Images - Cache First
         event.respondWith(handleImageRequest(request));
@@ -172,6 +194,8 @@ self.addEventListener('fetch', event => {
 });
 
 // Network First strategy for API requests
+// IMPORTANT: This should only be called for background/prefetch requests
+// Main thread API requests are handled directly in the fetch event listener
 async function handleApiRequest(request) {
     try {
         // Try network first
@@ -403,16 +427,19 @@ async function handleStaticRequest(request) {
 
     // Return cached version immediately if available
     if (cachedResponse) {
-        // Update cache in background
-        fetch(request).then(networkResponse => {
-            if (networkResponse.ok) {
-                caches.open(STATIC_CACHE_NAME).then(cache => {
-                    cache.put(request, networkResponse);
-                });
-            }
-        }).catch(() => {
-            // Network failed, but we have cache
-        });
+        // Update cache in background (but don't duplicate API calls)
+        // Only do this for static assets, not API endpoints
+        if (!request.url.includes('/api/')) {
+            fetch(request).then(networkResponse => {
+                if (networkResponse.ok) {
+                    caches.open(STATIC_CACHE_NAME).then(cache => {
+                        cache.put(request, networkResponse);
+                    });
+                }
+            }).catch(() => {
+                // Network failed, but we have cache
+            });
+        }
 
         return cachedResponse;
     }

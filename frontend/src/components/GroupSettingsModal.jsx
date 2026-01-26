@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './GroupSettingsModal.css';
 
 const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
@@ -14,6 +15,15 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
     const [newTag, setNewTag] = useState('');
     const [updating, setUpdating] = useState(false);
     const [error, setError] = useState('');
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen && !updating) {
+                onClose();
+            }
+        },
+    }, [isOpen, updating]);
 
     const categories = [
         'Mathematics', 'Science', 'History', 'Literature', 'Geography',
@@ -106,6 +116,9 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="group-settings-modal-title"
             >
                 <motion.div
                     className="group-settings-modal"
@@ -115,8 +128,8 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="modal-header">
-                        <h2>Group Settings</h2>
-                        <button className="close-btn" onClick={onClose}>
+                        <h2 id="group-settings-modal-title">Group Settings</h2>
+                        <button className="close-btn" onClick={onClose} aria-label="Close group settings modal" disabled={updating}>
                             ×
                         </button>
                     </div>
@@ -133,6 +146,7 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                     type="button"
                                     onClick={() => setError('')}
                                     className="error-close"
+                                    aria-label="Dismiss error message"
                                 >
                                     ×
                                 </button>
@@ -140,8 +154,9 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                         )}
 
                         <div className="form-group">
-                            <label>Group Name *</label>
+                            <label htmlFor="group-name">Group Name *</label>
                             <input
+                                id="group-name"
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
@@ -149,27 +164,35 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                 required
                                 minLength={3}
                                 maxLength={100}
+                                aria-label="Group name"
+                                aria-describedby="group-name-hint"
                             />
+                            <small id="group-name-hint" className="sr-only">Group name must be at least 3 characters</small>
                         </div>
 
                         <div className="form-group">
-                            <label>Description</label>
+                            <label htmlFor="group-description">Description</label>
                             <textarea
+                                id="group-description"
                                 value={formData.description}
                                 onChange={(e) => handleInputChange('description', e.target.value)}
                                 placeholder="Describe your study group..."
                                 rows={3}
                                 maxLength={500}
+                                aria-label="Group description"
+                                aria-describedby="description-char-count"
                             />
-                            <small>{formData.description.length}/500 characters</small>
+                            <small id="description-char-count">{formData.description.length}/500 characters</small>
                         </div>
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label>Category</label>
+                                <label htmlFor="group-category">Category</label>
                                 <select
+                                    id="group-category"
                                     value={formData.category}
                                     onChange={(e) => handleInputChange('category', e.target.value)}
+                                    aria-label="Group category"
                                 >
                                     <option value="">Select Category</option>
                                     {categories.map(cat => (
@@ -179,22 +202,26 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                             </div>
 
                             <div className="form-group">
-                                <label>Max Members</label>
+                                <label htmlFor="max-members">Max Members</label>
                                 <input
+                                    id="max-members"
                                     type="number"
                                     value={formData.maxMembers}
                                     onChange={(e) => handleInputChange('maxMembers', e.target.value)}
                                     min={group?.members?.length || 1}
                                     max={100}
+                                    aria-label="Maximum members"
+                                    aria-describedby="max-members-hint"
                                 />
-                                <small>Current: {group?.members?.length || 0} members</small>
+                                <small id="max-members-hint">Current: {group?.members?.length || 0} members</small>
                             </div>
                         </div>
 
                         <div className="form-group">
-                            <label>Tags (up to 5)</label>
+                            <label htmlFor="new-tag">Tags (up to 5)</label>
                             <div className="tags-input">
                                 <input
+                                    id="new-tag"
                                     type="text"
                                     value={newTag}
                                     onChange={(e) => setNewTag(e.target.value)}
@@ -206,16 +233,20 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                         }
                                     }}
                                     disabled={formData.tags.length >= 5}
+                                    aria-label="Add a tag"
+                                    aria-describedby="tags-hint"
                                 />
                                 <button
                                     type="button"
                                     onClick={addTag}
                                     disabled={!newTag.trim() || formData.tags.includes(newTag.trim()) || formData.tags.length >= 5}
                                     className="add-tag-btn"
+                                    aria-label="Add tag"
                                 >
                                     Add
                                 </button>
                             </div>
+                            <small id="tags-hint" className="sr-only">You can add up to 5 tags</small>
 
                             {formData.tags.length > 0 && (
                                 <div className="tags-list">
@@ -226,6 +257,7 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                                 type="button"
                                                 onClick={() => removeTag(tag)}
                                                 className="remove-tag"
+                                                aria-label={`Remove tag ${tag}`}
                                             >
                                                 ×
                                             </button>
@@ -259,6 +291,7 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                 className="cancel-btn"
                                 onClick={onClose}
                                 disabled={updating}
+                                aria-label="Cancel editing group settings"
                             >
                                 Cancel
                             </button>
@@ -266,6 +299,8 @@ const GroupSettingsModal = ({ group, isOpen, onClose, onUpdate }) => {
                                 type="submit"
                                 className="save-btn"
                                 disabled={updating}
+                                aria-label="Save group settings"
+                                aria-busy={updating}
                             >
                                 {updating ? 'Saving...' : 'Save Changes'}
                             </button>

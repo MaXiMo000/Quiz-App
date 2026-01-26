@@ -21,6 +21,7 @@ import ShippingPolicy from './pages/ShippingPolicy';
 import ContactUs from './pages/ContactUs';
 import PWAInstallTest from './components/PWAInstallTest';
 import { ThemeProvider } from "./context/ThemeContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // ✅ Lazy load all pages
 const AdaptiveQuiz = lazy(() => import("./components/AdaptiveQuiz"));
@@ -210,78 +211,80 @@ const App = () => {
     }, [isOnline]);
 
     return (
-        <ThemeProvider>
-            <Router>
-                <OfflineBanner /> {/* ✅ Global offline status banner */}
-                <Suspense fallback={<Spinner />}>
-                    <Routes>
-                        {/* Public Routes */}
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/google-auth" element={<GoogleAuth />} />
-                        <Route path="/pwa-test" element={<PWAInstallTest />} />
+        <ErrorBoundary>
+            <ThemeProvider>
+                <Router>
+                    <OfflineBanner /> {/* ✅ Global offline status banner */}
+                    <Suspense fallback={<Spinner />}>
+                        <Routes>
+                            {/* Public Routes */}
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/google-auth" element={<GoogleAuth />} />
+                            <Route path="/pwa-test" element={<PWAInstallTest />} />
 
-                        {/* Protected Routes */}
-                        <Route element={<AuthWrapper><Layout /></AuthWrapper>}>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/test-features" element={<TestPage />} />
-                            <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />
-                            <Route path="/achievements" element={<AchievementSystem />} />
-                            <Route path="/themes" element={<ThemePage />} />
+                            {/* Protected Routes */}
+                            <Route element={<AuthWrapper><Layout /></AuthWrapper>}>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/test-features" element={<TestPage />} />
+                                <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />
+                                <Route path="/achievements" element={<AchievementSystem />} />
+                                <Route path="/themes" element={<ThemePage />} />
 
-                            {/* Phase 3: Social & Gamification Routes */}
-                            <Route path="/friends" element={<FriendsSystem />} />
-                            <Route path="/study-groups" element={<StudyGroups />} />
-                            <Route path="/gamification" element={<GamificationHub />} />
-                            <Route path="/study-streak" element={<StudyStreakPage />} />
+                                {/* Phase 3: Social & Gamification Routes */}
+                                <Route path="/friends" element={<FriendsSystem />} />
+                                <Route path="/study-groups" element={<StudyGroups />} />
+                                <Route path="/gamification" element={<GamificationHub />} />
+                                <Route path="/study-streak" element={<StudyStreakPage />} />
 
-                            {/* Phase 4: Next-Gen Features */}
-                            <Route path="/ai-study-buddy" element={<AIStudyBuddy />} />
-                            <Route path="/real-time-quiz" element={<RealTimeQuiz />} />
+                                {/* Phase 4: Next-Gen Features */}
+                                <Route path="/ai-study-buddy" element={<AIStudyBuddy />} />
+                                <Route path="/real-time-quiz" element={<RealTimeQuiz />} />
 
-                            {/* Phase 5: Advanced Learning Path Engine */}
-                            <Route path="/learning-paths" element={<LearningPathHub />} />
+                                {/* Phase 5: Advanced Learning Path Engine */}
+                                <Route path="/learning-paths" element={<LearningPathHub />} />
 
-                            <Route path="/admin" element={<AdminDashboard />} />
-                            <Route path="/admin/create" element={<AdminQuizzes />} />
-                            <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />
-                            <Route path="/admin/report" element={<AdminReports />} />
-                            <Route path="/admin/quiz/:id" element={<QuizQuestions />} />
-                            <Route path="/admin/written-tests" element={<AdminWrittenTests />} />
-                            <Route path="/admin/written-test/question/:id" element={<TestQuestions />} />
-                            <Route path="/admin/written-test/report" element={<AdminWrittenTestReports />} />
-                            <Route path="/user/test" element={<UserQuizzes />} />
-                            <Route path="/user/test/:id" element={<TakeQuiz />} />
-                            <Route path="/user/report" element={<UserReports />} />
-                            <Route path="/report/:id" element={<UserReportsCheck />} />
-                            <Route path="/written-tests" element={<UserWrittenTests />} />
-                            <Route path="/take-written-test/:id" element={<TakeWrittenTest />} />
-                            <Route path="/user/written-reports" element={<UserWrittenReports />} />
-                            <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
-                            <Route path="/leaderboard" element={<Leaderboard />} />
-                            <Route path="/xp-leaderboard" element={<XPLeaderboard />} />
+                                <Route path="/admin" element={<AdminDashboard />} />
+                                <Route path="/admin/create" element={<AdminQuizzes />} />
+                                <Route path="/adaptive/:id" element={<AdaptiveQuiz />} />
+                                <Route path="/admin/report" element={<AdminReports />} />
+                                <Route path="/admin/quiz/:id" element={<QuizQuestions />} />
+                                <Route path="/admin/written-tests" element={<AdminWrittenTests />} />
+                                <Route path="/admin/written-test/question/:id" element={<TestQuestions />} />
+                                <Route path="/admin/written-test/report" element={<AdminWrittenTestReports />} />
+                                <Route path="/user/test" element={<UserQuizzes />} />
+                                <Route path="/user/test/:id" element={<TakeQuiz />} />
+                                <Route path="/user/report" element={<UserReports />} />
+                                <Route path="/report/:id" element={<UserReportsCheck />} />
+                                <Route path="/written-tests" element={<UserWrittenTests />} />
+                                <Route path="/take-written-test/:id" element={<TakeWrittenTest />} />
+                                <Route path="/user/written-reports" element={<UserWrittenReports />} />
+                                <Route path="/user/written-test-report/:id" element={<UserWrittenReportCheck />} />
+                                <Route path="/leaderboard" element={<Leaderboard />} />
+                                <Route path="/xp-leaderboard" element={<XPLeaderboard />} />
 
-                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-                            <Route path="/refund-policy" element={<RefundPolicy />} />
-                            <Route path="/shipping-policy" element={<ShippingPolicy />} />
-                            <Route path="/contactUs" element={<ContactUs />} />
-                            <Route path="/contact" element={<Contact />} />
-                            <Route path="/analytics" element={<UserAnalyticsDashboard />} />
-                            <Route path="/help-guide" element={<HelpGuide />} />
+                                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                                <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                                <Route path="/refund-policy" element={<RefundPolicy />} />
+                                <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                                <Route path="/contactUs" element={<ContactUs />} />
+                                <Route path="/contact" element={<Contact />} />
+                                <Route path="/analytics" element={<UserAnalyticsDashboard />} />
+                                <Route path="/help-guide" element={<HelpGuide />} />
 
-                            {/* Phase 2: Intelligence Dashboard - Premium Feature */}
-                            <Route path="/intelligence-dashboard" element={<IntelligenceDashboard />} />
-                            <Route path="/reviews" element={<SpacedRepetition />} />
-                            <Route path="/advanced-analytics" element={<AdvancedAnalytics />} />
+                                {/* Phase 2: Intelligence Dashboard - Premium Feature */}
+                                <Route path="/intelligence-dashboard" element={<IntelligenceDashboard />} />
+                                <Route path="/reviews" element={<SpacedRepetition />} />
+                                <Route path="/advanced-analytics" element={<AdvancedAnalytics />} />
 
-                            <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
-                            <Route path="/premium/quiz/:id" element={<PremiumQuizQuestions />} />
-                        </Route>
-                    </Routes>
-                </Suspense>
-            </Router>
-        </ThemeProvider>
+                                <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
+                                <Route path="/premium/quiz/:id" element={<PremiumQuizQuestions />} />
+                            </Route>
+                        </Routes>
+                    </Suspense>
+                </Router>
+            </ThemeProvider>
+        </ErrorBoundary>
     );
 };
 

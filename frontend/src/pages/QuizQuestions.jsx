@@ -6,6 +6,7 @@ import "../App.css";
 import "./QuizQuestions.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const QuizQuestions = () => {
@@ -16,6 +17,13 @@ const QuizQuestions = () => {
 
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            navigate("/admin/create");
+        },
+    }, [navigate]);
 
     // Fetch the quiz data with questions
     const getQuizDetails = useCallback(async () => {
@@ -66,6 +74,8 @@ const QuizQuestions = () => {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 whileHover={{ scale: 1.05, x: -5 }}
                 whileTap={{ scale: 0.95 }}
+                aria-label="Go back to admin quizzes page (Escape)"
+                title="Back to Quizzes (Escape)"
             >
                 🔙 Back to Quizzes
             </motion.button>
@@ -140,6 +150,8 @@ const QuizQuestions = () => {
                                             title={isAdminQuiz ? "Cannot delete questions from admin quizzes" : "Delete question"}
                                             whileHover={!isAdminQuiz ? { scale: 1.05, y: -2 } : {}}
                                             whileTap={!isAdminQuiz ? { scale: 0.95 } : {}}
+                                            aria-label={isAdminQuiz ? "Cannot delete questions from admin quizzes" : `Delete question ${index + 1}`}
+                                            aria-disabled={isAdminQuiz}
                                         >
                                             🗑️ Delete Question
                                         </motion.button>

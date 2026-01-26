@@ -6,6 +6,7 @@ import "../App.css";
 import { ThemeContext } from "../context/ThemeContext";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const Login = () => {
@@ -17,6 +18,23 @@ const Login = () => {
 
     // Notification system
     const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Enter': (e) => {
+            // Only submit if not already in a button and form is valid
+            const target = e.target;
+            if (target.tagName !== 'BUTTON' &&
+                target.tagName !== 'TEXTAREA' &&
+                email && password) {
+                const form = target.closest('form');
+                if (form && form.checkValidity()) {
+                    e.preventDefault();
+                    form.requestSubmit();
+                }
+            }
+        },
+    }, [email, password]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -80,6 +98,9 @@ const Login = () => {
                             placeholder="Enter your email"
                             required
                             disabled={loading}
+                            aria-label="Email address"
+                            aria-required="true"
+                            autoComplete="email"
                         />
                     </div>
 
@@ -93,6 +114,9 @@ const Login = () => {
                             placeholder="Enter your password"
                             required
                             disabled={loading}
+                            aria-label="Password"
+                            aria-required="true"
+                            autoComplete="current-password"
                         />
                     </div>
 
@@ -100,6 +124,8 @@ const Login = () => {
                         type="submit"
                         className="auth-btn primary"
                         disabled={loading}
+                        aria-label="Sign in to your account"
+                        aria-busy={loading}
                     >
                         <span>Sign In</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">

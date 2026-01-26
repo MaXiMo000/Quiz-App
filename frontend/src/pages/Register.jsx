@@ -5,6 +5,7 @@ import "./Register.css"; // Import CSS for styling
 import "../App.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const Register = () => {
@@ -16,6 +17,23 @@ const Register = () => {
 
     // Notification system
     const { notification, showSuccess, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Enter': (e) => {
+            // Only submit if not already in a button and form is valid
+            const target = e.target;
+            if (target.tagName !== 'BUTTON' &&
+                target.tagName !== 'TEXTAREA' &&
+                name && email && password) {
+                const form = target.closest('form');
+                if (form && form.checkValidity()) {
+                    e.preventDefault();
+                    form.requestSubmit();
+                }
+            }
+        },
+    }, [name, email, password]);
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -62,6 +80,9 @@ const Register = () => {
                             placeholder="Enter your full name"
                             required
                             disabled={loading}
+                            aria-label="Full name"
+                            aria-required="true"
+                            autoComplete="name"
                         />
                     </div>
 
@@ -75,6 +96,9 @@ const Register = () => {
                             placeholder="Enter your email"
                             required
                             disabled={loading}
+                            aria-label="Email address"
+                            aria-required="true"
+                            autoComplete="email"
                         />
                     </div>
 
@@ -88,6 +112,9 @@ const Register = () => {
                             placeholder="Create a password"
                             required
                             disabled={loading}
+                            aria-label="Password"
+                            aria-required="true"
+                            autoComplete="new-password"
                         />
                     </div>
 
@@ -95,6 +122,8 @@ const Register = () => {
                         type="submit"
                         className="auth-btn primary"
                         disabled={loading}
+                        aria-label="Create new account"
+                        aria-busy={loading}
                     >
                         <span>Create Account</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">

@@ -6,6 +6,7 @@ import "../App.css";
 import "./PremiumQuizzes.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const PremiumQuizzes = () => {
@@ -20,6 +21,20 @@ const PremiumQuizzes = () => {
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Close any open modals
+            const modals = ['ai_question_modal', 'create_quiz_modal', 'add_question_modal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal && modal.hasAttribute('open')) {
+                    modal.close();
+                }
+            });
+        },
+    }, []);
 
     const getQuiz = async () => {
         try {
@@ -216,6 +231,7 @@ const PremiumQuizzes = () => {
                 <button
                     className="create-btn"
                     onClick={() => document.getElementById("create_quiz_modal").showModal()}
+                    aria-label="Create a new premium quiz"
                 >
                     <span>
                         ✨
@@ -271,6 +287,8 @@ const PremiumQuizzes = () => {
 
                                 <div
                                     className="quiz-actions"
+                                    role="group"
+                                    aria-label={`Actions for quiz: ${quiz.title}`}
                                 >
                                     <button
                                         className="delete-btn premium-delete-btn"
@@ -278,6 +296,8 @@ const PremiumQuizzes = () => {
                                             ? handleRestrictedAction("You cannot delete admin quizzes.")
                                             : deleteQuiz(quiz.title)}
                                         style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                                        aria-label={isAdminQuiz(quiz) ? "Cannot delete admin quizzes" : `Delete quiz: ${quiz.title}`}
+                                        aria-disabled={isAdminQuiz(quiz)}
                                     >
                                         🗑️ Delete
                                     </button>
@@ -288,6 +308,8 @@ const PremiumQuizzes = () => {
                                             ? handleRestrictedAction("You cannot add AI questions to admin quizzes.")
                                             : openAiQuestionModal(quiz._id, quiz.category)}
                                         style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                                        aria-label={isAdminQuiz(quiz) ? "Cannot add AI questions to admin quizzes" : `Generate AI questions for ${quiz.title}`}
+                                        aria-disabled={isAdminQuiz(quiz)}
                                     >
                                         <span>
                                             🤖
@@ -301,12 +323,15 @@ const PremiumQuizzes = () => {
                                             ? handleRestrictedAction("You cannot add questions to admin quizzes.")
                                             : openAddQuestionModal(quiz._id)}
                                         style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                                        aria-label={isAdminQuiz(quiz) ? "Cannot add questions to admin quizzes" : `Add manual question to ${quiz.title}`}
+                                        aria-disabled={isAdminQuiz(quiz)}
                                     >
                                         ➕ Add Question
                                     </button>
 
                                     <button
                                         className="view-questions-btn premium-view-btn"
+                                        aria-label={`View and manage questions for ${quiz.title}`}
                                         onClick={() => navigate(`/premium/quiz/${quiz._id}`)}
                                     >
                                         📜 View Questions

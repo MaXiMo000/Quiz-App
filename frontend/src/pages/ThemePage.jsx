@@ -4,6 +4,7 @@ import axios from "../utils/axios";
 import "./ThemePage.css";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const ThemePage = () => {
     const { theme: currentTheme, changeTheme } = useContext(ThemeContext);
@@ -18,6 +19,29 @@ const ThemePage = () => {
     // Search and filter states
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (searchQuery) {
+                setSearchQuery("");
+            }
+        },
+        'Ctrl+F': (e) => {
+            // Only prevent browser's find dialog if we have a search input on the page
+            const searchInput = document.querySelector('.theme-search-input');
+            if (searchInput) {
+                e.preventDefault();
+                e.stopPropagation();
+                searchInput.focus();
+                // Select all text for easy replacement
+                if (searchInput.select) {
+                    searchInput.select();
+                }
+            }
+            // If no search input, let browser's default Ctrl+F work
+        },
+    }, [searchQuery]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -245,11 +269,16 @@ const ThemePage = () => {
                     <div className="search-icon">🔍</div>
                     <input
                         type="text"
-                        className="theme-search"
+                        className="theme-search theme-search-input"
                         placeholder="Search themes..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        aria-label="Search themes"
+                        aria-describedby="theme-search-description"
                     />
+                    <span id="theme-search-description" className="sr-only">
+                        Search themes by name or category
+                    </span>
                 </div>
 
                 <div className="category-filters">
@@ -258,6 +287,8 @@ const ThemePage = () => {
                             key={key}
                             className={`category-btn ${selectedCategory === key ? 'active' : ''}`}
                             onClick={() => setSelectedCategory(key)}
+                            aria-label={`Filter themes by ${category.name}`}
+                            aria-pressed={selectedCategory === key}
                         >
                             <span className="category-icon">{category.icon}</span>
                             <span className="category-name">{category.name}</span>
@@ -348,6 +379,7 @@ const ThemePage = () => {
                                     ) : isUnlocked ? (
                                         <button
                                             className="apply-btn"
+                                            aria-label={isUnlocked ? `Apply ${themeName} theme` : `Unlock ${themeName} theme at level ${requiredLevel}`}
                                             onClick={() => handleApply(themeName)}
                                         >
                                             Apply Theme

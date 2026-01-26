@@ -3,6 +3,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import "./Leaderboard.css";
 
 const XPLeaderboard = () => {
@@ -10,6 +13,9 @@ const XPLeaderboard = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
 
     const fetchXPLeaderboard = useCallback(async () => {
         setLoading(true);
@@ -19,7 +25,9 @@ const XPLeaderboard = () => {
             setData(response.data || []);
         } catch (err) {
             console.error("Error fetching XP leaderboard:", err);
-            setError("Error fetching leaderboard data.");
+            const errorMsg = "Error fetching leaderboard data.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -97,6 +105,8 @@ const XPLeaderboard = () => {
             <motion.div
                 className="leaderboard-buttons"
                 variants={itemVariants}
+                role="group"
+                aria-label="Leaderboard period filter"
             >
                 <motion.button
                     onClick={() => handlePeriodChange("weekly")}
@@ -104,6 +114,8 @@ const XPLeaderboard = () => {
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.2 }}
+                    aria-label="Show weekly XP leaderboard"
+                    aria-pressed={period === "weekly"}
                 >
                     Weekly
                 </motion.button>
@@ -113,6 +125,8 @@ const XPLeaderboard = () => {
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.2 }}
+                    aria-label="Show monthly XP leaderboard"
+                    aria-pressed={period === "monthly"}
                 >
                     Monthly
                 </motion.button>
@@ -208,6 +222,15 @@ const XPLeaderboard = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

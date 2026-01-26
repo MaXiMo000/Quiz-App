@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './ShareQuizModal.css';
 
 const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
@@ -10,34 +11,7 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
     const [loading, setLoading] = useState(false);
     const [sharing, setSharing] = useState(false);
 
-    useEffect(() => {
-        if (isOpen) {
-            fetchUserGroups();
-            setMessage(`Check out this "${quiz?.title}" quiz!`);
-        }
-    }, [isOpen, quiz]);
-
-    const fetchUserGroups = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get('/api/study-groups');
-            setUserGroups(response.data.studyGroups || []);
-        } catch (error) {
-            console.error('Error fetching user groups:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleGroupToggle = (groupId) => {
-        setSelectedGroups(prev =>
-            prev.includes(groupId)
-                ? prev.filter(id => id !== groupId)
-                : [...prev, groupId]
-        );
-    };
-
-    const handleShare = async () => {
+    const handleShare = useCallback(async () => {
         if (selectedGroups.length === 0) {
             alert('Please select at least one group to share with.');
             return;
@@ -71,6 +45,52 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
         } finally {
             setSharing(false);
         }
+    }, [selectedGroups, quiz, message, onShare, onClose]);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isOpen && !sharing) {
+                onClose();
+            }
+        },
+        'Enter': (e) => {
+            if (isOpen && !sharing && selectedGroups.length > 0) {
+                const target = e.target;
+                const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+                if (!isInputElement) {
+                    e.preventDefault();
+                    handleShare();
+                }
+            }
+        },
+    }, [isOpen, sharing, selectedGroups.length, handleShare]);
+
+    useEffect(() => {
+        if (isOpen) {
+            fetchUserGroups();
+            setMessage(`Check out this "${quiz?.title}" quiz!`);
+        }
+    }, [isOpen, quiz]);
+
+    const fetchUserGroups = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('/api/study-groups');
+            setUserGroups(response.data.studyGroups || []);
+        } catch (error) {
+            console.error('Error fetching user groups:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGroupToggle = (groupId) => {
+        setSelectedGroups(prev =>
+            prev.includes(groupId)
+                ? prev.filter(id => id !== groupId)
+                : [...prev, groupId]
+        );
     };
 
     if (!isOpen) return null;
@@ -83,6 +103,9 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="share-quiz-modal-title"
             >
                 <motion.div
                     className="share-quiz-modal"
@@ -92,8 +115,8 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="modal-header">
-                        <h2>Share Quiz with Study Groups</h2>
-                        <button className="close-btn" onClick={onClose}>
+                        <h2 id="share-quiz-modal-title">Share Quiz with Study Groups</h2>
+                        <button className="close-btn" onClick={onClose} aria-label="Close share quiz modal" disabled={sharing}>
                             ×
                         </button>
                     </div>
@@ -108,14 +131,17 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                         </div>
 
                         <div className="message-section">
-                            <label>Message (optional)</label>
+                            <label htmlFor="share-message">Message (optional)</label>
                             <textarea
+                                id="share-message"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Add a message for your group members..."
                                 maxLength={200}
+                                aria-label="Message for group members"
+                                aria-describedby="message-char-count"
                             />
-                            <small>{message.length}/200 characters</small>
+                            <small id="message-char-count">{message.length}/200 characters</small>
                         </div>
 
                         <div className="groups-section">
@@ -135,6 +161,7 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                                             // Navigate to study groups page
                                             window.location.href = '/study-groups';
                                         }}
+                                        aria-label="Create or join a study group"
                                     >
                                         Create or Join a Group
                                     </button>
@@ -147,8 +174,18 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                                             className={`group-item ${selectedGroups.includes(group._id) ? 'selected' : ''}`}
                                             whileHover={{ scale: 1.02 }}
                                             onClick={() => handleGroupToggle(group._id)}
+                                            role="checkbox"
+                                            aria-checked={selectedGroups.includes(group._id)}
+                                            aria-label={`Select ${group.name} study group`}
+                                            tabIndex={0}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    handleGroupToggle(group._id);
+                                                }
+                                            }}
                                         >
-                                            <div className="group-avatar">
+                                            <div className="group-avatar" aria-hidden="true">
                                                 {group.name?.charAt(0).toUpperCase()}
                                             </div>
                                             <div className="group-info">
@@ -157,12 +194,14 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                                             </div>
                                             <div className="checkbox">
                                                 {selectedGroups.includes(group._id) && (
-                                                    <span className="check-icon">✓</span>
+                                                    <span className="check-icon" aria-hidden="true">✓</span>
                                                 )}
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedGroups.includes(group._id)}
                                                     onChange={() => handleGroupToggle(group._id)}
+                                                    aria-label={`Select ${group.name} study group`}
+                                                    tabIndex={-1}
                                                 />
                                             </div>
                                         </motion.div>
@@ -173,13 +212,15 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                     </div>
 
                     <div className="modal-actions">
-                        <button className="cancel-btn" onClick={onClose} disabled={sharing}>
+                        <button className="cancel-btn" onClick={onClose} disabled={sharing} aria-label="Cancel sharing quiz">
                             Cancel
                         </button>
                         <button
                             className="share-btn"
                             onClick={handleShare}
                             disabled={sharing || selectedGroups.length === 0}
+                            aria-label={sharing ? 'Sharing quiz' : selectedGroups.length === 0 ? 'Select groups to share' : `Share with ${selectedGroups.length} group${selectedGroups.length !== 1 ? 's' : ''}`}
+                            aria-busy={sharing}
                         >
                             {sharing ? 'Sharing...' :
                              selectedGroups.length === 0 ? 'Select groups to share' :

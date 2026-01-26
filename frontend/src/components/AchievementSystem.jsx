@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from '../utils/axios';
 import Loading from './Loading';
+import NotificationModal from './NotificationModal';
+import { useNotification } from '../hooks/useNotification';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './AchievementSystem.css';
 
 const AchievementSystem = ({ _userId }) => {
@@ -10,6 +13,18 @@ const AchievementSystem = ({ _userId }) => {
   const [error, setError] = useState(null);
   const [showNotification, setShowNotification] = useState(null);
   const [filter, setFilter] = useState('all'); // all, unlocked, locked
+
+  // Notification system
+  const { notification, showError, hideNotification } = useNotification();
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    'Escape': () => {
+      if (showNotification) {
+        setShowNotification(null);
+      }
+    },
+  }, [showNotification]);
 
   // Fetch achievements from API
   const fetchAchievements = useCallback(async () => {
@@ -37,8 +52,10 @@ const AchievementSystem = ({ _userId }) => {
       } else {
         throw new Error('Invalid response from server');
       }
-    } catch (error) {
-      setError(error.message || 'Failed to load achievements');
+      } catch (error) {
+      const errorMsg = error.message || 'Failed to load achievements';
+      setError(errorMsg);
+      showError(errorMsg);
 
       // Set empty state on error instead of mock data
       setAchievements({
@@ -50,7 +67,7 @@ const AchievementSystem = ({ _userId }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showError]);
 
   useEffect(() => {
     fetchAchievements();
@@ -96,22 +113,23 @@ const AchievementSystem = ({ _userId }) => {
   };
 
   const getRarityStyle = (rarity) => {
+    // Use CSS variables for theming support
     const styles = {
       common: {
-        border: '2px solid #9ca3af',
-        glow: '0 0 15px rgba(156, 163, 175, 0.3)'
+        border: '2px solid var(--text-muted, #9ca3af)',
+        glow: '0 0 15px var(--text-muted-transparent, rgba(156, 163, 175, 0.3))'
       },
       rare: {
-        border: '2px solid #3b82f6',
-        glow: '0 0 15px rgba(59, 130, 246, 0.4)'
+        border: '2px solid var(--info, #3b82f6)',
+        glow: '0 0 15px var(--info-light, rgba(59, 130, 246, 0.4))'
       },
       epic: {
-        border: '2px solid #8b5cf6',
-        glow: '0 0 15px rgba(139, 92, 246, 0.4)'
+        border: '2px solid var(--accent2, #8b5cf6)',
+        glow: '0 0 15px var(--accent2-transparent-15, rgba(139, 92, 246, 0.4))'
       },
       legendary: {
-        border: '2px solid #f59e0b',
-        glow: '0 0 20px rgba(245, 158, 11, 0.6)'
+        border: '2px solid var(--warning, #f59e0b)',
+        glow: '0 0 20px var(--warning-light, rgba(245, 158, 11, 0.6))'
       }
     };
     return styles[rarity] || styles.common;
@@ -165,7 +183,7 @@ const AchievementSystem = ({ _userId }) => {
   };
 
   return (
-    <div className="achievement-system">
+    <div className="achievement-system" role="main" aria-label="Achievement Center">
       {/* Floating Background Elements */}
       <div className="achievement-bg-orbs">
         <div className="orb orb-1"></div>
@@ -213,9 +231,9 @@ const AchievementSystem = ({ _userId }) => {
                 />
                 <defs>
                   <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#6366f1" />
-                    <stop offset="50%" stopColor="#8b5cf6" />
-                    <stop offset="100%" stopColor="#ec4899" />
+                    <stop offset="0%" stopColor="var(--accent, #6366f1)" />
+                    <stop offset="50%" stopColor="var(--accent2, #8b5cf6)" />
+                    <stop offset="100%" stopColor="var(--accent2, #ec4899)" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -228,7 +246,7 @@ const AchievementSystem = ({ _userId }) => {
           </div>
         </div>
 
-        <div className="filter-controls">
+        <div className="filter-controls" role="tablist" aria-label="Filter achievements">
           {['all', 'unlocked', 'locked'].map(filterType => (
             <motion.button
               key={filterType}
@@ -236,6 +254,9 @@ const AchievementSystem = ({ _userId }) => {
               onClick={() => setFilter(filterType)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              role="tab"
+              aria-selected={filter === filterType}
+              aria-label={`Filter by ${filterType} achievements`}
             >
               <span className="filter-btn-text">
                 {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
@@ -275,28 +296,60 @@ const AchievementSystem = ({ _userId }) => {
                         border: rarityStyle.border,
                         boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
                       }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
-                      whileHover={{ scale: 1.02, y: -4 }}
+                      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        rotate: achievement.unlocked ? [0, -5, 5, -5, 0] : 0
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.1,
+                        rotate: achievement.unlocked ? { duration: 0.6, delay: index * 0.1 + 0.3 } : 0
+                      }}
+                      whileHover={{ scale: 1.05, y: -6 }}
                     >
-                      <div className="achievement-card-bg"></div>
+                      <div className={`achievement-card-bg ${achievement.unlocked ? 'unlocked-bg' : ''}`}></div>
+
+                      {achievement.unlocked && (
+                        <div className="unlock-particles">
+                          {[...Array(12)].map((_, i) => (
+                            <div key={i} className="particle" style={{
+                              '--angle': `${i * 30}deg`,
+                              '--delay': `${i * 0.05}s`
+                            }}></div>
+                          ))}
+                        </div>
+                      )}
 
                       <div className="achievement-icon-wrapper">
-                        <div className="achievement-icon">
+                        <motion.div
+                          className={`achievement-icon ${achievement.unlocked ? 'unlocked-icon' : 'locked-icon'}`}
+                          animate={achievement.unlocked ? {
+                            scale: [1, 1.2, 1],
+                            rotate: [0, 10, -10, 0]
+                          } : {}}
+                          transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+                        >
                           {iconEmoji}
-                        </div>
+                        </motion.div>
                         {achievement.unlocked && (
-                          <div className="unlock-badge">
+                          <motion.div
+                            className="unlock-badge"
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 200, delay: index * 0.1 + 0.4 }}
+                          >
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                               <path d="M16.7071 5.29289C17.0976 5.68342 17.0976 6.31658 16.7071 6.70711L8.70711 14.7071C8.31658 15.0976 7.68342 15.0976 7.29289 14.7071L3.29289 10.7071C2.90237 10.3166 2.90237 9.68342 3.29289 9.29289C3.68342 8.90237 4.31658 8.90237 4.70711 9.29289L8 12.5858L15.2929 5.29289C15.6834 4.90237 16.3166 4.90237 16.7071 5.29289Z" fill="currentColor"/>
                             </svg>
-                          </div>
+                          </motion.div>
                         )}
                       </div>
 
                       <div className="achievement-content">
-                        <h4 className="achievement-title">
+                        <h4 className={`achievement-title ${achievement.unlocked ? 'unlocked-title' : ''}`}>
                           {titleText}
                         </h4>
                         <p className="achievement-description">{achievement.description}</p>
@@ -304,15 +357,19 @@ const AchievementSystem = ({ _userId }) => {
                           <span className={`rarity-badge rarity-${achievement.rarity}`}>
                             {achievement.rarity}
                           </span>
-                          {!achievement.unlocked && achievement.progress !== undefined && (
+                          {achievement.progress !== undefined && (
                             <div className="progress-container">
                               <div className="progress-bar">
-                                <div
-                                  className="progress-fill"
-                                  style={{ width: `${achievement.progress}%` }}
-                                ></div>
+                                <motion.div
+                                  className={`progress-fill ${achievement.unlocked ? 'completed' : ''}`}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${achievement.progress}%` }}
+                                  transition={{ duration: 0.8, delay: index * 0.1 + 0.2 }}
+                                ></motion.div>
                               </div>
-                              <span className="progress-text">{Math.round(achievement.progress)}%</span>
+                              <span className="progress-text">
+                                {achievement.unlocked ? '✓ Complete' : `${Math.round(achievement.progress)}%`}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -346,54 +403,90 @@ const AchievementSystem = ({ _userId }) => {
                 const titleText = achievement.title.replace(/^[^\w\s]+/, '').trim();
 
                 return (
-                  <motion.div
-                    key={achievement.id}
-                    className={`achievement-card near-impossible-card ${achievement.unlocked ? 'unlocked' : 'locked'}`}
-                    style={{
-                      border: rarityStyle.border,
-                      boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
-                    }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <div className="achievement-card-bg"></div>
+                    <motion.div
+                      key={achievement.id}
+                      className={`achievement-card near-impossible-card ${achievement.unlocked ? 'unlocked' : 'locked'}`}
+                      style={{
+                        border: rarityStyle.border,
+                        boxShadow: achievement.unlocked ? rarityStyle.glow : 'none'
+                      }}
+                      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        rotate: achievement.unlocked ? [0, -5, 5, -5, 0] : 0
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.1,
+                        rotate: achievement.unlocked ? { duration: 0.6, delay: index * 0.1 + 0.3 } : 0
+                      }}
+                      whileHover={{ scale: 1.05, y: -6 }}
+                    >
+                    <div className={`achievement-card-bg ${achievement.unlocked ? 'unlocked-bg' : ''}`}></div>
+
+                    {achievement.unlocked && (
+                      <div className="unlock-particles">
+                        {[...Array(12)].map((_, i) => (
+                          <div key={i} className="particle" style={{
+                            '--angle': `${i * 30}deg`,
+                            '--delay': `${i * 0.05}s`
+                          }}></div>
+                        ))}
+                      </div>
+                    )}
 
                     <div className="achievement-icon-wrapper">
-                      <div className="achievement-icon">
+                      <motion.div
+                        className={`achievement-icon ${achievement.unlocked ? 'unlocked-icon' : 'locked-icon'}`}
+                        animate={achievement.unlocked ? {
+                          scale: [1, 1.2, 1],
+                          rotate: [0, 10, -10, 0]
+                        } : {}}
+                        transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+                      >
                         {iconEmoji}
-                      </div>
+                      </motion.div>
                       {achievement.unlocked && (
-                        <div className="unlock-badge">
+                        <motion.div
+                          className="unlock-badge"
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ type: "spring", stiffness: 200, delay: index * 0.1 + 0.4 }}
+                        >
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M16.7071 5.29289C17.0976 5.68342 17.0976 6.31658 16.7071 6.70711L8.70711 14.7071C8.31658 15.0976 7.68342 15.0976 7.29289 14.7071L3.29289 10.7071C2.90237 10.3166 2.90237 9.68342 3.29289 9.29289C3.68342 8.90237 4.31658 8.90237 4.70711 9.29289L8 12.5858L15.2929 5.29289C15.6834 4.90237 16.3166 4.90237 16.7071 5.29289Z" fill="currentColor"/>
                           </svg>
-                        </div>
+                        </motion.div>
                       )}
                     </div>
 
                     <div className="achievement-content">
-                      <h4 className="achievement-title">
-                        {titleText}
-                      </h4>
-                      <p className="achievement-description">{achievement.description}</p>
-                      <div className="achievement-meta">
-                        <span className={`rarity-badge rarity-${achievement.rarity}`}>
-                          {achievement.rarity}
-                        </span>
-                        {!achievement.unlocked && achievement.progress !== undefined && (
-                          <div className="progress-container">
-                            <div className="progress-bar">
-                              <div
-                                className="progress-fill"
-                                style={{ width: `${achievement.progress}%` }}
-                              ></div>
+                        <h4 className={`achievement-title ${achievement.unlocked ? 'unlocked-title' : ''}`}>
+                          {titleText}
+                        </h4>
+                        <p className="achievement-description">{achievement.description}</p>
+                        <div className="achievement-meta">
+                          <span className={`rarity-badge rarity-${achievement.rarity}`}>
+                            {achievement.rarity}
+                          </span>
+                          {achievement.progress !== undefined && (
+                            <div className="progress-container">
+                              <div className="progress-bar">
+                                <motion.div
+                                  className={`progress-fill ${achievement.unlocked ? 'completed' : ''}`}
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${achievement.progress}%` }}
+                                  transition={{ duration: 0.8, delay: index * 0.1 + 0.2 }}
+                                ></motion.div>
+                              </div>
+                              <span className="progress-text">
+                                {achievement.unlocked ? '✓ Complete' : `${Math.round(achievement.progress)}%`}
+                              </span>
                             </div>
-                            <span className="progress-text">{Math.round(achievement.progress)}%</span>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
                     </div>
                   </motion.div>
                 );
@@ -417,10 +510,31 @@ const AchievementSystem = ({ _userId }) => {
               <h4>{showNotification.title}</h4>
               <p>{showNotification.description}</p>
             </div>
-            <div className="notification-close" onClick={() => setShowNotification(null)}>×</div>
+            <div
+              className="notification-close"
+              onClick={() => setShowNotification(null)}
+              role="button"
+              aria-label="Close achievement notification"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setShowNotification(null);
+                }
+              }}
+            >×</div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Notification Modal */}
+      <NotificationModal
+        isOpen={notification.isOpen}
+        message={notification.message}
+        type={notification.type}
+        onClose={hideNotification}
+        autoClose={notification.autoClose}
+      />
     </div>
   );
 };

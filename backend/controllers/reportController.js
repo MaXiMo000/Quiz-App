@@ -133,13 +133,22 @@ export async function createReport(req, res) {
         const xpGained = score * 10;
         let totalXPGained = xpGained;
 
-        await new XPLog({ user: user._id, xp: xpGained, source: "quiz" }).save();
-
-        // 🔥 Daily quiz streak bonus
+        // Create XPLog entry with UTC date to match streak queries
         const today = new Date();
-        const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+        const todayMidnight = new Date(todayUTC);
+        todayMidnight.setUTCHours(0, 0, 0, 0);
+        await new XPLog({ user: user._id, xp: xpGained, source: "quiz", date: todayMidnight }).save();
+
+        // 🔥 Daily quiz streak bonus - use UTC dates for consistency with streakController
+        // Note: Streak updates are primarily handled by updateDailyActivity endpoint
+        // This is kept for backward compatibility but updateDailyActivity should be the source of truth
         const lastQuiz = user.lastQuizDate ? new Date(user.lastQuizDate) : null;
-        const lastQuizMidnight = lastQuiz ? new Date(lastQuiz.getFullYear(), lastQuiz.getMonth(), lastQuiz.getDate()) : null;
+        let lastQuizMidnight = null;
+        if (lastQuiz) {
+            lastQuizMidnight = new Date(Date.UTC(lastQuiz.getUTCFullYear(), lastQuiz.getUTCMonth(), lastQuiz.getUTCDate()));
+            lastQuizMidnight.setUTCHours(0, 0, 0, 0);
+        }
 
         // Check if this is a new day for quiz taking
         const isNewQuizDay = !lastQuizMidnight || todayMidnight.getTime() !== lastQuizMidnight.getTime();
@@ -149,7 +158,7 @@ export async function createReport(req, res) {
             const oneDayAgo = new Date(todayMidnight.getTime() - 24 * 60 * 60 * 1000);
 
             if (lastQuizMidnight && lastQuizMidnight.getTime() === oneDayAgo.getTime()) {
-                user.quizStreak += 1;
+                user.quizStreak = (user.quizStreak || 0) + 1;
             } else {
                 user.quizStreak = 1;
             }
@@ -159,7 +168,8 @@ export async function createReport(req, res) {
             const quizBonusXP = 20;
             totalXPGained += quizBonusXP;
 
-            await new XPLog({ user: user._id, xp: quizBonusXP, source: "streak" }).save();
+            // Create streak bonus XPLog entry with UTC date
+            await new XPLog({ user: user._id, xp: quizBonusXP, source: "streak", date: todayMidnight }).save();
         }
 
         // 🎓 Update XP and level using proper totalXP method

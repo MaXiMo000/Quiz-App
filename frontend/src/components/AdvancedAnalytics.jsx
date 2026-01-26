@@ -3,6 +3,9 @@ import axios from "../utils/axios";
 import { Line, Bar, Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
 import Loading from "./Loading";
+import NotificationModal from "./NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import "./AdvancedAnalytics.css";
 
 const AdvancedAnalytics = () => {
@@ -10,6 +13,16 @@ const AdvancedAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Notification system
+  const { notification, showError, hideNotification } = useNotification();
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    'Escape': () => {
+      // Clear any active states if needed
+    },
+  }, []);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -19,13 +32,15 @@ const AdvancedAnalytics = () => {
         setError(null);
       } catch (error) {
         console.error("Error fetching advanced analytics:", error);
-        setError("Failed to load analytics data. Please try again later.");
+        const errorMsg = "Failed to load analytics data. Please try again later.";
+        setError(errorMsg);
+        showError(errorMsg);
       }
       setLoading(false);
     };
 
     fetchAnalytics();
-  }, []);
+  }, [showError]);
 
   const formatValue = (value, type = "number") => {
     if (type === "percentage") return `${(value * 100).toFixed(1)}%`;
@@ -55,7 +70,7 @@ const AdvancedAnalytics = () => {
 
   if (error) {
     return (
-      <div className="advanced-analytics-container">
+      <div className="advanced-analytics-container" role="main" aria-label="Advanced Analytics">
         <div className="error-container">
           <div className="error-icon">⚠️</div>
           <h3 className="error-title">Unable to Load Analytics</h3>
@@ -63,6 +78,7 @@ const AdvancedAnalytics = () => {
           <button
             className="retry-button"
             onClick={() => window.location.reload()}
+            aria-label="Retry loading analytics"
           >
             Try Again
           </button>
@@ -73,7 +89,7 @@ const AdvancedAnalytics = () => {
 
   if (!analytics) {
     return (
-      <div className="advanced-analytics-container">
+      <div className="advanced-analytics-container" role="main" aria-label="Advanced Analytics">
         <div className="no-data-container">
           <div className="no-data-icon">📊</div>
           <h3 className="no-data-title">No Analytics Data Available</h3>
@@ -172,7 +188,7 @@ const AdvancedAnalytics = () => {
   };
 
   return (
-    <div className="advanced-analytics-container">
+    <div className="advanced-analytics-container" role="main" aria-label="Advanced Analytics">
       {/* Header Section */}
       <div className="analytics-header">
         <div className="header-content">
@@ -468,6 +484,15 @@ const AdvancedAnalytics = () => {
             </div>
           </div>
         )}
+
+        {/* Notification Modal */}
+        <NotificationModal
+          isOpen={notification.isOpen}
+          message={notification.message}
+          type={notification.type}
+          onClose={hideNotification}
+          autoClose={notification.autoClose}
+        />
       </div>
     </div>
   );

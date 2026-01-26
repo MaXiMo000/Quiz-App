@@ -6,6 +6,7 @@ import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const AdminReports = () => {
@@ -16,6 +17,13 @@ const AdminReports = () => {
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     // Fetch all reports
     const getReports = useCallback(async () => {
@@ -180,6 +188,8 @@ const AdminReports = () => {
                                                 whileHover={{ scale: 1.05, y: -2 }}
                                                 whileTap={{ scale: 0.95 }}
                                                 animate={deletingId === report._id ? { opacity: 0.5 } : { opacity: 1 }}
+                                                aria-label={`Delete report for ${report.username} - ${report.quizName}`}
+                                                aria-busy={deletingId === report._id}
                                             >
                                                 {deletingId === report._id ? "🔄 Deleting..." : "Delete"}
                                             </motion.button>

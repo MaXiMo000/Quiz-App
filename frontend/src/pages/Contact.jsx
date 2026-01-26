@@ -1,7 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from '@emailjs/browser';
 import contactConfig from "../config/contactConfig.js";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import "./contact.css";
 
 const containerVariants = {
@@ -67,6 +70,9 @@ const Contact = () => {
         message: ''
     });
 
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -74,14 +80,14 @@ const Contact = () => {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
         setSuccess(false);
 
         try {
-            // � Send email directly using EmailJS
+            // Send email directly using EmailJS
             await emailjs.send(
                 contactConfig.SERVICE_ID,
                 contactConfig.TEMPLATE_ID,
@@ -94,13 +100,37 @@ const Contact = () => {
             );
             setSuccess(true);
             setFormData({ name: '', email: '', message: '' });
+            showSuccess('Message sent successfully! We will get back to you soon.');
         } catch (error) {
             console.error('Contact form error:', error);
-            setError('Failed to send message. Please try again.');
+            const errorMsg = 'Failed to send message. Please try again.';
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
-    };
+    }, [formData, showSuccess, showError]);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (error || success) {
+                setError('');
+                setSuccess(false);
+            }
+        },
+        'Enter': (e) => {
+            const target = e.target;
+            const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+            if (!isInputElement && formRef.current) {
+                const form = formRef.current;
+                if (form.checkValidity()) {
+                    e.preventDefault();
+                    handleSubmit(e);
+                }
+            }
+        },
+    }, [error, success, handleSubmit]);
 
     return (
         <motion.div
@@ -284,6 +314,9 @@ const Contact = () => {
                             value={formData.name}
                             onChange={handleChange}
                             required
+                            aria-label="Your name"
+                            aria-required="true"
+                            autoComplete="name"
                         />
                     </motion.div>
 
@@ -300,6 +333,9 @@ const Contact = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
+                            aria-label="Your email address"
+                            aria-required="true"
+                            autoComplete="email"
                         />
                     </motion.div>
 
@@ -316,6 +352,8 @@ const Contact = () => {
                             value={formData.message}
                             onChange={handleChange}
                             required
+                            aria-label="Your message"
+                            aria-required="true"
                         ></textarea>
                     </motion.div>
 
@@ -326,6 +364,8 @@ const Contact = () => {
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.2 }}
+                        aria-label="Send message"
+                        aria-busy={loading}
                     >
                         {loading ? (
                             <motion.div
@@ -366,6 +406,15 @@ const Contact = () => {
                     </AnimatePresence>
                 </motion.form>
             </motion.div>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

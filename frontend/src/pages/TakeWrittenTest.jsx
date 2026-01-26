@@ -5,6 +5,7 @@ import "./TakeWrittenTest.css"; // ✅ Importing the new CSS file
 import axios from "../utils/axios";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 
 const TakeWrittenTest = () => {
@@ -22,6 +23,53 @@ const TakeWrittenTest = () => {
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
+
+    // ✅ Navigate to the Next Question
+    const handleNext = useCallback(() => {
+        if (currentQuestion < test?.questions?.length - 1) {
+            setCurrentQuestion(currentQuestion + 1);
+        }
+    }, [currentQuestion, test]);
+
+    // ✅ Navigate to the Previous Question
+    const handlePrev = useCallback(() => {
+        if (currentQuestion > 0) {
+            setCurrentQuestion(currentQuestion - 1);
+        }
+    }, [currentQuestion]);
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            if (isFullScreen) {
+                exitFullScreen();
+            }
+        },
+        'ArrowLeft': (e) => {
+            // Only prevent default if not typing in textarea
+            const target = e.target;
+            const isInputElement = target.tagName === 'INPUT' ||
+                                  target.tagName === 'TEXTAREA' ||
+                                  target.isContentEditable;
+
+            if (currentQuestion > 0 && !isSubmitting && !isInputElement) {
+                e.preventDefault();
+                handlePrev();
+            }
+        },
+        'ArrowRight': (e) => {
+            // Only prevent default if not typing in textarea
+            const target = e.target;
+            const isInputElement = target.tagName === 'INPUT' ||
+                                  target.tagName === 'TEXTAREA' ||
+                                  target.isContentEditable;
+
+            if (currentQuestion < test?.questions?.length - 1 && !isSubmitting && !isInputElement) {
+                e.preventDefault();
+                handleNext();
+            }
+        },
+    }, [isFullScreen, currentQuestion, test, isSubmitting, exitFullScreen, handlePrev, handleNext]);
 
     useEffect(() => {
 
@@ -84,19 +132,6 @@ const TakeWrittenTest = () => {
         setIsFullScreen(false);
     };
 
-    // ✅ Navigate to the Next Question
-    const handleNext = () => {
-        if (currentQuestion < test.questions.length - 1) {
-            setCurrentQuestion(currentQuestion + 1);
-        }
-    };
-
-    // ✅ Navigate to the Previous Question
-    const handlePrev = () => {
-        if (currentQuestion > 0) {
-            setCurrentQuestion(currentQuestion - 1);
-        }
-    };
 
     // ✅ Submit Written Test
 
@@ -197,27 +232,44 @@ const TakeWrittenTest = () => {
                     placeholder="Write your answer here..."
                     value={answers[currentQuestion] || ""}
                     onChange={(e) => setAnswers({ ...answers, [currentQuestion]: e.target.value })}
+                    aria-label={`Answer for question ${currentQuestion + 1}`}
+                    aria-required="false"
                 />
             </div>
 
-            <div className="navigation-buttons">
-                <button onClick={handlePrev} disabled={currentQuestion === 0}>Previous</button>
+            <div className="navigation-buttons" role="toolbar" aria-label="Test navigation">
+                <button
+                    onClick={handlePrev}
+                    disabled={currentQuestion === 0}
+                    aria-label="Go to previous question (Left Arrow)"
+                    title="Previous Question (Left Arrow)"
+                >
+                    Previous
+                </button>
                 <button
                     onClick={handleNext}
                     disabled={currentQuestion === test.questions.length - 1}
+                    aria-label="Go to next question (Right Arrow)"
+                    title="Next Question (Right Arrow)"
                 >
                     Next
                 </button>
                 <button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
+                    aria-label="Submit test and view results"
+                    aria-busy={isSubmitting}
                 >
                     {isSubmitting ? 'Submitting...' : 'Submit Test'}
                 </button>
             </div>
 
             <div className="fullscreen-toggle">
-                <button onClick={isFullScreen ? exitFullScreen : enterFullScreen}>
+                <button
+                    onClick={isFullScreen ? exitFullScreen : enterFullScreen}
+                    aria-label={isFullScreen ? "Exit fullscreen mode (Escape)" : "Enter fullscreen mode"}
+                    title={isFullScreen ? "Exit Fullscreen (Escape)" : "Enter Fullscreen"}
+                >
                     {isFullScreen ? "Exit Fullscreen" : "Enter Fullscreen"}
                 </button>
             </div>

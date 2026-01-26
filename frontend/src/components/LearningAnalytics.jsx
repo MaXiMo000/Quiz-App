@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from '../utils/axios';
 import Loading from './Loading';
+import NotificationModal from './NotificationModal';
+import { useNotification } from '../hooks/useNotification';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './LearningAnalytics.css';
 
 const LearningAnalytics = ({ user }) => {
@@ -9,6 +12,16 @@ const LearningAnalytics = ({ user }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('overview');
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     useEffect(() => {
         const fetchAnalytics = async () => {
@@ -20,14 +33,16 @@ const LearningAnalytics = ({ user }) => {
                 setAnalyticsData(response.data);
             } catch (err) {
                 console.error('Error fetching analytics:', err);
-                setError('Failed to load analytics data');
+                const errorMsg = 'Failed to load analytics data';
+                setError(errorMsg);
+                showError(errorMsg);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchAnalytics();
-    }, [user]);
+    }, [user, showError]);
 
     const tabs = [
         { id: 'overview', label: 'Overview', icon: '📊' },
@@ -304,28 +319,41 @@ const LearningAnalytics = ({ user }) => {
     };
 
     return (
-        <div className="learning-analytics">
+        <div className="learning-analytics" role="main" aria-label="Learning Analytics">
             <div className="analytics-header">
                 <h3>📊 Learning Analytics</h3>
                 <p>Insights into your learning patterns and performance</p>
             </div>
 
-            <div className="analytics-tabs">
+            <div className="analytics-tabs" role="tablist" aria-label="Analytics tabs">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
                         onClick={() => setActiveTab(tab.id)}
+                        role="tab"
+                        aria-selected={activeTab === tab.id}
+                        aria-controls={`${tab.id}-panel`}
+                        aria-label={`View ${tab.label}`}
                     >
-                        <span className="tab-icon">{tab.icon}</span>
+                        <span className="tab-icon" aria-hidden="true">{tab.icon}</span>
                         <span className="tab-label">{tab.label}</span>
                     </button>
                 ))}
             </div>
 
-            <div className="analytics-content">
+            <div className="analytics-content" role="tabpanel" id={`${activeTab}-panel`}>
                 {renderTabContent()}
             </div>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

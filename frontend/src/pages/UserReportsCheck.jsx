@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 import "../App.css";
 import "./UserReportsCheck.css";
 
@@ -13,6 +15,9 @@ export default function UserReportsCheck() {
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
 
     const fetchReport = useCallback(async () => {
         try {
@@ -29,7 +34,9 @@ export default function UserReportsCheck() {
             setError("");
         } catch (error) {
             console.error("Error fetching report:", error);
-            setError("Report not found or access denied.");
+            const errorMsg = "Report not found or access denied.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -235,6 +242,15 @@ export default function UserReportsCheck() {
                     </motion.div>
                 </motion.div>
             )}
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </AnimatePresence>
     );
 }

@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import "../App.css";
 import "./UserWrittenReports.css"; // ✅ Import the new CSS file
 
@@ -13,6 +16,16 @@ const UserWrittenReports = () => {
     const [error, setError] = useState("");
     const [deletingId, setDeletingId] = useState(null);
     const navigate = useNavigate();
+
+    // Notification system
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            // Clear any active states if needed
+        },
+    }, []);
 
     // ✅ Animation variants for enhanced user experience
     const containerVariants = {
@@ -53,7 +66,9 @@ const UserWrittenReports = () => {
     const getReport = useCallback(async () => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
-            setError("User not found. Please log in.");
+            const errorMsg = "User not found. Please log in.";
+            setError(errorMsg);
+            showError(errorMsg);
             setLoading(false);
             return;
         }
@@ -65,7 +80,9 @@ const UserWrittenReports = () => {
             setError("");
         } catch (error) {
             console.error("Error fetching reports:", error);
-            setError("Error fetching reports. Try again later.");
+            const errorMsg = "Error fetching reports. Try again later.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -81,10 +98,13 @@ const UserWrittenReports = () => {
             const response = await axios.delete(`/api/written-test-reports/${id}`);
             if (response.status === 200) {
                 await getReport();
+                showSuccess("Report deleted successfully!");
             }
         } catch (error) {
             console.error("Error deleting report:", error);
-            setError("Failed to delete report.");
+            const errorMsg = "Failed to delete report.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setDeletingId(null);
         }
@@ -216,6 +236,7 @@ const UserWrittenReports = () => {
                                                 whileHover={{ scale: 1.05, backgroundColor: "#8b5cf6" }}
                                                 whileTap={{ scale: 0.95 }}
                                                 transition={{ duration: 0.2 }}
+                                                aria-label={`View detailed report for ${report.testName}`}
                                             >
                                                 👁️ View
                                             </motion.button>
@@ -226,6 +247,8 @@ const UserWrittenReports = () => {
                                                 whileHover={{ scale: 1.05, backgroundColor: "#ef4444" }}
                                                 whileTap={{ scale: 0.95 }}
                                                 transition={{ duration: 0.2 }}
+                                                aria-label={`Delete report for ${report.testName}`}
+                                                aria-busy={deletingId === report._id}
                                             >
                                                 {deletingId === report._id ? "🗑️ Deleting..." : "🗑️ Delete"}
                                             </motion.button>
@@ -237,6 +260,15 @@ const UserWrittenReports = () => {
                     </motion.table>
                 </motion.div>
             )}
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };

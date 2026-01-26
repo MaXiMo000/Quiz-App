@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 import "./Leaderboard.css";
 
 const Leaderboard = () => {
@@ -10,6 +12,9 @@ const Leaderboard = () => {
     const [period, setPeriod] = useState("week");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
 
     const fetchTopScorers = useCallback(async () => {
         setLoading(true);
@@ -21,7 +26,9 @@ const Leaderboard = () => {
             setFilteredQuiz("All"); // Reset filter on period change
         } catch (error) {
             console.error("Error fetching top scorers:", error.response ? error.response.data : error.message);
-            setError("Error fetching data. Please try again later.");
+            const errorMsg = "Error fetching data. Please try again later.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -44,12 +51,30 @@ const Leaderboard = () => {
             <h2>🏆 Top Scorers of the {period === "week" ? "Week" : "Month"}</h2>
 
             <div className="leaderboard-controls">
-                <div className="leaderboard-buttons">
-                    <button onClick={() => setPeriod("week")} className={period === "week" ? "active" : ""}>Weekly</button>
-                    <button onClick={() => setPeriod("month")} className={period === "month" ? "active" : ""}>Monthly</button>
+                <div className="leaderboard-buttons" role="group" aria-label="Leaderboard period filter">
+                    <button
+                        onClick={() => setPeriod("week")}
+                        className={period === "week" ? "active" : ""}
+                        aria-label="Show weekly leaderboard"
+                        aria-pressed={period === "week"}
+                    >
+                        Weekly
+                    </button>
+                    <button
+                        onClick={() => setPeriod("month")}
+                        className={period === "month" ? "active" : ""}
+                        aria-label="Show monthly leaderboard"
+                        aria-pressed={period === "month"}
+                    >
+                        Monthly
+                    </button>
                 </div>
 
-                <select onChange={e => setFilteredQuiz(e.target.value)} value={filteredQuiz}>
+                <select
+                    onChange={e => setFilteredQuiz(e.target.value)}
+                    value={filteredQuiz}
+                    aria-label="Filter leaderboard by quiz"
+                >
                     <option value="All">All Quizzes</option>
                     {quizzes.map((quiz, idx) => (
                         <option key={idx} value={quiz}>{quiz}</option>
@@ -88,6 +113,15 @@ const Leaderboard = () => {
             ) : (
                 <p>No top scorers available.</p>
             )}
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </div>
     );
 };

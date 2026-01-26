@@ -4,6 +4,8 @@ import { Line, Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
 import "./UserAnalytics.css";
 
 const UserAnalyticsDashboard = () => {
@@ -12,6 +14,9 @@ const UserAnalyticsDashboard = () => {
     const [topicHeatmap, setTopicHeatmap] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -32,7 +37,9 @@ const UserAnalyticsDashboard = () => {
             setTopicHeatmap(hRes.data);
         } catch (err) {
             console.error(err);
-            setError("Failed to load analytics. Please try again later.");
+            const errorMsg = "Failed to load analytics. Please try again later.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -103,6 +110,15 @@ const UserAnalyticsDashboard = () => {
             </table>
             </div>
         </section>
+
+        {/* Notification Modal */}
+        <NotificationModal
+            isOpen={notification.isOpen}
+            message={notification.message}
+            type={notification.type}
+            onClose={hideNotification}
+            autoClose={notification.autoClose}
+        />
         </div>
     );
 };

@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
+import NotificationModal from "../components/NotificationModal";
+import { useNotification } from "../hooks/useNotification";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import "../App.css";
 import "./UserWrittenReportCheck.css"; // ✅ Import new CSS
 
@@ -13,6 +16,16 @@ const UserWrittenReportCheck = () => {
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Notification system
+    const { notification, showError, hideNotification } = useNotification();
+
+    // Keyboard shortcuts
+    useKeyboardShortcuts({
+        'Escape': () => {
+            navigate("/user/written-reports");
+        },
+    }, [navigate]);
 
     // ✅ Animation variants for enhanced user experience
     const containerVariants = {
@@ -59,14 +72,18 @@ const UserWrittenReportCheck = () => {
             const response = await axios.get(`/api/written-test-reports/${id}`);
             const testReport = response.data;
             if (!testReport) {
-                setError("Report not found for this test.");
+                const errorMsg = "Report not found for this test.";
+                setError(errorMsg);
+                showError(errorMsg);
             } else {
                 setReport(testReport);
                 setError("");
             }
         } catch (error) {
             console.error("Error fetching report:", error);
-            setError("Error fetching report. Try again later.");
+            const errorMsg = "Error fetching report. Try again later.";
+            setError(errorMsg);
+            showError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -118,6 +135,8 @@ const UserWrittenReportCheck = () => {
                     onClick={() => navigate('/user/written-reports')}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    aria-label="Go back to written reports page (Escape)"
+                    title="Back to Reports (Escape)"
                 >
                     Back to Reports
                 </motion.button>
@@ -298,6 +317,7 @@ const UserWrittenReportCheck = () => {
                     whileHover={{ scale: 1.05, backgroundColor: "#10b981" }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.2 }}
+                    aria-label="Go to written tests page to take another test"
                 >
                     🔄 Take Another Test
                 </motion.button>
@@ -307,10 +327,20 @@ const UserWrittenReportCheck = () => {
                     whileHover={{ scale: 1.05, backgroundColor: "#6366f1" }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.2 }}
+                    aria-label="Go to user dashboard"
                 >
                     🏠 Dashboard
                 </motion.button>
             </motion.div>
+
+            {/* Notification Modal */}
+            <NotificationModal
+                isOpen={notification.isOpen}
+                message={notification.message}
+                type={notification.type}
+                onClose={hideNotification}
+                autoClose={notification.autoClose}
+            />
         </motion.div>
     );
 };
