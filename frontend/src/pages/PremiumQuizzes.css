@@ -12,6 +12,279 @@
     padding: 2rem;
 }
 
+/* ✨ Premium Quiz Controls (Search, Filter, Sort) ✨ */
+.premium-quiz-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 10;
+}
+
+.premium-search-container {
+    width: 100%;
+}
+
+.premium-search-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.premium-search-input:focus {
+    outline: none;
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 4px var(--accent-light-transparent);
+}
+
+.premium-search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.premium-filter-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 100;
+    isolation: isolate;
+}
+
+.premium-filter-select,
+.premium-sort-select {
+    flex: 1;
+    min-width: 200px;
+}
+
+.premium-results-count {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+/* ✨ Premium Pagination Styles ✨ */
+.premium-pagination-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
+    /* Prevent scroll behavior issues */
+    scroll-margin: 0;
+    scroll-padding: 0;
+    scroll-behavior: auto;
+}
+
+.premium-pagination-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.premium-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.premium-pagination-btn {
+    padding: 0.5rem 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+    /* Prevent scroll on focus */
+    scroll-margin: 0;
+    scroll-padding: 0;
+}
+
+.premium-pagination-btn:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.premium-pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.premium-pagination-numbers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.premium-pagination-number {
+    min-width: 40px;
+    height: 40px;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Prevent scroll on focus */
+    scroll-margin: 0;
+    scroll-padding: 0;
+}
+
+.premium-pagination-number:hover {
+    background: var(--accent-light);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.premium-pagination-number.active {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+    transform: scale(1.1);
+}
+
+/* ✨ Premium Empty State ✨ */
+.premium-no-quizzes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    padding: 2rem;
+}
+
+.premium-empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.premium-empty-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+    animation: gentleFloat 4s ease-in-out infinite;
+}
+
+.premium-empty-state h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.premium-empty-state p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+@keyframes gentleFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Mobile Responsive Styles for Premium Controls */
+@media (max-width: 768px) {
+    .premium-quiz-controls {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .premium-filter-controls {
+        flex-direction: column;
+    }
+
+    .premium-filter-select,
+    .premium-sort-select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .premium-pagination-controls {
+        gap: 0.25rem;
+    }
+
+    .premium-pagination-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .premium-pagination-number {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .premium-quiz-controls {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .premium-search-input {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .premium-pagination-container {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .premium-pagination-btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.8rem;
+    }
+
+    .premium-pagination-number {
+        min-width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+        padding: 0.4rem;
+    }
+}
+
 /* Ensure full-page scrolling when combined with main-content */
 .premium-quiz-container.main-content {
     height: auto !important;
@@ -244,6 +517,8 @@ html.premium-quizzes-page .main-content {
     gap: 2.5rem;
     margin-bottom: 4rem;
     overflow: visible !important;
+    z-index: 1;
+    position: relative;
 }
 
 /* Empty State Styles */

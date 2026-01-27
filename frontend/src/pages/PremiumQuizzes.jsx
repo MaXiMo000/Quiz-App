@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
@@ -8,6 +8,8 @@ import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
+import { debounce } from "../utils/componentUtils";
+import CustomDropdown from "../components/CustomDropdown";
 
 const PremiumQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -19,8 +21,167 @@ const PremiumQuizzes = () => {
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
     const navigate = useNavigate();
 
+    // Search, filter, and sort states (with localStorage persistence)
+    const [searchQuery, setSearchQuery] = useState(() => {
+        const saved = localStorage.getItem("premiumQuizzes_searchQuery");
+        return saved || "";
+    });
+    const [categoryFilter, setCategoryFilter] = useState(() => {
+        const saved = localStorage.getItem("premiumQuizzes_categoryFilter");
+        return saved || "all";
+    });
+    const [sortBy, setSortBy] = useState(() => {
+        const saved = localStorage.getItem("premiumQuizzes_sortBy");
+        return saved || "title";
+    });
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(() => {
+        const saved = parseInt(localStorage.getItem("premiumQuizzes_currentPage"), 10);
+        return saved && !isNaN(saved) ? saved : 1;
+    });
+    const itemsPerPage = 10;
+    const scrollPositionRef = useRef(0);
+
+    // Debounced search query for filtering
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+    const debouncedSetSearch = useRef(
+        debounce((value) => {
+            setDebouncedSearchQuery(value);
+            localStorage.setItem("premiumQuizzes_searchQuery", value);
+        }, 300)
+    ).current;
+
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
+
+    // Persist filter changes to localStorage
+    useEffect(() => {
+        localStorage.setItem("premiumQuizzes_categoryFilter", categoryFilter);
+    }, [categoryFilter]);
+
+    useEffect(() => {
+        localStorage.setItem("premiumQuizzes_sortBy", sortBy);
+    }, [sortBy]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        if (currentPage !== 1) {
+            setCurrentPage(1);
+            localStorage.setItem("premiumQuizzes_currentPage", "1");
+        }
+    }, [debouncedSearchQuery, categoryFilter, sortBy]);
+
+    // Persist current page
+    useEffect(() => {
+        localStorage.setItem("premiumQuizzes_currentPage", currentPage.toString());
+    }, [currentPage]);
+
+    // Handle search input with debouncing
+    useEffect(() => {
+        debouncedSetSearch(searchQuery);
+    }, [searchQuery, debouncedSetSearch]);
+
+    // Get unique categories from quizzes
+    const categories = useMemo(() => {
+        const cats = new Set(quizzes.map(q => q.category).filter(Boolean));
+        return Array.from(cats).sort();
+    }, [quizzes]);
+
+    // Filter and sort quizzes
+    const filteredQuizzes = useMemo(() => {
+        let filtered = [...quizzes];
+
+        // Search filter (using debounced value)
+        if (debouncedSearchQuery) {
+            const query = debouncedSearchQuery.toLowerCase();
+            filtered = filtered.filter(quiz =>
+                quiz.title.toLowerCase().includes(query) ||
+                quiz.category?.toLowerCase().includes(query)
+            );
+        }
+
+        // Category filter
+        if (categoryFilter !== "all") {
+            filtered = filtered.filter(quiz => quiz.category === categoryFilter);
+        }
+
+        // Sort
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case "duration":
+                    return (a.duration || 0) - (b.duration || 0);
+                case "questions":
+                    return (b.questions?.length || 0) - (a.questions?.length || 0);
+                case "marks":
+                    return (b.totalMarks || 0) - (a.totalMarks || 0);
+                case "category":
+                    return (a.category || "").localeCompare(b.category || "");
+                case "title":
+                default:
+                    return (a.title || "").localeCompare(b.title || "");
+            }
+        });
+
+        return filtered;
+    }, [quizzes, debouncedSearchQuery, categoryFilter, sortBy]);
+
+    // Pagination calculations
+    const totalPages = Math.max(1, Math.ceil(filteredQuizzes.length / itemsPerPage));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedQuizzes = filteredQuizzes.slice(startIndex, endIndex);
+
+    // Ensure currentPage doesn't exceed totalPages
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+            localStorage.setItem("premiumQuizzes_currentPage", totalPages.toString());
+        }
+    }, [currentPage, totalPages]);
+
+    // Preserve scroll position when page changes
+    useEffect(() => {
+        // Only restore scroll if we have a saved position (user clicked pagination)
+        if (scrollPositionRef.current > 0) {
+            // Immediately prevent any scroll
+            const savedScroll = scrollPositionRef.current;
+
+            // Use multiple requestAnimationFrame calls to ensure DOM has fully updated
+            const restoreScroll = () => {
+                const maxScroll = Math.max(
+                    document.documentElement.scrollHeight - window.innerHeight,
+                    0
+                );
+                const targetScroll = Math.min(savedScroll, maxScroll);
+                if (targetScroll >= 0) {
+                    // Temporarily disable scroll behavior
+                    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+                    document.documentElement.style.scrollBehavior = 'auto';
+
+                    window.scrollTo({
+                        top: targetScroll,
+                        behavior: 'auto'
+                    });
+
+                    // Restore scroll behavior after a short delay
+                    setTimeout(() => {
+                        document.documentElement.style.scrollBehavior = originalScrollBehavior;
+                    }, 50);
+                }
+            };
+
+            // Prevent scroll immediately
+            restoreScroll();
+
+            // Also restore after animations complete
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(restoreScroll);
+                });
+            });
+        }
+    }, [currentPage, paginatedQuizzes]);
 
     // Keyboard shortcuts
     useKeyboardShortcuts({
@@ -33,8 +194,72 @@ const PremiumQuizzes = () => {
                     modal.close();
                 }
             });
+            // Clear search if active
+            if (searchQuery) {
+                setSearchQuery("");
+            }
         },
-    }, []);
+        'Ctrl+F': (e) => {
+            // Focus search input
+            const searchInput = document.querySelector('.premium-search-input');
+            if (searchInput) {
+                e.preventDefault();
+                e.stopPropagation();
+                searchInput.focus();
+                if (searchInput.select) {
+                    searchInput.select();
+                }
+            }
+        },
+        'ArrowLeft': (e) => {
+            // Navigate to previous page if not in input field
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && currentPage > 1) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Save scroll position before page change
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                scrollPositionRef.current = currentScroll;
+
+                // Prevent scroll during state update
+                const preventScroll = () => {
+                    window.scrollTo({
+                        top: currentScroll,
+                        behavior: 'auto'
+                    });
+                };
+
+                setCurrentPage(prev => prev - 1);
+
+                // Prevent scroll during render
+                requestAnimationFrame(preventScroll);
+                setTimeout(preventScroll, 0);
+            }
+        },
+        'ArrowRight': (e) => {
+            // Navigate to next page if not in input field
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && currentPage < totalPages) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Save scroll position before page change
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                scrollPositionRef.current = currentScroll;
+
+                // Prevent scroll during state update
+                const preventScroll = () => {
+                    window.scrollTo({
+                        top: currentScroll,
+                        behavior: 'auto'
+                    });
+                };
+
+                setCurrentPage(prev => prev + 1);
+
+                // Prevent scroll during render
+                requestAnimationFrame(preventScroll);
+                setTimeout(preventScroll, 0);
+            }
+        },
+    }, [searchQuery, currentPage, totalPages]);
 
     const getQuiz = async () => {
         try {
@@ -240,14 +465,89 @@ const PremiumQuizzes = () => {
                 </button>
             </motion.div>
 
+            {/* Search, Filter, and Sort Controls */}
             <motion.div
-                className="quiz-list"
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                className="premium-quiz-controls"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
             >
-                <AnimatePresence>
-                    {quizzes.map((quiz, _index) => (
+                <div className="premium-search-container">
+                    <input
+                        type="text"
+                        placeholder="🔍 Search premium quizzes..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="premium-search-input"
+                        aria-label="Search premium quizzes"
+                        aria-describedby="premium-search-description"
+                    />
+                    <span id="premium-search-description" className="sr-only">
+                        Search premium quizzes by title or category
+                    </span>
+                </div>
+
+                <div className="premium-filter-controls">
+                    <CustomDropdown
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        options={[
+                            { value: "all", label: "All Categories" },
+                            ...categories.map(cat => ({ value: cat, label: cat }))
+                        ]}
+                        className="premium-filter-select"
+                        ariaLabel="Filter by category"
+                    />
+
+                    <CustomDropdown
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        options={[
+                            { value: "title", label: "Sort by Title" },
+                            { value: "duration", label: "Sort by Duration" },
+                            { value: "questions", label: "Sort by Questions" },
+                            { value: "marks", label: "Sort by Marks" },
+                            { value: "category", label: "Sort by Category" }
+                        ]}
+                        className="premium-sort-select"
+                        ariaLabel="Sort premium quizzes"
+                    />
+                </div>
+
+                <div className="premium-results-count">
+                    {filteredQuizzes.length > 0 ? (
+                        <>
+                            Showing {startIndex + 1}-{Math.min(endIndex, filteredQuizzes.length)} of {filteredQuizzes.length} quiz{filteredQuizzes.length !== 1 ? 'zes' : ''}
+                            {filteredQuizzes.length !== quizzes.length && ` (${quizzes.length} total)`}
+                        </>
+                    ) : (
+                        <>No premium quizzes found</>
+                    )}
+                </div>
+            </motion.div>
+
+            {filteredQuizzes.length === 0 ? (
+                <motion.div
+                    className="premium-no-quizzes"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                >
+                    <div className="premium-empty-state">
+                        <span className="premium-empty-icon">💎</span>
+                        <h3>No Premium Quizzes Available</h3>
+                        <p>Create your first premium quiz or check back later!</p>
+                    </div>
+                </motion.div>
+            ) : (
+                <>
+                    <motion.div
+                        className="quiz-list"
+                        initial={false}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <AnimatePresence>
+                            {paginatedQuizzes.map((quiz, _index) => (
                         <div
                             key={quiz._id}
                             className="quiz-box premium-box"
@@ -358,9 +658,128 @@ const PremiumQuizzes = () => {
 
                             <div className="premium-bg-effect"></div>
                         </div>
-                    ))}
-                </AnimatePresence>
-            </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </motion.div>
+
+                    {/* Pagination Controls */}
+                    {filteredQuizzes.length > itemsPerPage && (
+                        <motion.div
+                            className="premium-pagination-container"
+                            initial={false}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <div className="premium-pagination-info">
+                                Page {currentPage} of {totalPages}
+                            </div>
+                            <div className="premium-pagination-controls">
+                                <button
+                                    className="premium-pagination-btn"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        // Save scroll position before page change
+                                        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                                        scrollPositionRef.current = currentScroll;
+
+                                        // Prevent any scroll during state update
+                                        const preventScroll = () => {
+                                            window.scrollTo({
+                                                top: currentScroll,
+                                                behavior: 'auto'
+                                            });
+                                        };
+
+                                        setCurrentPage(prev => Math.max(1, prev - 1));
+
+                                        // Prevent scroll during render
+                                        requestAnimationFrame(preventScroll);
+                                        setTimeout(preventScroll, 0);
+                                    }}
+                                    disabled={currentPage === 1}
+                                    aria-label="Go to previous page"
+                                >
+                                    &larr; Previous
+                                </button>
+                                <div className="premium-pagination-numbers">
+                                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                        let pageNum;
+                                        if (totalPages <= 5) {
+                                            pageNum = i + 1;
+                                        } else if (currentPage <= 3) {
+                                            pageNum = i + 1;
+                                        } else if (currentPage >= totalPages - 2) {
+                                            pageNum = totalPages - 4 + i;
+                                        } else {
+                                            pageNum = currentPage - 2 + i;
+                                        }
+                                        return (
+                                            <button
+                                                key={pageNum}
+                                                className={`premium-pagination-number ${currentPage === pageNum ? 'active' : ''}`}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    // Save scroll position before page change
+                                                    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                                                    scrollPositionRef.current = currentScroll;
+
+                                                    // Prevent any scroll during state update
+                                                    const preventScroll = () => {
+                                                        window.scrollTo({
+                                                            top: currentScroll,
+                                                            behavior: 'auto'
+                                                        });
+                                                    };
+
+                                                    setCurrentPage(pageNum);
+
+                                                    // Prevent scroll during render
+                                                    requestAnimationFrame(preventScroll);
+                                                    setTimeout(preventScroll, 0);
+                                                }}
+                                                aria-label={`Go to page ${pageNum}`}
+                                                aria-current={currentPage === pageNum ? 'page' : undefined}
+                                            >
+                                                {pageNum}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                <button
+                                    className="premium-pagination-btn"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        // Save scroll position before page change
+                                        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                                        scrollPositionRef.current = currentScroll;
+
+                                        // Prevent any scroll during state update
+                                        const preventScroll = () => {
+                                            window.scrollTo({
+                                                top: currentScroll,
+                                                behavior: 'auto'
+                                            });
+                                        };
+
+                                        setCurrentPage(prev => Math.min(totalPages, prev + 1));
+
+                                        // Prevent scroll during render
+                                        requestAnimationFrame(preventScroll);
+                                        setTimeout(preventScroll, 0);
+                                    }}
+                                    disabled={currentPage === totalPages}
+                                    aria-label="Go to next page"
+                                >
+                                    Next &rarr;
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </>
+            )}
 
             {/* AI Question Generation Modal */}
             <dialog
