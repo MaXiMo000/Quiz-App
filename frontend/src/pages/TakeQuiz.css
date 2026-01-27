@@ -28,6 +28,18 @@
     box-sizing: border-box;
 }
 
+/* Fullscreen quiz container adjustments */
+body.quiz-fullscreen .quiz-container {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 2rem !important;
+    min-height: 100vh !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+
 /* ✨ Error Container ✨ */
 .error-container {
     display: flex;
@@ -581,10 +593,10 @@
     bottom: 0;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    background: rgba(0, 0, 0, 0.75);
+    background: var(--black-transparent-75);
     background-image:
-        radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, var(--accent-light) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, var(--accent2-transparent-15) 0%, transparent 50%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -633,14 +645,14 @@
 }
 
 .modal-content {
-    background: rgba(26, 35, 50, 0.85);
+    background: var(--card-bg);
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-        0 0 60px rgba(99, 102, 241, 0.3);
+        0 8px 32px var(--black-transparent-40),
+        0 0 0 1px var(--white-transparent-05) inset,
+        0 0 60px var(--accent-transparent-30);
     position: relative;
     overflow: hidden;
     max-height: 90vh;
@@ -671,7 +683,7 @@
         var(--accent) 0%,
         var(--accent2) 50%,
         var(--accent) 100%);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 20px var(--accent-transparent-40);
 }
 
 .modal-content::after {
@@ -682,8 +694,8 @@
     right: 0;
     bottom: 0;
     background:
-        radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 30% 20%, var(--accent-transparent-10) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, var(--accent2-transparent-08) 0%, transparent 50%);
     pointer-events: none;
     border-radius: inherit;
     z-index: 0;
@@ -823,16 +835,16 @@
 }
 
 .score-display {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--white-transparent-05);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-radius: var(--radius-xl);
     padding: var(--space-xl);
     margin-bottom: 0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        0 8px 32px var(--black-transparent-30),
+        0 0 0 1px var(--white-transparent-05) inset;
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -845,7 +857,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 0%, var(--accent-light) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -952,11 +964,11 @@
 .review-btn,
 .generate-btn,
 .reports-btn {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--white-transparent-08);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     color: var(--text-light);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--white-transparent-15);
     border-radius: var(--radius-lg);
     padding: var(--space-md) var(--space-xl);
     font-size: 1rem;
@@ -972,8 +984,8 @@
     justify-content: center;
     gap: 0.5rem;
     box-shadow:
-        0 4px 16px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        0 4px 16px var(--black-transparent-20),
+        0 0 0 1px var(--white-transparent-05) inset;
 }
 
 .review-btn::before,
@@ -985,7 +997,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, var(--white-transparent-10), transparent);
     transition: left 0.5s ease;
 }
 
@@ -996,27 +1008,27 @@
 }
 
 .review-btn {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
-    border-color: rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, var(--accent-transparent-20), var(--accent2-transparent-15));
+    border-color: var(--accent-transparent-30);
     box-shadow:
-        0 4px 16px rgba(99, 102, 241, 0.3),
-        0 0 0 1px rgba(99, 102, 241, 0.1) inset;
+        0 4px 16px var(--accent-transparent-30),
+        0 0 0 1px var(--accent-transparent-10) inset;
 }
 
 .generate-btn {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2));
-    border-color: rgba(139, 92, 246, 0.3);
+    background: linear-gradient(135deg, var(--accent2-transparent-15), var(--accent-transparent-20));
+    border-color: var(--accent2-transparent-15);
     box-shadow:
-        0 4px 16px rgba(139, 92, 246, 0.3),
-        0 0 0 1px rgba(139, 92, 246, 0.1) inset;
+        0 4px 16px var(--accent2-transparent-15),
+        0 0 0 1px var(--accent2-transparent-08) inset;
 }
 
 .reports-btn {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(59, 130, 246, 0.15));
-    border-color: rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, var(--accent-transparent-15), var(--info-light));
+    border-color: var(--info-light);
     box-shadow:
-        0 4px 16px rgba(59, 130, 246, 0.3),
-        0 0 0 1px rgba(59, 130, 246, 0.1) inset;
+        0 4px 16px var(--info-light),
+        0 0 0 1px var(--info-light) inset;
 }
 
 .review-btn:hover,
@@ -1024,10 +1036,10 @@
 .reports-btn:hover {
     transform: translateY(-3px) scale(1.02);
     box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-        0 0 30px rgba(99, 102, 241, 0.4);
-    border-color: rgba(255, 255, 255, 0.25);
+        0 8px 24px var(--black-transparent-30),
+        0 0 0 1px var(--white-transparent-10) inset,
+        0 0 30px var(--accent-transparent-40);
+    border-color: var(--white-transparent-20);
 }
 
 .review-btn:active,
@@ -1672,8 +1684,8 @@ body.quiz-fullscreen .quiz-content {
         right: 0 !important;
         bottom: 0 !important;
         background:
-            radial-gradient(circle at 10% 20%, var(--accent-light-transparent, rgba(99, 102, 241, 0.15)) 0%, transparent 50%),
-            radial-gradient(circle at 90% 80%, var(--accent2-transparent, rgba(139, 92, 246, 0.15)) 0%, transparent 50%) !important;
+            radial-gradient(circle at 10% 20%, var(--accent-light) 0%, transparent 50%),
+            radial-gradient(circle at 90% 80%, var(--accent2-transparent-15) 0%, transparent 50%) !important;
         animation: backgroundPulse 8s ease-in-out infinite !important;
         pointer-events: none !important;
         z-index: 0 !important;
@@ -1991,7 +2003,7 @@ body.quiz-fullscreen .quiz-content {
 
     body.quiz-fullscreen .navigation-buttons button.disabled-btn:hover {
         transform: none !important;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 4px 16px var(--black-transparent-20) !important;
     }
 
     /* Timer and Exit Button styles are now defined above in quiz-content section */

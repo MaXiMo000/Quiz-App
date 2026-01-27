@@ -42,6 +42,15 @@
   box-sizing: border-box;
 }
 
+/* Hide main-content padding and adjust layout when quiz is in fullscreen */
+body.quiz-fullscreen .main-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+}
+
 /* ✨ Responsive Layout Adjustments ✨ */
 @media (max-width: 1024px) {
   .main-content {

@@ -16,7 +16,17 @@
     box-shadow: var(--shadow-lg);
 }
 
-.sidebar::before {
+/* Hide sidebar when quiz is in fullscreen */
+body.quiz-fullscreen .sidebar,
+body.quiz-fullscreen .sidebar-toggle {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Removed golden line on left side of sidebar */
+/* .sidebar::before {
     content: '';
     position: absolute;
     top: 0;
@@ -34,14 +44,14 @@
 @keyframes gradientFlow {
     0%, 100% { background-position: 0% 0%; }
     50% { background-position: 0% 100%; }
-}
+} */
 
 /* Sidebar Header */
 .sidebar-header {
-    padding: 0 2rem 2rem;
+    padding: 0 2rem 1rem;
     text-align: center;
     border-bottom: 1px solid var(--glass-border);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     position: relative;
 }
 
@@ -392,8 +402,8 @@
     color: var(--color-title);
     font-size: 1.3rem;
     font-weight: 700;
-    margin: 0 0 var(--space-lg) 0;
-    padding-bottom: var(--space-sm);
+    margin: 0 0 var(--space-sm) 0;
+    padding-bottom: var(--space-xs);
     border-bottom: 2px solid transparent;
     background: var(--gradient-primary);
     border-image: var(--gradient-primary) 1;
@@ -491,107 +501,52 @@
     }
 }
 
-/* ✅ Premium Dashboard Link Styling */
+/* ✅ Premium Dashboard Link Styling - Removed special box styling, now regular links */
 .sidebar a.premium-dashboard {
-    background: var(--warning-light-alpha);
-    border: 1px solid var(--warning);
-    color: var(--warning);
-    position: relative;
-    overflow: hidden;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: var(--color-text-primary) !important;
 }
 
 .sidebar a.premium-dashboard::before {
-    background: var(--gradient-warning);
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: var(--shadow-md);
+    opacity: 0 !important;
+    transform: scale(0) !important;
 }
 
 .sidebar a.premium-dashboard::after {
-    content: "✨";
-    position: absolute;
-    right: var(--space-sm);
-    font-size: 0.8rem;
-    opacity: 0.7;
+    display: none !important;
 }
 
 .sidebar a.premium-dashboard:hover {
-    background: var(--warning-light);
-    border-color: var(--warning);
-    color: var(--text-light);
-    transform: translateX(6px) scale(1.05);
-    box-shadow: var(--shadow-lg);
+    background: var(--color-link-hover-bg) !important;
+    border-color: var(--accent) !important;
+    color: var(--color-text-primary) !important;
+    transform: translateX(4px) scale(1.02) !important;
+    box-shadow: var(--shadow-md) !important;
 }
 
-.sidebar a.premium-dashboard:hover::after {
-    opacity: 1;
-    animation: sparkle 1.5s ease-in-out infinite;
-}
-
-@keyframes sparkle {
-    0%, 100% {
-        transform: scale(1) rotate(0deg);
-        opacity: 0.7;
-    }
-    50% {
-        transform: scale(1.2) rotate(180deg);
-        opacity: 1;
-    }
-}
-
-/* ✅ Intelligence Dashboard Link Styling - Special Premium Feature */
+/* ✅ Intelligence Dashboard Link Styling - Removed special box styling, now regular links */
 .sidebar a.intelligence-link {
-    background: var(--accent-light-alpha) !important;
-    border: 1px solid var(--accent) !important;
-    color: var(--accent) !important;
-    position: relative;
-    overflow: hidden;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: var(--color-text-primary) !important;
 }
 
 .sidebar a.intelligence-link::before {
-    background: var(--gradient-primary) !important;
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: var(--shadow-md);
+    opacity: 0 !important;
+    transform: scale(0) !important;
 }
 
 .sidebar a.intelligence-link::after {
-    content: "🚀" !important;
-    position: absolute;
-    right: var(--space-sm);
-    font-size: 0.9rem;
-    opacity: 0.8;
+    display: none !important;
 }
 
 .sidebar a.intelligence-link:hover {
-    background: var(--accent-light) !important;
+    background: var(--color-link-hover-bg) !important;
     border-color: var(--accent) !important;
-    color: var(--text-light) !important;
-    transform: translateX(8px) scale(1.06);
-    box-shadow: var(--shadow-xl);
-}
-
-.sidebar a.intelligence-link:hover::after {
-    opacity: 1;
-    animation: intelligenceGlow 2s ease-in-out infinite;
-}
-
-@keyframes intelligenceGlow {
-    0%, 100% {
-        transform: scale(1) rotate(0deg);
-        opacity: 0.8;
-        filter: hue-rotate(0deg);
-    }
-    33% {
-        transform: scale(1.1) rotate(120deg);
-        opacity: 1;
-        filter: hue-rotate(120deg);
-    }
-    66% {
-        transform: scale(1.2) rotate(240deg);
-        opacity: 1;
-        filter: hue-rotate(240deg);
-    }
+    color: var(--color-text-primary) !important;
+    transform: translateX(4px) scale(1.02) !important;
+    box-shadow: var(--shadow-md) !important;
 }
 
 /* ✅ Logout Button */

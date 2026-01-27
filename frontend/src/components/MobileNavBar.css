@@ -20,6 +20,14 @@
   }
 }
 
+/* Hide mobile navbar when quiz is in fullscreen */
+body.quiz-fullscreen .mobile-nav-bar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .nav-container {
   display: flex;
   justify-content: space-around;

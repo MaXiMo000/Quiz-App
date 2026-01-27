@@ -4,12 +4,13 @@
     width: 100%;
     max-width: 600px;
     max-height: 85vh;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: var(--shadow-2xl);
     position: relative;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 /* Modal Overlay */
@@ -26,6 +27,7 @@
     z-index: 10002;
     padding: 20px;
     overflow-y: auto;
+    overflow-x: visible;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -72,48 +74,105 @@
     text-align: left;
     flex: 1;
     overflow-y: auto;
+    overflow-x: visible;
     -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
-    margin-left: 30px;
     align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .quiz-info {
-    background: var(--background-light);
-    padding: 15px;
-    border-radius: 12px;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 20px;
+    border-radius: var(--radius-lg);
     margin-bottom: 20px;
-    border-left: 4px solid var(--primary-color);
+    border: 2px solid var(--card-border);
     text-align: left;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.quiz-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .quiz-info h3 {
-    margin: 0 0 12px 0;
-    color: var(--text-primary);
-    font-size: 1.3em;
-    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: var(--text-light);
+    font-size: 1.4em;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quiz-info h3::before {
+    content: '📚';
+    font-size: 1.2em;
+    -webkit-text-fill-color: initial;
+    filter: drop-shadow(0 0 8px var(--accent-light));
 }
 
 .quiz-meta {
     display: flex;
     gap: 12px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .category-tag {
-    background: var(--primary-color-light);
-    color: var(--primary-color);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    font-weight: 500;
+    background: var(--accent-light-transparent);
+    color: var(--accent-light);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.9em;
+    font-weight: 600;
+    border: 1px solid var(--accent-light);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.category-tag::before {
+    content: '🏷️';
+    font-size: 0.9em;
 }
 
 .questions-count {
-    color: var(--text-secondary);
+    color: var(--text-light);
+    font-size: 0.95em;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--bg-secondary);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--card-border);
+}
+
+.questions-count::before {
+    content: '📝';
     font-size: 0.9em;
 }
 
@@ -315,33 +374,45 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+}
+
+.checkbox-indicator {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.group-item.selected .checkbox-indicator {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color-light);
 }
 
 .check-icon {
-    color: var(--primary-color);
+    color: var(--text-light);
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.1em;
     animation: checkmark 0.3s ease-in-out;
+    line-height: 1;
 }
 
 @keyframes checkmark {
     0% {
         opacity: 0;
-        transform: scale(0.5);
+        transform: scale(0.5) rotate(-180deg);
     }
     100% {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) rotate(0deg);
     }
-}
-
-.checkbox input[type="checkbox"] {
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    accent-color: var(--primary-color);
-    transform: scale(1.1);
 }
 
 .modal-actions {
@@ -352,43 +423,55 @@
     border-top: 1px solid var(--border-color);
     background: var(--card-bg);
     flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: visible;
+    min-width: 0;
 }
 
-.cancel-btn, .share-btn {
+.modal-actions .cancel-btn,
+.modal-actions .share-btn {
     padding: 12px 24px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
     transition: all 0.3s ease;
+    box-sizing: border-box;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: fit-content;
+    margin: 0;
 }
 
-.cancel-btn {
+.modal-actions .cancel-btn {
     background: var(--background-light);
     color: var(--text-secondary);
     border: 2px solid var(--border-color);
 }
 
-.cancel-btn:hover:not(:disabled) {
+.modal-actions .cancel-btn:hover:not(:disabled) {
     background: var(--hover-bg);
     color: var(--text-primary);
 }
 
-.share-btn {
+.modal-actions .share-btn {
     background: var(--primary-color);
     color: var(--text-light);
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
-.share-btn:hover:not(:disabled) {
+.modal-actions .share-btn:hover:not(:disabled) {
     background: var(--primary-color-dark);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
-.share-btn:disabled {
+.modal-actions .share-btn:disabled {
     background: var(--text-secondary);
     cursor: not-allowed;
     transform: none;
@@ -407,6 +490,7 @@
         width: 100%;
         margin: 0 auto;
         position: relative;
+        overflow: visible;
     }
 
     .modal-content {
@@ -438,15 +522,27 @@
         padding: 5px;
         align-items: flex-start;
         justify-content: center;
-        padding-top: 60px; /* Reduced space for mobile navbar */
-        padding-bottom: 80px; /* Reduced space for bottom navbar */
+        padding-top: 60px;
+        padding-bottom: 80px;
+        overflow-x: visible;
+        overflow-y: auto;
     }
 
     .share-quiz-modal {
         margin: 0;
-        max-height: calc(100vh - 150px); /* More space for content */
+        max-height: calc(100vh - 150px);
         width: calc(100vw - 10px);
+        max-width: calc(100vw - 10px);
         border-radius: 12px;
+        overflow: visible;
+        box-sizing: border-box;
+    }
+
+    .modal-actions {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
     .modal-header {
@@ -458,24 +554,38 @@
     }
 
     .modal-content {
-        padding: 12px 15px; /* Reduced content padding */
-        margin-left: 10px;
+        padding: 12px 15px;
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding-bottom: 0 !important;
     }
 
     .quiz-info {
-        padding: 10px;
-        margin-bottom: 12px; /* Reduced margin */
+        padding: 14px;
+        margin-bottom: 12px;
     }
 
     .quiz-info h3 {
+        font-size: 1.15em;
+        margin-bottom: 12px;
+    }
+
+    .quiz-info h3::before {
         font-size: 1.1em;
-        margin-bottom: 8px;
     }
 
     .quiz-meta {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .category-tag,
+    .questions-count {
+        padding: 5px 12px;
+        font-size: 0.85em;
     }
 
     .message-section {
@@ -503,15 +613,65 @@
     }
 
     .modal-actions {
-        flex-direction: column;
-        padding: 10px 15px; /* Reduced footer padding */
-        gap: 8px;
+        flex-direction: column-reverse !important;
+        padding: 12px 0 !important;
+        gap: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+        min-width: 0 !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        margin: 0 !important;
     }
 
-    .cancel-btn, .share-btn {
-        width: 100%;
-        padding: 10px 16px; /* Reduced button padding */
-        font-size: 0.95em;
+    .modal-actions .cancel-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        padding: 12px 15px !important;
+        font-size: 0.95em !important;
+        box-sizing: border-box !important;
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        overflow: visible !important;
+        border: none !important;
+        order: 2 !important;
+        margin: 0 !important;
+        border-radius: 8px !important;
+    }
+
+    .modal-actions .share-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        padding: 12px 15px !important;
+        font-size: 0.95em !important;
+        box-sizing: border-box !important;
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        overflow: visible !important;
+        border: none !important;
+        order: 1 !important;
+        margin: 0 !important;
+        border-radius: 8px !important;
     }
 }
 
@@ -519,14 +679,26 @@
 @media (max-width: 480px) {
     .modal-overlay {
         padding: 5px;
-        padding-top: 50px; /* Further reduced top padding */
-        padding-bottom: 60px; /* Further reduced bottom padding */
+        padding-top: 50px;
+        padding-bottom: 60px;
+        overflow-x: visible;
+        overflow-y: auto;
     }
 
     .share-quiz-modal {
         width: calc(100vw - 10px);
-        max-height: calc(100vh - 60px); /* More space for content */
+        max-width: calc(100vw - 10px);
+        max-height: calc(100vh - 60px);
         border-radius: 10px;
+        overflow: visible;
+        box-sizing: border-box;
+    }
+
+    .modal-actions {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
     .modal-header {
@@ -538,18 +710,31 @@
     }
 
     .modal-content {
-        padding: 10px 12px; /* Minimal content padding */
-        margin-left: 0px;
+        padding: 10px 12px;
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .quiz-info {
-        padding: 8px;
-        margin-bottom: 10px; /* Reduced margin */
+        padding: 12px;
+        margin-bottom: 10px;
     }
 
     .quiz-info h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+    .quiz-info h3::before {
         font-size: 1em;
-        margin-bottom: 6px;
+    }
+
+    .category-tag,
+    .questions-count {
+        padding: 4px 10px;
+        font-size: 0.8em;
     }
 
     .message-section {
@@ -592,12 +777,64 @@
     }
 
     .modal-actions {
-        padding: 8px 12px; /* Minimal footer padding */
-        gap: 6px;
+        flex-direction: column-reverse !important;
+        padding: 10px 0 !important;
+        gap: 8px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+        min-width: 0 !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        margin: 0 !important;
     }
 
-    .cancel-btn, .share-btn {
-        padding: 8px 12px; /* Compact buttons */
-        font-size: 0.85em;
+    .modal-actions .cancel-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        padding: 10px 12px !important;
+        font-size: 0.9em !important;
+        box-sizing: border-box !important;
+        min-height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        overflow: visible !important;
+        border: none !important;
+        order: 2 !important;
+        margin: 0 !important;
+        border-radius: 8px !important;
+    }
+
+    .modal-actions .share-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        padding: 10px 12px !important;
+        font-size: 0.9em !important;
+        box-sizing: border-box !important;
+        min-height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        overflow: visible !important;
+        border: none !important;
+        order: 1 !important;
+        margin: 0 !important;
+        border-radius: 8px !important;
     }
 }
