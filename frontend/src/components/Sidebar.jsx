@@ -7,6 +7,7 @@ import NotificationModal from "./NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import useResponsive from "../hooks/useResponsive";
 import useTouchHandler from "../hooks/useTouchHandler";
+import NavModule from "./NavModule";
 
 const Sidebar = ({ isOpen = false, onClose }) => {
     const [user, setUser] = useState(null);
@@ -240,245 +241,78 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                     >
                         {user?.role === "admin" && (
                             <>
-                                <motion.div
-                                    key="admin-dashboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.6, duration: 0.4 }}
-                                >
+                                {/* 1. Admin Module */}
+                                <NavModule title="Admin" icon="⚙️" defaultExpanded={true} delay={0.6}>
                                     <Link to="/admin" onClick={handleLinkClick}>📊 Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="admin-create"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.75, duration: 0.4 }}
-                                >
                                     <Link to="/admin/create" onClick={handleLinkClick}>📚 Create Quiz</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="admin-report"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.8, duration: 0.4 }}
-                                >
                                     <Link to="/admin/report" onClick={handleLinkClick}>📄 Reports</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="admin-leaderboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.85, duration: 0.4 }}
-                                >
-                                    <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
-                                </motion.div>
+                                </NavModule>
 
-                                {/* Phase 3: Social & Gamification Links */}
-                                <motion.div
-                                    key="admin-friends"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.9, duration: 0.4 }}
-                                >
+                                {/* 2. Learning Module */}
+                                <NavModule title="Learning" icon="📚" defaultExpanded={true} delay={0.7}>
+                                    <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
+                                </NavModule>
+
+                                {/* 3. Social Module */}
+                                <NavModule title="Social" icon="🤝" defaultExpanded={false} delay={0.8}>
                                     <Link to="/friends" onClick={handleLinkClick}>🤝 Friends</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="admin-study-groups"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.95, duration: 0.4 }}
-                                >
                                     <Link to="/study-groups" onClick={handleLinkClick}>📚 Study Groups</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="admin-gamification"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.0, duration: 0.4 }}
-                                >
-                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="admin-study-streak"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.05, duration: 0.4 }}
-                                >
                                     <Link to="/study-streak" onClick={handleLinkClick}>🔥 Study Streak</Link>
-                                </motion.div>
-                                {/* <Link to="/admin/written-tests" onClick={handleLinkClick}>📝 Written Tests</Link>
-                                <Link to="/admin/written-test/report" onClick={handleLinkClick}>📄 Tests Reports</Link> */}
+                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
+                                </NavModule>
                             </>
                         )}
 
                         {user?.role === "premium" && (
                             <>
-                                <motion.div
-                                    key="premium-dashboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.6, duration: 0.4 }}
-                                >
+                                {/* 1. Personal / Account Module */}
+                                <NavModule title="Personal" icon="👤" defaultExpanded={true} delay={0.6}>
                                     <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-enhanced-dashboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.65, duration: 0.4 }}
-                                >
-                                    <Link to="/enhanced-dashboard" className="premium-dashboard" onClick={handleLinkClick}>📈 Premium Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-intelligence-dashboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.67, duration: 0.4 }}
-                                >
-                                    <Link to="/intelligence-dashboard" className="premium-dashboard intelligence-link" onClick={handleLinkClick}>🧠 Intelligence Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-add-quizzes"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.7, duration: 0.4 }}
-                                >
-                                    <Link to="/premium/quizzes" className="premium-dashboard" onClick={handleLinkClick}>🧠 Add Quizzes</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-quizzes"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.8, duration: 0.4 }}
-                                >
-                                    <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-reports"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.9, duration: 0.4 }}
-                                >
+                                    <Link to="/enhanced-dashboard" onClick={handleLinkClick}>📈 Premium Dashboard</Link>
+                                    <Link to="/intelligence-dashboard" onClick={handleLinkClick}>🧠 Intelligence Dashboard</Link>
+                                </NavModule>
+
+                                {/* 2. Learning Module */}
+                                <NavModule title="Learning" icon="📚" defaultExpanded={true} delay={0.7}>
+                                    <Link to="/user/test" onClick={handleLinkClick}>📚 Take Quizzes</Link>
+                                    <Link to="/premium/quizzes" onClick={handleLinkClick}>➕ Add Quizzes</Link>
                                     <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-achievements"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.75, duration: 0.4 }}
-                                >
                                     <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-leaderboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.0, duration: 0.4 }}
-                                >
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
-                                </motion.div>
-                                {/* Phase 3: Social & Gamification Links */}
-                                <motion.div
-                                    key="premium-friends"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.05, duration: 0.4 }}
-                                >
-                                    <Link to="/friends" onClick={handleLinkClick}>🤝 Friends</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-study-groups"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.1, duration: 0.4 }}
-                                >
-                                    <Link to="/study-groups" onClick={handleLinkClick}>📚 Study Groups</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-gamification"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.15, duration: 0.4 }}
-                                >
-                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-study-streak"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.2, duration: 0.4 }}
-                                >
-                                    <Link to="/study-streak" onClick={handleLinkClick}>🔥 Study Streak</Link>
-                                </motion.div>
-
-                                {/* Phase 4: Next-Gen Features */}
-                                <motion.div
-                                    key="premium-ai-study-buddy"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.2, duration: 0.4 }}
-                                >
-                                    <Link to="/ai-study-buddy" onClick={handleLinkClick}>🤖 AI Study Buddy</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-real-time-quiz"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.25, duration: 0.4 }}
-                                >
-                                    <Link to="/real-time-quiz" onClick={handleLinkClick}>⚡ Real-Time Quiz</Link>
-                                </motion.div>
-
-                                {/* Phase 5: Advanced Learning Path Engine */}
-                                <motion.div
-                                    key="premium-learning-paths"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.3, duration: 0.4 }}
-                                >
                                     <Link to="/learning-paths" onClick={handleLinkClick}>🎯 Learning Paths</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-reviews"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.3, duration: 0.4 }}
-                                >
                                     <Link to="/reviews" onClick={handleLinkClick}>🔁 Reviews</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-advanced-analytics"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.3, duration: 0.4 }}
-                                >
                                     <Link to="/advanced-analytics" onClick={handleLinkClick}>📈 Advanced Analytics</Link>
-                                </motion.div>
+                                </NavModule>
 
-                                <motion.div
-                                    key="premium-contact"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.35, duration: 0.4 }}
-                                >
+                                {/* 3. Social Module */}
+                                <NavModule title="Social" icon="🤝" defaultExpanded={false} delay={0.8}>
+                                    <Link to="/friends" onClick={handleLinkClick}>🤝 Friends</Link>
+                                    <Link to="/study-groups" onClick={handleLinkClick}>📚 Study Groups</Link>
+                                    <Link to="/study-streak" onClick={handleLinkClick}>🔥 Study Streak</Link>
+                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
+                                </NavModule>
+
+                                {/* 4. AI Module */}
+                                <NavModule title="AI Tools" icon="🤖" defaultExpanded={false} delay={0.9}>
+                                    <Link to="/ai-study-buddy" onClick={handleLinkClick}>🤖 AI Study Buddy</Link>
+                                    <Link to="/real-time-quiz" onClick={handleLinkClick}>⚡ Real-Time Quiz</Link>
+                                </NavModule>
+
+                                {/* 5. Support Module */}
+                                <NavModule title="Support" icon="📄" defaultExpanded={false} delay={1.0}>
                                     <Link to="/contact" onClick={handleLinkClick}>📄 Contact Me</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="premium-test-features"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.62, duration: 0.4 }}
-                                >
                                     <Link to="/test-features" onClick={handleLinkClick}>🧪 Test New Features</Link>
-                                </motion.div>
+                                </NavModule>
+
                                 <motion.button
                                     key="premium-go-simple-user"
                                     onClick={() => updateRole("user")}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 1.2, duration: 0.4 }}
+                                    transition={{ delay: 1.1, duration: 0.4 }}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
+                                    className="sidebar-role-switch-btn"
                                 >
                                     👤 Go Simple User
                                 </motion.button>
@@ -487,96 +321,43 @@ const Sidebar = ({ isOpen = false, onClose }) => {
 
                         {user?.role === "user" && (
                             <>
-                                <motion.div
-                                    key="user-help-guide"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.05, duration: 0.4 }}
-                                >
-                                    <Link to="/help-guide" onClick={handleLinkClick}>📚 Help Guide</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-dashboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.6, duration: 0.4 }}
-                                >
+                                {/* 1. Personal Module */}
+                                <NavModule title="Personal" icon="👤" defaultExpanded={true} delay={0.6}>
                                     <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-quizzes"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.7, duration: 0.4 }}
-                                >
+                                </NavModule>
+
+                                {/* 2. Learning Module */}
+                                <NavModule title="Learning" icon="📚" defaultExpanded={true} delay={0.7}>
                                     <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-achievements"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.75, duration: 0.4 }}
-                                >
-                                    <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-reports"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.8, duration: 0.4 }}
-                                >
                                     <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-analytics"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.9, duration: 0.4 }}
-                                >
-                                    <Link to="/analytics" onClick={handleLinkClick}>📝 User Analytics</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-xp-leaderboard"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.0, duration: 0.4 }}
-                                >
+                                    <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
+                                    <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
                                     <Link to="/xp-leaderboard" onClick={handleLinkClick}>🏆 XP LeaderBoard</Link>
-                                </motion.div>
-                                {/* Phase 3: Social & Gamification Links */}
-                                <motion.div
-                                    key="user-friends"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.05, duration: 0.4 }}
-                                >
+                                    <Link to="/analytics" onClick={handleLinkClick}>📝 User Analytics</Link>
+                                </NavModule>
+
+                                {/* 3. Social Module */}
+                                <NavModule title="Social" icon="🤝" defaultExpanded={false} delay={0.8}>
                                     <Link to="/friends" onClick={handleLinkClick}>🤝 Friends</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-gamification"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.15, duration: 0.4 }}
-                                >
-                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
-                                </motion.div>
-                                <motion.div
-                                    key="user-study-streak"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.2, duration: 0.4 }}
-                                >
+                                    <Link to="/study-groups" onClick={handleLinkClick}>📚 Study Groups</Link>
                                     <Link to="/study-streak" onClick={handleLinkClick}>🔥 Study Streak</Link>
-                                </motion.div>
+                                    <Link to="/gamification" onClick={handleLinkClick}>🎮 Challenges & Tournaments</Link>
+                                </NavModule>
+
+                                {/* 4. Support Module */}
+                                <NavModule title="Support" icon="📄" defaultExpanded={false} delay={0.9}>
+                                    <Link to="/help-guide" onClick={handleLinkClick}>📚 Help Guide</Link>
+                                </NavModule>
 
                                 <motion.button
                                     key="user-go-premium"
                                     onClick={() => updateRole("premium")}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 1.2, duration: 0.4 }}
+                                    transition={{ delay: 1.0, duration: 0.4 }}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
+                                    className="sidebar-role-switch-btn"
                                 >
                                     🚀 Go Premium
                                 </motion.button>

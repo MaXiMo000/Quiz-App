@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef, memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "../utils/axios";
@@ -9,6 +9,173 @@ import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { exportReportsSummaryAsCSV, exportReportAsPDF, exportReportAsCSV } from "../utils/exportUtils";
+import { debounce } from "../utils/componentUtils";
+import CustomDropdown from "../components/CustomDropdown";
+
+// Memoized Report Row Component for Desktop Table
+const ReportTableRow = memo(({ report, index, formatDate, deleteReport, exportReportAsPDF, exportReportAsCSV }) => {
+    const percentage = Math.round((report.score / report.total) * 100);
+    const passed = report.score >= report.total * 0.5;
+
+    return (
+        <motion.tr
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.05 }}
+        >
+            <td className="quiz-name-cell">{report.quizName}</td>
+            <td className="score-cell">{report.score.toFixed(1)}</td>
+            <td className="total-cell">{report.total}</td>
+            <td className="percentage-cell">
+                <div className="percentage-bar-container">
+                    <div
+                        className={`percentage-bar ${passed ? 'passed' : 'failed'}`}
+                        style={{ width: `${percentage}%` }}
+                    />
+                    <span className="percentage-text">{percentage}%</span>
+                </div>
+            </td>
+            <td className="date-cell">{formatDate(report.createdAt || report.updatedAt)}</td>
+            <td className="status-cell">
+                <span className={`status-badge ${passed ? 'passed' : 'failed'}`}>
+                    {passed ? "✅ Passed" : "❌ Failed"}
+                </span>
+            </td>
+            <td className="actions-cell">
+                <div className="report-actions">
+                    <Link to={`/report/${report._id}`}>
+                        <button
+                            className="view-btn"
+                            title="View detailed report"
+                            aria-label="View detailed report"
+                        >
+                            📊
+                        </button>
+                    </Link>
+                    <div className="quick-actions-dropdown">
+                        <button
+                            className="quick-actions-btn"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                const dropdown = e.currentTarget.nextElementSibling;
+                                if (dropdown) {
+                                    dropdown.classList.toggle('show');
+                                }
+                            }}
+                            aria-label="Quick actions menu"
+                            title="Quick actions (Export PDF/CSV)"
+                        >
+                            ⋯
+                        </button>
+                        <div className="quick-actions-menu">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    exportReportAsPDF(report);
+                                    const menu = e.currentTarget.closest('.quick-actions-menu');
+                                    if (menu) menu.classList.remove('show');
+                                }}
+                                aria-label="Export as PDF"
+                            >
+                                📄 PDF
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    exportReportAsCSV(report);
+                                    const menu = e.currentTarget.closest('.quick-actions-menu');
+                                    if (menu) menu.classList.remove('show');
+                                }}
+                                aria-label="Export as CSV"
+                            >
+                                📊 CSV
+                            </button>
+                        </div>
+                    </div>
+                    <button
+                        className="delete-btn"
+                        onClick={() => deleteReport(report._id)}
+                        title="Delete report"
+                        aria-label={`Delete report for ${report.quizName}`}
+                    >
+                        🗑️
+                    </button>
+                </div>
+            </td>
+        </motion.tr>
+    );
+}, (prevProps, nextProps) => {
+    // Custom comparison for better memoization
+    return (
+        prevProps.report._id === nextProps.report._id &&
+        prevProps.index === nextProps.index &&
+        prevProps.report.score === nextProps.report.score &&
+        prevProps.report.total === nextProps.report.total
+    );
+});
+
+ReportTableRow.displayName = 'ReportTableRow';
+
+// Memoized Report Card Component for Mobile
+const ReportCard = memo(({ report, index, formatDate, deleteReport }) => {
+    const percentage = Math.round((report.score / report.total) * 100);
+    const passed = report.score >= report.total * 0.5;
+
+    return (
+        <motion.div
+            className="report-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+        >
+            <div className="report-header">
+                <h3 className="report-title">{report.quizName}</h3>
+                <div className={`report-status ${passed ? 'passed' : 'failed'}`}>
+                    {passed ? "✅ Passed" : "❌ Failed"}
+                </div>
+            </div>
+
+            <div className="report-details">
+                <div className="report-detail">
+                    <div className="report-detail-label">Score</div>
+                    <div className="report-detail-value">{report.score.toFixed(1)} / {report.total}</div>
+                </div>
+                <div className="report-detail">
+                    <div className="report-detail-label">Percentage</div>
+                    <div className="report-detail-value">{percentage}%</div>
+                </div>
+                <div className="report-detail">
+                    <div className="report-detail-label">Date</div>
+                    <div className="report-detail-value">{formatDate(report.createdAt || report.updatedAt)}</div>
+                </div>
+            </div>
+
+            <div className="report-progress">
+                <div
+                    className={`progress-bar ${passed ? 'passed' : 'failed'}`}
+                    style={{ width: `${percentage}%` }}
+                />
+            </div>
+
+            <div className="report-actions">
+                <Link to={`/report/${report._id}`}>
+                    <button className="view-btn">📊 View Report</button>
+                </Link>
+                <button className="delete-btn" onClick={() => deleteReport(report._id)}>🗑️ Delete</button>
+            </div>
+        </motion.div>
+    );
+}, (prevProps, nextProps) => {
+    // Custom comparison for better memoization
+    return (
+        prevProps.report._id === nextProps.report._id &&
+        prevProps.index === nextProps.index &&
+        prevProps.report.score === nextProps.report.score &&
+        prevProps.report.total === nextProps.report.total
+    );
+});
+
+ReportCard.displayName = 'ReportCard';
 
 const UserReports = () => {
     const [reports, setReports] = useState([]);
@@ -23,19 +190,131 @@ const UserReports = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // Search, filter, and sort states
-    const [searchQuery, setSearchQuery] = useState("");
-    const [statusFilter, setStatusFilter] = useState("all"); // all, passed, failed
-    const [sortBy, setSortBy] = useState("date"); // date, score, quizName
-    const [sortOrder, setSortOrder] = useState("desc"); // asc, desc
+    // Search, filter, and sort states (with localStorage persistence)
+    const [searchQuery, setSearchQuery] = useState(() => {
+        const saved = localStorage.getItem("userReports_searchQuery");
+        return saved || "";
+    });
+    const [statusFilter, setStatusFilter] = useState(() => {
+        const saved = localStorage.getItem("userReports_statusFilter");
+        return saved || "all";
+    });
+    const [sortBy, setSortBy] = useState(() => {
+        const saved = localStorage.getItem("userReports_sortBy");
+        return saved || "date";
+    });
+    const [sortOrder, setSortOrder] = useState(() => {
+        const saved = localStorage.getItem("userReports_sortOrder");
+        return saved || "desc";
+    });
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(() => {
+        const saved = parseInt(localStorage.getItem("userReports_currentPage"), 10);
+        return saved && !isNaN(saved) ? saved : 1;
+    });
+    const itemsPerPage = 10;
+
+    // Debounced search query for filtering
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+    const debouncedSetSearch = useRef(
+        debounce((value) => {
+            setDebouncedSearchQuery(value);
+            localStorage.setItem("userReports_searchQuery", value);
+        }, 300)
+    ).current;
 
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
 
+    // Persist filter changes to localStorage
+    useEffect(() => {
+        localStorage.setItem("userReports_statusFilter", statusFilter);
+    }, [statusFilter]);
+
+    useEffect(() => {
+        localStorage.setItem("userReports_sortBy", sortBy);
+    }, [sortBy]);
+
+    useEffect(() => {
+        localStorage.setItem("userReports_sortOrder", sortOrder);
+    }, [sortOrder]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+        localStorage.setItem("userReports_currentPage", "1");
+    }, [debouncedSearchQuery, statusFilter, sortBy, sortOrder]);
+
+    // Handle search input with debouncing
+    useEffect(() => {
+        debouncedSetSearch(searchQuery);
+    }, [searchQuery, debouncedSetSearch]);
+
+    // Filter and sort reports
+    const filteredAndSortedReports = useMemo(() => {
+        let filtered = [...reports];
+
+        // Search filter (using debounced value)
+        if (debouncedSearchQuery) {
+            const query = debouncedSearchQuery.toLowerCase();
+            filtered = filtered.filter(report =>
+                report.quizName?.toLowerCase().includes(query) ||
+                report.userName?.toLowerCase().includes(query)
+            );
+        }
+
+        // Status filter
+        if (statusFilter !== "all") {
+            filtered = filtered.filter(report => {
+                const passed = report.score >= report.total * 0.5;
+                return statusFilter === "passed" ? passed : !passed;
+            });
+        }
+
+        // Sort
+        filtered.sort((a, b) => {
+            let comparison = 0;
+            switch (sortBy) {
+                case "score":
+                    comparison = a.score - b.score;
+                    break;
+                case "quizName":
+                    comparison = (a.quizName || "").localeCompare(b.quizName || "");
+                    break;
+                case "date":
+                default:
+                    comparison = new Date(a.createdAt || a.updatedAt || 0) - new Date(b.createdAt || b.updatedAt || 0);
+                    break;
+            }
+            return sortOrder === "asc" ? comparison : -comparison;
+        });
+
+        return filtered;
+    }, [reports, debouncedSearchQuery, statusFilter, sortBy, sortOrder]);
+
+    // Pagination calculations - ensure totalPages is at least 1
+    const totalPages = Math.max(1, Math.ceil(filteredAndSortedReports.length / itemsPerPage));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedReports = filteredAndSortedReports.slice(startIndex, endIndex);
+
+    // Ensure currentPage doesn't exceed totalPages after sorting/filtering
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+            localStorage.setItem("userReports_currentPage", totalPages.toString());
+        }
+    }, [currentPage, totalPages]);
+
     // Keyboard shortcuts
     useKeyboardShortcuts({
         'Escape': () => {
-            // Close any open modals or clear filters
+            // Close any open dropdowns
+            const dropdowns = document.querySelectorAll('.quick-actions-menu.show');
+            dropdowns.forEach(dropdown => dropdown.classList.remove('show'));
+
+            // Clear search if active
             if (searchQuery) {
                 setSearchQuery("");
             }
@@ -54,7 +333,21 @@ const UserReports = () => {
             }
             // If no search input, let browser's default Ctrl+F work
         },
-    }, [searchQuery]);
+        'ArrowLeft': (e) => {
+            // Navigate to previous page if not in input field
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && currentPage > 1) {
+                e.preventDefault();
+                setCurrentPage(prev => prev - 1);
+            }
+        },
+        'ArrowRight': (e) => {
+            // Navigate to next page if not in input field
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && currentPage < totalPages) {
+                e.preventDefault();
+                setCurrentPage(prev => prev + 1);
+            }
+        },
+    }, [searchQuery, currentPage, totalPages]);
 
     const getReport = useCallback(async () => {
         const currentUser = user || JSON.parse(localStorage.getItem("user"));
@@ -71,8 +364,13 @@ const UserReports = () => {
             setError("");
         } catch (error) {
             console.error("Error fetching reports:", error);
-            setError("Error fetching reports. Try again later.");
-            showError("Error fetching reports. Try again later.");
+            const errorMessage = error.response?.status === 401
+                ? "Please log in to view your reports."
+                : error.response?.status === 404
+                ? "No reports found. Complete quizzes to generate reports!"
+                : "Unable to load reports. Please check your connection and try again.";
+            setError(errorMessage);
+            showError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -166,12 +464,17 @@ const UserReports = () => {
             }
         } catch (error) {
             console.error("Error deleting report:", error);
-            showError("Failed to delete report. Check the API response.");
+            const errorMessage = error.response?.status === 404
+                ? "Report not found. It may have already been deleted."
+                : error.response?.status === 403
+                ? "You don't have permission to delete this report."
+                : "Failed to delete report. Please try again or refresh the page.";
+            showError(errorMessage);
         }
     };
 
     // Format date for display
-    const formatDate = (dateString) => {
+    const formatDate = useCallback((dateString) => {
         if (!dateString) return "N/A";
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", {
@@ -181,48 +484,28 @@ const UserReports = () => {
             hour: "2-digit",
             minute: "2-digit"
         });
-    };
+    }, []);
 
-    // Filter and sort reports
-    const filteredAndSortedReports = useMemo(() => {
-        let filtered = [...reports];
-
-        // Search filter
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(report =>
-                report.quizName.toLowerCase().includes(query)
-            );
+    // Wrapper functions for export with error handling
+    const handleExportPDF = useCallback((report) => {
+        try {
+            exportReportAsPDF(report);
+            showSuccess('PDF export started! Check your print dialog.');
+        } catch (error) {
+            console.error('PDF export error:', error);
+            showError('Failed to export PDF. Please try again.');
         }
+    }, [showSuccess, showError]);
 
-        // Status filter
-        if (statusFilter !== "all") {
-            filtered = filtered.filter(report => {
-                const passed = report.score >= report.total * 0.5;
-                return statusFilter === "passed" ? passed : !passed;
-            });
+    const handleExportCSV = useCallback((report) => {
+        try {
+            exportReportAsCSV(report);
+            showSuccess('CSV file downloaded successfully!');
+        } catch (error) {
+            console.error('CSV export error:', error);
+            showError('Failed to export CSV. Please try again.');
         }
-
-        // Sort
-        filtered.sort((a, b) => {
-            let comparison = 0;
-            switch (sortBy) {
-                case "score":
-                    comparison = a.score - b.score;
-                    break;
-                case "quizName":
-                    comparison = (a.quizName || "").localeCompare(b.quizName || "");
-                    break;
-                case "date":
-                default:
-                    comparison = new Date(a.createdAt || a.updatedAt || 0) - new Date(b.createdAt || b.updatedAt || 0);
-                    break;
-            }
-            return sortOrder === "asc" ? comparison : -comparison;
-        });
-
-        return filtered;
-    }, [reports, searchQuery, statusFilter, sortBy, sortOrder]);
+    }, [showSuccess, showError]);
 
     // Calculate statistics
     const stats = useMemo(() => {
@@ -343,27 +626,29 @@ const UserReports = () => {
                     </div>
 
                     <div className="filter-controls">
-                        <select
+                        <CustomDropdown
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
+                            options={[
+                                { value: "all", label: "All Status" },
+                                { value: "passed", label: "Passed" },
+                                { value: "failed", label: "Failed" }
+                            ]}
                             className="filter-select"
-                            aria-label="Filter reports by status"
-                        >
-                            <option value="all">All Status</option>
-                            <option value="passed">Passed</option>
-                            <option value="failed">Failed</option>
-                        </select>
+                            ariaLabel="Filter reports by status"
+                        />
 
-                        <select
+                        <CustomDropdown
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
+                            options={[
+                                { value: "date", label: "Sort by Date" },
+                                { value: "score", label: "Sort by Score" },
+                                { value: "quizName", label: "Sort by Quiz Name" }
+                            ]}
                             className="sort-select"
-                            aria-label="Sort reports by"
-                        >
-                            <option value="date">Sort by Date</option>
-                            <option value="score">Sort by Score</option>
-                            <option value="quizName">Sort by Quiz Name</option>
-                        </select>
+                            ariaLabel="Sort reports by"
+                        />
 
                         <button
                             className="sort-order-btn"
@@ -376,11 +661,10 @@ const UserReports = () => {
                         </button>
                     </div>
 
-                    {filteredAndSortedReports.length !== reports.length && (
-                        <div className="results-count">
-                            Showing {filteredAndSortedReports.length} of {reports.length} reports
-                        </div>
-                    )}
+                    <div className="results-count">
+                        Showing {startIndex + 1}-{Math.min(endIndex, filteredAndSortedReports.length)} of {filteredAndSortedReports.length} reports
+                        {filteredAndSortedReports.length !== reports.length && ` (${reports.length} total)`}
+                    </div>
                 </motion.div>
             )}
 
@@ -423,152 +707,94 @@ const UserReports = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredAndSortedReports.map((report, index) => {
-                                const percentage = Math.round((report.score / report.total) * 100);
-                                const passed = report.score >= report.total * 0.5;
-                                return (
-                                <motion.tr
-                                    key={report._id || index}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                >
-                                    <td className="quiz-name-cell">{report.quizName}</td>
-                                    <td className="score-cell">{report.score.toFixed(1)}</td>
-                                    <td className="total-cell">{report.total}</td>
-                                    <td className="percentage-cell">
-                                        <div className="percentage-bar-container">
-                                            <div
-                                                className={`percentage-bar ${passed ? 'passed' : 'failed'}`}
-                                                style={{ width: `${percentage}%` }}
-                                            />
-                                            <span className="percentage-text">{percentage}%</span>
-                                        </div>
-                                    </td>
-                                    <td className="date-cell">{formatDate(report.createdAt || report.updatedAt)}</td>
-                                    <td className="status-cell">
-                                        <span className={`status-badge ${passed ? 'passed' : 'failed'}`}>
-                                            {passed ? "✅ Passed" : "❌ Failed"}
-                                        </span>
-                                    </td>
-                                    <td className="actions-cell">
-                                        <div className="report-actions">
-                                            <Link to={`/report/${report._id}`}>
-                                                <button
-                                                    className="view-btn"
-                                                    title="View detailed report"
-                                                    aria-label="View detailed report"
-                                                >
-                                                    📊
-                                                </button>
-                                            </Link>
-                                            <div className="quick-actions-dropdown">
-                                                <button
-                                                    className="quick-actions-btn"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        const dropdown = e.currentTarget.nextElementSibling;
-                                                        if (dropdown) {
-                                                            dropdown.classList.toggle('show');
-                                                        }
-                                                    }}
-                                                    aria-label="Quick actions menu"
-                                                    title="Quick actions (Export PDF/CSV)"
-                                                >
-                                                    ⋯
-                                                </button>
-                                                <div className="quick-actions-menu">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            exportReportAsPDF(report);
-                                                            const menu = e.currentTarget.closest('.quick-actions-menu');
-                                                            if (menu) menu.classList.remove('show');
-                                                        }}
-                                                        aria-label="Export as PDF"
-                                                    >
-                                                        📄 PDF
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            exportReportAsCSV(report);
-                                                            const menu = e.currentTarget.closest('.quick-actions-menu');
-                                                            if (menu) menu.classList.remove('show');
-                                                        }}
-                                                        aria-label="Export as CSV"
-                                                    >
-                                                        📊 CSV
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <button
-                                                className="delete-btn"
-                                                onClick={() => deleteReport(report._id)}
-                                                title="Delete report"
-                                                aria-label={`Delete report for ${report.quizName}`}
-                                            >
-                                                🗑️
-                                            </button>
-                                        </div>
-                                    </td>
-                                </motion.tr>
-                            );
-                            })}
+                            {paginatedReports.map((report, index) => (
+                                <ReportTableRow
+                                    key={report._id || `table-${index}`}
+                                    report={report}
+                                    index={index}
+                                    formatDate={formatDate}
+                                    deleteReport={deleteReport}
+                                    exportReportAsPDF={handleExportPDF}
+                                    exportReportAsCSV={handleExportCSV}
+                                />
+                            ))}
                         </tbody>
                     </table>
 
                     {/* Mobile Card Layout */}
-                    {filteredAndSortedReports.map((report, index) => {
-                        const percentage = Math.round((report.score / report.total) * 100);
-                        const passed = report.score >= report.total * 0.5;
-                        return (
-                        <motion.div
-                            key={`mobile-${report._id || index}`}
-                            className="report-card"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                        >
-                            <div className="report-header">
-                                <h3 className="report-title">{report.quizName}</h3>
-                                <div className={`report-status ${passed ? 'passed' : 'failed'}`}>
-                                    {passed ? "✅ Passed" : "❌ Failed"}
-                                </div>
-                            </div>
-
-                            <div className="report-details">
-                                <div className="report-detail">
-                                    <div className="report-detail-label">Score</div>
-                                    <div className="report-detail-value">{report.score.toFixed(1)} / {report.total}</div>
-                                </div>
-                                <div className="report-detail">
-                                    <div className="report-detail-label">Percentage</div>
-                                    <div className="report-detail-value">{percentage}%</div>
-                                </div>
-                                <div className="report-detail">
-                                    <div className="report-detail-label">Date</div>
-                                    <div className="report-detail-value">{formatDate(report.createdAt || report.updatedAt)}</div>
-                                </div>
-                            </div>
-
-                            <div className="report-progress">
-                                <div
-                                    className={`progress-bar ${passed ? 'passed' : 'failed'}`}
-                                    style={{ width: `${percentage}%` }}
-                                />
-                            </div>
-
-                            <div className="report-actions">
-                                <Link to={`/report/${report._id}`}>
-                                    <button className="view-btn">📊 View Report</button>
-                                </Link>
-                                <button className="delete-btn" onClick={() => deleteReport(report._id)}>🗑️ Delete</button>
-                            </div>
-                        </motion.div>
-                    );
-                    })}
+                    {paginatedReports.map((report, index) => (
+                        <ReportCard
+                            key={report._id || `mobile-${index}`}
+                            report={report}
+                            index={index}
+                            formatDate={formatDate}
+                            deleteReport={deleteReport}
+                        />
+                    ))}
                 </div>
+            )}
+
+            {/* Pagination Controls */}
+            {filteredAndSortedReports.length > itemsPerPage && (
+                <motion.div
+                    className="pagination-container"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    <div className="pagination-info">
+                        Page {currentPage} of {totalPages}
+                    </div>
+                    <div className="pagination-controls">
+                        <button
+                            className="pagination-btn"
+                            onClick={() => {
+                                setCurrentPage(prev => Math.max(1, prev - 1));
+                            }}
+                            disabled={currentPage === 1}
+                            aria-label="Go to previous page"
+                        >
+                            &larr; Previous
+                        </button>
+                        <div className="pagination-numbers">
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                let pageNum;
+                                if (totalPages <= 5) {
+                                    pageNum = i + 1;
+                                } else if (currentPage <= 3) {
+                                    pageNum = i + 1;
+                                } else if (currentPage >= totalPages - 2) {
+                                    pageNum = totalPages - 4 + i;
+                                } else {
+                                    pageNum = currentPage - 2 + i;
+                                }
+                                return (
+                                    <button
+                                        key={pageNum}
+                                        className={`pagination-number ${currentPage === pageNum ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setCurrentPage(pageNum);
+                                            }}
+                                        aria-label={`Go to page ${pageNum}`}
+                                        aria-current={currentPage === pageNum ? 'page' : undefined}
+                                    >
+                                        {pageNum}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <button
+                            className="pagination-btn"
+                            onClick={() => {
+                                setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                            }}
+                            disabled={currentPage === totalPages}
+                            aria-label="Go to next page"
+                        >
+                            Next &rarr;
+                        </button>
+                    </div>
+                </motion.div>
             )}
 
             {/* Notification Modal */}

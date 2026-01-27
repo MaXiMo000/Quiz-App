@@ -155,11 +155,11 @@
 .spinner-ring {
     width: 100%;
     height: 100%;
-    border: 4px solid rgba(139, 69, 19, 0.1);
-    border-top: 4px solid var(--primary-color, #8B4513);
+    border: 4px solid var(--warning-light);
+    border-top: 4px solid var(--warning);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    box-shadow: 0 0 20px rgba(139, 69, 19, 0.3);
+    box-shadow: 0 0 20px var(--warning-light);
 }
 
 @keyframes spin {
@@ -169,14 +169,14 @@
 
 .loading-text {
     font-size: 1.2rem;
-    color: var(--text-color, #333);
+    color: var(--text-color);
     font-weight: 500;
     animation: textGlow 2s ease-in-out infinite;
 }
 
 @keyframes textGlow {
     0%, 100% { opacity: 0.7; text-shadow: none; }
-    50% { opacity: 1; text-shadow: 0 0 10px rgba(139, 69, 19, 0.5); }
+    50% { opacity: 1; text-shadow: 0 0 10px var(--warning-light); }
 }
 */
 
@@ -490,6 +490,8 @@
 .stat-icon.accuracy-icon {
     /* These classes are not used in the current implementation */
     /* If used in future, they should be applied separately, not combined with emoji icons */
+    /* Empty ruleset kept for future use */
+    background: none;
 }
 
 .stat-content {
@@ -1836,6 +1838,10 @@
     border-radius: var(--radius-xl);
     padding: 1.5rem;
     min-height: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Hide empty quiz cards */
@@ -1844,11 +1850,6 @@
 .quiz-preview-card:has(.quiz-preview-title:not(:has(*))) {
     display: none !important;
     pointer-events: none;
-}
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
 }
 
 .quiz-preview-card::before {
@@ -1886,16 +1887,16 @@
     margin-bottom: 1rem;
     line-height: 1.4;
     min-height: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* Ensure quiz title is always visible if card exists */
 .quiz-preview-card .quiz-preview-title:empty {
     display: none;
-}
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 .quiz-preview-meta {
@@ -1952,6 +1953,12 @@
     border: 2px solid var(--card-border);
     border-radius: var(--radius-lg);
     min-height: 0;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 /* Hide empty activity items */
@@ -1960,13 +1967,6 @@
 .activity-item:has(.activity-title:not(:has(*))) {
     display: none !important;
     pointer-events: none;
-}
-    padding: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
 .activity-item:hover {
@@ -1992,14 +1992,13 @@
     margin-bottom: 0.5rem;
     overflow: hidden;
     min-height: 1.2rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Ensure activity title is always visible if item exists */
 .activity-item .activity-title:empty {
     display: none;
-}
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .activity-meta {

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '../components/Loading';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { debounce } from '../utils/componentUtils';
 import './HelpGuide.css';
 
 const HelpGuide = () => {
@@ -9,7 +10,8 @@ const HelpGuide = () => {
     const [activeSection, setActiveSection] = useState('overview');
     const [activeSubSection, setActiveSubSection] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredSections, setFilteredSections] = useState([]);
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+    const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
     // Keyboard shortcuts
     useKeyboardShortcuts({
@@ -476,35 +478,90 @@ const HelpGuide = () => {
         }
     ];
 
-    // Search functionality
-    const handleSearch = (query) => {
-        setSearchQuery(query);
-        if (query.trim() === '') {
-            setFilteredSections([]);
-            return;
-        }
+    // Debounced search handler
+    const debouncedSetSearch = useCallback(
+        debounce((query) => {
+            setDebouncedSearchQuery(query);
+        }, 300),
+        []
+    );
 
+    // Search functionality with improved matching
+    const handleSearch = useCallback((query) => {
+        setSearchQuery(query);
+        debouncedSetSearch(query);
+    }, [debouncedSetSearch]);
+
+    // Highlight search terms in text
+    const highlightText = useCallback((text, query) => {
+        if (!query || !text) return text;
+        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        const parts = text.split(regex);
+        return parts.map((part, index) =>
+            regex.test(part) ? (
+                <mark key={index} className="search-highlight">{part}</mark>
+            ) : (
+                part
+            )
+        );
+    }, []);
+
+    // Memoized filtered sections for better performance
+    const filteredSections = useMemo(() => {
+        if (!debouncedSearchQuery.trim()) return [];
+
+        const searchText = debouncedSearchQuery.toLowerCase();
         const filtered = sections.filter(section => {
-            const searchText = query.toLowerCase();
-            return (
-                section.title.toLowerCase().includes(searchText) ||
-                section.content.description.toLowerCase().includes(searchText) ||
-                (section.content.features && section.content.features.some(feature =>
-                    typeof feature === 'string' ? feature.toLowerCase().includes(searchText) :
-                    feature.name.toLowerCase().includes(searchText) || feature.description.toLowerCase().includes(searchText)
-                )) ||
-                (section.content.steps && section.content.steps.some(step =>
-                    step.title.toLowerCase().includes(searchText) || step.description.toLowerCase().includes(searchText)
-                )) ||
-                (section.content.tips && section.content.tips.some(tip =>
-                    typeof tip === 'string' ? tip.toLowerCase().includes(searchText) :
-                    tip.category.toLowerCase().includes(searchText) ||
-                    (tip.items && tip.items.some(item => item.toLowerCase().includes(searchText)))
-                ))
-            );
+            // Search in title
+            if (section.title.toLowerCase().includes(searchText)) return true;
+
+            // Search in description
+            if (section.content.description?.toLowerCase().includes(searchText)) return true;
+
+            // Search in features
+            if (section.content.features) {
+                const hasMatch = section.content.features.some(feature =>
+                    typeof feature === 'string'
+                        ? feature.toLowerCase().includes(searchText)
+                        : feature.name?.toLowerCase().includes(searchText) ||
+                          feature.description?.toLowerCase().includes(searchText)
+                );
+                if (hasMatch) return true;
+            }
+
+            // Search in steps
+            if (section.content.steps) {
+                const hasMatch = section.content.steps.some(step =>
+                    step.title?.toLowerCase().includes(searchText) ||
+                    step.description?.toLowerCase().includes(searchText)
+                );
+                if (hasMatch) return true;
+            }
+
+            // Search in tips
+            if (section.content.tips) {
+                const hasMatch = section.content.tips.some(tip =>
+                    typeof tip === 'string'
+                        ? tip.toLowerCase().includes(searchText)
+                        : tip.category?.toLowerCase().includes(searchText) ||
+                          (tip.items && tip.items.some(item => item.toLowerCase().includes(searchText)))
+                );
+                if (hasMatch) return true;
+            }
+
+            // Search in problems
+            if (section.content.problems) {
+                const hasMatch = section.content.problems.some(problem =>
+                    problem.problem?.toLowerCase().includes(searchText) ||
+                    problem.solutions?.some(solution => solution.toLowerCase().includes(searchText))
+                );
+                if (hasMatch) return true;
+            }
+
+            return false;
         });
-        setFilteredSections(filtered);
-    };
+        return filtered;
+    }, [debouncedSearchQuery]);
 
     const getCurrentContent = () => {
         const section = sections.find(s => s.id === activeSection);
@@ -518,7 +575,7 @@ const HelpGuide = () => {
         return section;
     };
 
-    const displaySections = searchQuery ? filteredSections : sections;
+    const displaySections = debouncedSearchQuery ? filteredSections : sections;
 
     const currentContent = getCurrentContent();
 
@@ -557,14 +614,36 @@ const HelpGuide = () => {
             </div>
 
             <div className="help-guide-content">
+                {/* Mobile Navigation Toggle */}
+                <motion.button
+                    className="mobile-nav-toggle"
+                    onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Toggle navigation menu"
+                    aria-expanded={isMobileNavOpen}
+                >
+                    <span className="toggle-icon">{isMobileNavOpen ? '✕' : '☰'}</span>
+                    <span className="toggle-text">Menu</span>
+                </motion.button>
+
                 {/* Navigation Sidebar */}
                 <motion.aside
-                    className="help-navigation"
+                    className={`help-navigation ${isMobileNavOpen ? 'mobile-open' : ''}`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
                 >
-                    <h3>📖 Table of Contents</h3>
+                    <div className="nav-header">
+                        <h3>📖 Table of Contents</h3>
+                        <button
+                            className="mobile-nav-close"
+                            onClick={() => setIsMobileNavOpen(false)}
+                            aria-label="Close navigation"
+                        >
+                            ✕
+                        </button>
+                    </div>
 
                     {/* Search Bar */}
                     <div className="help-search-container">
@@ -582,7 +661,7 @@ const HelpGuide = () => {
                             <span id="help-search-description" className="sr-only">
                                 Search help guide topics and sections (Ctrl+F)
                             </span>
-                            {searchQuery && (
+                            {(searchQuery || debouncedSearchQuery) && (
                                 <button
                                     className="search-clear-btn"
                                     onClick={() => handleSearch('')}
@@ -602,6 +681,7 @@ const HelpGuide = () => {
                                 onClick={() => {
                                     setActiveSection(section.id);
                                     setActiveSubSection(null);
+                                    setIsMobileNavOpen(false);
                                 }}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
@@ -613,9 +693,16 @@ const HelpGuide = () => {
                             </motion.button>
                         ))}
 
-                        {searchQuery && filteredSections.length === 0 && (
-                            <div className="no-results">
-                                <p>No results found for "{searchQuery}"</p>
+                        {debouncedSearchQuery && filteredSections.length === 0 && (
+                            <motion.div
+                                className="no-results"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <div className="no-results-icon">🔍</div>
+                                <p>No results found for "{debouncedSearchQuery}"</p>
+                                <p className="no-results-suggestion">Try different keywords or check spelling</p>
                                 <button
                                     className="clear-search-btn"
                                     onClick={() => handleSearch('')}
@@ -623,6 +710,12 @@ const HelpGuide = () => {
                                 >
                                     Clear search
                                 </button>
+                            </motion.div>
+                        )}
+
+                        {debouncedSearchQuery && filteredSections.length > 0 && (
+                            <div className="search-results-count">
+                                Found {filteredSections.length} {filteredSections.length === 1 ? 'result' : 'results'}
                             </div>
                         )}
                     </nav>
@@ -646,17 +739,60 @@ const HelpGuide = () => {
                                 className="help-section"
                             >
                                 <div className="section-header">
+                                    {/* Breadcrumbs */}
+                                    <nav className="help-breadcrumbs" aria-label="Breadcrumb">
+                                        <button
+                                            className="breadcrumb-item"
+                                            onClick={() => {
+                                                setActiveSection('overview');
+                                                setActiveSubSection(null);
+                                            }}
+                                        >
+                                            Home
+                                        </button>
+                                        <span className="breadcrumb-separator">›</span>
+                                        <span className="breadcrumb-current">{currentContent.title}</span>
+                                    </nav>
                                     <h2>
                                         <span className="section-icon">{currentContent.icon}</span>
-                                        {currentContent.title}
+                                        {debouncedSearchQuery
+                                            ? highlightText(currentContent.title, debouncedSearchQuery)
+                                            : currentContent.title}
                                     </h2>
                                 </div>
 
                                 <div className="section-content">
                                     {currentContent.content.description && (
                                         <p className="section-description">
-                                            {currentContent.content.description}
+                                            {debouncedSearchQuery
+                                                ? highlightText(currentContent.content.description, debouncedSearchQuery)
+                                                : currentContent.content.description}
                                         </p>
+                                    )}
+
+                                    {/* Quick Jump Links */}
+                                    {!debouncedSearchQuery && currentContent.content.features && currentContent.content.features.length > 3 && (
+                                        <div className="quick-jump-links">
+                                            <h4 className="jump-links-title">🔗 Quick Jump</h4>
+                                            <div className="jump-links-grid">
+                                                {currentContent.content.features.slice(0, 6).map((feature, index) => (
+                                                    typeof feature === 'object' && feature.name && (
+                                                        <motion.button
+                                                            key={index}
+                                                            className="jump-link-btn"
+                                                            onClick={() => {
+                                                                const element = document.querySelector(`.feature-item:nth-child(${index + 1})`);
+                                                                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                            }}
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                        >
+                                                            {feature.name.split(' ')[0]}
+                                                        </motion.button>
+                                                    )
+                                                ))}
+                                            </div>
+                                        </div>
                                     )}
 
                                     {/* User Types Sub-navigation */}
@@ -688,11 +824,23 @@ const HelpGuide = () => {
                                                     transition={{ duration: 0.4, delay: index * 0.1 }}
                                                 >
                                                     {typeof feature === 'string' ? (
-                                                        <span className="feature-text">{feature}</span>
+                                                        <span className="feature-text">
+                                                            {debouncedSearchQuery
+                                                                ? highlightText(feature, debouncedSearchQuery)
+                                                                : feature}
+                                                        </span>
                                                     ) : (
                                                         <div className="feature-card">
-                                                            <h4>{feature.name}</h4>
-                                                            <p>{feature.description}</p>
+                                                            <h4>
+                                                                {debouncedSearchQuery
+                                                                    ? highlightText(feature.name, debouncedSearchQuery)
+                                                                    : feature.name}
+                                                            </h4>
+                                                            <p>
+                                                                {debouncedSearchQuery
+                                                                    ? highlightText(feature.description, debouncedSearchQuery)
+                                                                    : feature.description}
+                                                            </p>
                                                         </div>
                                                     )}
                                                 </motion.div>
@@ -713,8 +861,16 @@ const HelpGuide = () => {
                                                 >
                                                     <div className="step-number">{step.step}</div>
                                                     <div className="step-content">
-                                                        <h4>{step.title}</h4>
-                                                        <p>{step.description}</p>
+                                                        <h4>
+                                                            {debouncedSearchQuery
+                                                                ? highlightText(step.title, debouncedSearchQuery)
+                                                                : step.title}
+                                                        </h4>
+                                                        <p>
+                                                            {debouncedSearchQuery
+                                                                ? highlightText(step.description, debouncedSearchQuery)
+                                                                : step.description}
+                                                        </p>
                                                     </div>
                                                 </motion.div>
                                             ))}
@@ -760,10 +916,18 @@ const HelpGuide = () => {
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ duration: 0.4, delay: index * 0.1 }}
                                                 >
-                                                    <h4>❌ {problem.problem}</h4>
+                                                    <h4>
+                                                        ❌ {debouncedSearchQuery
+                                                            ? highlightText(problem.problem, debouncedSearchQuery)
+                                                            : problem.problem}
+                                                    </h4>
                                                     <ul>
                                                         {problem.solutions && problem.solutions.map((solution, solutionIndex) => (
-                                                            <li key={solutionIndex}>✅ {solution}</li>
+                                                            <li key={solutionIndex}>
+                                                                ✅ {debouncedSearchQuery
+                                                                    ? highlightText(solution, debouncedSearchQuery)
+                                                                    : solution}
+                                                            </li>
                                                         ))}
                                                     </ul>
                                                 </motion.div>

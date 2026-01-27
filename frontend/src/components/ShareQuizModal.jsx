@@ -193,16 +193,11 @@ const ShareQuizModal = ({ quiz, isOpen, onClose, onShare }) => {
                                                 <p>{group.category} • {group.members?.length || 0} members</p>
                                             </div>
                                             <div className="checkbox">
-                                                {selectedGroups.includes(group._id) && (
-                                                    <span className="check-icon" aria-hidden="true">✓</span>
-                                                )}
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedGroups.includes(group._id)}
-                                                    onChange={() => handleGroupToggle(group._id)}
-                                                    aria-label={`Select ${group.name} study group`}
-                                                    tabIndex={-1}
-                                                />
+                                                <div className={`checkbox-indicator ${selectedGroups.includes(group._id) ? 'checked' : ''}`}>
+                                                    {selectedGroups.includes(group._id) && (
+                                                        <span className="check-icon" aria-hidden="true">✓</span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </motion.div>
                                     ))}
