@@ -242,10 +242,8 @@ const UserReports = () => {
 
     // Reset to page 1 when filters change
     useEffect(() => {
-        if (currentPage !== 1) {
-            setCurrentPage(1);
-            localStorage.setItem("userReports_currentPage", "1");
-        }
+        setCurrentPage(1);
+        localStorage.setItem("userReports_currentPage", "1");
     }, [debouncedSearchQuery, statusFilter, sortBy, sortOrder]);
 
     // Handle search input with debouncing

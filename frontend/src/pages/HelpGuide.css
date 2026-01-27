@@ -292,8 +292,43 @@
 
 .no-results {
     text-align: center;
-    padding: var(--space-lg);
+    padding: var(--space-xl);
     color: var(--text-muted);
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
+    margin-top: var(--space-md);
+}
+
+.no-results-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-md);
+    opacity: 0.6;
+}
+
+.no-results p {
+    margin: var(--space-sm) 0;
+    font-size: 1rem;
+}
+
+.no-results-suggestion {
+    font-size: 0.9rem !important;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.search-results-count {
+    text-align: center;
+    padding: var(--space-sm) var(--space-md);
+    margin-top: var(--space-md);
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid var(--accent);
 }
 
 .no-results p {

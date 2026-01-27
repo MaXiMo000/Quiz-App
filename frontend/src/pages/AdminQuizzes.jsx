@@ -1,13 +1,134 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback, memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import "../App.css";
 import "./AdminQuizzes.css";
 import NotificationModal from "../components/NotificationModal";
+import CustomDropdown from "../components/CustomDropdown";
 import { useNotification } from "../hooks/useNotification";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { debounce } from "../utils/componentUtils";
+import { handlePageChangeWithScrollPreservation, restoreScrollPosition } from "../utils/paginationUtils";
 import Loading from "../components/Loading";
+
+// Memoized Quiz Box Component
+const AdminQuizBox = memo(({ quiz, index, openAddQuestionModal, openAiQuestionModal, deleteQuiz, navigate }) => {
+    const isAdminQuiz = !quiz.createdBy || !quiz.createdBy._id;
+
+    return (
+        <motion.div
+            key={quiz._id}
+            className={`quiz-box ${isAdminQuiz ? 'admin-box' : 'premium-box'}`}
+            initial={{ x: -100, opacity: 0, scale: 0.9 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            exit={{ x: 100, opacity: 0, scale: 0.9 }}
+            transition={{
+                duration: 0.5,
+                delay: index * 0.05,
+                type: "spring",
+                stiffness: 100
+            }}
+            whileHover={{
+                y: -8,
+                scale: 1.02,
+                transition: { duration: 0.2 }
+            }}
+        >
+            {isAdminQuiz ? (
+                <div className="admin-badge">
+                    <span>⚡</span>
+                    ADMIN
+                </div>
+            ) : (
+                <div className="premium-badge">
+                    <span>👑</span>
+                    PREMIUM
+                </div>
+            )}
+
+            <div className="quiz-content">
+                <h3>{quiz.title}</h3>
+
+                <div className="quiz-info">
+                    <p>
+                        <span className="info-icon">🏷️</span>
+                        Category: {quiz.category}
+                    </p>
+                    <p>
+                        <span className="info-icon">⏰</span>
+                        Duration: {quiz.duration} minutes
+                    </p>
+                    <p>
+                        <span className="info-icon">📊</span>
+                        Total Marks: {quiz.totalMarks}
+                    </p>
+                    <p>
+                        <span className="info-icon">✅</span>
+                        Passing Marks: {quiz.passingMarks}
+                    </p>
+                </div>
+
+                <div className="quiz-actions" role="group" aria-label={`Actions for quiz: ${quiz.title}`}>
+                    <button
+                        className="delete-btn admin-delete-btn"
+                        aria-label={`Delete quiz: ${quiz.title}`}
+                        onClick={() => deleteQuiz(quiz.title)}
+                    >
+                        🗑️ Delete
+                    </button>
+
+                    <button
+                        className="add-ai-btn admin-ai-btn"
+                        onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
+                        aria-label={`Generate AI questions for ${quiz.title}`}
+                    >
+                        <span>🤖</span>
+                        AI Questions
+                    </button>
+
+                    <button
+                        className="add-question-btn admin-add-btn"
+                        onClick={() => openAddQuestionModal(quiz._id)}
+                        aria-label={`Add manual question to ${quiz.title}`}
+                    >
+                        ➕ Add Question
+                    </button>
+
+                    <button
+                        className="view-questions-btn admin-view-btn"
+                        onClick={() => navigate(`/admin/quiz/${quiz._id}`)}
+                        aria-label={`View and manage questions for ${quiz.title}`}
+                    >
+                        📜 View Questions
+                    </button>
+                </div>
+
+                <ul className={`display-ans ${isAdminQuiz ? 'admin-questions' : 'premium-questions'}`}>
+                    {quiz.questions.map((q, i) => (
+                        <li key={i}>
+                            <div className="question-text">
+                                <strong>Q{i + 1}:</strong> {q.question}
+                            </div>
+                            <div className={`correct-answer ${isAdminQuiz ? 'admin-answer' : 'premium-answer'}`}>
+                                {isAdminQuiz ? '⚡' : '👑'} Answer: {q.options && q.options[['A', 'B', 'C', 'D'].indexOf(q.correctAnswer)] || q.correctAnswer}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div className={isAdminQuiz ? "admin-bg-effect" : "premium-bg-effect"}></div>
+        </motion.div>
+    );
+}, (prevProps, nextProps) => {
+    return (
+        prevProps.quiz._id === nextProps.quiz._id &&
+        prevProps.index === nextProps.index &&
+        prevProps.quiz.questions?.length === nextProps.quiz.questions?.length
+    );
+});
+AdminQuizBox.displayName = 'AdminQuizBox';
 
 const AdminQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -19,8 +140,140 @@ const AdminQuizzes = () => {
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
     const navigate = useNavigate();
 
+    // Search, filter, and sort states (with localStorage persistence)
+    const [searchQuery, setSearchQuery] = useState(() => {
+        const saved = localStorage.getItem("adminQuizzes_searchQuery");
+        return saved || "";
+    });
+    const [categoryFilter, setCategoryFilter] = useState(() => {
+        const saved = localStorage.getItem("adminQuizzes_categoryFilter");
+        return saved || "all";
+    });
+    const [sortBy, setSortBy] = useState(() => {
+        const saved = localStorage.getItem("adminQuizzes_sortBy");
+        return saved || "title";
+    });
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(() => {
+        const saved = parseInt(localStorage.getItem("adminQuizzes_currentPage"), 10);
+        return saved && !isNaN(saved) ? saved : 1;
+    });
+    const itemsPerPage = 10;
+    const scrollPositionRef = useRef(0);
+
+    // Debounced search query for filtering
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+    const debouncedSetSearch = useRef(
+        debounce((value) => {
+            setDebouncedSearchQuery(value);
+            localStorage.setItem("adminQuizzes_searchQuery", value);
+        }, 300)
+    ).current;
+
     // Notification system
     const { notification, showSuccess, showError, showWarning, hideNotification } = useNotification();
+
+    // Persist filter changes to localStorage
+    useEffect(() => {
+        localStorage.setItem("adminQuizzes_categoryFilter", categoryFilter);
+    }, [categoryFilter]);
+
+    useEffect(() => {
+        localStorage.setItem("adminQuizzes_sortBy", sortBy);
+    }, [sortBy]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+        localStorage.setItem("adminQuizzes_currentPage", "1");
+    }, [debouncedSearchQuery, categoryFilter, sortBy]);
+
+    // Handle search input with debouncing
+    useEffect(() => {
+        debouncedSetSearch(searchQuery);
+    }, [searchQuery, debouncedSetSearch]);
+
+    // Extract unique categories for filter dropdown
+    const uniqueCategories = useMemo(() => {
+        const categories = [...new Set(quizzes.map(quiz => quiz.category).filter(Boolean))];
+        return categories.sort();
+    }, [quizzes]);
+
+    // Filter and sort quizzes
+    const filteredQuizzes = useMemo(() => {
+        let filtered = [...quizzes];
+
+        // Search filter (using debounced value)
+        if (debouncedSearchQuery) {
+            const query = debouncedSearchQuery.toLowerCase();
+            filtered = filtered.filter(quiz =>
+                quiz.title.toLowerCase().includes(query) ||
+                quiz.category?.toLowerCase().includes(query)
+            );
+        }
+
+        // Category filter
+        if (categoryFilter !== "all") {
+            filtered = filtered.filter(quiz => quiz.category === categoryFilter);
+        }
+
+        // Sort
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case "duration":
+                    return (a.duration || 0) - (b.duration || 0);
+                case "questions":
+                    return (b.questions?.length || 0) - (a.questions?.length || 0);
+                case "marks":
+                    return (b.totalMarks || 0) - (a.totalMarks || 0);
+                case "category":
+                    return (a.category || "").localeCompare(b.category || "");
+                case "title":
+                default:
+                    return (a.title || "").localeCompare(b.title || "");
+            }
+        });
+
+        return filtered;
+    }, [quizzes, debouncedSearchQuery, categoryFilter, sortBy]);
+
+    // Pagination calculations
+    const totalPages = Math.max(1, Math.ceil(filteredQuizzes.length / itemsPerPage));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedQuizzes = filteredQuizzes.slice(startIndex, endIndex);
+
+    // Ensure currentPage doesn't exceed totalPages
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+            localStorage.setItem("adminQuizzes_currentPage", totalPages.toString());
+        }
+    }, [totalPages]);
+
+    // Persist currentPage to localStorage
+    useEffect(() => {
+        localStorage.setItem("adminQuizzes_currentPage", currentPage.toString());
+    }, [currentPage]);
+
+    // Scroll position preservation for pagination
+    useEffect(() => {
+        restoreScrollPosition(scrollPositionRef);
+    }, [currentPage]);
+
+    const getQuiz = useCallback(async () => {
+        try {
+            const response = await axios.get('/api/quizzes');
+            setQuizzes(response.data);
+        } catch (error) {
+            console.error("Error fetching quizzes:", error);
+            setError("Error fetching Quiz. Try again later.");
+            showError("Error fetching Quiz. Try again later.");
+        } finally {
+            setLoading(false);
+        }
+    }, [showError]);
 
     // Keyboard shortcuts
     useKeyboardShortcuts({
@@ -33,20 +286,85 @@ const AdminQuizzes = () => {
                     modal.close();
                 }
             });
+            // Clear search if active
+            if (searchQuery) {
+                setSearchQuery("");
+            }
         },
+        'Ctrl+F': (e) => {
+            e.preventDefault();
+            const searchInput = document.querySelector('.admin-quiz-search-input');
+            if (searchInput) searchInput.focus();
+        },
+        'ArrowLeft': (e) => {
+            if (currentPage > 1 && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                e.stopPropagation();
+                handlePageChangeWithScrollPreservation(
+                    setCurrentPage,
+                    scrollPositionRef,
+                    currentPage - 1
+                );
+            }
+        },
+        'ArrowRight': (e) => {
+            if (currentPage < totalPages && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                e.stopPropagation();
+                handlePageChangeWithScrollPreservation(
+                    setCurrentPage,
+                    scrollPositionRef,
+                    currentPage + 1
+                );
+            }
+        },
+    }, [searchQuery, currentPage, totalPages]);
+
+    // Pagination handlers
+    const handlePageChange = useCallback((newPage) => {
+        handlePageChangeWithScrollPreservation(setCurrentPage, scrollPositionRef, newPage);
     }, []);
 
-    const getQuiz = async () => {
-        try {
-            const response = await axios.get('/api/quizzes');
-            setQuizzes(response.data);
-        } catch (error) {
-            console.error("Error fetching quizzes:", error);
-            setError("Error fetching Quiz. Try again later.");
-        } finally {
-            setLoading(false);
+    const handlePrevPage = useCallback(() => {
+        if (currentPage > 1) {
+            handlePageChangeWithScrollPreservation(setCurrentPage, scrollPositionRef, currentPage - 1);
         }
-    };
+    }, [currentPage]);
+
+    const handleNextPage = useCallback(() => {
+        if (currentPage < totalPages) {
+            handlePageChangeWithScrollPreservation(setCurrentPage, scrollPositionRef, currentPage + 1);
+        }
+    }, [currentPage, totalPages]);
+
+    // Memoized handlers
+    const openAddQuestionModal = useCallback((quizId) => {
+        if (!quizId) return showWarning("Please select a quiz first!");
+        setSelectedQuizId(quizId);
+        document.getElementById("add_question_modal").showModal();
+    }, [showWarning]);
+
+    const openAiQuestionModal = useCallback((quizId, category) => {
+        setSelectedQuizId(quizId);
+        setAiTopic(category);
+        setAiNumQuestions(5);
+        document.getElementById("ai_question_modal").showModal();
+    }, []);
+
+    const deleteQuiz = useCallback(async (title) => {
+        if (!title) return showWarning("Quiz title is missing!");
+
+        try {
+            const response = await axios.delete(`/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
+            if (response.status === 200) {
+                showSuccess("Quiz deleted successfully!");
+                getQuiz();
+            }
+        } catch (error) {
+            console.error("Error deleting quiz:", error);
+            showError("Failed to delete quiz. Check the API response.");
+        }
+    }, [showWarning, showSuccess, showError, getQuiz]);
 
     useEffect(() => {
         getQuiz();
@@ -71,18 +389,6 @@ const AdminQuizzes = () => {
         };
     }, []);
 
-    const openAddQuestionModal = (quizId) => {
-        if (!quizId) return showWarning("Please select a quiz first!");
-        setSelectedQuizId(quizId);
-        document.getElementById("add_question_modal").showModal();
-    };
-
-    const openAiQuestionModal = (quizId, category) => {
-        setSelectedQuizId(quizId);
-        setAiTopic(category);
-        setAiNumQuestions(5);
-        document.getElementById("ai_question_modal").showModal();
-    };
 
     const handleAiSubmit = async (event) => {
         event.preventDefault();
@@ -162,20 +468,6 @@ const AdminQuizzes = () => {
         }
     };
 
-    const deleteQuiz = async (title) => {
-        if (!title) return showWarning("Quiz title is missing!");
-
-        try {
-            const response = await axios.delete(`/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
-            if (response.status === 200) {
-                showSuccess("Quiz deleted successfully!");
-                getQuiz();
-            }
-        } catch (error) {
-            console.error("Error deleting quiz:", error);
-            showError("Failed to delete quiz. Check the API response.");
-        }
-    };
 
     if (loading) return <Loading fullScreen={true} />;
 
@@ -232,141 +524,227 @@ const AdminQuizzes = () => {
                 </button>
             </motion.div>
 
+            {/* Search and Filter Controls */}
+            <motion.div
+                className="admin-quiz-controls"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+            >
+                <div className="admin-quiz-search-wrapper">
+                    <input
+                        type="text"
+                        className="admin-quiz-search-input"
+                        placeholder="Search quizzes by title or category..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        aria-label="Search quizzes"
+                    />
+                    {searchQuery && (
+                        <button
+                            className="admin-quiz-search-clear"
+                            onClick={() => setSearchQuery("")}
+                            aria-label="Clear search"
+                        >
+                            ✕
+                        </button>
+                    )}
+                </div>
+
+                <div className="admin-quiz-filters">
+                    <CustomDropdown
+                        value={categoryFilter}
+                        onChange={setCategoryFilter}
+                        options={[
+                            { value: "all", label: "All Categories" },
+                            ...uniqueCategories.map(cat => ({ value: cat, label: cat }))
+                        ]}
+                        placeholder="Filter by Category"
+                        ariaLabel="Filter quizzes by category"
+                    />
+
+                    <CustomDropdown
+                        value={sortBy}
+                        onChange={setSortBy}
+                        options={[
+                            { value: "title", label: "Sort by Title" },
+                            { value: "category", label: "Sort by Category" },
+                            { value: "duration", label: "Sort by Duration" },
+                            { value: "questions", label: "Sort by Questions" },
+                            { value: "marks", label: "Sort by Marks" }
+                        ]}
+                        placeholder="Sort by"
+                        ariaLabel="Sort quizzes"
+                    />
+                </div>
+            </motion.div>
+
+            {/* Results Count */}
+            {filteredQuizzes.length !== quizzes.length && (
+                <motion.div
+                    className="admin-quiz-results-info"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <span className="results-highlight">
+                        Showing {filteredQuizzes.length} of {quizzes.length} quizzes
+                    </span>
+                    {(searchQuery || categoryFilter !== "all") && (
+                        <button
+                            className="results-clear-filters"
+                            onClick={() => {
+                                setSearchQuery("");
+                                setCategoryFilter("all");
+                            }}
+                        >
+                            Clear filters
+                        </button>
+                    )}
+                </motion.div>
+            )}
+
             <motion.div
                 className="quiz-list"
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
             >
-                <AnimatePresence>
-                    {quizzes.length === 0 ? (
+                <AnimatePresence mode="wait">
+                    {filteredQuizzes.length === 0 ? (
                         <motion.div
-                            className="empty-state"
+                            key="empty"
+                            className="empty-state admin-empty-state"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
                             transition={{ duration: 0.5 }}
                         >
-                            <div className="empty-icon">📚</div>
-                            <h3>No Quizzes Yet</h3>
-                            <p>Create your first quiz to get started!</p>
-                        </motion.div>
-                    ) : (
-                        quizzes.map((quiz, index) => (
                             <motion.div
-                                key={quiz._id}
-                                className={`quiz-box ${quiz.createdBy?._id ? 'premium-box' : 'admin-box'}`}
-                                initial={{ x: -100, opacity: 0, scale: 0.9 }}
-                                animate={{ x: 0, opacity: 1, scale: 1 }}
-                                exit={{ x: 100, opacity: 0, scale: 0.9 }}
-                                transition={{
-                                    duration: 0.5,
-                                    delay: index * 0.1,
-                                    type: "spring",
-                                    stiffness: 100
+                                className="empty-icon"
+                                animate={{
+                                    scale: [1, 1.2, 1],
+                                    rotate: [0, 10, -10, 0]
                                 }}
-                                whileHover={{
-                                    y: -8,
-                                    scale: 1.02,
-                                    transition: { duration: 0.2 }
+                                transition={{
+                                    duration: 2,
+                                    repeat: Infinity
                                 }}
                             >
-                                {quiz.createdBy?._id ? (
-                                    <div className="premium-badge">
-                                        <span>
-                                            👑
-                                        </span>
-                                        PREMIUM
-                                    </div>
-                                ) : (
-                                    <div className="admin-badge">
-                                        <span>
-                                            ⚡
-                                        </span>
-                                        ADMIN
-                                    </div>
-                                )}
-
-                                <div className="quiz-content">
-                                    <h3>
-                                        {quiz.title}
-                                    </h3>
-
-                                    <div className="quiz-info">
-                                        <p>
-                                            <span className="info-icon">🏷️</span>
-                                            Category: {quiz.category}
-                                        </p>
-                                        <p>
-                                            <span className="info-icon">⏰</span>
-                                            Duration: {quiz.duration} minutes
-                                        </p>
-                                        <p>
-                                            <span className="info-icon">📊</span>
-                                            Total Marks: {quiz.totalMarks}
-                                        </p>
-                                        <p>
-                                            <span className="info-icon">✅</span>
-                                            Passing Marks: {quiz.passingMarks}
-                                        </p>
-                                    </div>
-
-                                    <div className="quiz-actions" role="group" aria-label={`Actions for quiz: ${quiz.title}`}>
-                                        <button
-                                            className="delete-btn admin-delete-btn"
-                                            aria-label={`Delete quiz: ${quiz.title}`}
-                                            onClick={() => deleteQuiz(quiz.title)}
-                                        >
-                                            🗑️ Delete
-                                        </button>
-
-                                        <button
-                                            className="add-ai-btn admin-ai-btn"
-                                            onClick={() => openAiQuestionModal(quiz._id, quiz.category)}
-                                            aria-label={`Generate AI questions for ${quiz.title}`}
-                                        >
-                                            <span>
-                                                🤖
-                                            </span>
-                                            AI Questions
-                                        </button>
-
-                                        <button
-                                            className="add-question-btn admin-add-btn"
-                                            onClick={() => openAddQuestionModal(quiz._id)}
-                                            aria-label={`Add manual question to ${quiz.title}`}
-                                        >
-                                            ➕ Add Question
-                                        </button>
-
-                                        <button
-                                            className="view-questions-btn admin-view-btn"
-                                            onClick={() => navigate(`/admin/quiz/${quiz._id}`)}
-                                            aria-label={`View and manage questions for ${quiz.title}`}
-                                        >
-                                            📜 View Questions
-                                        </button>
-                                    </div>
-
-                                    <ul className={`display-ans ${quiz.createdBy?._id ? 'premium-questions' : 'admin-questions'}`}>
-                                        {quiz.questions.map((q, i) => (
-                                            <li key={i}>
-                                                <div className="question-text">
-                                                    <strong>Q{i + 1}:</strong> {q.question}
-                                                </div>
-                                                <div className={`correct-answer ${quiz.createdBy?._id ? 'premium-answer' : 'admin-answer'}`}>
-                                                    {quiz.createdBy?._id ? '👑' : '⚡'} Answer: {q.options && q.options[['A', 'B', 'C', 'D'].indexOf(q.correctAnswer)] || q.correctAnswer}
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className={quiz.createdBy?._id ? "premium-bg-effect" : "admin-bg-effect"}></div>
+                                📚
                             </motion.div>
-                        ))
+                            <h3>
+                                {searchQuery || categoryFilter !== "all"
+                                    ? "No Quizzes Match Your Filters"
+                                    : "No Quizzes Yet"}
+                            </h3>
+                            <p>
+                                {searchQuery || categoryFilter !== "all"
+                                    ? "Try adjusting your search or filter criteria to find more quizzes."
+                                    : "Create your first quiz to get started!"}
+                            </p>
+                            {(searchQuery || categoryFilter !== "all") && (
+                                <button
+                                    className="empty-clear-filters"
+                                    onClick={() => {
+                                        setSearchQuery("");
+                                        setCategoryFilter("all");
+                                    }}
+                                >
+                                    Clear filters
+                                </button>
+                            )}
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="quizzes"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                        >
+                            {paginatedQuizzes.map((quiz, index) => (
+                                <AdminQuizBox
+                                    key={quiz._id}
+                                    quiz={quiz}
+                                    index={index}
+                                    openAddQuestionModal={openAddQuestionModal}
+                                    openAiQuestionModal={openAiQuestionModal}
+                                    deleteQuiz={deleteQuiz}
+                                    navigate={navigate}
+                                />
+                            ))}
+                        </motion.div>
                     )}
                 </AnimatePresence>
             </motion.div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <motion.div
+                    className="admin-quiz-pagination"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.6 }}
+                >
+                    <button
+                        className="pagination-btn"
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                        aria-label="Previous page"
+                    >
+                        ← Prev
+                    </button>
+
+                    <div className="pagination-numbers">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                            if (
+                                page === 1 ||
+                                page === totalPages ||
+                                (page >= currentPage - 1 && page <= currentPage + 1)
+                            ) {
+                                return (
+                                    <button
+                                        key={page}
+                                        className={`pagination-number ${currentPage === page ? 'active' : ''}`}
+                                        onClick={() => handlePageChange(page)}
+                                        aria-label={`Page ${page}`}
+                                        aria-current={currentPage === page ? 'page' : undefined}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            } else if (
+                                page === currentPage - 2 ||
+                                page === currentPage + 2
+                            ) {
+                                return <span key={page} className="pagination-ellipsis">...</span>;
+                            }
+                            return null;
+                        })}
+                    </div>
+
+                    <button
+                        className="pagination-btn"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                        aria-label="Next page"
+                    >
+                        Next →
+                    </button>
+                </motion.div>
+            )}
+
+            {/* Pagination Info */}
+            {totalPages > 1 && (
+                <motion.div
+                    className="pagination-info"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, delay: 0.7 }}
+                >
+                    Page {currentPage} of {totalPages} • Showing {startIndex + 1}-{Math.min(endIndex, filteredQuizzes.length)} of {filteredQuizzes.length} quizzes
+                </motion.div>
+            )}
 
             {/* AI Question Generation Modal */}
             <dialog

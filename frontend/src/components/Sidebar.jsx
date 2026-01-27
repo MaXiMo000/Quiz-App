@@ -312,7 +312,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 1.1, duration: 0.4 }}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    style={{ marginTop: "1rem", width: "100%" }}
+                                    className="sidebar-role-switch-btn"
                                 >
                                     👤 Go Simple User
                                 </motion.button>
@@ -357,7 +357,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     transition={{ delay: 1.0, duration: 0.4 }}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    style={{ marginTop: "1rem", width: "100%" }}
+                                    className="sidebar-role-switch-btn"
                                 >
                                     🚀 Go Premium
                                 </motion.button>

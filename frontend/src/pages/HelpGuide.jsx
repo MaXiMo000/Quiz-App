@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '../components/Loading';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { debounce } from '../utils/componentUtils';
 import './HelpGuide.css';
 
 const HelpGuide = () => {
@@ -9,7 +10,7 @@ const HelpGuide = () => {
     const [activeSection, setActiveSection] = useState('overview');
     const [activeSubSection, setActiveSubSection] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredSections, setFilteredSections] = useState([]);
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
     // Keyboard shortcuts
     useKeyboardShortcuts({
@@ -476,35 +477,76 @@ const HelpGuide = () => {
         }
     ];
 
-    // Search functionality
-    const handleSearch = (query) => {
-        setSearchQuery(query);
-        if (query.trim() === '') {
-            setFilteredSections([]);
-            return;
-        }
+    // Debounced search handler
+    const debouncedSetSearch = useCallback(
+        debounce((query) => {
+            setDebouncedSearchQuery(query);
+        }, 300),
+        []
+    );
 
+    // Search functionality with improved matching
+    const handleSearch = useCallback((query) => {
+        setSearchQuery(query);
+        debouncedSetSearch(query);
+    }, [debouncedSetSearch]);
+
+    // Memoized filtered sections for better performance
+    const filteredSections = useMemo(() => {
+        if (!debouncedSearchQuery.trim()) return [];
+
+        const searchText = debouncedSearchQuery.toLowerCase();
         const filtered = sections.filter(section => {
-            const searchText = query.toLowerCase();
-            return (
-                section.title.toLowerCase().includes(searchText) ||
-                section.content.description.toLowerCase().includes(searchText) ||
-                (section.content.features && section.content.features.some(feature =>
-                    typeof feature === 'string' ? feature.toLowerCase().includes(searchText) :
-                    feature.name.toLowerCase().includes(searchText) || feature.description.toLowerCase().includes(searchText)
-                )) ||
-                (section.content.steps && section.content.steps.some(step =>
-                    step.title.toLowerCase().includes(searchText) || step.description.toLowerCase().includes(searchText)
-                )) ||
-                (section.content.tips && section.content.tips.some(tip =>
-                    typeof tip === 'string' ? tip.toLowerCase().includes(searchText) :
-                    tip.category.toLowerCase().includes(searchText) ||
-                    (tip.items && tip.items.some(item => item.toLowerCase().includes(searchText)))
-                ))
-            );
+            // Search in title
+            if (section.title.toLowerCase().includes(searchText)) return true;
+
+            // Search in description
+            if (section.content.description?.toLowerCase().includes(searchText)) return true;
+
+            // Search in features
+            if (section.content.features) {
+                const hasMatch = section.content.features.some(feature =>
+                    typeof feature === 'string'
+                        ? feature.toLowerCase().includes(searchText)
+                        : feature.name?.toLowerCase().includes(searchText) ||
+                          feature.description?.toLowerCase().includes(searchText)
+                );
+                if (hasMatch) return true;
+            }
+
+            // Search in steps
+            if (section.content.steps) {
+                const hasMatch = section.content.steps.some(step =>
+                    step.title?.toLowerCase().includes(searchText) ||
+                    step.description?.toLowerCase().includes(searchText)
+                );
+                if (hasMatch) return true;
+            }
+
+            // Search in tips
+            if (section.content.tips) {
+                const hasMatch = section.content.tips.some(tip =>
+                    typeof tip === 'string'
+                        ? tip.toLowerCase().includes(searchText)
+                        : tip.category?.toLowerCase().includes(searchText) ||
+                          (tip.items && tip.items.some(item => item.toLowerCase().includes(searchText)))
+                );
+                if (hasMatch) return true;
+            }
+
+            // Search in problems
+            if (section.content.problems) {
+                const hasMatch = section.content.problems.some(problem =>
+                    problem.problem?.toLowerCase().includes(searchText) ||
+                    problem.solutions?.some(solution => solution.toLowerCase().includes(searchText))
+                );
+                if (hasMatch) return true;
+            }
+
+            return false;
         });
-        setFilteredSections(filtered);
-    };
+        return filtered;
+    }, [debouncedSearchQuery]);
 
     const getCurrentContent = () => {
         const section = sections.find(s => s.id === activeSection);
@@ -518,7 +560,7 @@ const HelpGuide = () => {
         return section;
     };
 
-    const displaySections = searchQuery ? filteredSections : sections;
+    const displaySections = debouncedSearchQuery ? filteredSections : sections;
 
     const currentContent = getCurrentContent();
 
@@ -582,7 +624,7 @@ const HelpGuide = () => {
                             <span id="help-search-description" className="sr-only">
                                 Search help guide topics and sections (Ctrl+F)
                             </span>
-                            {searchQuery && (
+                            {(searchQuery || debouncedSearchQuery) && (
                                 <button
                                     className="search-clear-btn"
                                     onClick={() => handleSearch('')}
@@ -613,9 +655,16 @@ const HelpGuide = () => {
                             </motion.button>
                         ))}
 
-                        {searchQuery && filteredSections.length === 0 && (
-                            <div className="no-results">
-                                <p>No results found for "{searchQuery}"</p>
+                        {debouncedSearchQuery && filteredSections.length === 0 && (
+                            <motion.div
+                                className="no-results"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <div className="no-results-icon">🔍</div>
+                                <p>No results found for "{debouncedSearchQuery}"</p>
+                                <p className="no-results-suggestion">Try different keywords or check spelling</p>
                                 <button
                                     className="clear-search-btn"
                                     onClick={() => handleSearch('')}
@@ -623,6 +672,12 @@ const HelpGuide = () => {
                                 >
                                     Clear search
                                 </button>
+                            </motion.div>
+                        )}
+
+                        {debouncedSearchQuery && filteredSections.length > 0 && (
+                            <div className="search-results-count">
+                                Found {filteredSections.length} {filteredSections.length === 1 ? 'result' : 'results'}
                             </div>
                         )}
                     </nav>

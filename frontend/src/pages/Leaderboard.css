@@ -3,6 +3,22 @@
 /* ✨ Enhanced CSS Variables for Championship Feel ✨ */
 /* Uses theme variables from index.css */
 
+/* ✨ Prevent Horizontal Overflow Globally ✨ */
+body:has(.leaderboard-container),
+html:has(.leaderboard-container) {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+}
+
+/* Ensure main-content doesn't cause horizontal overflow */
+.main-content:has(.leaderboard-container) {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* ✨ Full Page Scrolling Support - No Internal Scrollbars ✨ */
 /* ✨ Ultra Beautiful Championship Container ✨ */
 .leaderboard-container {
     width: 100%;
@@ -21,10 +37,34 @@
         inset 0 2px 0 var(--glass-border);
     text-align: center;
     position: relative;
-    overflow: hidden;
+    /* No internal scrolling - page scrolls naturally */
+    overflow: visible !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
     animation: containerSlideIn 1s ease-out;
     box-sizing: border-box;
+    /* Prevent horizontal overflow from animations */
+    contain: layout style paint;
+    max-width: 100%;
+    width: 100%;
+    /* Ensure child elements don't overflow */
+    min-width: 0;
 }
+
+.leaderboard-table-container {
+    margin-bottom: 2rem;
+    /* No internal scrolling */
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Table overflow rules are defined in the main .leaderboard-table definition below */
 
 @keyframes containerSlideIn {
     from {
@@ -47,6 +87,10 @@
     background: var(--gradient-warning);
     border-radius: 2.5rem 2.5rem 0 0;
     animation: championGlow 3s ease-in-out infinite;
+    /* Prevent overflow from pseudo-elements */
+    overflow: hidden;
+    clip-path: inset(0);
+    max-width: 100%;
 }
 
 @keyframes championGlow {
@@ -71,24 +115,16 @@
     background: radial-gradient(circle at 50% 0%, var(--warning-light) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
+    /* Prevent overflow from pseudo-elements */
+    overflow: hidden;
+    clip-path: inset(0);
 }
 
-/* ✨ Championship Title with Trophy Animation ✨ */
-.leaderboard-container h2 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 900;
-    background: var(--gradient-warning);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 2rem;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    animation: titleFloat 1s ease-out;
-    filter: drop-shadow(0 0 20px var(--warning-light));
+/* Old leaderboard-container h2 removed - using lb-main-title instead */
+
+/* Remove old h2::after decoration */
+.leaderboard-container h2::after {
+    display: none;
 }
 
 @keyframes titleFloat {
@@ -102,17 +138,7 @@
     }
 }
 
-.leaderboard-container h2::before {
-    content: '🏆';
-    font-size: 3rem;
-    animation: trophyBounce 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 15px var(--warning-light));
-}
-
-@keyframes trophyBounce {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(5deg); }
-}
+/* Old title styles removed - using lb-main-title instead */
 
 .leaderboard-container h2::after {
     content: '';
@@ -141,19 +167,7 @@
 }
 
 /* ✨ Ultra Beautiful Championship Table ✨ */
-.leaderboard-table {
-    margin-top: 2.5rem;
-    overflow: visible;
-    background: var(--leaderboard-glass);
-    border-radius: 1.5rem;
-    border: 2px solid var(--leaderboard-border);
-    backdrop-filter: blur(25px);
-    position: relative;
-    animation: tableSlideIn 0.8s ease-out 0.3s both;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
+/* Note: Main .leaderboard-table styles are defined below with proper overflow rules */
 
 @keyframes tableSlideIn {
     from {
@@ -167,22 +181,24 @@
 }
 
 .leaderboard-table::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: var(--leaderboard-shimmer);
-    animation: tableShimmer 6s ease-in-out infinite;
-    z-index: 1;
-    pointer-events: none;
+    /* Shimmer animation removed to prevent horizontal scrollbar issues */
+    display: none !important;
+    content: none;
 }
 
 @keyframes tableShimmer {
-    0% { left: -100%; }
-    50% { left: 100%; }
-    100% { left: 100%; }
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(0%);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }
 
 .leaderboard-table table {
@@ -193,6 +209,20 @@
     z-index: 5;
     table-layout: auto;
     box-sizing: border-box;
+    /* Ensure sticky header works */
+    max-width: 100%;
+}
+
+.leaderboard-table thead {
+    position: relative;
+    z-index: 10;
+}
+
+.leaderboard-table thead th {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
 }
 
 /* ✨ Beautiful Championship Headers ✨ */
@@ -205,9 +235,10 @@
     font-size: 1rem;
     padding: 1.2rem 0.8rem;
     border: none;
-    position: sticky;
-    top: 0;
-    z-index: 15;
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
     text-shadow: var(--shadow-md);
     backdrop-filter: blur(20px);
     text-align: center;
@@ -262,6 +293,14 @@
     box-sizing: border-box;
 }
 
+/* Ensure th sticky positioning is maintained */
+.leaderboard-table th {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+}
+
 .leaderboard-table td {
     background: var(--leaderboard-glass);
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -281,33 +320,14 @@
 }
 
 /* ✨ Rank Medal System ✨ */
+/* Medals are rendered via JSX, so we only style the cells */
 .leaderboard-table tbody tr:nth-child(1) td:first-child {
     background: var(--gradient-warning);
     color: var(--text-color);
     font-weight: 900;
     text-shadow: var(--shadow-sm);
-    position: relative;
-    padding-left: 2.8rem;
     text-align: center;
     min-width: 80px;
-}
-
-.leaderboard-table tbody tr:nth-child(1) td:first-child::before {
-    content: '🥇';
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
-    animation: medalSpin 3s ease-in-out infinite;
-    z-index: 1;
-}
-
-.leaderboard-table tbody tr:nth-child(1) td:first-child .rank-position {
-    position: relative;
-    z-index: 2;
-    color: var(--text-color);
-    font-weight: 900;
 }
 
 .leaderboard-table tbody tr:nth-child(2) td:first-child {
@@ -315,28 +335,8 @@
     color: var(--text-color);
     font-weight: 900;
     text-shadow: var(--shadow-sm);
-    position: relative;
-    padding-left: 2.8rem;
     text-align: center;
     min-width: 80px;
-}
-
-.leaderboard-table tbody tr:nth-child(2) td:first-child::before {
-    content: '🥈';
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
-    animation: medalSpin 3s ease-in-out infinite 0.5s;
-    z-index: 1;
-}
-
-.leaderboard-table tbody tr:nth-child(2) td:first-child .rank-position {
-    position: relative;
-    z-index: 2;
-    color: var(--text-color);
-    font-weight: 900;
 }
 
 .leaderboard-table tbody tr:nth-child(3) td:first-child {
@@ -344,28 +344,16 @@
     color: var(--text-color);
     font-weight: 900;
     text-shadow: var(--shadow-sm);
-    position: relative;
-    padding-left: 2.8rem;
     text-align: center;
     min-width: 80px;
 }
 
-.leaderboard-table tbody tr:nth-child(3) td:first-child::before {
-    content: '🥉';
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-size: 1.2rem;
-    animation: medalSpin 3s ease-in-out infinite 1s;
-    z-index: 1;
-}
-
-.leaderboard-table tbody tr:nth-child(3) td:first-child .rank-position {
-    position: relative;
-    z-index: 2;
-    color: var(--text-color);
-    font-weight: 900;
+    font-weight: 700;
 }
 
 @keyframes medalSpin {
@@ -422,44 +410,609 @@
     border: 1px solid var(--card-border);
 }
 
-.leaderboard-controls select {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: var(--text-light);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-md) var(--space-xl);
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    min-width: 140px;
-    min-height: 45px;
-    box-shadow: var(--shadow-lg);
-    backdrop-filter: blur(10px);
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-size: 16px;
-    padding-right: 45px;
+/* ✨ NEW Leaderboard Page Header - Clean Design ✨ */
+.lb-page-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.lb-main-title {
+    margin: 0;
+    padding: 0;
     display: inline-flex;
     align-items: center;
-    margin: 0 var(--space-sm);
-    margin-top: var(--space-lg);
+    gap: 0.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.2;
+    background: var(--gradient-warning);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
 }
 
-.leaderboard-controls select:hover {
-    background: var(--accent2);
+.lb-trophy {
+    display: inline-block;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1;
+    flex-shrink: 0;
+    animation: lbTrophyBounce 2s ease-in-out infinite;
+}
+
+.lb-title-text {
+    display: inline-block;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+}
+
+.lb-export-button {
+    background: var(--gradient-warning);
+    border: 1px solid var(--warning);
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lb-export-button:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
+    background: var(--warning);
 }
 
-.leaderboard-controls select:focus {
+/* Leaderboard Stats */
+.leaderboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    /* Allow content to be visible */
+    overflow: visible;
+    contain: layout style paint;
+}
+
+.stat-card {
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 0.875rem 0.5rem;
+    text-align: center;
+    position: relative;
+    overflow: visible;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+    /* Prevent overflow */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    contain: layout style paint;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--warning);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+    display: block;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.stat-card h3 {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    /* Allow text to wrap naturally */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+    line-height: 1.1;
+    padding: 0 0.25rem;
+    hyphens: auto;
+}
+
+.stat-number {
+    font-size: 1.25rem;
+    font-weight: 900;
+    background: var(--gradient-warning);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    line-height: 1;
+    /* Ensure numbers are fully visible */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: visible;
+    max-width: 100%;
+    padding: 0 0.25rem;
+}
+
+.total-users {
+    border-color: var(--accent);
+}
+
+.unique-users {
+    border-color: var(--warning);
+}
+
+.unique-quizzes {
+    border-color: var(--info);
+}
+
+.average-score {
+    border-color: var(--accent2);
+}
+
+/* Leaderboard Controls */
+.leaderboard-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.leaderboard-period-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.leaderboard-period-buttons button {
+    background: var(--card-bg-glass);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    min-width: 120px;
+}
+
+.leaderboard-period-buttons button:hover {
+    background: var(--warning-light);
+    border-color: var(--warning);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.leaderboard-period-buttons button.active {
+    background: var(--gradient-warning);
+    border-color: var(--warning);
+    color: var(--text-light);
+    box-shadow: var(--shadow-md);
+}
+
+.leaderboard-filters {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.leaderboard-search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.leaderboard-search-input {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    padding-right: 3rem;
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.leaderboard-search-input:focus {
     outline: none;
-    background: var(--accent2);
-    box-shadow: 0 0 0 3px var(--accent-light);
+    border-color: var(--warning);
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+.leaderboard-search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.leaderboard-search-clear {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.leaderboard-search-clear:hover {
+    background: var(--warning-light);
+    color: var(--text-light);
+}
+
+/* Results Info */
+.leaderboard-results-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.results-highlight {
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.results-clear-filters {
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: var(--text-light);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.results-clear-filters:hover {
+    background: var(--warning);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Empty State */
+.leaderboard-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    margin-bottom: 2rem;
+}
+
+.leaderboard-empty-state .empty-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 20px var(--warning-light));
+}
+
+.leaderboard-empty-state h3 {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.leaderboard-empty-state p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.empty-clear-filters {
+    background: var(--gradient-warning);
+    border: 1px solid var(--warning);
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-light);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.empty-clear-filters:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: var(--warning);
+}
+
+/* Leaderboard Table Container */
+.leaderboard-table-container {
+    margin-bottom: 2rem;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    max-height: none !important;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* Prevent horizontal overflow */
+    contain: layout style paint;
+    /* Ensure sticky header can work with page scrolling */
+    position: relative;
+}
+
+.leaderboard-table {
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    overflow-x: auto !important; /* Horizontal scroll for wide tables only */
+    overflow-y: visible !important; /* No vertical scrollbar - page scrolls */
+    max-height: none !important;
+    height: auto !important;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* Prevent horizontal overflow from animations */
+    contain: layout style paint;
+    /* Ensure sticky header works with page scrolling */
+    overflow-anchor: none;
+    /* Prevent horizontal overflow */
+    min-width: 0;
+    /* Remove all animations to prevent horizontal scrollbar issues */
+    animation: none !important;
+    box-shadow:
+        var(--shadow-xl),
+        0 0 60px var(--warning-light),
+        inset 0 1px 0 var(--glass-border);
+}
+
+.leaderboard-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Second definition - ensure sticky works and override any conflicting rules */
+.leaderboard-table th {
+    padding: 1.2rem 1.5rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+    background: linear-gradient(135deg, var(--warning-light), var(--warning-light));
+    backdrop-filter: blur(10px);
+    /* Ensure sticky header works - must be after table container rules */
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    /* Ensure sticky positioning context */
+    will-change: transform;
+    /* Prevent header from being affected by parent overflow */
+    isolation: isolate;
+}
+
+.leaderboard-table th:nth-child(1),
+.leaderboard-table th:nth-child(5),
+.leaderboard-table th:nth-child(6) {
+    text-align: center;
+}
+
+.leaderboard-table td {
+    padding: 1.2rem 1.5rem;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rank-cell {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.rank-badge {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+}
+
+.username-cell {
+    font-weight: 600;
+}
+
+.quiz-name-cell {
+    color: var(--text-muted);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 200px;
+}
+
+.score-cell {
+    font-weight: 600;
+    color: var(--warning);
+}
+
+.total-cell {
+    text-align: center;
+}
+
+.percentage-cell {
+    text-align: center;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Rank Highlighting */
+.rank-1 {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.1)) !important;
+    border-left: 4px solid #FFD700;
+}
+
+.rank-2 {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), rgba(169, 169, 169, 0.1)) !important;
+    border-left: 4px solid #C0C0C0;
+}
+
+.rank-3 {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), rgba(184, 115, 51, 0.1)) !important;
+    border-left: 4px solid #CD7F32;
+}
+
+/* Pagination */
+.leaderboard-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    min-width: 100px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--warning-light);
+    border-color: var(--warning);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-numbers {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination-number {
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-number:hover {
+    background: var(--warning-light);
+    border-color: var(--warning);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pagination-number.active {
+    background: var(--gradient-warning);
+    border-color: var(--warning);
+    color: var(--text-light);
+    box-shadow: var(--shadow-md);
+}
+
+.pagination-ellipsis {
+    color: var(--text-muted);
+    padding: 0 0.5rem;
+    font-weight: 600;
+}
+
+.pagination-info {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 /* ✅ XP Leaderboard Specific Styles */
@@ -647,10 +1200,27 @@
         max-width: 95%;
         margin: var(--space-lg) auto;
         padding: var(--space-xl) var(--space-lg);
+        overflow: visible !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        height: auto !important;
+        max-height: none !important;
     }
 
-    .leaderboard-container h2 {
-        font-size: 2rem;
+    /* New title styles */
+    .lb-page-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .lb-main-title {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .lb-export-button {
+        flex-shrink: 0;
+        white-space: nowrap;
     }
 
     .leaderboard-table th,
@@ -673,53 +1243,191 @@
         border-radius: var(--radius-xl);
         /* Remove animations on mobile to prevent scrollbar issues */
         animation: none !important;
+        overflow: visible !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
     }
 
-    .leaderboard-container h2 {
-        font-size: 1.8rem;
-        margin-bottom: var(--space-lg);
-        /* Remove animations on mobile */
-        animation: none !important;
-        /* Fix title centering on mobile */
-        text-align: center !important;
-        justify-content: center !important;
-        align-items: center !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 0.5rem !important;
+    .leaderboard-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
 
-    .leaderboard-container h2::after {
-        width: 60px;
-        height: 2px;
-        /* Remove animations on mobile */
+    /* New title styles */
+    .lb-page-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .lb-main-title {
+        font-size: clamp(1.4rem, 3vw, 1.8rem);
+    }
+
+    .lb-export-button {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .leaderboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .stat-card {
+        padding: 0.75rem 0.5rem;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        gap: 0.1rem;
+    }
+
+    .stat-icon {
+        font-size: 1.25rem;
+        margin-bottom: 0;
+    }
+
+    .stat-card h3 {
+        font-size: 0.6rem;
+        margin: 0;
+        letter-spacing: 0.15px;
+        line-height: 1.1;
+        padding: 0 0.2rem;
+    }
+
+    .stat-number {
+        font-size: 1.1rem;
+        margin: 0;
+        padding: 0 0.2rem;
+    }
+
+    .leaderboard-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .leaderboard-period-buttons {
+        width: 100%;
+    }
+
+    .leaderboard-period-buttons button {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .leaderboard-filters {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .leaderboard-filters > * {
+        width: 100%;
+    }
+
+    .leaderboard-results-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .leaderboard-pagination {
+        gap: 0.5rem;
+    }
+
+    .pagination-numbers {
+        gap: 0.25rem;
+    }
+
+    .pagination-number {
+        min-width: 40px;
+        padding: 0.625rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .pagination-btn {
+        min-width: 80px;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    /* New title styles for mobile */
+    .lb-page-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .lb-main-title {
+        font-size: clamp(1.3rem, 3vw, 1.6rem);
+        white-space: normal;
+    }
+
+    .lb-trophy {
+        font-size: clamp(1.2rem, 2.5vw, 1.5rem);
         animation: none !important;
     }
 
-    .leaderboard-container h2::before {
-        /* Remove animations on mobile */
-        animation: none !important;
-        /* Adjust trophy positioning for mobile */
-        position: static !important;
-        margin-right: 0.5rem !important;
-        order: -1 !important;
+    .lb-title-text {
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .lb-export-button {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
     }
 
     .leaderboard-table {
         margin-top: var(--space-lg);
         border-radius: var(--radius-lg);
-        overflow-x: auto;
+        overflow-x: auto !important;
         /* Remove animations on mobile to prevent scrollbar issues */
         animation: none !important;
         overflow-y: visible !important;
+        max-height: none !important;
+        height: auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        /* Prevent horizontal overflow */
+        contain: layout style paint !important;
         /* Reduce overly rounded corners on mobile */
         border-radius: var(--radius-sm) !important;
     }
 
+    .leaderboard-table th {
+        position: sticky !important;
+        position: -webkit-sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+    }
+
     .leaderboard-table::before {
-        /* Remove shimmer animation on mobile */
+        /* Remove shimmer animation on mobile to prevent horizontal overflow */
         animation: none !important;
         display: none !important;
+        overflow: hidden !important;
+    }
+
+    .leaderboard-table th {
+        position: sticky !important;
+        position: -webkit-sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
     }
 
     .leaderboard-table table {
@@ -746,35 +1454,35 @@
         margin-bottom: var(--space-md);
     }
 
-    /* Remove medal animations on mobile */
-    .leaderboard-table tbody tr:nth-child(1) td:first-child::before,
-    .leaderboard-table tbody tr:nth-child(2) td:first-child::before,
-    .leaderboard-table tbody tr:nth-child(3) td:first-child::before {
-        animation: none !important;
-    }
+    /* Rank badges are rendered via JSX, no CSS pseudo-elements needed */
 
     .leaderboard-table th,
     .leaderboard-table td {
         padding: var(--space-sm) var(--space-xs);
         font-size: 0.9rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .leaderboard-table th {
         font-size: 0.8rem;
         padding: var(--space-sm) var(--space-xs);
+        white-space: nowrap;
+    }
+
+    .quiz-name-cell {
+        max-width: 150px;
+        word-break: break-word;
     }
 
     .leaderboard-table tbody tr:nth-child(1) td:first-child,
     .leaderboard-table tbody tr:nth-child(2) td:first-child,
     .leaderboard-table tbody tr:nth-child(3) td:first-child {
-        padding-left: 2.2rem;
+        padding: var(--space-sm) var(--space-xs);
         min-width: 60px;
     }
 
-    .leaderboard-table tbody tr:nth-child(1) td:first-child::before,
-    .leaderboard-table tbody tr:nth-child(2) td:first-child::before,
-    .leaderboard-table tbody tr:nth-child(3) td:first-child::before {
-        left: 4px;
+    .rank-badge {
         font-size: 1rem;
     }
 
@@ -816,20 +1524,123 @@
         border-radius: var(--radius-lg);
         /* Remove animations on small mobile */
         animation: none !important;
+        overflow: visible !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
     }
 
-    .leaderboard-container h2 {
+    .leaderboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .stat-card {
+        padding: 0.7rem 0.4rem;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        gap: 0.02rem;
+    }
+
+    .stat-icon {
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    .stat-card h3 {
+        font-size: 0.55rem;
+        margin: 0;
+        letter-spacing: 0.1px;
+        line-height: 1.1;
+        padding: 0 0.15rem;
+    }
+
+    .stat-number {
+        font-size: 0.95rem;
+        margin: 0;
+        padding: 0 0.15rem;
+    }
+
+    .leaderboard-period-buttons {
+        flex-direction: column;
+    }
+
+    .leaderboard-period-buttons button {
+        width: 100%;
+    }
+
+    .leaderboard-filters {
+        flex-direction: column;
+    }
+
+    .leaderboard-filters > * {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .pagination-btn {
+        min-width: 70px;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8rem;
+    }
+
+    .pagination-number {
+        min-width: 36px;
+        padding: 0.5rem 0.625rem;
+        font-size: 0.8rem;
+    }
+
+    .leaderboard-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .leaderboard-header h2,
+    .leaderboard-title {
         font-size: 1.5rem;
-        margin-bottom: var(--space-md);
+        margin-bottom: 0;
         /* Remove animations on small mobile */
         animation: none !important;
-        /* Fix title centering on small mobile */
-        text-align: center !important;
-        justify-content: center !important;
+        /* Fix title layout on small mobile */
+        text-align: left !important;
+        justify-content: flex-start !important;
         align-items: center !important;
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: row !important;
         gap: 0.5rem !important;
+        flex-wrap: wrap !important;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .export-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .trophy-icon {
+        font-size: 1.75rem !important;
+        animation: none !important;
+        flex-shrink: 0;
+    }
+
+    .title-text {
+        flex: 1;
+        min-width: 0;
+        word-break: break-word;
+        font-size: 1.5rem;
     }
 
     .leaderboard-container h2::after {
@@ -838,29 +1649,43 @@
         animation: none !important;
     }
 
-    .leaderboard-container h2::before {
-        /* Remove animations on small mobile */
-        animation: none !important;
-        /* Adjust trophy positioning for small mobile */
-        position: static !important;
-        margin-right: 0.5rem !important;
-        order: -1 !important;
-    }
-
     .leaderboard-table {
         margin-top: var(--space-md);
         border-radius: var(--radius-md);
         /* Remove animations on small mobile */
         animation: none !important;
         overflow-y: visible !important;
+        overflow-x: auto !important;
+        max-height: none !important;
+        height: auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        /* Prevent horizontal overflow */
+        contain: layout style paint !important;
         /* Reduce overly rounded corners on small mobile */
         border-radius: var(--radius-xs) !important;
     }
 
+    .leaderboard-table th {
+        position: sticky !important;
+        position: -webkit-sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+    }
+
     .leaderboard-table::before {
-        /* Remove shimmer animation on small mobile */
+        /* Remove shimmer animation on small mobile to prevent horizontal overflow */
         animation: none !important;
         display: none !important;
+        overflow: hidden !important;
+    }
+
+    .leaderboard-table th {
+        position: sticky !important;
+        position: -webkit-sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
     }
 
     .leaderboard-table table {
@@ -898,11 +1723,23 @@
     .leaderboard-table td {
         padding: var(--space-xs) var(--space-sm);
         font-size: 0.85rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .leaderboard-table th {
         font-size: 0.75rem;
-        padding: var(--space-xs);
+        padding: var(--space-xs) var(--space-sm);
+        white-space: nowrap;
+    }
+
+    .quiz-name-cell {
+        max-width: 120px;
+        word-break: break-word;
+    }
+
+    .rank-badge {
+        font-size: 0.9rem;
     }
 
     .leaderboard-buttons button {
@@ -926,46 +1763,80 @@
         padding: var(--space-sm) var(--space-xs);
         /* Remove animations on very small mobile */
         animation: none !important;
+        overflow: visible !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
     }
 
-    .leaderboard-container h2 {
-        font-size: 1.3rem;
-        margin-bottom: var(--space-sm);
-        /* Remove animations on very small mobile */
-        animation: none !important;
-        /* Fix title centering on very small mobile */
-        text-align: center !important;
-        justify-content: center !important;
-        align-items: center !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 0.5rem !important;
+    /* New title styles for very small mobile */
+    .lb-page-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
     }
 
-    .leaderboard-container h2::after {
-        /* Remove animations on very small mobile */
+    .lb-main-title {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        white-space: normal;
+    }
+
+    .lb-trophy {
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
         animation: none !important;
     }
 
-    .leaderboard-container h2::before {
-        /* Remove animations on very small mobile */
-        animation: none !important;
-        /* Adjust trophy positioning for very small mobile */
-        position: static !important;
-        margin-right: 0.5rem !important;
-        order: -1 !important;
+    .lb-title-text {
+        word-break: break-word;
+        overflow-wrap: break-word;
+        font-size: inherit;
     }
+
+    .lb-export-button {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8rem;
+    }
+
+    /* Old trophy-icon and title-text rules removed - using lb-trophy and lb-title-text instead */
 
     .leaderboard-table {
         /* Remove animations on very small mobile */
         animation: none !important;
         overflow-y: visible !important;
+        overflow-x: auto !important;
+        max-height: none !important;
+        height: auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        /* Prevent horizontal overflow */
+        contain: layout style paint !important;
+    }
+
+    .leaderboard-table th {
+        position: sticky !important;
+        position: -webkit-sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
     }
 
     .leaderboard-table::before {
-        /* Remove shimmer animation on very small mobile */
+        /* Remove shimmer animation on very small mobile to prevent horizontal overflow */
         animation: none !important;
         display: none !important;
+        overflow: hidden !important;
+    }
+
+    .leaderboard-table th {
+        position: sticky !important;
+        position: -webkit-sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
     }
 
     .leaderboard-table table {
@@ -992,21 +1863,28 @@
         margin-bottom: var(--space-xs);
     }
 
-    /* Remove medal animations on very small mobile */
-    .leaderboard-table tbody tr:nth-child(1) td:first-child::before,
-    .leaderboard-table tbody tr:nth-child(2) td:first-child::before,
-    .leaderboard-table tbody tr:nth-child(3) td:first-child::before {
-        animation: none !important;
-    }
+    /* Rank badges are rendered via JSX, no CSS pseudo-elements needed */
 
     .leaderboard-table th,
     .leaderboard-table td {
         padding: var(--space-xs);
         font-size: 0.8rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .leaderboard-table th {
         font-size: 0.7rem;
+        white-space: nowrap;
+    }
+
+    .quiz-name-cell {
+        max-width: 100px;
+        word-break: break-word;
+    }
+
+    .rank-badge {
+        font-size: 0.85rem;
     }
 
     .leaderboard-buttons button {

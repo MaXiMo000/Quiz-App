@@ -18,7 +18,7 @@ import CustomDropdown from "../components/CustomDropdown";
 const QuizCard = memo(({ quiz, index, isBookmarked, onBookmark, onShare, navigate }) => {
     const handleStartQuiz = (e) => {
         e.stopPropagation();
-        addToQuizHistory(quiz._id, quiz.title);
+        addToQuizHistory(quiz);
 
         // Enter fullscreen first (using user gesture from button click), then navigate
         const enterFullScreen = () => {
@@ -237,7 +237,7 @@ const UserQuiz = () => {
             setCurrentPage(totalPages);
             localStorage.setItem("userQuiz_currentPage", totalPages.toString());
         }
-    }, [currentPage, totalPages]);
+    }, [totalPages]); // Only depend on totalPages to avoid circular updates
 
     // Keyboard shortcuts
     useKeyboardShortcuts({

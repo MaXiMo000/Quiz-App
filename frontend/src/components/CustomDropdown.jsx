@@ -12,21 +12,7 @@ const CustomDropdown = ({
     icon = "▼"
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
     const dropdownRef = useRef(null);
-    const buttonRef = useRef(null);
-
-    // Calculate menu position when opening
-    useEffect(() => {
-        if (isOpen && buttonRef.current) {
-            const rect = buttonRef.current.getBoundingClientRect();
-            setMenuPosition({
-                top: rect.bottom + 8, // Use viewport coordinates for fixed positioning
-                left: rect.left,
-                width: rect.width
-            });
-        }
-    }, [isOpen]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -70,7 +56,6 @@ const CustomDropdown = ({
         <div
             className={`custom-dropdown ${isOpen ? 'dropdown-open' : ''} ${className}`}
             ref={dropdownRef}
-            style={{ zIndex: isOpen ? 100000 : 1 }}
         >
             <button
                 type="button"
