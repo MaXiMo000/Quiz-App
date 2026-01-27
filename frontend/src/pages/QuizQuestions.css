@@ -20,6 +20,11 @@
     position: relative;
     overflow: hidden;
     animation: pageSlideIn 1s ease-out;
+    /* Ensure headings render crisply - CRITICAL FIX */
+    isolation: isolate !important;
+    /* Ensure no backdrop-filter on container affects children */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 @keyframes pageSlideIn {
@@ -154,11 +159,33 @@
     width: 100%;
     max-width: 1200px;
     position: relative;
-    z-index: 1;
+    z-index: 1000 !important;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Prevent backdrop-filter blur from affecting children - CRITICAL FIX */
+    isolation: isolate !important;
+    /* Ensure no backdrop-filter affects this container */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    /* Force new stacking context */
+    transform: translateZ(0) !important;
+    will-change: auto;
+    /* Force layer creation */
+    contain: layout style paint !important;
+}
+
+.quiz-title-wrapper {
+    position: relative;
+    z-index: 1001 !important;
+    isolation: isolate !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: translateZ(0) !important;
+    contain: layout style paint !important;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .quiz-details h2 {
@@ -180,6 +207,26 @@
     display: block !important;
     font-family: var(--font-display, 'Inter', sans-serif) !important;
     line-height: 1.2 !important;
+    /* Ensure crisp text rendering - CRITICAL FIX */
+    z-index: 1000 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    /* Prevent blur from parent backdrop-filter */
+    transform: translateZ(0) !important;
+    will-change: auto !important;
+    /* Create completely isolated rendering context */
+    isolation: isolate !important;
+    /* Prevent any backdrop-filter from affecting this element */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    /* Force GPU rendering */
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    /* Ensure text is rendered on top layer */
+    mix-blend-mode: normal !important;
+    /* Force layer creation */
+    contain: layout style paint !important;
 }
 
 .quiz-details h2.premium-title {
@@ -191,6 +238,23 @@
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
+    /* Ensure crisp rendering - CRITICAL FIX */
+    z-index: 1000 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    transform: translateZ(0) !important;
+    isolation: isolate !important;
+    /* Prevent any backdrop-filter from affecting this element */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    /* Force GPU rendering */
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    /* Ensure text is rendered on top layer */
+    mix-blend-mode: normal !important;
+    /* Force layer creation */
+    contain: layout style paint !important;
 }
 
 .quiz-details h2::after {
@@ -303,8 +367,8 @@
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border: 1px solid var(--warning-light) !important;
-    color: var(--text-light) !important;
-    text-shadow: 0 2px 4px var(--shadow) !important;
+    color: #FFFFFF !important; /* Bright white for maximum visibility */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 255, 255, 0.3) !important;
     font-weight: 600 !important;
     font-size: 1.05rem !important;
     -webkit-font-smoothing: antialiased !important;
@@ -319,18 +383,24 @@
 
 .premium-info p,
 .premium-info p *:not(strong) {
-    color: var(--text-light) !important;
+    color: #FFFFFF !important; /* Bright white for maximum visibility */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
 }
 
 .premium-info p strong {
-    color: var(--warning) !important;
+    color: #FFD700 !important; /* Bright gold/yellow for maximum visibility */
     text-shadow:
-        0 0 15px var(--warning-light),
-        0 2px 4px var(--shadow) !important;
+        0 0 20px rgba(255, 215, 0, 0.8),
+        0 0 10px rgba(255, 215, 0, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.8) !important;
     font-weight: 800 !important;
     font-size: 1em !important;
     display: block !important;
     margin-bottom: 0.5rem !important;
+    /* Ensure crisp rendering */
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
 }
 
 .quiz-info p::before {
@@ -380,14 +450,19 @@
 
 /* Premium info strong - consolidated and enhanced */
 .premium-info p strong {
-    color: var(--warning) !important;
+    color: #FFD700 !important; /* Bright gold/yellow for maximum visibility */
     text-shadow:
-        0 0 15px var(--warning-light),
-        0 2px 4px var(--shadow) !important;
+        0 0 20px rgba(255, 215, 0, 0.8),
+        0 0 10px rgba(255, 215, 0, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.8) !important;
     font-weight: 800 !important;
     font-size: 1em !important;
     display: block !important;
     margin-bottom: 0.5rem !important;
+    /* Ensure crisp rendering */
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
 }
 
 /* ✨ Enhanced Question List ✨ */

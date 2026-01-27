@@ -87,14 +87,16 @@ const PremiumQuizQuestions = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.6 }}
                 >
-                    <motion.h2
-                        className="premium-title"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.4, duration: 0.5 }}
-                    >
-                        💎 {quiz.title} - Premium Questions
-                    </motion.h2>
+                    <div className="quiz-title-wrapper">
+                        <motion.h2
+                            className="premium-title"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                        >
+                            💎 {quiz.title} - Premium Questions
+                        </motion.h2>
+                    </div>
 
                     <motion.div
                         className="quiz-info premium-info"

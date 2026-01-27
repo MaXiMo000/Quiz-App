@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback, memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
@@ -10,6 +10,130 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 import { debounce } from "../utils/componentUtils";
 import CustomDropdown from "../components/CustomDropdown";
+
+// Memoized Premium Quiz Box Component
+const PremiumQuizBox = memo(({ quiz, index, isAdminQuiz, handleRestrictedAction, deleteQuiz, openAiQuestionModal, openAddQuestionModal, navigate }) => {
+    return (
+        <motion.div
+            className="quiz-box premium-box"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{
+                duration: 0.3,
+                delay: index * 0.05
+            }}
+            whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(251, 191, 36, 0.3)" }}
+        >
+            <div className="premium-badge">
+                <span>
+                    {isAdminQuiz(quiz) ? "🛡️" : "👑"}
+                </span>
+                {isAdminQuiz(quiz) ? "ADMIN QUIZ" : "PREMIUM"}
+            </div>
+
+            <div className="quiz-content">
+                <h3>
+                    {quiz.title}
+                </h3>
+
+                <div className="quiz-info">
+                    <p>
+                        <span className="info-icon">🏆</span>
+                        Category: {quiz.category}
+                    </p>
+                    <p>
+                        <span className="info-icon">⏰</span>
+                        Duration: {quiz.duration} minutes
+                    </p>
+                    <p>
+                        <span className="info-icon">⭐</span>
+                        Total Marks: {quiz.totalMarks}
+                    </p>
+                    <p>
+                        <span className="info-icon">🎯</span>
+                        Passing Marks: {quiz.passingMarks}
+                    </p>
+                </div>
+
+                <div
+                    className="quiz-actions"
+                    role="group"
+                    aria-label={`Actions for quiz: ${quiz.title}`}
+                >
+                    <button
+                        className="delete-btn premium-delete-btn"
+                        onClick={() => isAdminQuiz(quiz)
+                            ? handleRestrictedAction("You cannot delete admin quizzes.")
+                            : deleteQuiz(quiz.title)}
+                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                        aria-label={isAdminQuiz(quiz) ? "Cannot delete admin quizzes" : `Delete quiz: ${quiz.title}`}
+                        aria-disabled={isAdminQuiz(quiz)}
+                    >
+                        🗑️ Delete
+                    </button>
+
+                    <button
+                        className="add-ai-btn premium-ai-btn"
+                        onClick={() => isAdminQuiz(quiz)
+                            ? handleRestrictedAction("You cannot add AI questions to admin quizzes.")
+                            : openAiQuestionModal(quiz._id, quiz.category)}
+                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                        aria-label={isAdminQuiz(quiz) ? "Cannot add AI questions to admin quizzes" : `Generate AI questions for ${quiz.title}`}
+                        aria-disabled={isAdminQuiz(quiz)}
+                    >
+                        <span>
+                            🤖
+                        </span>
+                        AI Premium
+                    </button>
+
+                    <button
+                        className="add-question-btn premium-add-btn"
+                        onClick={() => isAdminQuiz(quiz)
+                            ? handleRestrictedAction("You cannot add questions to admin quizzes.")
+                            : openAddQuestionModal(quiz._id)}
+                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                        aria-label={isAdminQuiz(quiz) ? "Cannot add questions to admin quizzes" : `Add manual question to ${quiz.title}`}
+                        aria-disabled={isAdminQuiz(quiz)}
+                    >
+                        ➕ Add Question
+                    </button>
+
+                    <button
+                        className="view-questions-btn premium-view-btn"
+                        aria-label={`View and manage questions for ${quiz.title}`}
+                        onClick={() => navigate(`/premium/quiz/${quiz._id}`)}
+                    >
+                        📜 View Questions
+                    </button>
+                </div>
+
+                <ul className="display-ans premium-questions">
+                    {quiz.questions.map((q, i) => (
+                        <li key={i}>
+                            <div className="question-text">
+                                <strong>Q{i + 1}:</strong> {q.question}
+                            </div>
+                            <div className="correct-answer premium-answer">
+                                ✨ Answer: {q.options && q.options[['A', 'B', 'C', 'D'].indexOf(q.correctAnswer)] || q.correctAnswer}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+
+                <div className="premium-bg-effect"></div>
+            </div>
+        </motion.div>
+    );
+}, (prevProps, nextProps) => {
+    return (
+        prevProps.quiz._id === nextProps.quiz._id &&
+        prevProps.index === nextProps.index
+    );
+});
+
+PremiumQuizBox.displayName = 'PremiumQuizBox';
 
 const PremiumQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -261,7 +385,7 @@ const PremiumQuizzes = () => {
         },
     }, [searchQuery, currentPage, totalPages]);
 
-    const getQuiz = async () => {
+    const getQuiz = useCallback(async () => {
         try {
             const response = await axios.get('/api/quizzes');
             setQuizzes(response.data);
@@ -271,15 +395,15 @@ const PremiumQuizzes = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const isAdminQuiz = (quiz) => {
+    const isAdminQuiz = useCallback((quiz) => {
         return !quiz.createdBy || !quiz.createdBy._id || quiz.createdBy.name === "admin" || quiz.createdBy.name === "Admin";
-    };
+    }, []);
 
-    const handleRestrictedAction = (message) => {
+    const handleRestrictedAction = useCallback((message) => {
         showWarning(message);
-    };
+    }, [showWarning]);
 
     useEffect(() => {
         getQuiz();
@@ -304,18 +428,18 @@ const PremiumQuizzes = () => {
         };
     }, []);
 
-    const openAddQuestionModal = (quizId) => {
+    const openAddQuestionModal = useCallback((quizId) => {
         if (!quizId) return showWarning("Please select a quiz first!");
         setSelectedQuizId(quizId);
         document.getElementById("add_question_modal").showModal();
-    };
+    }, [showWarning]);
 
-    const openAiQuestionModal = (quizId, category) => {
+    const openAiQuestionModal = useCallback((quizId, category) => {
         setSelectedQuizId(quizId);
         setAiTopic(category);
         setAiNumQuestions(5);
         document.getElementById("ai_question_modal").showModal();
-    };
+    }, []);
 
     const handleAiSubmit = async (event) => {
         event.preventDefault();
@@ -395,7 +519,7 @@ const PremiumQuizzes = () => {
         }
     };
 
-    const deleteQuiz = async (title) => {
+    const deleteQuiz = useCallback(async (title) => {
         if (!title) return showWarning("Quiz title is missing!");
 
         try {
@@ -408,7 +532,7 @@ const PremiumQuizzes = () => {
             console.error("Error deleting quiz:", error);
             showError("Failed to delete quiz. Check the API response.");
         }
-    };
+    }, [getQuiz, showSuccess, showError, showWarning]);
 
     if (loading) return <Loading fullScreen={true} />;
 
@@ -443,16 +567,18 @@ const PremiumQuizzes = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
             >
-                <motion.h2
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                    <span className="header-icon">
-                        💎
-                    </span>
-                    Premium Quizzes
-                </motion.h2>
+                <div className="quiz-header-text-wrapper">
+                    <motion.h2
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                        <span className="header-icon">
+                            💎
+                        </span>
+                        Premium Quizzes
+                    </motion.h2>
+                </div>
                 <button
                     className="create-btn"
                     onClick={() => document.getElementById("create_quiz_modal").showModal()}
@@ -473,15 +599,28 @@ const PremiumQuizzes = () => {
                 transition={{ delay: 0.2 }}
             >
                 <div className="premium-search-container">
-                    <input
-                        type="text"
-                        placeholder="🔍 Search premium quizzes..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="premium-search-input"
-                        aria-label="Search premium quizzes"
-                        aria-describedby="premium-search-description"
-                    />
+                    <div className="premium-search-wrapper">
+                        <input
+                            type="text"
+                            placeholder="🔍 Search premium quizzes..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="premium-search-input"
+                            aria-label="Search premium quizzes"
+                            aria-describedby="premium-search-description"
+                        />
+                        {searchQuery && (
+                            <button
+                                type="button"
+                                className="premium-search-clear"
+                                onClick={() => setSearchQuery("")}
+                                aria-label="Clear search"
+                                title="Clear search"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
                     <span id="premium-search-description" className="sr-only">
                         Search premium quizzes by title or category
                     </span>
@@ -517,11 +656,35 @@ const PremiumQuizzes = () => {
                 <div className="premium-results-count">
                     {filteredQuizzes.length > 0 ? (
                         <>
-                            Showing {startIndex + 1}-{Math.min(endIndex, filteredQuizzes.length)} of {filteredQuizzes.length} quiz{filteredQuizzes.length !== 1 ? 'zes' : ''}
-                            {filteredQuizzes.length !== quizzes.length && ` (${quizzes.length} total)`}
+                            <span className="results-highlight">
+                                {startIndex + 1}-{Math.min(endIndex, filteredQuizzes.length)}
+                            </span>
+                            {' of '}
+                            <span className="results-total">{filteredQuizzes.length}</span>
+                            {' premium quiz'}
+                            {filteredQuizzes.length !== 1 ? 'zes' : ''}
+                            {filteredQuizzes.length !== quizzes.length && (
+                                <span className="results-filtered">
+                                    {' '}(filtered from {quizzes.length} total)
+                                </span>
+                            )}
                         </>
                     ) : (
-                        <>No premium quizzes found</>
+                        <>
+                            <span className="results-none">No premium quizzes found</span>
+                            {searchQuery || categoryFilter !== "all" ? (
+                                <button
+                                    className="results-clear-filters"
+                                    onClick={() => {
+                                        setSearchQuery("");
+                                        setCategoryFilter("all");
+                                    }}
+                                    aria-label="Clear all filters"
+                                >
+                                    Clear filters
+                                </button>
+                            ) : null}
+                        </>
                     )}
                 </div>
             </motion.div>
@@ -529,13 +692,47 @@ const PremiumQuizzes = () => {
             {filteredQuizzes.length === 0 ? (
                 <motion.div
                     className="premium-no-quizzes"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
                 >
                     <div className="premium-empty-state">
-                        <span className="premium-empty-icon">💎</span>
-                        <h3>No Premium Quizzes Available</h3>
-                        <p>Create your first premium quiz or check back later!</p>
+                        <motion.span
+                            className="premium-empty-icon"
+                            animate={{
+                                y: [0, -10, 0],
+                                rotate: [0, 5, -5, 0]
+                            }}
+                            transition={{
+                                duration: 3,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                        >
+                            💎
+                        </motion.span>
+                        <h3>
+                            {searchQuery || categoryFilter !== "all"
+                                ? "No Premium Quizzes Match Your Filters"
+                                : "No Premium Quizzes Available"}
+                        </h3>
+                        <p>
+                            {searchQuery || categoryFilter !== "all"
+                                ? "Try adjusting your search or filter criteria to find more quizzes."
+                                : "Create your first premium quiz to get started!"}
+                        </p>
+                        {(searchQuery || categoryFilter !== "all") && (
+                            <button
+                                className="premium-empty-clear-filters"
+                                onClick={() => {
+                                    setSearchQuery("");
+                                    setCategoryFilter("all");
+                                }}
+                                aria-label="Clear all filters"
+                            >
+                                Clear Filters
+                            </button>
+                        )}
                     </div>
                 </motion.div>
             ) : (
@@ -546,118 +743,19 @@ const PremiumQuizzes = () => {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <AnimatePresence>
-                            {paginatedQuizzes.map((quiz, _index) => (
-                        <div
-                            key={quiz._id}
-                            className="quiz-box premium-box"
-                        >
-                            <div className="premium-badge">
-                                <span>
-                                    {isAdminQuiz(quiz) ? "🛡️" : "👑"}
-                                </span>
-                                {isAdminQuiz(quiz) ? "ADMIN QUIZ" : "PREMIUM"}
-                            </div>
-
-                            <div className="quiz-content">
-                                <h3>
-                                    {quiz.title}
-                                </h3>
-
-                                <div
-                                    className="quiz-info"
-                                >
-                                    <p>
-                                        <span className="info-icon">🏆</span>
-                                        Category: {quiz.category}
-                                    </p>
-                                    <p>
-                                        <span className="info-icon">⏰</span>
-                                        Duration: {quiz.duration} minutes
-                                    </p>
-                                    <p>
-                                        <span className="info-icon">⭐</span>
-                                        Total Marks: {quiz.totalMarks}
-                                    </p>
-                                    <p>
-                                        <span className="info-icon">🎯</span>
-                                        Passing Marks: {quiz.passingMarks}
-                                    </p>
-                                </div>
-
-                                <div
-                                    className="quiz-actions"
-                                    role="group"
-                                    aria-label={`Actions for quiz: ${quiz.title}`}
-                                >
-                                    <button
-                                        className="delete-btn premium-delete-btn"
-                                        onClick={() => isAdminQuiz(quiz)
-                                            ? handleRestrictedAction("You cannot delete admin quizzes.")
-                                            : deleteQuiz(quiz.title)}
-                                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-                                        aria-label={isAdminQuiz(quiz) ? "Cannot delete admin quizzes" : `Delete quiz: ${quiz.title}`}
-                                        aria-disabled={isAdminQuiz(quiz)}
-                                    >
-                                        🗑️ Delete
-                                    </button>
-
-                                    <button
-                                        className="add-ai-btn premium-ai-btn"
-                                        onClick={() => isAdminQuiz(quiz)
-                                            ? handleRestrictedAction("You cannot add AI questions to admin quizzes.")
-                                            : openAiQuestionModal(quiz._id, quiz.category)}
-                                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-                                        aria-label={isAdminQuiz(quiz) ? "Cannot add AI questions to admin quizzes" : `Generate AI questions for ${quiz.title}`}
-                                        aria-disabled={isAdminQuiz(quiz)}
-                                    >
-                                        <span>
-                                            🤖
-                                        </span>
-                                        AI Premium
-                                    </button>
-
-                                    <button
-                                        className="add-question-btn premium-add-btn"
-                                        onClick={() => isAdminQuiz(quiz)
-                                            ? handleRestrictedAction("You cannot add questions to admin quizzes.")
-                                            : openAddQuestionModal(quiz._id)}
-                                        style={isAdminQuiz(quiz) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-                                        aria-label={isAdminQuiz(quiz) ? "Cannot add questions to admin quizzes" : `Add manual question to ${quiz.title}`}
-                                        aria-disabled={isAdminQuiz(quiz)}
-                                    >
-                                        ➕ Add Question
-                                    </button>
-
-                                    <button
-                                        className="view-questions-btn premium-view-btn"
-                                        aria-label={`View and manage questions for ${quiz.title}`}
-                                        onClick={() => navigate(`/premium/quiz/${quiz._id}`)}
-                                    >
-                                        📜 View Questions
-                                    </button>
-                                </div>
-
-                                <ul
-                                    className="display-ans premium-questions"
-                                >
-                                    {quiz.questions.map((q, i) => (
-                                        <li
-                                            key={i}
-                                        >
-                                            <div className="question-text">
-                                                <strong>Q{i + 1}:</strong> {q.question}
-                                            </div>
-                                            <div className="correct-answer premium-answer">
-                                                ✨ Answer: {q.options && q.options[['A', 'B', 'C', 'D'].indexOf(q.correctAnswer)] || q.correctAnswer}
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <div className="premium-bg-effect"></div>
-                        </div>
+                        <AnimatePresence mode="wait">
+                            {paginatedQuizzes.map((quiz, index) => (
+                                <PremiumQuizBox
+                                    key={quiz._id}
+                                    quiz={quiz}
+                                    index={index}
+                                    isAdminQuiz={isAdminQuiz}
+                                    handleRestrictedAction={handleRestrictedAction}
+                                    deleteQuiz={deleteQuiz}
+                                    openAiQuestionModal={openAiQuestionModal}
+                                    openAddQuestionModal={openAddQuestionModal}
+                                    navigate={navigate}
+                                />
                             ))}
                         </AnimatePresence>
                     </motion.div>
