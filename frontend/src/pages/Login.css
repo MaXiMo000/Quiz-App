@@ -292,8 +292,15 @@
     letter-spacing: 0.5px;
 }
 
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .input-group input {
     padding: 0.6rem 0.85rem;
+    padding-right: 3rem;
     border: 1px solid var(--auth-input-border);
     border-radius: 10px;
     background: var(--auth-input-bg);
@@ -302,6 +309,26 @@
     font-weight: 500;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group:has(.password-toggle) input {
+    padding-right: 3.5rem;
+}
+
+.input-group.input-valid:has(.password-toggle) input {
+    padding-right: 4rem;
+}
+
+.input-group.input-error input {
+    border-color: #f5576c;
+    background: rgba(245, 87, 108, 0.1);
+}
+
+.input-group.input-valid input {
+    border-color: #43e97b;
+    background: rgba(67, 233, 123, 0.1);
 }
 
 .input-group input:focus {
@@ -310,6 +337,16 @@
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
     transform: translateY(-1px);
+}
+
+.input-group.input-error input:focus {
+    border-color: #f5576c;
+    box-shadow: 0 0 0 4px rgba(245, 87, 108, 0.1);
+}
+
+.input-group.input-valid input:focus {
+    border-color: #43e97b;
+    box-shadow: 0 0 0 4px rgba(67, 233, 123, 0.1);
 }
 
 .input-group input:hover:not(:focus) {
@@ -325,6 +362,81 @@
 .input-group input:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Password Toggle */
+.password-toggle {
+    position: absolute;
+    right: 0.65rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: var(--auth-text-secondary);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.password-toggle:hover {
+    color: var(--auth-text-primary);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.password-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Input Check Icon */
+.input-check-icon {
+    position: absolute;
+    right: 3.2rem;
+    color: #43e97b;
+    font-size: 0.9rem;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: rgba(67, 233, 123, 0.2);
+    border-radius: 50%;
+    padding: 2px;
+}
+
+/* Error Message */
+.error-message {
+    color: #f5576c;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ✨ Buttons ✨ */
@@ -535,7 +647,33 @@
 
     .input-group input {
         padding: 0.55rem 0.75rem;
+        padding-right: 2.75rem;
         font-size: 0.8rem;
+    }
+
+    .input-group:has(.password-toggle) input {
+        padding-right: 3.5rem;
+    }
+
+    .input-group.input-valid:has(.password-toggle) input {
+        padding-right: 4rem;
+    }
+
+    .password-toggle {
+        right: 0.5rem;
+        width: 16px;
+        height: 16px;
+        min-width: 16px;
+        min-height: 16px;
+        padding: 0;
+        font-size: 0.7rem;
+    }
+
+    .input-group:has(.password-toggle) .input-check-icon {
+        right: 2.9rem;
+        width: 20px;
+        height: 20px;
+        font-size: 0.85rem;
     }
 
     .auth-btn {

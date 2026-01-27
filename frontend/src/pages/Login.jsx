@@ -13,11 +13,58 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [touched, setTouched] = useState({});
     const navigate = useNavigate();
     const { changeTheme } = useContext(ThemeContext);
 
     // Notification system
     const { notification, showError, hideNotification } = useNotification();
+
+    // Real-time validation
+    const validateField = (name, value) => {
+        const newErrors = { ...errors };
+        switch (name) {
+            case 'email':
+                if (!value) {
+                    newErrors.email = 'Email is required';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    newErrors.email = 'Please enter a valid email';
+                } else {
+                    delete newErrors.email;
+                }
+                break;
+            case 'password':
+                if (!value) {
+                    newErrors.password = 'Password is required';
+                } else if (value.length < 6) {
+                    newErrors.password = 'Password must be at least 6 characters';
+                } else {
+                    delete newErrors.password;
+                }
+                break;
+            default:
+                break;
+        }
+        setErrors(newErrors);
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        setTouched({ ...touched, [name]: true });
+        validateField(name, value);
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'email') setEmail(value);
+        if (name === 'password') setPassword(value);
+
+        if (touched[name]) {
+            validateField(name, value);
+        }
+    };
 
     // Keyboard shortcuts
     useKeyboardShortcuts({
@@ -88,36 +135,69 @@ const Login = () => {
                 </div>
 
                 <form onSubmit={handleLogin} className="auth-form">
-                    <div className="input-group">
+                    <div className={`input-group ${touched.email && errors.email ? 'input-error' : ''} ${touched.email && !errors.email && email ? 'input-valid' : ''}`}>
                         <label htmlFor="email">Email</label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter your email"
-                            required
-                            disabled={loading}
-                            aria-label="Email address"
-                            aria-required="true"
-                            autoComplete="email"
-                        />
+                        <div className="input-wrapper">
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={email}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                placeholder="Enter your email"
+                                required
+                                disabled={loading}
+                                aria-label="Email address"
+                                aria-required="true"
+                                aria-invalid={touched.email && errors.email ? 'true' : 'false'}
+                                aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
+                                autoComplete="email"
+                            />
+                            {touched.email && !errors.email && email && (
+                                <span className="input-check-icon">✓</span>
+                            )}
+                        </div>
+                        {touched.email && errors.email && (
+                            <span id="email-error" className="error-message" role="alert">{errors.email}</span>
+                        )}
                     </div>
 
-                    <div className="input-group">
+                    <div className={`input-group ${touched.password && errors.password ? 'input-error' : ''} ${touched.password && !errors.password && password ? 'input-valid' : ''}`}>
                         <label htmlFor="password">Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter your password"
-                            required
-                            disabled={loading}
-                            aria-label="Password"
-                            aria-required="true"
-                            autoComplete="current-password"
-                        />
+                        <div className="input-wrapper">
+                            <input
+                                id="password"
+                                name="password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                placeholder="Enter your password"
+                                required
+                                disabled={loading}
+                                aria-label="Password"
+                                aria-required="true"
+                                aria-invalid={touched.password && errors.password ? 'true' : 'false'}
+                                aria-describedby={touched.password && errors.password ? 'password-error' : undefined}
+                                autoComplete="current-password"
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                tabIndex={-1}
+                            >
+                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                            </button>
+                            {touched.password && !errors.password && password && (
+                                <span className="input-check-icon">✓</span>
+                            )}
+                        </div>
+                        {touched.password && errors.password && (
+                            <span id="password-error" className="error-message" role="alert">{errors.password}</span>
+                        )}
                     </div>
 
                     <button

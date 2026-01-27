@@ -3,4 +3,45 @@
 /* Import the same auth styles from Login.css */
 @import './Login.css';
 
-/* Any register-specific overrides can go here if needed */
+/* Register-specific styles */
+.password-strength {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.strength-text {
+    font-size: 0.7rem;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: right;
+}
+
+/* Ensure password input has enough space for toggle and check icon */
+.input-group:has(.password-toggle) input {
+    padding-right: 3.8rem;
+}
+
+.input-group.input-valid:has(.password-toggle) input {
+    padding-right: 4.5rem;
+}
+
+/* Adjust check icon position when password toggle is present */
+.input-group:has(.password-toggle) .input-check-icon {
+    right: 3.2rem;
+}
