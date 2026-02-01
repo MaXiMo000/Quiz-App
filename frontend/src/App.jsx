@@ -8,6 +8,7 @@ import GoogleAuth from "./components/GoogleAuth";
 import OfflineBanner from "./components/OfflineBanner"; // ✅ Offline status banner
 import pwaManager from './utils/pwaUtils'; // ✅ PWA management utilities
 import { useNetworkStatus } from './hooks/useNetworkStatus'; // ✅ Network status detection
+import { getUserFromStorage } from './utils/localStorage'; // ✅ Safe localStorage access
 
 // ✅ PWA Debug utilities (development only)
 if (import.meta.env.DEV) {
@@ -81,9 +82,29 @@ const App = () => {
 
     // 🔒 SECURITY: Removed unnecessary user state and logging
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        if (storedUser) {
-            // User data is available in localStorage when needed
+        try {
+            // Double-check that getUserFromStorage exists (defensive programming)
+            if (typeof getUserFromStorage === 'function') {
+                const storedUser = getUserFromStorage();
+                if (storedUser) {
+                    // User data is available in localStorage when needed
+                }
+            } else {
+                // Fallback: safe manual parsing if utility function is not available
+                try {
+                    const userItem = localStorage.getItem('user');
+                    if (userItem && userItem !== 'null' && userItem !== 'undefined' && userItem !== '') {
+                        JSON.parse(userItem);
+                    }
+                } catch (parseError) {
+                    // Silently ignore parse errors
+                }
+            }
+        } catch (error) {
+            // Silently handle any localStorage errors - don't break the app
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error accessing user from storage:', error);
+            }
         }
     }, []);
 

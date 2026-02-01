@@ -6,6 +6,8 @@ import XPLog from "../models/XPLog.js";
 import { unlockThemesForLevel } from "../utils/themeUtils.js";
 import logger from "../utils/logger.js";
 import mongoose from "mongoose";
+import { sendSuccess, sendError, sendValidationError, sendNotFound, sendUnauthorized, sendCreated } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 /**
  * Normalize IP address (convert IPv6 loopback to IPv4, handle IPv4-mapped IPv6)
@@ -143,7 +145,7 @@ export const registerUser = async (req, res) => {
         const existingUser = await UserQuiz.findOne({ email: email.toLowerCase() });
         if (existingUser) {
             logger.warn(`Registration failed: User already exists with email: ${email}`);
-            return res.status(400).json({ success: false, message: "User already exists" });
+            return sendValidationError(res, { email: "User already exists" }, "User already exists");
         }
 
         const salt = await bcrypt.genSalt(12); // Increased salt rounds for better security
@@ -180,10 +182,10 @@ export const registerUser = async (req, res) => {
         await newUser.save();
 
         logger.info(`User registered successfully with email: ${email}`);
-        res.status(201).json({ success: true, message: "User registered successfully!" });
+        return sendCreated(res, { userId: newUser._id }, "User registered successfully!");
     } catch (error) {
         logger.error({ message: "Error during user registration", error: error.message, stack: error.stack });
-        res.status(500).json({ success: false, message: "Internal Server Error" });
+        throw new AppError("Internal Server Error", 500);
     }
 };
 
@@ -195,13 +197,13 @@ export const loginUser = async (req, res) => {
         const user = await UserQuiz.findOne({ email });
         if (!user) {
             logger.warn(`Login failed: User not found with email: ${email}`);
-            return res.status(400).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             logger.warn(`Login failed: Invalid credentials for email: ${email}`);
-            return res.status(400).json({ error: "Invalid credentials" });
+            return sendUnauthorized(res, "Invalid credentials");
         }
 
         // ✅ Check daily login streak
@@ -327,8 +329,7 @@ export const loginUser = async (req, res) => {
 
         logger.info(`User logged in successfully: ${email} from IP: ${getClientIP(req)}`);
         // ✅ Return user with XP, level, streak
-        res.json({
-            message: "Login successful",
+        return sendSuccess(res, {
             token,
             user: {
                 _id: user._id,
@@ -346,10 +347,10 @@ export const loginUser = async (req, res) => {
                 isOnline: user.isOnline || false,
                 lastSeen: user.lastSeen || new Date(),
             },
-        });
+        }, "Login successful");
     } catch (error) {
         logger.error({ message: "Error during user login", error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server Error" });
+        throw new AppError("Server Error", 500);
     }
 };
 
@@ -360,10 +361,10 @@ export const getAllUsers = async (req, res) => {
     try {
         const users = await UserQuiz.find();
         logger.info(`Successfully fetched ${users.length} users`);
-        res.json(users);
+        return sendSuccess(res, users, "Users fetched successfully");
     } catch (error) {
         logger.error({ message: "Error fetching all users", error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server Error" });
+        throw new AppError("Server Error", 500);
     }
 };
 
@@ -375,7 +376,7 @@ export const updateUserRole = async (req, res) => {
 
         if (!user) {
             logger.warn(`User not found: ${userId} when updating role`);
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
         user.role = role;
         await user.save();
@@ -387,8 +388,7 @@ export const updateUserRole = async (req, res) => {
         );
 
         logger.info(`Successfully updated role for user ${userId} to ${role}`);
-        res.json({
-            message: `Role updated to ${role}`,
+        return sendSuccess(res, {
             token, // ✅ must be this
             user: {
                 _id: user._id,
@@ -396,10 +396,10 @@ export const updateUserRole = async (req, res) => {
                 email: user.email,
                 role: user.role,
             },
-        });
+        }, `Role updated to ${role}`);
     }catch (error) {
         logger.error({ message: `Error updating role for user ${req.body.userId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Internal Server Error" });
+        throw new AppError("Internal Server Error", 500);
     }
 };
 
@@ -409,13 +409,13 @@ export const logoutUser = async (req, res) => {
     try {
         if (!req.user?.id) {
             logger.warn("Logout attempted without valid user ID");
-            return res.status(401).json({ message: "Not authenticated" });
+            return sendUnauthorized(res, "Not authenticated");
         }
 
         const user = await UserQuiz.findById(req.user.id);
         if (!user) {
             logger.warn(`User not found for logout: ${req.user.id}`);
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // ✅ Update online status and last seen on logout
@@ -424,13 +424,10 @@ export const logoutUser = async (req, res) => {
         await user.save();
 
         logger.info(`User ${req.user.id} logged out successfully`);
-        res.json({
-            message: "Logout successful",
-            lastSeen: user.lastSeen
-        });
+        return sendSuccess(res, { lastSeen: user.lastSeen }, "Logout successful");
     } catch (error) {
         logger.error({ message: "Error during logout", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -444,7 +441,7 @@ export const updateUserTheme = async (req, res) => {
         const user = await UserQuiz.findById(id);
         if (!user) {
             logger.warn(`User not found: ${id} when updating theme`);
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Validate theme name and check if unlocked
@@ -456,23 +453,23 @@ export const updateUserTheme = async (req, res) => {
 
         if (!validThemes.includes(theme)) {
             logger.warn(`User ${id} attempted to set invalid theme: ${theme}`);
-            return res.status(400).json({ error: "Invalid theme name" });
+            return sendValidationError(res, { theme: "Invalid theme name" }, "Invalid theme name");
         }
 
         // Allow "Default" theme without validation, validate others
         if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
             logger.warn(`User ${id} attempted to set theme to ${theme} which is not unlocked. User level: ${user.level}, Unlocked themes: ${user.unlockedThemes.join(', ')}`);
-            return res.status(403).json({ error: "Theme not unlocked yet. Level up to unlock more themes!" });
+            return sendError(res, "Theme not unlocked yet. Level up to unlock more themes!", 403);
         }
 
         user.selectedTheme = theme;
         await user.save();
 
         logger.info(`Successfully updated theme for user ${id} to ${theme}`);
-        res.json({ message: "Theme updated", selectedTheme: user.selectedTheme });
+        return sendSuccess(res, { selectedTheme: user.selectedTheme }, "Theme updated");
     } catch (err) {
         logger.error({ message: `Error updating theme for user ${req.params.id}`, error: err.message, stack: err.stack });
-        res.status(500).json({ error: "Error updating theme" });
+        throw new AppError("Error updating theme", 500);
     }
 };
 
@@ -483,30 +480,30 @@ export const saveCustomTheme = async (req, res) => {
         const { name, themeData } = req.body;
 
         if (!name || !themeData) {
-            return res.status(400).json({ error: "Theme name and data are required" });
+            return sendValidationError(res, { name: "Theme name and data are required" }, "Theme name and data are required");
         }
 
         // Validate theme name
         if (typeof name !== 'string' || name.trim().length === 0) {
-            return res.status(400).json({ error: "Theme name must be a non-empty string" });
+            return sendValidationError(res, { name: "Theme name must be a non-empty string" }, "Theme name must be a non-empty string");
         }
 
         if (name.trim().length > 50) {
-            return res.status(400).json({ error: "Theme name must be 50 characters or less" });
+            return sendValidationError(res, { name: "Theme name must be 50 characters or less" }, "Theme name must be 50 characters or less");
         }
 
         // Validate themeData is an object
         if (typeof themeData !== 'object' || themeData === null || Array.isArray(themeData)) {
-            return res.status(400).json({ error: "Theme data must be an object" });
+            return sendValidationError(res, { themeData: "Theme data must be an object" }, "Theme data must be an object");
         }
 
         // Validate required theme properties (core colors only)
         const requiredProps = ['accent', 'accent2', 'bgDark', 'bgSecondary', 'textColor', 'textLight'];
         const missingProps = requiredProps.filter(prop => !themeData[prop]);
         if (missingProps.length > 0) {
-            return res.status(400).json({
-                error: `Missing required theme properties: ${missingProps.join(', ')}`
-            });
+            return sendValidationError(res, {
+                themeData: `Missing required theme properties: ${missingProps.join(', ')}`
+            }, `Missing required theme properties: ${missingProps.join(', ')}`);
         }
 
         // Set defaults for optional properties if not provided
@@ -554,7 +551,7 @@ export const saveCustomTheme = async (req, res) => {
 
         const user = await UserQuiz.findById(id);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Calculate max custom themes allowed (1 per 5 levels)
@@ -562,15 +559,13 @@ export const saveCustomTheme = async (req, res) => {
         const currentCustomThemes = user.customThemes || [];
 
         if (currentCustomThemes.length >= maxCustomThemes) {
-            return res.status(403).json({
-                error: `You can only create ${maxCustomThemes} custom theme(s) at Level ${user.level}. Level up to create more! (1 custom theme per 5 levels)`
-            });
+            return sendError(res, `You can only create ${maxCustomThemes} custom theme(s) at Level ${user.level}. Level up to create more! (1 custom theme per 5 levels)`, 403);
         }
 
         // Check if name already exists
         const nameExists = currentCustomThemes.some(theme => theme.name.toLowerCase() === name.toLowerCase());
         if (nameExists) {
-            return res.status(400).json({ error: "A custom theme with this name already exists" });
+            return sendValidationError(res, { name: "A custom theme with this name already exists" }, "A custom theme with this name already exists");
         }
 
         // Save custom theme
@@ -583,15 +578,14 @@ export const saveCustomTheme = async (req, res) => {
         await user.save();
 
         logger.info(`User ${id} saved custom theme "${name}" at level ${user.level}`);
-        res.json({
-            message: "Custom theme saved successfully",
+        return sendSuccess(res, {
             customTheme: user.customThemes[user.customThemes.length - 1],
             maxCustomThemes,
             currentCount: user.customThemes.length
-        });
+        }, "Custom theme saved successfully");
     } catch (err) {
         logger.error({ message: `Error saving custom theme for user ${req.params.id}`, error: err.message, stack: err.stack });
-        res.status(500).json({ error: "Error saving custom theme" });
+        throw new AppError("Error saving custom theme", 500);
     }
 };
 
@@ -602,21 +596,21 @@ export const getCustomThemes = async (req, res) => {
         const user = await UserQuiz.findById(id).select('customThemes level');
 
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         const maxCustomThemes = Math.floor(user.level / 5);
         const currentCustomThemes = user.customThemes || [];
 
-        res.json({
+        return sendSuccess(res, {
             customThemes: currentCustomThemes,
             maxCustomThemes,
             currentCount: currentCustomThemes.length,
             canCreateMore: currentCustomThemes.length < maxCustomThemes
-        });
+        }, "Custom themes fetched successfully");
     } catch (err) {
         logger.error({ message: `Error fetching custom themes for user ${req.params.id}`, error: err.message, stack: err.stack });
-        res.status(500).json({ error: "Error fetching custom themes" });
+        throw new AppError("Error fetching custom themes", 500);
     }
 };
 
@@ -627,36 +621,35 @@ export const deleteCustomTheme = async (req, res) => {
         const { themeId } = req.body;
 
         if (!themeId) {
-            return res.status(400).json({ error: "Theme ID is required" });
+            return sendValidationError(res, { themeId: "Theme ID is required" }, "Theme ID is required");
         }
 
         // Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(themeId)) {
-            return res.status(400).json({ error: "Invalid theme ID format" });
+            return sendValidationError(res, { themeId: "Invalid theme ID format" }, "Invalid theme ID format");
         }
 
         const user = await UserQuiz.findById(id);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         const themeIndex = user.customThemes.findIndex(theme => theme._id.toString() === themeId);
         if (themeIndex === -1) {
-            return res.status(404).json({ error: "Custom theme not found" });
+            return sendNotFound(res, "Custom theme");
         }
 
         user.customThemes.splice(themeIndex, 1);
         await user.save();
 
         logger.info(`User ${id} deleted custom theme ${themeId}`);
-        res.json({
-            message: "Custom theme deleted successfully",
+        return sendSuccess(res, {
             remainingThemes: user.customThemes.length,
             maxCustomThemes: Math.floor(user.level / 5)
-        });
+        }, "Custom theme deleted successfully");
     } catch (err) {
         logger.error({ message: `Error deleting custom theme for user ${req.params.id}`, error: err.message, stack: err.stack });
-        res.status(500).json({ error: "Error deleting custom theme" });
+        throw new AppError("Error deleting custom theme", 500);
     }
 };
 
@@ -667,16 +660,16 @@ export const bookmarkQuiz = async (req, res) => {
         const { quizId } = req.body;
 
         if (!quizId) {
-            return res.status(400).json({ error: "Quiz ID is required" });
+            return sendValidationError(res, { quizId: "Quiz ID is required" }, "Quiz ID is required");
         }
 
         if (!mongoose.Types.ObjectId.isValid(quizId)) {
-            return res.status(400).json({ error: "Invalid quiz ID format" });
+            return sendValidationError(res, { quizId: "Invalid quiz ID format" }, "Invalid quiz ID format");
         }
 
         const user = await UserQuiz.findById(userId);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Check if already bookmarked
@@ -685,7 +678,7 @@ export const bookmarkQuiz = async (req, res) => {
         );
 
         if (existingBookmark) {
-            return res.status(400).json({ error: "Quiz already bookmarked" });
+            return sendValidationError(res, { quizId: "Quiz already bookmarked" }, "Quiz already bookmarked");
         }
 
         // Add bookmark
@@ -697,13 +690,12 @@ export const bookmarkQuiz = async (req, res) => {
         await user.save();
 
         logger.info(`User ${userId} bookmarked quiz ${quizId}`);
-        res.json({
-            message: "Quiz bookmarked successfully",
+        return sendSuccess(res, {
             bookmarkedQuizzes: user.bookmarkedQuizzes
-        });
+        }, "Quiz bookmarked successfully");
     } catch (err) {
         logger.error({ message: `Error bookmarking quiz for user ${req.user.id}`, error: err.message, stack: err.stack });
-        res.status(500).json({ error: "Error bookmarking quiz" });
+        throw new AppError("Error bookmarking quiz", 500);
     }
 };
 
@@ -714,16 +706,16 @@ export const removeBookmark = async (req, res) => {
         const { quizId } = req.body;
 
         if (!quizId) {
-            return res.status(400).json({ error: "Quiz ID is required" });
+            return sendValidationError(res, { quizId: "Quiz ID is required" }, "Quiz ID is required");
         }
 
         if (!mongoose.Types.ObjectId.isValid(quizId)) {
-            return res.status(400).json({ error: "Invalid quiz ID format" });
+            return sendValidationError(res, { quizId: "Invalid quiz ID format" }, "Invalid quiz ID format");
         }
 
         const user = await UserQuiz.findById(userId);
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         const bookmarkIndex = user.bookmarkedQuizzes.findIndex(
@@ -731,20 +723,19 @@ export const removeBookmark = async (req, res) => {
         );
 
         if (bookmarkIndex === -1) {
-            return res.status(404).json({ error: "Quiz not bookmarked" });
+            return sendNotFound(res, "Bookmark");
         }
 
         user.bookmarkedQuizzes.splice(bookmarkIndex, 1);
         await user.save();
 
         logger.info(`User ${userId} removed bookmark for quiz ${quizId}`);
-        res.json({
-            message: "Bookmark removed successfully",
+        return sendSuccess(res, {
             bookmarkedQuizzes: user.bookmarkedQuizzes
-        });
+        }, "Bookmark removed successfully");
     } catch (err) {
         logger.error({ message: `Error removing bookmark for user ${req.user.id}`, error: err.message, stack: err.stack });
-        res.status(500).json({ error: "Error removing bookmark" });
+        throw new AppError("Error removing bookmark", 500);
     }
 };
 
@@ -755,26 +746,26 @@ export const getBookmarkedQuizzes = async (req, res) => {
 
         if (!userId) {
             logger.error('No user ID in request');
-            return res.status(401).json({ error: "Unauthorized" });
+            return sendUnauthorized(res, "Unauthorized");
         }
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             logger.error(`Invalid user ID format: ${userId}`);
-            return res.status(400).json({ error: "Invalid user ID format" });
+            return sendValidationError(res, { userId: "Invalid user ID format" }, "Invalid user ID format");
         }
 
         const user = await UserQuiz.findById(userId).select('bookmarkedQuizzes');
 
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // If no bookmarks, return empty array
         if (!user.bookmarkedQuizzes || !Array.isArray(user.bookmarkedQuizzes) || user.bookmarkedQuizzes.length === 0) {
-            return res.json({
+            return sendSuccess(res, {
                 bookmarkedQuizzes: [],
                 count: 0
-            });
+            }, "Bookmarked quizzes fetched successfully");
         }
 
         // Populate quiz data for each bookmark
@@ -836,10 +827,10 @@ export const getBookmarkedQuizzes = async (req, res) => {
         const validBookmarks = populatedBookmarks.filter(bookmark => bookmark !== null);
 
         logger.info(`User ${userId} fetched ${validBookmarks.length} bookmarked quizzes`);
-        res.json({
+        return sendSuccess(res, {
             bookmarkedQuizzes: validBookmarks,
             count: validBookmarks.length
-        });
+        }, "Bookmarked quizzes fetched successfully");
     } catch (err) {
         logger.error({
             message: `Error fetching bookmarked quizzes for user ${req.user?.id || 'unknown'}`,
@@ -849,6 +840,6 @@ export const getBookmarkedQuizzes = async (req, res) => {
             url: req.url,
             method: req.method
         });
-        res.status(500).json({ error: "Error fetching bookmarked quizzes" });
+        throw new AppError("Error fetching bookmarked quizzes", 500);
     }
 };

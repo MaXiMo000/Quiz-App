@@ -218,7 +218,7 @@ html.admin-quizzes-page .main-content {
 .admin-quiz-search-input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 3px var(--accent-transparent-20);
 }
 
 .admin-quiz-search-input::placeholder {
@@ -452,10 +452,10 @@ html.admin-quizzes-page .main-content {
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
-    color: rgba(99, 102, 241, 0.8);
+    color: var(--accent);
     padding: 3rem;
-    background: rgba(99, 102, 241, 0.05);
-    border: 2px dashed rgba(99, 102, 241, 0.2);
+    background: var(--accent-transparent-08);
+    border: 2px dashed var(--accent-transparent-20);
     border-radius: 2rem;
     max-width: 500px;
     width: 100%;
@@ -528,7 +528,7 @@ html.admin-quizzes-page .main-content {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 10px 20px var(--accent-transparent-30);
     z-index: 10;
 }
 
@@ -711,7 +711,7 @@ html.admin-quizzes-page .main-content {
 .admin-quiz-container .quiz-actions .add-question-btn,
 .admin-quiz-container .quiz-actions .view-questions-btn {
     background: var(--admin-primary) !important;
-    color: #ffffff !important;
+    color: var(--text-light) !important;
     border: 2px solid var(--admin-border) !important;
     transform: none !important;
     margin-top: 0 !important;
@@ -738,14 +738,14 @@ html.admin-quizzes-page .main-content {
 
 .admin-quiz-container .quiz-actions .delete-btn,
 .admin-quiz-container .quiz-actions .admin-delete-btn {
-    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-    color: white !important;
-    border: 2px solid rgba(239, 68, 68, 0.3) !important;
+    background: var(--gradient-danger) !important;
+    color: var(--text-light) !important;
+    border: 2px solid var(--danger-transparent-30) !important;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25) !important;
+    box-shadow: 0 8px 25px var(--danger-transparent-30) !important;
     transition: all 0.4s ease !important;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: 0 2px 4px var(--black-transparent-30) !important;
     transform: none !important;
     margin-top: 0 !important;
     width: auto !important;

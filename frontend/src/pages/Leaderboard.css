@@ -657,7 +657,7 @@ html:has(.leaderboard-container) {
 .leaderboard-search-input:focus {
     outline: none;
     border-color: var(--warning);
-    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+    box-shadow: 0 0 0 3px var(--warning-light);
 }
 
 .leaderboard-search-input::placeholder {
@@ -835,7 +835,7 @@ html:has(.leaderboard-container) {
     color: var(--text-light);
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+    border-bottom: 2px solid var(--warning-light);
     background: linear-gradient(135deg, var(--warning-light), var(--warning-light));
     backdrop-filter: blur(10px);
     /* Ensure sticky header works - must be after table container rules */
@@ -860,7 +860,7 @@ html:has(.leaderboard-container) {
     color: var(--text-color);
     font-size: 0.95rem;
     font-weight: 500;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--white-transparent-05);
 }
 
 .rank-cell {
@@ -905,18 +905,18 @@ html:has(.leaderboard-container) {
 
 /* Rank Highlighting */
 .rank-1 {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.1)) !important;
-    border-left: 4px solid #FFD700;
+    background: linear-gradient(135deg, var(--warning-light), rgba(245, 158, 11, 0.1)) !important;
+    border-left: 4px solid var(--warning);
 }
 
 .rank-2 {
-    background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), rgba(169, 169, 169, 0.1)) !important;
-    border-left: 4px solid #C0C0C0;
+    background: linear-gradient(135deg, var(--text-muted-transparent), rgba(148, 163, 184, 0.1)) !important;
+    border-left: 4px solid var(--text-muted);
 }
 
 .rank-3 {
-    background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), rgba(184, 115, 51, 0.1)) !important;
-    border-left: 4px solid #CD7F32;
+    background: linear-gradient(135deg, var(--warning-light), rgba(245, 158, 11, 0.1)) !important;
+    border-left: 4px solid var(--warning);
 }
 
 /* Pagination */
@@ -1017,7 +1017,7 @@ html:has(.leaderboard-container) {
 
 /* ✅ XP Leaderboard Specific Styles */
 .xp-leaderboard-container {
-    background: linear-gradient(135deg, var(--success-light) 0%, var(--accent-light) 50%, rgba(236, 72, 153, 0.1) 100%);
+    background: linear-gradient(135deg, var(--success-light) 0%, var(--accent-light) 50%, var(--accent2-transparent-08) 100%);
 }
 
 .xp-leaderboard-container h2 {

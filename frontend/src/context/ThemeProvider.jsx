@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ThemeContext } from "./ThemeContextProvider";
+import { safeParseJSON, safeSetItem } from "../utils/localStorage";
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState("Default");
 
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const storedUser = safeParseJSON("user", null);
         const storedTheme = storedUser?.selectedTheme || "Default";
 
         setTheme(storedTheme);
@@ -103,7 +104,7 @@ export const ThemeProvider = ({ children }) => {
     // Add effect to listen for localStorage changes (for login events)
     useEffect(() => {
         const handleStorageChange = () => {
-            const storedUser = JSON.parse(localStorage.getItem("user"));
+            const storedUser = safeParseJSON("user", null);
             if (storedUser && storedUser.selectedTheme) {
                 console.log('ThemeContext: Storage changed, updating theme to:', storedUser.selectedTheme);
                 setTheme(storedUser.selectedTheme);
@@ -116,11 +117,16 @@ export const ThemeProvider = ({ children }) => {
 
         // Also check periodically for user changes (like after login)
         const intervalId = setInterval(() => {
-            const storedUser = JSON.parse(localStorage.getItem("user"));
-            if (storedUser && storedUser.selectedTheme && storedUser.selectedTheme !== theme) {
-                console.log('ThemeContext: User theme changed, updating to:', storedUser.selectedTheme);
-                setTheme(storedUser.selectedTheme);
-                document.documentElement.setAttribute("data-theme", storedUser.selectedTheme);
+            try {
+                const storedUser = safeParseJSON("user", null);
+                if (storedUser && storedUser.selectedTheme && storedUser.selectedTheme !== theme) {
+                    console.log('ThemeContext: User theme changed, updating to:', storedUser.selectedTheme);
+                    setTheme(storedUser.selectedTheme);
+                    document.documentElement.setAttribute("data-theme", storedUser.selectedTheme);
+                }
+            } catch (error) {
+                // Silently handle errors in interval to prevent console spam
+                console.error('Error checking theme in interval:', error);
             }
         }, 1000);
 
@@ -142,13 +148,13 @@ export const ThemeProvider = ({ children }) => {
             document.documentElement.removeAttribute('style');
         }
 
-        const user = JSON.parse(localStorage.getItem("user"));
+        const user = safeParseJSON("user", null);
         if (user) {
             user.selectedTheme = newTheme;
             if (!localStorage.getItem('activeCustomTheme')) {
                 delete user.customThemeId;
             }
-            localStorage.setItem("user", JSON.stringify(user));
+            safeSetItem("user", user);
         }
     };
 

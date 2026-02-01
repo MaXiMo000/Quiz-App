@@ -3,6 +3,8 @@ import Tournament from "../models/Tournament.js";
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError, sendValidationError, sendNotFound, sendForbidden, sendCreated } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 // ===================== DAILY CHALLENGES =====================
 
@@ -59,15 +61,9 @@ export const getCurrentDailyChallenge = async (req, res) => {
         if (availableChallenges.length === 0) {
             logger.info(`No daily challenges available for user ${userId}`);
             if (req.user.role === "admin") {
-                return res.status(404).json({
-                    message: "No daily challenges available today",
-                    suggestion: "As an admin, you can create a new daily challenge!"
-                });
+                return sendNotFound(res, "Daily challenge", "No daily challenges available today. As an admin, you can create a new daily challenge!");
             } else {
-                return res.status(404).json({
-                    message: "No daily challenges available today",
-                    suggestion: "Check back later for new challenges!"
-                });
+                return sendNotFound(res, "Daily challenge", "No daily challenges available today. Check back later for new challenges!");
             }
         }
 
@@ -99,13 +95,13 @@ export const getCurrentDailyChallenge = async (req, res) => {
         });
 
         logger.info(`Successfully fetched ${challengesWithProgress.length} daily challenges for user ${userId}`);
-        res.json({
+        return sendSuccess(res, {
             challenges: challengesWithProgress
-        });
+        }, "Daily challenges fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting daily challenges for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -119,18 +115,18 @@ export const joinDailyChallenge = async (req, res) => {
         const challenge = await DailyChallenge.findById(challengeId);
         if (!challenge) {
             logger.warn(`Challenge not found: ${challengeId}`);
-            return res.status(404).json({ message: "Challenge not found" });
+            return sendNotFound(res, "Challenge");
         }
 
         if (!challenge.isActive) {
             logger.warn(`User ${userId} attempted to join inactive challenge ${challengeId}`);
-            return res.status(400).json({ message: "Challenge is not active" });
+            return sendError(res, "Challenge is not active", 400);
         }
 
         const now = new Date();
         if (now < challenge.startDate || now > challenge.endDate) {
             logger.warn(`User ${userId} attempted to join challenge ${challengeId} outside of its active time range`);
-            return res.status(400).json({ message: "Challenge is not available" });
+            return sendError(res, "Challenge is not available", 400);
         }
 
         // Check if already participating and handle 24-hour reset logic
@@ -182,13 +178,12 @@ export const joinDailyChallenge = async (req, res) => {
 
             } else if (existingParticipant.completed) {
                 logger.warn(`User ${userId} attempted to join recently completed challenge ${challengeId}`);
-                return res.status(400).json({
-                    message: "Challenge completed recently. Please wait 24 hours before attempting again.",
+                return sendError(res, "Challenge completed recently. Please wait 24 hours before attempting again.", 400, {
                     nextAvailableTime: new Date(existingParticipant.completedAt.getTime() + 24 * 60 * 60 * 1000)
                 });
             } else {
                 logger.warn(`User ${userId} attempted to join challenge ${challengeId} they are already participating in`);
-                return res.status(400).json({ message: "Already participating in this challenge" });
+                return sendError(res, "Already participating in this challenge", 400);
             }
         }
 
@@ -213,14 +208,13 @@ export const joinDailyChallenge = async (req, res) => {
         });
 
         logger.info(`User ${userId} successfully joined daily challenge ${challengeId}`);
-        res.json({
-            message: "Successfully joined daily challenge",
+        return sendSuccess(res, {
             challenge: challenge
-        });
+        }, "Successfully joined daily challenge");
 
     } catch (error) {
         logger.error({ message: `Error joining daily challenge ${req.params.challengeId} for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -235,7 +229,7 @@ export const updateChallengeProgress = async (req, res) => {
         const challenge = await DailyChallenge.findById(challengeId);
         if (!challenge) {
             logger.warn(`Challenge not found: ${challengeId} when updating progress`);
-            return res.status(404).json({ message: "Challenge not found" });
+            return sendNotFound(res, "Challenge");
         }
 
         const participantIndex = challenge.participants.findIndex(p =>
@@ -244,7 +238,7 @@ export const updateChallengeProgress = async (req, res) => {
 
         if (participantIndex === -1) {
             logger.warn(`User ${userId} not participating in challenge ${challengeId} when updating progress`);
-            return res.status(400).json({ message: "Not participating in this challenge" });
+            return sendError(res, "Not participating in this challenge", 400);
         }
 
         const participant = challenge.participants[participantIndex];
@@ -327,16 +321,15 @@ export const updateChallengeProgress = async (req, res) => {
         await challenge.save();
 
         logger.info(`Successfully updated progress for user ${userId} in challenge ${challengeId}`);
-        res.json({
-            message: isCompleted ? "Challenge completed!" : "Progress updated",
+        return sendSuccess(res, {
             participant: participant,
             isCompleted: isCompleted,
             rewards: isCompleted ? challenge.rewards : null
-        });
+        }, isCompleted ? "Challenge completed!" : "Progress updated");
 
     } catch (error) {
         logger.error({ message: `Error updating challenge progress for user ${req.user.id} in challenge ${req.params.challengeId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -347,7 +340,7 @@ export const createDailyChallenge = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to create a daily challenge`);
-            return res.status(403).json({ message: "Only admins can create daily challenges" });
+            return sendForbidden(res, "Only admins can create daily challenges");
         }
 
         const {
@@ -365,7 +358,7 @@ export const createDailyChallenge = async (req, res) => {
 
         // Validate required fields
         if (!title) {
-            return res.status(400).json({ message: "Title is required" });
+            return sendValidationError(res, { title: "Title is required" }, "Title is required");
         }
 
         const challenge = new DailyChallenge({
@@ -391,14 +384,11 @@ export const createDailyChallenge = async (req, res) => {
         await challenge.save();
 
         logger.info(`Admin ${req.user.id} successfully created daily challenge ${challenge._id}`);
-        res.status(201).json({
-            message: "Daily challenge created successfully",
-            challenge
-        });
+        return sendCreated(res, challenge, "Daily challenge created successfully");
 
     } catch (error) {
         logger.error({ message: `Error creating daily challenge by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -409,7 +399,7 @@ export const createSampleDailyChallenge = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to create a sample daily challenge`);
-            return res.status(403).json({ message: "Only admins can create daily challenges" });
+            return sendForbidden(res, "Only admins can create daily challenges");
         }
 
         // Get some sample quizzes for the challenge (remove isActive filter)
@@ -480,14 +470,11 @@ export const createSampleDailyChallenge = async (req, res) => {
         await sampleChallenge.save();
 
         logger.info(`Admin ${req.user.id} successfully created sample daily challenge ${sampleChallenge._id}`);
-        res.status(201).json({
-            message: "Sample daily challenge created successfully",
-            challenge: sampleChallenge
-        });
+        return sendCreated(res, sampleChallenge, "Sample daily challenge created successfully");
 
     } catch (error) {
         logger.error({ message: `Error creating sample daily challenge by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -567,11 +554,11 @@ export const getAvailableTournaments = async (req, res) => {
         });
 
         logger.info(`Successfully fetched ${tournamentsWithProgress.length} available tournaments for user ${userId}`);
-        res.json({ tournaments: tournamentsWithProgress });
+        return sendSuccess(res, { tournaments: tournamentsWithProgress }, "Available tournaments fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting available tournaments for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -582,7 +569,7 @@ export const deleteDailyChallenge = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to delete daily challenge ${req.params.challengeId}`);
-            return res.status(403).json({ message: "Only admins can delete daily challenges" });
+            return sendForbidden(res, "Only admins can delete daily challenges");
         }
 
         const { challengeId } = req.params;
@@ -590,19 +577,17 @@ export const deleteDailyChallenge = async (req, res) => {
 
         if (!challenge) {
             logger.warn(`Daily challenge not found for deletion: ${challengeId}`);
-            return res.status(404).json({ message: "Challenge not found" });
+            return sendNotFound(res, "Challenge");
         }
 
         await DailyChallenge.findByIdAndDelete(challengeId);
 
         logger.info(`Admin ${req.user.id} successfully deleted daily challenge ${challengeId}`);
-        res.json({
-            message: "Daily challenge deleted successfully"
-        });
+        return sendSuccess(res, null, "Daily challenge deleted successfully");
 
     } catch (error) {
         logger.error({ message: `Error deleting daily challenge ${req.params.challengeId} by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -613,7 +598,7 @@ export const deleteTournament = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to delete tournament ${req.params.tournamentId}`);
-            return res.status(403).json({ message: "Only admins can delete tournaments" });
+            return sendForbidden(res, "Only admins can delete tournaments");
         }
 
         const { tournamentId } = req.params;
@@ -621,19 +606,17 @@ export const deleteTournament = async (req, res) => {
 
         if (!tournament) {
             logger.warn(`Tournament not found for deletion: ${tournamentId}`);
-            return res.status(404).json({ message: "Tournament not found" });
+            return sendNotFound(res, "Tournament");
         }
 
         await Tournament.findByIdAndDelete(tournamentId);
 
         logger.info(`Admin ${req.user.id} successfully deleted tournament ${tournamentId}`);
-        res.json({
-            message: "Tournament deleted successfully"
-        });
+        return sendSuccess(res, null, "Tournament deleted successfully");
 
     } catch (error) {
         logger.error({ message: `Error deleting tournament ${req.params.tournamentId} by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -644,7 +627,7 @@ export const getAvailableQuizzes = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to fetch available quizzes`);
-            return res.status(403).json({ message: "Only admins can access this endpoint" });
+            return sendForbidden(res, "Only admins can access this endpoint");
         }
 
         // Only get quizzes created by admin (createdBy._id is null)
@@ -655,11 +638,11 @@ export const getAvailableQuizzes = async (req, res) => {
             .exec(); // Sort by newest first
 
         logger.info(`Admin ${req.user.id} successfully fetched ${quizzes.length} admin quizzes for challenges/tournaments`);
-        res.json({ quizzes });
+        return sendSuccess(res, { quizzes }, "Available quizzes fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error fetching available quizzes by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -673,7 +656,7 @@ export const registerForTournament = async (req, res) => {
         const tournament = await Tournament.findById(tournamentId);
         if (!tournament) {
             logger.warn(`Tournament not found: ${tournamentId} for registration`);
-            return res.status(404).json({ message: "Tournament not found" });
+            return sendNotFound(res, "Tournament");
         }
 
         const now = new Date();
@@ -685,8 +668,7 @@ export const registerForTournament = async (req, res) => {
         // Check if registration is open (considering full days rather than exact times)
         if (now < regStart || now > regEnd) {
             logger.warn(`User ${userId} attempted to register for tournament ${tournamentId} outside of registration period`);
-            return res.status(400).json({
-                message: "Registration is not open",
+            return sendError(res, "Registration is not open", 400, {
                 registrationStart: regStart,
                 registrationEnd: regEnd,
                 currentTime: now
@@ -695,7 +677,7 @@ export const registerForTournament = async (req, res) => {
 
         if (tournament.participants.length >= tournament.settings.maxParticipants) {
             logger.warn(`User ${userId} attempted to register for full tournament ${tournamentId}`);
-            return res.status(400).json({ message: "Tournament is full" });
+            return sendError(res, "Tournament is full", 400);
         }
 
         // Check if already registered
@@ -705,14 +687,14 @@ export const registerForTournament = async (req, res) => {
 
         if (isRegistered) {
             logger.warn(`User ${userId} attempted to register for tournament ${tournamentId} again`);
-            return res.status(400).json({ message: "Already registered for this tournament" });
+            return sendError(res, "Already registered for this tournament", 400);
         }
 
         // Check entry fee
         const user = await UserQuiz.findById(userId);
         if (tournament.settings.entryFee > 0 && user.xp < tournament.settings.entryFee) {
             logger.warn(`User ${userId} has insufficient XP for tournament ${tournamentId}`);
-            return res.status(400).json({ message: "Insufficient XP for entry fee" });
+            return sendError(res, "Insufficient XP for entry fee", 400);
         }
 
         // Deduct entry fee
@@ -743,14 +725,13 @@ export const registerForTournament = async (req, res) => {
         });
 
         logger.info(`User ${userId} successfully registered for tournament ${tournamentId}`);
-        res.json({
-            message: "Successfully registered for tournament",
+        return sendSuccess(res, {
             tournament: tournament
-        });
+        }, "Successfully registered for tournament");
 
     } catch (error) {
         logger.error({ message: `Error registering user ${req.user.id} for tournament ${req.params.tournamentId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -765,7 +746,7 @@ export const getTournamentLeaderboard = async (req, res) => {
 
         if (!tournament) {
             logger.warn(`Tournament not found: ${tournamentId} when fetching leaderboard`);
-            return res.status(404).json({ message: "Tournament not found" });
+            return sendNotFound(res, "Tournament");
         }
 
         // Sort participants by score and time
@@ -786,18 +767,18 @@ export const getTournamentLeaderboard = async (req, res) => {
             }));
 
         logger.info(`Successfully fetched leaderboard for tournament ${tournamentId}`);
-        res.json({
+        return sendSuccess(res, {
             tournament: {
                 name: tournament.name,
                 status: tournament.status,
                 settings: tournament.settings
             },
             leaderboard
-        });
+        }, "Tournament leaderboard fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting tournament leaderboard for tournament ${req.params.tournamentId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -812,12 +793,12 @@ export const updateTournamentScore = async (req, res) => {
         const tournament = await Tournament.findById(tournamentId);
         if (!tournament) {
             logger.warn(`Tournament not found: ${tournamentId} when updating score`);
-            return res.status(404).json({ message: "Tournament not found" });
+            return sendNotFound(res, "Tournament");
         }
 
         if (tournament.status !== "in_progress") {
             logger.warn(`User ${userId} attempted to update score for tournament ${tournamentId} that is not in progress`);
-            return res.status(400).json({ message: "Tournament is not in progress" });
+            return sendError(res, "Tournament is not in progress", 400);
         }
 
         const participantIndex = tournament.participants.findIndex(p =>
@@ -826,7 +807,7 @@ export const updateTournamentScore = async (req, res) => {
 
         if (participantIndex === -1) {
             logger.warn(`User ${userId} not registered for tournament ${tournamentId} when updating score`);
-            return res.status(400).json({ message: "Not registered for this tournament" });
+            return sendError(res, "Not registered for this tournament", 400);
         }
 
         const participant = tournament.participants[participantIndex];
@@ -853,15 +834,14 @@ export const updateTournamentScore = async (req, res) => {
         await tournament.save();
 
         logger.info(`Successfully updated score for user ${userId} in tournament ${tournamentId}`);
-        res.json({
-            message: "Score updated successfully",
+        return sendSuccess(res, {
             participant: participant,
             currentRank: participant.rank
-        });
+        }, "Score updated successfully");
 
     } catch (error) {
         logger.error({ message: `Error updating tournament score for user ${req.user.id} in tournament ${req.params.tournamentId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -872,7 +852,7 @@ export const createTournament = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to create a tournament`);
-            return res.status(403).json({ message: "Only admins can create tournaments" });
+            return sendForbidden(res, "Only admins can create tournaments");
         }
 
         const tournamentData = req.body;
@@ -912,14 +892,11 @@ export const createTournament = async (req, res) => {
         await tournament.save();
 
         logger.info(`Admin ${req.user.id} successfully created tournament ${tournament._id}`);
-        res.status(201).json({
-            message: "Tournament created successfully",
-            tournament
-        });
+        return sendCreated(res, tournament, "Tournament created successfully");
 
     } catch (error) {
         logger.error({ message: `Error creating tournament by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -930,7 +907,7 @@ export const createSampleTournament = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to create a sample tournament`);
-            return res.status(403).json({ message: "Only admins can create tournaments" });
+            return sendForbidden(res, "Only admins can create tournaments");
         }
 
         // Get some sample quizzes for the tournament (remove isActive filter)
@@ -1019,14 +996,11 @@ export const createSampleTournament = async (req, res) => {
         await sampleTournament.save();
 
         logger.info(`Admin ${req.user.id} successfully created sample tournament ${sampleTournament._id}`);
-        res.status(201).json({
-            message: "Sample tournament created successfully",
-            tournament: sampleTournament
-        });
+        return sendCreated(res, sampleTournament, "Sample tournament created successfully");
 
     } catch (error) {
         logger.error({ message: `Error creating sample tournament by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1040,21 +1014,21 @@ export const startChallengeQuiz = async (req, res) => {
         const challenge = await DailyChallenge.findById(challengeId).populate("quizzes");
         if (!challenge) {
             logger.warn(`Challenge not found: ${challengeId} when starting quiz`);
-            return res.status(404).json({ message: "Challenge not found" });
+            return sendNotFound(res, "Challenge");
         }
 
 
         // Check if challenge has any quizzes
         if (!challenge.quizzes || challenge.quizzes.length === 0) {
             logger.warn(`Challenge ${challengeId} has no quizzes configured`);
-            return res.status(400).json({ message: "This challenge has no quizzes configured" });
+            return sendError(res, "This challenge has no quizzes configured", 400);
         }
 
         // Check if user is participating
         const participant = challenge.participants.find(p => p.user.toString() === userId);
         if (!participant) {
             logger.warn(`User ${userId} not participating in challenge ${challengeId} when starting quiz`);
-            return res.status(400).json({ message: "You must join the challenge first" });
+            return sendError(res, "You must join the challenge first", 400);
         }
 
         // Get next quiz for the user
@@ -1066,13 +1040,13 @@ export const startChallengeQuiz = async (req, res) => {
 
         if (availableQuizzes.length === 0) {
             logger.info(`User ${userId} has no more quizzes available in challenge ${challengeId}`);
-            return res.status(400).json({ message: "No more quizzes available in this challenge" });
+            return sendError(res, "No more quizzes available in this challenge", 400);
         }
 
         const nextQuiz = availableQuizzes[0];
 
         logger.info(`Successfully started quiz ${nextQuiz._id} for user ${userId} in challenge ${challengeId}`);
-        res.json({
+        return sendSuccess(res, {
             quiz: {
                 _id: nextQuiz._id,
                 title: nextQuiz.title,
@@ -1084,11 +1058,11 @@ export const startChallengeQuiz = async (req, res) => {
                 total: challenge.quizzes.length,
                 remaining: availableQuizzes.length
             }
-        });
+        }, "Challenge quiz started successfully");
 
     } catch (error) {
         logger.error({ message: `Error starting challenge quiz for user ${req.user.id} in challenge ${req.params.challengeId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1107,19 +1081,19 @@ export const submitChallengeQuiz = async (req, res) => {
         const challenge = await DailyChallenge.findById(challengeId).populate("quizzes");
         if (!challenge) {
             logger.warn(`Challenge not found: ${challengeId} when submitting quiz`);
-            return res.status(404).json({ message: "Challenge not found" });
+            return sendNotFound(res, "Challenge");
         }
 
         const participant = challenge.participants.find(p => p.user.toString() === userId);
         if (!participant) {
             logger.warn(`User ${userId} not participating in challenge ${challengeId} when submitting quiz`);
-            return res.status(400).json({ message: "Not participating in this challenge" });
+            return sendError(res, "Not participating in this challenge", 400);
         }
 
         const quiz = challenge.quizzes.find(q => q._id.toString() === quizId);
         if (!quiz) {
             logger.warn(`Quiz ${quizId} not found in challenge ${challengeId}`);
-            return res.status(400).json({ message: "Quiz not found in this challenge" });
+            return sendError(res, "Quiz not found in this challenge", 400);
         }
 
         // Calculate score from answers (don't overwrite the score from frontend)
@@ -1212,8 +1186,7 @@ export const submitChallengeQuiz = async (req, res) => {
         await challenge.save();
 
         logger.info(`Successfully submitted quiz ${quizId} for user ${userId} in challenge ${challengeId}`);
-        res.json({
-            message: completedCount >= totalQuizzes ? "Challenge completed!" : "Quiz submitted successfully",
+        return sendSuccess(res, {
             results: {
                 score: finalScore,
                 percentage,
@@ -1234,11 +1207,11 @@ export const submitChallengeQuiz = async (req, res) => {
                 quizScores: participant.quizScores
             },
             rewards: completedCount >= totalQuizzes ? challenge.rewards : null
-        });
+        }, completedCount >= totalQuizzes ? "Challenge completed!" : "Quiz submitted successfully");
 
     } catch (error) {
         logger.error({ message: `Error submitting challenge quiz for user ${req.user.id} in challenge ${req.params.challengeId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1252,25 +1225,25 @@ export const startTournamentQuiz = async (req, res) => {
         const tournament = await Tournament.findById(tournamentId).populate("quizzes");
         if (!tournament) {
             logger.warn(`Tournament not found: ${tournamentId} when starting quiz`);
-            return res.status(404).json({ message: "Tournament not found" });
+            return sendNotFound(res, "Tournament");
         }
 
 
         // Check if tournament has any quizzes
         if (!tournament.quizzes || tournament.quizzes.length === 0) {
             logger.warn(`Tournament ${tournamentId} has no quizzes configured`);
-            return res.status(400).json({ message: "This tournament has no quizzes configured" });
+            return sendError(res, "This tournament has no quizzes configured", 400);
         }
 
         if (tournament.status !== "in_progress") {
             logger.warn(`User ${userId} attempted to start quiz for tournament ${tournamentId} that is not in progress`);
-            return res.status(400).json({ message: "Tournament is not in progress" });
+            return sendError(res, "Tournament is not in progress", 400);
         }
 
         const participant = tournament.participants.find(p => p.user.toString() === userId);
         if (!participant) {
             logger.warn(`User ${userId} not registered for tournament ${tournamentId} when starting quiz`);
-            return res.status(400).json({ message: "You must register for the tournament first" });
+            return sendError(res, "You must register for the tournament first", 400);
         }
 
         // Get next quiz for the user
@@ -1282,13 +1255,13 @@ export const startTournamentQuiz = async (req, res) => {
 
         if (availableQuizzes.length === 0) {
             logger.info(`User ${userId} has no more quizzes available in tournament ${tournamentId}`);
-            return res.status(400).json({ message: "No more quizzes available in this tournament" });
+            return sendError(res, "No more quizzes available in this tournament", 400);
         }
 
         const nextQuiz = availableQuizzes[0];
 
         logger.info(`Successfully started quiz ${nextQuiz._id} for user ${userId} in tournament ${tournamentId}`);
-        res.json({
+        return sendSuccess(res, {
             quiz: {
                 _id: nextQuiz._id,
                 title: nextQuiz.title,
@@ -1300,11 +1273,11 @@ export const startTournamentQuiz = async (req, res) => {
                 total: tournament.quizzes.length,
                 remaining: availableQuizzes.length
             }
-        });
+        }, "Tournament quiz started successfully");
 
     } catch (error) {
         logger.error({ message: `Error starting tournament quiz for user ${req.user.id} in tournament ${req.params.tournamentId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1323,19 +1296,19 @@ export const submitTournamentQuiz = async (req, res) => {
         const tournament = await Tournament.findById(tournamentId).populate("quizzes");
         if (!tournament) {
             logger.warn(`Tournament not found: ${tournamentId} when submitting quiz`);
-            return res.status(404).json({ message: "Tournament not found" });
+            return sendNotFound(res, "Tournament");
         }
 
         const participant = tournament.participants.find(p => p.user.toString() === userId);
         if (!participant) {
             logger.warn(`User ${userId} not registered for tournament ${tournamentId} when submitting quiz`);
-            return res.status(400).json({ message: "Not registered for this tournament" });
+            return sendError(res, "Not registered for this tournament", 400);
         }
 
         const quiz = tournament.quizzes.find(q => q._id.toString() === quizId);
         if (!quiz) {
             logger.warn(`Quiz ${quizId} not found in tournament ${tournamentId}`);
-            return res.status(400).json({ message: "Quiz not found in this tournament" });
+            return sendError(res, "Quiz not found in this tournament", 400);
         }
 
         // Calculate score from answers (don't overwrite the score from frontend)
@@ -1410,8 +1383,7 @@ export const submitTournamentQuiz = async (req, res) => {
             quizScores: participant.quizScores.length
         });
 
-        res.json({
-            message: "Quiz submitted successfully",
+        return sendSuccess(res, {
             results: {
                 score: finalScore,
                 percentage,
@@ -1432,11 +1404,11 @@ export const submitTournamentQuiz = async (req, res) => {
                 quizzesCompleted: participant.quizzesCompleted,
                 quizScores: participant.quizScores
             }
-        });
+        }, "Quiz submitted successfully");
 
     } catch (error) {
         logger.error({ message: `Error submitting tournament quiz for user ${req.user.id} in tournament ${req.params.tournamentId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1489,11 +1461,11 @@ export const getUserCompletedChallenges = async (req, res) => {
         }).filter(challenge => challenge !== null); // Remove null entries
 
         logger.info(`Successfully fetched ${challengeHistory.length} completed challenges for user ${userId}`);
-        res.json({ challenges: challengeHistory });
+        return sendSuccess(res, { challenges: challengeHistory }, "Completed challenges fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting completed challenges for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1557,11 +1529,11 @@ export const getTournamentHistory = async (req, res) => {
         });
 
         logger.info(`Successfully fetched ${tournamentHistory.length} tournament history records for user ${userId}`);
-        res.json({ tournaments: tournamentHistory });
+        return sendSuccess(res, { tournaments: tournamentHistory }, "Tournament history fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting tournament history for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1572,7 +1544,7 @@ export const cleanupEmptyChallenges = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to cleanup empty challenges`);
-            return res.status(403).json({ message: "Only admins can cleanup challenges" });
+            return sendForbidden(res, "Only admins can cleanup challenges");
         }
 
         // Find challenges with no quizzes
@@ -1590,14 +1562,13 @@ export const cleanupEmptyChallenges = async (req, res) => {
         }
 
         logger.info(`Admin ${req.user.id} cleaned up ${emptyChallenges.length} empty challenges`);
-        res.json({
-            message: `Cleaned up ${emptyChallenges.length} empty challenges`,
+        return sendSuccess(res, {
             deletedCount: emptyChallenges.length
-        });
+        }, `Cleaned up ${emptyChallenges.length} empty challenges`);
 
     } catch (error) {
         logger.error({ message: `Error cleaning up empty challenges by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1608,7 +1579,7 @@ export const cleanupEmptyTournaments = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to cleanup empty tournaments`);
-            return res.status(403).json({ message: "Only admins can cleanup tournaments" });
+            return sendForbidden(res, "Only admins can cleanup tournaments");
         }
 
         // Find tournaments with no quizzes
@@ -1626,14 +1597,13 @@ export const cleanupEmptyTournaments = async (req, res) => {
         }
 
         logger.info(`Admin ${req.user.id} cleaned up ${emptyTournaments.length} empty tournaments`);
-        res.json({
-            message: `Cleaned up ${emptyTournaments.length} empty tournaments`,
+        return sendSuccess(res, {
             deletedCount: emptyTournaments.length
-        });
+        }, `Cleaned up ${emptyTournaments.length} empty tournaments`);
 
     } catch (error) {
         logger.error({ message: `Error cleaning up empty tournaments by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1734,6 +1704,9 @@ export const resetDailyChallenges = async () => {
         let totalUsersReset = 0;
         let challengesModified = 0;
 
+        // Batch user updates to improve performance
+        const userUpdates = [];
+
         for (const challenge of challengesToReset) {
             let challengeModified = false;
             let usersResetInChallenge = 0;
@@ -1780,13 +1753,12 @@ export const resetDailyChallenges = async () => {
                     usersResetInChallenge++;
                     challengeModified = true;
 
-                    // Also update user's dailyChallenges data
-                    await UserQuiz.findByIdAndUpdate(participant.user, {
-                        $pull: { "gamification.dailyChallenges.completed": challenge._id },
-                        $set: { "gamification.dailyChallenges.current": challenge._id }
+                    // Queue user update for batch processing
+                    userUpdates.push({
+                        userId: participant.user,
+                        challengeId: challenge._id,
+                        challengeTitle: challenge.title
                     });
-
-                    logger.info(`Reset user ${participant.user} in challenge "${challenge.title}"`);
                 }
             }
 
@@ -1803,6 +1775,29 @@ export const resetDailyChallenges = async () => {
 
                 logger.info(`Reset ${usersResetInChallenge} users in challenge "${challenge.title}"`);
             }
+        }
+
+        // Batch update all users at once for better performance
+        if (userUpdates.length > 0) {
+            const updatePromises = userUpdates.map(({ userId, challengeId }) =>
+                UserQuiz.findByIdAndUpdate(userId, {
+                    $pull: { "gamification.dailyChallenges.completed": challengeId },
+                    $set: { "gamification.dailyChallenges.current": challengeId }
+                }, { new: false }) // Don't fetch updated document to save memory
+            );
+
+            // Process in batches of 50 to avoid overwhelming the database
+            const batchSize = 50;
+            for (let i = 0; i < updatePromises.length; i += batchSize) {
+                const batch = updatePromises.slice(i, i + batchSize);
+                await Promise.all(batch);
+                // Small delay between batches to prevent blocking
+                if (i + batchSize < updatePromises.length) {
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+            }
+
+            logger.info(`Batch updated ${userUpdates.length} users' daily challenge data`);
         }
 
         logger.info(`Daily reset completed: ${totalUsersReset} users reset across ${challengesModified} challenges`);
@@ -1831,23 +1826,21 @@ export const manualResetDailyChallenges = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to manually reset daily challenges`);
-            return res.status(403).json({ message: "Only admins can manually reset challenges" });
+            return sendForbidden(res, "Only admins can manually reset challenges");
         }
 
         const result = await resetDailyChallenges();
 
         if (result.success) {
             logger.info(`Manual daily challenge reset completed successfully by admin ${req.user.id}`);
-            res.json({
-                message: "Daily challenge reset completed successfully",
+            return sendSuccess(res, {
                 usersReset: result.usersReset,
                 challengesModified: result.challengesModified,
                 timestamp: result.timestamp
-            });
+            }, "Daily challenge reset completed successfully");
         } else {
             logger.error({ message: `Manual daily challenge reset failed for admin ${req.user.id}`, error: result.error });
-            res.status(500).json({
-                message: "Error during reset",
+            return sendError(res, "Error during reset", 500, {
                 error: result.error,
                 timestamp: result.timestamp
             });
@@ -1855,7 +1848,7 @@ export const manualResetDailyChallenges = async (req, res) => {
 
     } catch (error) {
         logger.error({ message: `Error in manual daily challenge reset by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1912,7 +1905,7 @@ export const getUserChallengeHistory = async (req, res) => {
         const challenge = await DailyChallenge.findById(challengeId);
         if (!challenge) {
             logger.warn(`Challenge not found: ${challengeId} when getting user challenge history`);
-            return res.status(404).json({ message: "Challenge not found" });
+            return sendNotFound(res, "Challenge");
         }
 
         // Get user's historical completions for this challenge
@@ -1926,17 +1919,17 @@ export const getUserChallengeHistory = async (req, res) => {
         );
 
         logger.info(`Successfully fetched user challenge history for user ${userId} and challenge ${challengeId}`);
-        res.json({
+        return sendSuccess(res, {
             challengeId: challengeId,
             challengeTitle: challenge.title,
             currentParticipation: currentParticipation,
             historicalCompletions: userHistory,
             totalAttempts: userHistory.length + (currentParticipation?.completed ? 1 : 0)
-        });
+        }, "User challenge history fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting user challenge history for user ${req.user.id} and challenge ${req.params.challengeId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -1946,7 +1939,7 @@ export const getChallengeHistoryAdmin = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to get challenge history for challenge ${req.params.challengeId}`);
-            return res.status(403).json({ message: "Admin access required" });
+            return sendForbidden(res, "Admin access required");
         }
 
         const { challengeId } = req.params;
@@ -1957,11 +1950,11 @@ export const getChallengeHistoryAdmin = async (req, res) => {
 
         if (!challenge) {
             logger.warn(`Challenge not found: ${challengeId} when getting challenge history by admin`);
-            return res.status(404).json({ message: "Challenge not found" });
+            return sendNotFound(res, "Challenge");
         }
 
         logger.info(`Successfully fetched challenge history for challenge ${challengeId} by admin ${req.user.id}`);
-        res.json({
+        return sendSuccess(res, {
             challenge: {
                 title: challenge.title,
                 description: challenge.description,
@@ -1970,11 +1963,11 @@ export const getChallengeHistoryAdmin = async (req, res) => {
                 historicalCompletions: challenge.historicalCompletions,
                 participants: challenge.participants
             }
-        });
+        }, "Challenge history fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting challenge history for challenge ${req.params.challengeId} by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -2056,14 +2049,14 @@ export const getDailyChallengeStatus = async (req, res) => {
         }
 
         logger.info(`Successfully fetched ${challengeStatuses.length} daily challenge statuses for user ${userId}`);
-        res.json({
+        return sendSuccess(res, {
             challenges: challengeStatuses,
             serverTime: now
-        });
+        }, "Daily challenge status fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting daily challenge status for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -2074,7 +2067,7 @@ export const cleanupOldChallengeData = async (req, res) => {
         const userRole = req.user.role;
         if (userRole !== "admin") {
             logger.warn(`Non-admin user ${req.user.id} attempted to cleanup old challenge data`);
-            return res.status(403).json({ message: "Only admins can cleanup old data" });
+            return sendForbidden(res, "Only admins can cleanup old data");
         }
 
         const { daysOld = 30 } = req.query; // Default to 30 days
@@ -2109,15 +2102,14 @@ export const cleanupOldChallengeData = async (req, res) => {
 
         logger.info(`Cleanup completed: ${deletedChallenges} old challenges removed`);
 
-        res.json({
-            message: "Cleanup completed successfully",
+        return sendSuccess(res, {
             deletedChallenges,
             cutoffDate
-        });
+        }, "Cleanup completed successfully");
 
     } catch (error) {
         logger.error({ message: `Error in cleanup of old challenge data by admin ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -2197,14 +2189,14 @@ export const getCompletedChallenges = async (req, res) => {
 
         logger.info(`Returning ${userCompletedChallenges.length} completed challenges for display`);
 
-        res.json({
+        return sendSuccess(res, {
             completedChallenges: userCompletedChallenges,
             total: userCompletedChallenges.length
-        });
+        }, "Completed challenges fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting completed challenges for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -2279,13 +2271,13 @@ export const getCompletedTournaments = async (req, res) => {
         }).filter(Boolean);
 
         logger.info(`Successfully fetched ${userCompletedTournaments.length} completed tournaments for user ${userId}`);
-        res.json({
+        return sendSuccess(res, {
             completedTournaments: userCompletedTournaments,
             total: userCompletedTournaments.length
-        });
+        }, "Completed tournaments fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting completed tournaments for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };

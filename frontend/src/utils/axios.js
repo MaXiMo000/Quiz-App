@@ -24,10 +24,56 @@ instance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Handle 403 (Forbidden) and CORS errors globally
+// ✅ Normalize standardized backend responses
+// Automatically extract data from { status, statusCode, message, data } format
 instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // Check if response follows standardized format
+        if (response.data &&
+            typeof response.data === 'object' &&
+            'status' in response.data &&
+            'statusCode' in response.data &&
+            'data' in response.data) {
+
+            // Standardized format: { status, statusCode, message, data }
+            // Extract the actual data and attach metadata for reference
+            const standardizedResponse = {
+                ...response,
+                data: response.data.data, // Extract nested data
+                // Keep metadata accessible if needed
+                _metadata: {
+                    status: response.data.status,
+                    statusCode: response.data.statusCode,
+                    message: response.data.message
+                }
+            };
+            return standardizedResponse;
+        }
+
+        // Non-standardized format (backward compatibility)
+        return response;
+    },
     (error) => {
+        // ✅ Normalize standardized error responses
+        if (error.response?.data &&
+            typeof error.response.data === 'object' &&
+            'status' in error.response.data &&
+            'statusCode' in error.response.data) {
+
+            // Standardized error format: { status, statusCode, message, errors? }
+            const errorData = error.response.data;
+            error.response.data = {
+                ...(errorData.errors || {}),
+                message: errorData.message || 'An error occurred'
+            };
+        } else if (error.response?.data?.message) {
+            // Ensure error message is accessible even if not standardized
+            error.response.data = {
+                ...error.response.data,
+                message: error.response.data.message
+            };
+        }
+
         const status = error.response?.status;
 
         // Handle rate limiting specifically

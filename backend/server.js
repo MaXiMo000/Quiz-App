@@ -72,34 +72,38 @@ app.use(helmet({
     crossOriginEmbedderPolicy: false
 }));
 
-// 🔒 SECURITY: Rate limiting (skip for preflight requests)
+// 🔒 SECURITY: Rate limiting (skip for preflight requests and in development)
+const isDevelopment = process.env.NODE_ENV === "development" || process.env.NODE_ENV !== "production";
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    max: 200, // ✅ PRODUCTION: Increased to 200 requests per 15 minutes (~13.3/min) - reasonable for quiz app
     message: {
         error: "Too many requests from this IP, please try again later."
     },
     standardHeaders: true,
     legacyHeaders: false,
     skip: (req) => {
-        // Skip rate limiting for preflight requests
-        return req.method === "OPTIONS";
+        // Skip rate limiting for preflight requests and in development
+        return req.method === "OPTIONS" || isDevelopment;
     }
 });
 
-// Apply rate limiting to all requests (except preflight)
-app.use(limiter);
+// Apply rate limiting to all requests (except preflight and in development)
+if (!isDevelopment) {
+    app.use(limiter);
+}
 
-// Stricter rate limiting for auth endpoints (also skip preflight)
+// Stricter rate limiting for auth endpoints (also skip preflight and in development)
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // Limit each IP to 10 auth requests per windowMs
+    max: 20, // ✅ PRODUCTION: Increased to 20 auth requests per 15 minutes (~1.3/min) - allows legitimate retries
     message: {
         error: "Too many authentication attempts, please try again later."
     },
     skip: (req) => {
-        // Skip rate limiting for preflight requests
-        return req.method === "OPTIONS";
+        // Skip rate limiting for preflight requests and in development
+        return req.method === "OPTIONS" || isDevelopment;
     }
 });
 
@@ -108,7 +112,13 @@ app.use(express.json({ limit: "10mb" })); // Limit payload size
 app.use(mongoSanitize()); // 🔒 SECURITY: Sanitize user input against NoSQL injection
 
 // Additional CORS middleware to handle edge cases
+// Skip Socket.IO paths - Socket.IO handles its own CORS
 app.use((req, res, next) => {
+    // Skip Socket.IO paths - let Socket.IO handle its own CORS
+    if (req.path.startsWith("/socket.io/")) {
+        return next();
+    }
+
     const origin = req.headers.origin;
     const allowedOrigins = [
         process.env.FRONTEND_URL,
@@ -185,11 +195,25 @@ const corsOptions = {
     preflightContinue: false // Let CORS handle preflight completely
 };
 
-// Apply CORS before other middleware to avoid interference
-app.use(cors(corsOptions));
+// Apply CORS only to non-Socket.IO paths
+// Socket.IO handles its own CORS, so we skip it here
+app.use((req, res, next) => {
+    // Skip Socket.IO paths - let Socket.IO handle its own CORS
+    if (req.path.startsWith("/socket.io/")) {
+        return next();
+    }
+    // Apply CORS to all other paths
+    return cors(corsOptions)(req, res, next);
+});
 
 // Handle preflight requests explicitly for all routes
+// Skip Socket.IO paths - Socket.IO handles its own OPTIONS requests
 app.options("*", (req, res) => {
+    // Skip Socket.IO paths - let Socket.IO handle its own OPTIONS
+    if (req.path.startsWith("/socket.io/")) {
+        return res.sendStatus(200);
+    }
+
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Requested-With,Accept,Origin,Cache-Control,X-File-Name");
@@ -351,20 +375,29 @@ const startServer = async () => {
         });
 
         // ===================== DAILY CHALLENGE RESET SCHEDULER =====================
+        // Track execution state to prevent overlapping cron jobs
+        let isDailyChallengeResetRunning = false;
+
         // Schedule daily challenge reset every hour (for more frequent checking)
         // This will check and reset challenges that were completed more than 24 hours ago
-        // Using setImmediate to make it non-blocking and prevent cron job delays
         cron.schedule("0 * * * *", () => {
-            // Use setImmediate to make cron job non-blocking
-            setImmediate(async () => {
+            // Skip if previous execution is still running
+            if (isDailyChallengeResetRunning) {
+                logger.warn("Daily challenge reset skipped - previous execution still running");
+                return;
+            }
+
+            // Use process.nextTick to defer execution and prevent blocking
+            process.nextTick(async () => {
+                isDailyChallengeResetRunning = true;
                 logger.info("Running hourly daily challenge reset check...");
                 const startTime = Date.now();
                 try {
-                    // Add timeout to prevent blocking (max 30 seconds)
+                    // Add timeout to prevent blocking (max 45 seconds)
                     const result = await Promise.race([
                         resetDailyChallenges(),
                         new Promise((_, reject) =>
-                            setTimeout(() => reject(new Error("Reset operation timeout after 30 seconds")), 30000)
+                            setTimeout(() => reject(new Error("Reset operation timeout after 45 seconds")), 45000)
                         )
                     ]);
 
@@ -382,8 +415,13 @@ const startServer = async () => {
                         stack: error.stack,
                         duration
                     });
+                } finally {
+                    isDailyChallengeResetRunning = false;
                 }
             });
+        }, {
+            scheduled: true,
+            timezone: "UTC"
         });
 
         // Also run once at server startup to catch any challenges that should have been reset
@@ -405,35 +443,61 @@ const startServer = async () => {
             });
 
         // ===================== USER ONLINE STATUS CLEANUP =====================
+        // Track execution state to prevent overlapping cron jobs
+        let isOnlineStatusCleanupRunning = false;
+
         // Mark users as offline if they haven't been seen in 15 minutes
         // Runs every 5 minutes to keep status accurate
         cron.schedule("*/5 * * * *", () => {
-            setImmediate(async () => {
+            // Skip if previous execution is still running
+            if (isOnlineStatusCleanupRunning) {
+                logger.debug("Online status cleanup skipped - previous execution still running");
+                return;
+            }
+
+            // Use process.nextTick to defer execution and prevent blocking
+            process.nextTick(async () => {
+                isOnlineStatusCleanupRunning = true;
+                const startTime = Date.now();
                 try {
                     const UserQuiz = (await import("./models/User.js")).default;
                     const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
-                    const result = await UserQuiz.updateMany(
-                        {
-                            isOnline: true,
-                            lastSeen: { $lt: fifteenMinutesAgo }
-                        },
-                        {
-                            $set: { isOnline: false }
-                        }
-                    );
+                    // Add timeout to prevent blocking (max 10 seconds)
+                    const result = await Promise.race([
+                        UserQuiz.updateMany(
+                            {
+                                isOnline: true,
+                                lastSeen: { $lt: fifteenMinutesAgo }
+                            },
+                            {
+                                $set: { isOnline: false }
+                            }
+                        ),
+                        new Promise((_, reject) =>
+                            setTimeout(() => reject(new Error("Online status cleanup timeout after 10 seconds")), 10000)
+                        )
+                    ]);
 
+                    const duration = Date.now() - startTime;
                     if (result.modifiedCount > 0) {
-                        logger.debug(`Marked ${result.modifiedCount} users as offline (inactive for 15+ minutes)`);
+                        logger.debug(`Marked ${result.modifiedCount} users as offline (inactive for 15+ minutes) (took ${duration}ms)`);
                     }
                 } catch (error) {
+                    const duration = Date.now() - startTime;
                     logger.error({
                         message: "Error updating user online status",
                         error: error.message,
-                        stack: error.stack
+                        stack: error.stack,
+                        duration
                     });
+                } finally {
+                    isOnlineStatusCleanupRunning = false;
                 }
             });
+        }, {
+            scheduled: true,
+            timezone: "UTC"
         });
     } catch (err) {
         logger.error({

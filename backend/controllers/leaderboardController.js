@@ -2,6 +2,8 @@
 import XPLog from "../models/XPLog.js";
 import UserQuiz from "../models/User.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 export const getWeeklyXP = async (req, res) => {
     logger.info("Fetching weekly XP leaderboard");
@@ -34,10 +36,10 @@ export const getWeeklyXP = async (req, res) => {
             }
         }
         logger.info("Successfully fetched weekly XP leaderboard");
-        res.json(leaderboard);
+        return sendSuccess(res, leaderboard, "Weekly XP leaderboard fetched successfully");
     } catch (error) {
         logger.error({ message: "Error fetching weekly XP leaderboard", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 export const getMonthlyXP = async (req, res) => {
@@ -69,10 +71,10 @@ export const getMonthlyXP = async (req, res) => {
             }
         }
         logger.info("Successfully fetched monthly XP leaderboard");
-        res.json(leaderboard);
+        return sendSuccess(res, leaderboard, "Monthly XP leaderboard fetched successfully");
     } catch (error) {
         logger.error({ message: "Error fetching monthly XP leaderboard", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 export const getAllTimeXP = async (req, res) => {
@@ -101,9 +103,9 @@ export const getAllTimeXP = async (req, res) => {
             }
         }
         logger.info("Successfully fetched all-time XP leaderboard");
-        res.json(leaderboard);
+        return sendSuccess(res, leaderboard, "All-time XP leaderboard fetched successfully");
     } catch (error) {
         logger.error({ message: "Error fetching all-time XP leaderboard", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };

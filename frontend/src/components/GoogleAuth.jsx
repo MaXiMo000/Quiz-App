@@ -19,9 +19,22 @@ const GoogleAuth = () => {
         const fetchUserData = async () => {
             try {
                 const response = await axios.get('/api/users/me');
-                const user = response.data;
 
-                localStorage.setItem("user", JSON.stringify(user));
+                // ✅ Response is automatically normalized by axios interceptor
+                // Backend returns: { status, statusCode, message, data: { user } }
+                // Interceptor extracts: response.data = { user }
+                const user = response.data.user || response.data;
+
+                if (!user || !user._id) {
+                    throw new Error("Invalid user data received");
+                }
+
+                try {
+                    localStorage.setItem("user", JSON.stringify(user));
+                } catch (storageError) {
+                    console.error("Error saving user to localStorage:", storageError);
+                    throw new Error("Failed to save user data");
+                }
 
                 // Small delay for smooth transition
                 setTimeout(() => {
@@ -30,7 +43,8 @@ const GoogleAuth = () => {
             } catch (error) {
                 console.error("Error fetching user data:", error);
                 setLoading(false);
-                showError("Failed to fetch user data");
+                const errorMessage = error.response?.data?.message || error.message || "Failed to fetch user data";
+                showError(errorMessage);
                 setTimeout(() => {
                     navigate("/login");
                 }, 2000);

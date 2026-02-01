@@ -5,16 +5,24 @@ import XPLog from "../models/XPLog.js";
 import mongoose from "mongoose";
 import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
 import logger from "../utils/logger.js";
+import AppError from "../utils/AppError.js";
+import {
+    sendSuccess,
+    sendError,
+    sendNotFound,
+    sendValidationError,
+    sendCreated
+} from "../utils/responseHelper.js";
 
 export async function getReports(req, res) {
     logger.info("Fetching all reports");
     try {
         const reports = await Report.find();
         logger.info(`Successfully fetched ${reports.length} reports`);
-        res.json(reports);
+        return sendSuccess(res, reports, `Successfully fetched ${reports.length} reports`);
     } catch (error) {
         logger.error({ message: "Error fetching reports", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error fetching reports", error });
+        throw new AppError("Failed to fetch reports", 500);
     }
 }
 
@@ -65,7 +73,11 @@ export async function createReport(req, res) {
 
         if (!username || !quizName || !questions || questions.length === 0) {
             logger.warn("Missing required fields for report creation");
-            return res.status(400).json({ message: "Missing required fields" });
+            const errors = {};
+            if (!username) errors.username = "Username is required";
+            if (!quizName) errors.quizName = "Quiz name is required";
+            if (!questions || questions.length === 0) errors.questions = "Questions are required";
+            return sendValidationError(res, errors);
         }
 
         const report = new Report({ username, quizName, score, total, questions });
@@ -105,7 +117,7 @@ export async function createReport(req, res) {
 
         if (!user) {
             logger.error(`User not found - userId: ${userId}, username: ${username}`);
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // ✅ Ensure totalXP field exists for all users (especially Google OAuth users)
@@ -204,10 +216,10 @@ export async function createReport(req, res) {
         }
 
         logger.info(`Report saved and bonuses applied for user ${username}`);
-        res.status(201).json({ message: "Report saved and bonuses applied!", report });
+        return sendCreated(res, report, "Report saved and bonuses applied!");
     } catch (error) {
         logger.error({ message: "Error saving report", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error saving report", error: error.message });
+        throw new AppError("Failed to save report", 500);
     }
 }
 
@@ -230,10 +242,10 @@ export const getReportsUser = async (req, res) => {
             'Pragma': 'no-cache'
         });
 
-        res.json(reports);
+        return sendSuccess(res, reports, `Successfully fetched ${reports.length} reports`);
     } catch (error) {
         logger.error({ message: `Error retrieving reports for user ${req.query.username || "all users"}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error retrieving reports", error });
+        throw new AppError("Failed to retrieve reports", 500);
     }
 };
 
@@ -245,14 +257,14 @@ export const getReportsUserID = async (req, res) => {
 
         if (!report) {
             logger.warn(`Report not found: ${id}`);
-            return res.status(404).json({ message: "Report not found" });
+            return sendNotFound(res, "Report");
         }
 
         logger.info(`Successfully fetched report ${id}`);
-        res.json(report);
+        return sendSuccess(res, report, "Report fetched successfully");
     } catch (error) {
         logger.error({ message: `Error retrieving report ${req.params.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error retrieving report", error });
+        throw new AppError("Failed to retrieve report", 500);
     }
 };
 
@@ -263,14 +275,14 @@ export const deleteReport = async (req, res) => {
 
         if (!id) {
             logger.warn("Report ID is required for deletion");
-            return res.status(400).json({ message: "Report ID is required" });
+            return sendValidationError(res, { id: "Report ID is required" });
         }
 
         const reportItem = await Report.findById(id);
 
         if (!reportItem) {
             logger.warn(`Report not found for deletion with ID: ${id}`);
-            return res.status(404).json({ message: "Report not found" });
+            return sendNotFound(res, "Report");
         }
 
         await Report.findByIdAndDelete(id);
@@ -283,11 +295,11 @@ export const deleteReport = async (req, res) => {
             'Expires': '0'
         });
 
-        return res.status(200).json({ message: "Report deleted successfully!" });
+        return sendSuccess(res, null, "Report deleted successfully");
 
     } catch (error) {
         logger.error({ message: `Error deleting report with ID: ${req.params.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error deleting Report", error: error.message });
+        throw new AppError("Failed to delete report", 500);
     }
 };
 
@@ -304,7 +316,7 @@ export async function getTopScorers(req, res) {
             startDate = moment().subtract(30, "days").startOf("day").toDate();
         } else {
             logger.warn(`Invalid period for top scorers: ${period}`);
-            return res.status(400).json({ message: "Invalid period. Use 'week' or 'month'." });
+            return sendValidationError(res, { period: "Invalid period. Use 'week' or 'month'." });
         }
 
         const topScorers = await Report.aggregate([
@@ -336,9 +348,9 @@ export async function getTopScorers(req, res) {
         ]);
 
         logger.info(`Successfully fetched top scorers for period: ${period}`);
-        res.json(topScorers);
+        return sendSuccess(res, topScorers, "Top scorers fetched successfully");
     } catch (error) {
         logger.error({ message: `Error fetching top scorers for period: ${req.query.period}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Internal Server Error", error });
+        throw new AppError("Failed to retrieve top scorers", 500);
     }
 }

@@ -371,7 +371,6 @@ body.quiz-fullscreen .main-content {
   margin: 0;
   box-sizing: border-box;
   animation: fadeIn 0.3s ease;
-}
   width: 100vw;
   height: 100vh;
 }
