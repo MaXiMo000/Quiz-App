@@ -648,7 +648,6 @@ const HelpGuide = () => {
                     {/* Search Bar */}
                     <div className="help-search-container">
                         <div className="help-search-box">
-                            <span className="search-icon">🔍</span>
                             <input
                                 type="text"
                                 placeholder="Search help topics..."

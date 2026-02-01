@@ -12,7 +12,7 @@ import { debounce } from "../utils/componentUtils";
 import CustomDropdown from "../components/CustomDropdown";
 
 // Memoized Premium Quiz Box Component
-const PremiumQuizBox = memo(({ quiz, index, isAdminQuiz, handleRestrictedAction, deleteQuiz, openAiQuestionModal, openAddQuestionModal, navigate }) => {
+const PremiumQuizBox = memo(({ quiz, index, isAdminQuiz, handleRestrictedAction, deleteQuiz, openAiQuestionModal, openAddQuestionModal, navigate, isBookmarked, onBookmark }) => {
     return (
         <motion.div
             className="quiz-box premium-box"
@@ -33,9 +33,22 @@ const PremiumQuizBox = memo(({ quiz, index, isAdminQuiz, handleRestrictedAction,
             </div>
 
             <div className="quiz-content">
-                <h3>
-                    {quiz.title}
-                </h3>
+                <div className="premium-quiz-header">
+                    <h3>
+                        {quiz.title}
+                    </h3>
+                    <button
+                        className={`premium-bookmark-btn ${isBookmarked ? 'bookmarked' : ''}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onBookmark(quiz._id);
+                        }}
+                        aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                        title={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                    >
+                        {isBookmarked ? "⭐" : "☆"}
+                    </button>
+                </div>
 
                 <div className="quiz-info">
                     <p>
@@ -143,6 +156,7 @@ const PremiumQuizzes = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+    const [bookmarkedQuizIds, setBookmarkedQuizIds] = useState(new Set());
     const navigate = useNavigate();
 
     // Search, filter, and sort states (with localStorage persistence)
@@ -405,8 +419,73 @@ const PremiumQuizzes = () => {
         showWarning(message);
     }, [showWarning]);
 
+    // Fetch bookmarks
+    const fetchBookmarks = useCallback(async () => {
+        try {
+            const response = await axios.get(`/api/users/bookmarks`);
+            if (response.data && response.data.bookmarkedQuizzes) {
+                const bookmarkedIds = new Set(
+                    response.data.bookmarkedQuizzes
+                        .map(b => {
+                            if (b.quizId && typeof b.quizId === 'object' && b.quizId._id) {
+                                return b.quizId._id;
+                            }
+                            if (b.quizId) {
+                                return typeof b.quizId === 'string' ? b.quizId : b.quizId.toString();
+                            }
+                            return null;
+                        })
+                        .filter(id => id !== null)
+                );
+                setBookmarkedQuizIds(bookmarkedIds);
+            }
+        } catch (error) {
+            console.error("Error fetching bookmarks:", error);
+        }
+    }, []);
+
+    // Handle bookmark toggle
+    const handleBookmark = useCallback(async (quizId) => {
+        const isBookmarked = bookmarkedQuizIds.has(quizId);
+        const previousState = isBookmarked;
+
+        // Optimistic UI update
+        setBookmarkedQuizIds(prev => {
+            const newSet = new Set(prev);
+            if (isBookmarked) {
+                newSet.delete(quizId);
+            } else {
+                newSet.add(quizId);
+            }
+            return newSet;
+        });
+
+        try {
+            if (isBookmarked) {
+                await axios.delete(`/api/users/bookmarks`, { data: { quizId } });
+                showSuccess("Bookmark removed");
+            } else {
+                await axios.post(`/api/users/bookmarks`, { quizId });
+                showSuccess("Quiz bookmarked");
+            }
+        } catch (error) {
+            // Revert optimistic update on error
+            setBookmarkedQuizIds(prev => {
+                const newSet = new Set(prev);
+                if (previousState) {
+                    newSet.add(quizId);
+                } else {
+                    newSet.delete(quizId);
+                }
+                return newSet;
+            });
+            showError(error.response?.data?.error || "Failed to update bookmark");
+        }
+    }, [bookmarkedQuizIds, showSuccess, showError]);
+
     useEffect(() => {
         getQuiz();
+        fetchBookmarks();
 
         // Ensure all modals are closed on page load
         const modals = ['ai_question_modal', 'create_quiz_modal', 'add_question_modal'];
@@ -426,7 +505,7 @@ const PremiumQuizzes = () => {
             document.body.classList.remove('premium-quizzes-page');
             document.documentElement.classList.remove('premium-quizzes-page');
         };
-    }, []);
+    }, [fetchBookmarks]);
 
     const openAddQuestionModal = useCallback((quizId) => {
         if (!quizId) return showWarning("Please select a quiz first!");
@@ -602,7 +681,7 @@ const PremiumQuizzes = () => {
                     <div className="premium-search-wrapper">
                         <input
                             type="text"
-                            placeholder="🔍 Search premium quizzes..."
+                            placeholder="Search premium quizzes..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="premium-search-input"
@@ -755,6 +834,8 @@ const PremiumQuizzes = () => {
                                     openAiQuestionModal={openAiQuestionModal}
                                     openAddQuestionModal={openAddQuestionModal}
                                     navigate={navigate}
+                                    isBookmarked={bookmarkedQuizIds.has(quiz._id)}
+                                    onBookmark={handleBookmark}
                                 />
                             ))}
                         </AnimatePresence>

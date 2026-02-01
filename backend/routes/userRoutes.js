@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme, logoutUser, saveCustomTheme, getCustomThemes, deleteCustomTheme, bookmarkQuiz, removeBookmark, getBookmarkedQuizzes } from "../controllers/userController.js";
+import { registerUser, loginUser, getAllUsers, updateUserRole, updateUserTheme, logoutUser, saveCustomTheme, getCustomThemes, deleteCustomTheme, bookmarkQuiz, removeBookmark, getBookmarkedQuizzes, getUserProfile, updateUserProfile, updateUserPreferences, updatePrivacySettings, changePassword, deleteAccount } from "../controllers/userController.js";
 import { getStreakAndGoals, updateDailyGoals, updateDailyActivity } from "../controllers/streakController.js";
 import { verifyToken } from "../middleware/auth.js";
 import { roleUpdateLimiter } from "../middleware/rateLimiting.js";
@@ -227,6 +227,13 @@ router.get("/", verifyToken, cache, getAllUsers); // Protected route
 // IMPORTANT: This must come BEFORE /:id route to avoid "me" being treated as an ID
 router.get("/me", verifyToken, async (req, res) => {
     try {
+        // Set cache-control headers to prevent browser caching
+        res.set({
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+            'ETag': `"${Date.now()}-${Math.random().toString(36).substring(7)}"`
+        });
 
         if (!req.user?.id) {
             logger.info("❌ No user ID in token");
@@ -299,6 +306,14 @@ router.post("/streak/activity", verifyToken, clearCacheByPattern("/api/users"), 
 router.post("/bookmarks", verifyToken, clearCacheByPattern("/api/users"), bookmarkQuiz);
 router.delete("/bookmarks", verifyToken, clearCacheByPattern("/api/users"), removeBookmark);
 router.get("/bookmarks", verifyToken, getBookmarkedQuizzes);
+
+// Profile routes (must come before /:id to avoid conflicts)
+router.get("/profile", verifyToken, getUserProfile);
+router.put("/profile", verifyToken, clearCacheByPattern("/api/users"), updateUserProfile);
+router.put("/preferences", verifyToken, clearCacheByPattern("/api/users"), updateUserPreferences);
+router.put("/privacy", verifyToken, clearCacheByPattern("/api/users"), updatePrivacySettings);
+router.put("/password", verifyToken, changePassword);
+router.delete("/account", verifyToken, deleteAccount);
 
 router.patch("/update-role", roleUpdateLimiter, verifyToken, clearCacheByPattern("/api/users"), updateUserRole);
 router.post("/:id/theme", verifyToken, clearCacheByPattern("/api/users"), updateUserTheme);

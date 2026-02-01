@@ -129,8 +129,10 @@ export async function createReport(req, res) {
         if (!user.badges) {
             user.badges = [];
         }
+        let earnedBadges = [];
         if (score === total && !user.badges.includes("Perfect Score")) {
             user.badges.push("Perfect Score");
+            earnedBadges.push("Perfect Score");
         }
 
         const validQuestions = questions.filter(q => typeof q.answerTime === "number");
@@ -138,6 +140,29 @@ export async function createReport(req, res) {
             const avgTime = validQuestions.reduce((sum, q) => sum + q.answerTime, 0) / validQuestions.length;
             if (avgTime < 10 && !user.badges.includes("Speed Genius")) {
                 user.badges.push("Speed Genius");
+                earnedBadges.push("Speed Genius");
+            }
+        }
+
+        // ✅ Create achievement notifications for earned badges
+        if (earnedBadges.length > 0) {
+            try {
+                const { createActivity } = await import("../routes/activityRoutes.js");
+                const { createNotification } = await import("../controllers/notificationController.js");
+
+                for (const badgeName of earnedBadges) {
+                    await createActivity(user._id, "achievement_earned", {
+                        achievementName: badgeName,
+                        quizName
+                    });
+
+                    await createNotification(user._id, "achievement", "Achievement Earned!", `You earned the "${badgeName}" badge!`, {
+                        achievementName: badgeName,
+                        quizName
+                    });
+                }
+            } catch (error) {
+                logger.error({ message: "Error creating achievement activity/notification", error: error.message });
             }
         }
 
@@ -185,6 +210,7 @@ export async function createReport(req, res) {
         }
 
         // 🎓 Update XP and level using proper totalXP method
+        const oldLevel = user.level;
         user.xp += totalXPGained;
         user.totalXP = (user.totalXP || 0) + totalXPGained;
 
@@ -201,6 +227,26 @@ export async function createReport(req, res) {
 
         await user.save();
 
+        // ✅ Create level up notification and activity
+        if (user.level > oldLevel) {
+            try {
+                const { createActivity } = await import("../routes/activityRoutes.js");
+                const { createNotification } = await import("../controllers/notificationController.js");
+
+                await createActivity(user._id, "level_up", {
+                    level: user.level,
+                    oldLevel
+                });
+
+                await createNotification(user._id, "level_up", "Level Up!", `Congratulations! You reached level ${user.level}!`, {
+                    level: user.level,
+                    oldLevel
+                });
+            } catch (error) {
+                logger.error({ message: "Error creating level up activity/notification", error: error.message });
+            }
+        }
+
         // 📚 Create review schedules for spaced repetition
         try {
             // Find the quiz to get the questions
@@ -213,6 +259,29 @@ export async function createReport(req, res) {
         } catch (reviewError) {
             logger.error({ message: "Error creating review schedules", error: reviewError.message, stack: reviewError.stack });
             // Don't fail the report creation if review schedule creation fails
+        }
+
+        // ✅ Create activity and notification for quiz completion
+        try {
+            const { createActivity } = await import("../controllers/activityController.js");
+            const { createNotification } = await import("../controllers/notificationController.js");
+
+            await createActivity(user._id, "quiz_completed", {
+                quizId: report._id,
+                quizName,
+                score,
+                total
+            });
+
+            await createNotification(user._id, "quiz_completed", "Quiz Completed!", `You completed "${quizName}" with a score of ${score}/${total}`, {
+                quizId: report._id,
+                quizName,
+                score,
+                total
+            });
+        } catch (error) {
+            logger.error({ message: "Error creating activity/notification for quiz completion", error: error.message });
+            // Don't fail report creation if activity/notification creation fails
         }
 
         logger.info(`Report saved and bonuses applied for user ${username}`);

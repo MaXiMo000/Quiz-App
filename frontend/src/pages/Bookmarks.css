@@ -1,0 +1,368 @@
+.bookmarks-page {
+    padding: var(--space-lg);
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+
+.bookmarks-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.bookmarks-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: var(--space-sm);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.bookmarks-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.bookmarks-error {
+    background: var(--danger-light);
+    color: var(--danger);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    text-align: center;
+    border: 1px solid var(--danger-transparent-30);
+}
+
+.bookmarks-empty {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-lg);
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--card-border);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-md);
+}
+
+.bookmarks-empty h2 {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    margin-bottom: var(--space-sm);
+}
+
+.bookmarks-empty p {
+    color: var(--text-muted);
+    margin-bottom: var(--space-lg);
+}
+
+.browse-quizzes-btn {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border: none;
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-lg);
+}
+
+.browse-quizzes-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.bookmarks-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.bookmarks-search {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.bookmarks-search-input {
+    width: 100%;
+    padding: var(--space-md) var(--space-xl);
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all var(--transition-normal);
+    /* Remove any browser default icons */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: none !important;
+}
+
+.bookmarks-search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-transparent-20);
+}
+
+.bookmarks-search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.bookmarks-search-input::-webkit-search-decoration,
+.bookmarks-search-input::-webkit-search-cancel-button,
+.bookmarks-search-input::-webkit-search-results-button,
+.bookmarks-search-input::-webkit-search-results-decoration {
+    display: none !important;
+    -webkit-appearance: none !important;
+}
+
+.bookmarks-search-input::before,
+.bookmarks-search-input::after {
+    display: none !important;
+    content: "" !important;
+}
+
+.bookmarks-filters {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.view-mode-toggle {
+    display: flex;
+    gap: var(--space-xs);
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xs);
+}
+
+.view-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all var(--transition-fast);
+}
+
+.view-btn:hover {
+    color: var(--text-light);
+    background: var(--accent-light);
+}
+
+.view-btn.active {
+    color: var(--text-light);
+    background: var(--accent);
+}
+
+.bookmarks-no-results {
+    text-align: center;
+    padding: var(--space-2xl);
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--card-border);
+}
+
+.bookmarks-no-results p {
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+}
+
+.clear-filters-btn {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.clear-filters-btn:hover {
+    background: var(--accent);
+    color: var(--text-light);
+}
+
+.bookmarks-grid {
+    display: grid;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.bookmarks-grid.grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.bookmarks-grid.list {
+    grid-template-columns: 1fr;
+}
+
+.bookmark-card {
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+}
+
+.bookmark-card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-xl);
+}
+
+.bookmark-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+}
+
+.bookmark-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin: 0;
+    flex: 1;
+    margin-right: var(--space-sm);
+}
+
+.bookmark-remove-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--space-xs);
+    transition: all var(--transition-fast);
+    filter: grayscale(0);
+}
+
+.bookmark-remove-btn:hover {
+    transform: scale(1.2);
+    filter: grayscale(0) brightness(1.2);
+}
+
+.bookmark-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    font-size: 0.9rem;
+}
+
+.bookmark-category,
+.bookmark-duration,
+.bookmark-questions {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.bookmark-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+}
+
+.bookmark-actions {
+    margin-top: var(--space-md);
+}
+
+.bookmark-start-btn {
+    width: 100%;
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border: none;
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.bookmark-start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.bookmarks-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+}
+
+.pagination-btn {
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--card-border);
+    color: var(--text-light);
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--accent-light);
+    border-color: var(--accent);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .bookmarks-page {
+        padding: var(--space-md);
+    }
+
+    .bookmarks-title {
+        font-size: 2rem;
+    }
+
+    .bookmarks-grid.grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bookmarks-filters {
+        flex-direction: column;
+    }
+
+    .bookmarks-search {
+        max-width: 100%;
+    }
+}

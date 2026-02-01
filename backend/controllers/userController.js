@@ -689,6 +689,18 @@ export const bookmarkQuiz = async (req, res) => {
 
         await user.save();
 
+        // ✅ Create bookmark activity
+        try {
+            const { createActivity } = await import("../controllers/activityController.js");
+            const quiz = await Quiz.findById(quizId).select("title").lean();
+            await createActivity(userId, "bookmark_added", {
+                quizId,
+                quizName: quiz?.title || "Quiz"
+            });
+        } catch (error) {
+            logger.error({ message: "Error creating bookmark activity", error: error.message });
+        }
+
         logger.info(`User ${userId} bookmarked quiz ${quizId}`);
         return sendSuccess(res, {
             bookmarkedQuizzes: user.bookmarkedQuizzes
@@ -841,5 +853,296 @@ export const getBookmarkedQuizzes = async (req, res) => {
             method: req.method
         });
         throw new AppError("Error fetching bookmarked quizzes", 500);
+    }
+};
+
+// ✅ Get full user profile with stats
+export const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Set cache-control headers to prevent browser caching
+        res.set({
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+            'ETag': `"${Date.now()}-${Math.random().toString(36).substring(7)}"`
+        });
+
+        const user = await UserQuiz.findById(userId)
+            .select("-password")
+            .lean();
+
+        if (!user) {
+            return sendNotFound(res, "User");
+        }
+
+        // Get additional stats
+        const Report = (await import("../models/Report.js")).default;
+        const Quiz = (await import("../models/Quiz.js")).default;
+
+        const [totalQuizzes, completedQuizzes, reports] = await Promise.all([
+            Quiz.countDocuments({}),
+            Report.countDocuments({ user: new mongoose.Types.ObjectId(userId) }),
+            Report.find({ user: new mongoose.Types.ObjectId(userId) })
+                .select("score total")
+                .lean()
+        ]);
+
+        const averageScore = reports.length > 0
+            ? reports.reduce((sum, r) => sum + (r.score / r.total), 0) / reports.length
+            : 0;
+
+        const profile = {
+            ...user,
+            stats: {
+                totalQuizzes,
+                completedQuizzes,
+                averageScore: Math.round(averageScore * 100) / 100,
+                totalXP: user.xp || 0,
+                level: user.level || 1,
+                loginStreak: user.loginStreak || 0,
+                quizStreak: user.quizStreak || 0,
+                badges: user.badges?.length || 0
+            }
+        };
+
+        logger.info(`User ${userId} fetched profile`);
+        return sendSuccess(res, { profile }, "Profile fetched successfully");
+
+    } catch (error) {
+        logger.error({ message: `Error fetching profile for user ${req.user.id}`, error: error.message, stack: error.stack });
+        throw new AppError("Error fetching profile", 500);
+    }
+};
+
+// ✅ Update user profile
+export const updateUserProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { name, bio, avatarUrl } = req.body;
+
+        const user = await UserQuiz.findById(userId);
+        if (!user) {
+            return sendNotFound(res, "User");
+        }
+
+        if (name && name.trim()) {
+            user.name = name.trim();
+        }
+
+        // Add bio and avatarUrl to user if they don't exist in schema
+        // For now, we'll store them in a custom field or extend the schema
+        if (bio !== undefined) {
+            user.bio = bio;
+        }
+
+        if (avatarUrl !== undefined) {
+            user.avatarUrl = avatarUrl;
+        }
+
+        await user.save();
+
+        logger.info(`User ${userId} updated profile`);
+        return sendSuccess(res, {
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                bio: user.bio,
+                avatarUrl: user.avatarUrl
+            }
+        }, "Profile updated successfully");
+
+    } catch (error) {
+        logger.error({ message: `Error updating profile for user ${req.user.id}`, error: error.message, stack: error.stack });
+        throw new AppError("Error updating profile", 500);
+    }
+};
+
+// ✅ Update user preferences (manual update from profile page)
+export const updateUserPreferences = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { preferredDifficulty, studyTime, favoriteCategories } = req.body;
+
+        const user = await UserQuiz.findById(userId);
+        if (!user) {
+            return sendNotFound(res, "User");
+        }
+
+        // Initialize preferences if they don't exist
+        if (!user.preferences) {
+            user.preferences = {
+                favoriteCategories: [],
+                preferredDifficulty: "medium",
+                studyTime: "afternoon",
+                weakAreas: [],
+                strongAreas: []
+            };
+        }
+
+        // Update preferences
+        if (preferredDifficulty !== undefined && ["easy", "medium", "hard"].includes(preferredDifficulty)) {
+            user.preferences.preferredDifficulty = preferredDifficulty;
+        }
+        if (studyTime !== undefined && ["morning", "afternoon", "evening", "night"].includes(studyTime)) {
+            user.preferences.studyTime = studyTime;
+        }
+        if (favoriteCategories !== undefined && Array.isArray(favoriteCategories)) {
+            user.preferences.favoriteCategories = favoriteCategories;
+        }
+
+        await user.save();
+
+        logger.info(`User ${userId} updated preferences manually`);
+        return sendSuccess(res, {
+            preferences: user.preferences
+        }, "Preferences updated successfully");
+
+    } catch (error) {
+        logger.error({ message: `Error updating preferences for user ${req.user.id}`, error: error.message, stack: error.stack });
+        throw new AppError("Error updating preferences", 500);
+    }
+};
+
+// ✅ Update privacy settings
+export const updatePrivacySettings = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { profileVisibility, showOnlineStatus, allowFriendRequests, showProgressToFriends } = req.body;
+
+        const user = await UserQuiz.findById(userId);
+        if (!user) {
+            return sendNotFound(res, "User");
+        }
+
+        if (!user.social) {
+            user.social = {};
+        }
+        if (!user.social.privacy) {
+            user.social.privacy = {};
+        }
+
+        if (profileVisibility !== undefined) {
+            user.social.privacy.profileVisibility = profileVisibility;
+        }
+        if (showOnlineStatus !== undefined) {
+            user.social.privacy.showOnlineStatus = showOnlineStatus;
+        }
+        if (allowFriendRequests !== undefined) {
+            user.social.privacy.allowFriendRequests = allowFriendRequests;
+        }
+        if (showProgressToFriends !== undefined) {
+            user.social.privacy.showProgressToFriends = showProgressToFriends;
+        }
+
+        await user.save();
+
+        logger.info(`User ${userId} updated privacy settings`);
+        return sendSuccess(res, {
+            privacy: user.social.privacy
+        }, "Privacy settings updated successfully");
+
+    } catch (error) {
+        logger.error({ message: `Error updating privacy settings for user ${req.user.id}`, error: error.message, stack: error.stack });
+        throw new AppError("Error updating privacy settings", 500);
+    }
+};
+
+// ✅ Change password
+export const changePassword = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return sendValidationError(res, {
+                currentPassword: currentPassword ? undefined : "Current password is required",
+                newPassword: newPassword ? undefined : "New password is required"
+            }, "Both current and new passwords are required");
+        }
+
+        if (newPassword.length < 6) {
+            return sendValidationError(res, {
+                newPassword: "Password must be at least 6 characters"
+            }, "Password must be at least 6 characters");
+        }
+
+        const user = await UserQuiz.findById(userId);
+        if (!user) {
+            return sendNotFound(res, "User");
+        }
+
+        if (!user.password) {
+            return sendValidationError(res, {
+                currentPassword: "No password set for this account"
+            }, "No password set for this account");
+        }
+
+        // Verify current password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return sendValidationError(res, {
+                currentPassword: "Current password is incorrect"
+            }, "Current password is incorrect");
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+
+        await user.save();
+
+        logger.info(`User ${userId} changed password`);
+        return sendSuccess(res, {}, "Password changed successfully");
+
+    } catch (error) {
+        logger.error({ message: `Error changing password for user ${req.user.id}`, error: error.message, stack: error.stack });
+        throw new AppError("Error changing password", 500);
+    }
+};
+
+// ✅ Delete account (soft delete)
+export const deleteAccount = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { password } = req.body;
+
+        const user = await UserQuiz.findById(userId);
+        if (!user) {
+            return sendNotFound(res, "User");
+        }
+
+        // Verify password if account has one
+        if (user.password) {
+            if (!password) {
+                return sendValidationError(res, {
+                    password: "Password is required to delete account"
+                }, "Password is required to delete account");
+            }
+
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return sendValidationError(res, {
+                    password: "Password is incorrect"
+                }, "Password is incorrect");
+            }
+        }
+
+        // Soft delete: Mark account as deleted
+        user.email = `deleted_${Date.now()}_${user.email}`;
+        user.name = "Deleted User";
+        user.isDeleted = true;
+        user.deletedAt = new Date();
+
+        await user.save();
+
+        logger.info(`User ${userId} deleted account`);
+        return sendSuccess(res, {}, "Account deleted successfully");
+
+    } catch (error) {
+        logger.error({ message: `Error deleting account for user ${req.user.id}`, error: error.message, stack: error.stack });
+        throw new AppError("Error deleting account", 500);
     }
 };

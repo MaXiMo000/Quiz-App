@@ -396,6 +396,25 @@
     color: var(--text-color);
     font-size: 1rem;
     transition: all 0.3s ease;
+    /* Remove any browser default icons */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: none !important;
+}
+
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-results-button,
+.search-input::-webkit-search-results-decoration {
+    display: none !important;
+    -webkit-appearance: none !important;
+}
+
+.search-input::before,
+.search-input::after {
+    display: none !important;
+    content: "" !important;
 }
 
 .search-input:focus {

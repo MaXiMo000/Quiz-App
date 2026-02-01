@@ -429,7 +429,7 @@ const UserQuiz = () => {
                 <div className="search-container">
                     <input
                         type="text"
-                        placeholder="🔍 Search quizzes..."
+                        placeholder="Search quizzes..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="search-input"

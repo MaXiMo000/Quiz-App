@@ -12,6 +12,8 @@ import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { getRecentQuizzes } from "../utils/quizHistory";
+import GlobalSearch from "../components/GlobalSearch";
+import NotificationCenter from "../components/NotificationCenter";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -179,6 +181,16 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
         >
+            {/* Home Header with Search and Notifications - Only on Home Page */}
+            <div className="home-header-wrapper">
+                <div className="home-search-wrapper">
+                    <GlobalSearch />
+                </div>
+                <div className="home-notification-wrapper">
+                    <NotificationCenter />
+                </div>
+            </div>
+
             {/* Hero Section */}
             <motion.div
                 className="hero-section"

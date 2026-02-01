@@ -316,6 +316,26 @@ export const updateChallengeProgress = async (req, res) => {
             // Update challenge stats
             challenge.stats.completionRate = (challenge.participants.filter(p => p.completed).length / challenge.participants.length) * 100;
             logger.info(`User ${userId} completed challenge ${challengeId}`);
+
+            // ✅ Create challenge completion notification and activity
+            try {
+                const { createActivity } = await import("../controllers/activityController.js");
+                const { createNotification } = await import("../controllers/notificationController.js");
+
+                await createActivity(userId, "challenge_completed", {
+                    challengeId,
+                    challengeName: challenge.title,
+                    xpReward: challenge.rewards.xp
+                });
+
+                await createNotification(userId, "challenge", "Challenge Completed!", `You completed "${challenge.title}" and earned ${challenge.rewards.xp} XP!`, {
+                    challengeId,
+                    challengeName: challenge.title,
+                    xpReward: challenge.rewards.xp
+                });
+            } catch (error) {
+                logger.error({ message: "Error creating challenge completion activity/notification", error: error.message });
+            }
         }
 
         await challenge.save();
@@ -1181,6 +1201,26 @@ export const submitChallengeQuiz = async (req, res) => {
 
             await user.save();
             logger.info(`User ${userId} completed challenge ${challengeId} and received rewards`);
+
+            // ✅ Create challenge completion notification and activity
+            try {
+                const { createActivity } = await import("../controllers/activityController.js");
+                const { createNotification } = await import("../controllers/notificationController.js");
+
+                await createActivity(userId, "challenge_completed", {
+                    challengeId,
+                    challengeName: challenge.title,
+                    xpReward: challenge.rewards.xp
+                });
+
+                await createNotification(userId, "challenge", "Challenge Completed!", `You completed "${challenge.title}" and earned ${challenge.rewards.xp} XP!`, {
+                    challengeId,
+                    challengeName: challenge.title,
+                    xpReward: challenge.rewards.xp
+                });
+            } catch (error) {
+                logger.error({ message: "Error creating challenge completion activity/notification", error: error.message });
+            }
         }
 
         await challenge.save();
@@ -1707,73 +1747,84 @@ export const resetDailyChallenges = async () => {
         // Batch user updates to improve performance
         const userUpdates = [];
 
-        for (const challenge of challengesToReset) {
-            let challengeModified = false;
-            let usersResetInChallenge = 0;
+        // Process challenges in batches to yield control back to event loop
+        const batchSize = 10;
+        for (let batchStart = 0; batchStart < challengesToReset.length; batchStart += batchSize) {
+            const batch = challengesToReset.slice(batchStart, batchStart + batchSize);
 
-            // Reset individual participants who completed more than 24 hours ago
-            for (let i = 0; i < challenge.participants.length; i++) {
-                const participant = challenge.participants[i];
+            for (const challenge of batch) {
+                let challengeModified = false;
+                let usersResetInChallenge = 0;
 
-                if (participant.completed &&
-                    participant.completedAt &&
-                    participant.completedAt < twentyFourHoursAgo) {
+                // Reset individual participants who completed more than 24 hours ago
+                for (let i = 0; i < challenge.participants.length; i++) {
+                    const participant = challenge.participants[i];
 
-                    // Preserve old results in historical completions
-                    if (!challenge.historicalCompletions) {
-                        challenge.historicalCompletions = [];
+                    if (participant.completed &&
+                        participant.completedAt &&
+                        participant.completedAt < twentyFourHoursAgo) {
+
+                        // Preserve old results in historical completions
+                        if (!challenge.historicalCompletions) {
+                            challenge.historicalCompletions = [];
+                        }
+                        challenge.historicalCompletions.push({
+                            user: participant.user,
+                            completedAt: participant.completedAt,
+                            progress: participant.progress,
+                            attempts: participant.attempts,
+                            completedQuizzes: participant.completedQuizzes,
+                            quizScores: participant.quizScores,
+                            resetAt: new Date()
+                        });
+
+                        // Update historical completion stats
+                        if (!challenge.stats.totalHistoricalCompletions) {
+                            challenge.stats.totalHistoricalCompletions = 0;
+                        }
+                        challenge.stats.totalHistoricalCompletions += 1;
+
+                        // Reset participant data
+                        challenge.participants[i] = {
+                            user: participant.user,
+                            progress: 0,
+                            completed: false,
+                            completedAt: null,
+                            attempts: 0,
+                            completedQuizzes: [],
+                            quizScores: []
+                        };
+
+                        usersResetInChallenge++;
+                        challengeModified = true;
+
+                        // Queue user update for batch processing
+                        userUpdates.push({
+                            userId: participant.user,
+                            challengeId: challenge._id,
+                            challengeTitle: challenge.title
+                        });
                     }
-                    challenge.historicalCompletions.push({
-                        user: participant.user,
-                        completedAt: participant.completedAt,
-                        progress: participant.progress,
-                        attempts: participant.attempts,
-                        completedQuizzes: participant.completedQuizzes,
-                        quizScores: participant.quizScores,
-                        resetAt: new Date()
-                    });
+                }
 
-                    // Update historical completion stats
-                    if (!challenge.stats.totalHistoricalCompletions) {
-                        challenge.stats.totalHistoricalCompletions = 0;
-                    }
-                    challenge.stats.totalHistoricalCompletions += 1;
+                if (challengeModified) {
+                    // Recalculate challenge statistics
+                    const completedParticipants = challenge.participants.filter(p => p.completed).length;
+                    challenge.stats.completionRate = challenge.participants.length > 0
+                        ? (completedParticipants / challenge.participants.length) * 100
+                        : 0;
 
-                    // Reset participant data
-                    challenge.participants[i] = {
-                        user: participant.user,
-                        progress: 0,
-                        completed: false,
-                        completedAt: null,
-                        attempts: 0,
-                        completedQuizzes: [],
-                        quizScores: []
-                    };
+                    await challenge.save();
+                    challengesModified++;
+                    totalUsersReset += usersResetInChallenge;
 
-                    usersResetInChallenge++;
-                    challengeModified = true;
-
-                    // Queue user update for batch processing
-                    userUpdates.push({
-                        userId: participant.user,
-                        challengeId: challenge._id,
-                        challengeTitle: challenge.title
-                    });
+                    logger.info(`Reset ${usersResetInChallenge} users in challenge "${challenge.title}"`);
                 }
             }
 
-            if (challengeModified) {
-                // Recalculate challenge statistics
-                const completedParticipants = challenge.participants.filter(p => p.completed).length;
-                challenge.stats.completionRate = challenge.participants.length > 0
-                    ? (completedParticipants / challenge.participants.length) * 100
-                    : 0;
-
-                await challenge.save();
-                challengesModified++;
-                totalUsersReset += usersResetInChallenge;
-
-                logger.info(`Reset ${usersResetInChallenge} users in challenge "${challenge.title}"`);
+            // Yield control back to event loop between batches to prevent blocking
+            if (batchStart + batchSize < challengesToReset.length) {
+                await new Promise(resolve => setImmediate(resolve));
             }
         }
 
@@ -1791,9 +1842,9 @@ export const resetDailyChallenges = async () => {
             for (let i = 0; i < updatePromises.length; i += batchSize) {
                 const batch = updatePromises.slice(i, i + batchSize);
                 await Promise.all(batch);
-                // Small delay between batches to prevent blocking
+                // Yield control back to event loop between batches to prevent blocking
                 if (i + batchSize < updatePromises.length) {
-                    await new Promise(resolve => setTimeout(resolve, 10));
+                    await new Promise(resolve => setImmediate(resolve));
                 }
             }
 

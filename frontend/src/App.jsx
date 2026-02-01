@@ -53,6 +53,10 @@ import XPLeaderboard from "./pages/XPLeaderboard";
 import StudyStreakPage from "./pages/StudyStreakPage";
 import ThemePage from "./pages/ThemePage";
 import HelpGuide from "./pages/HelpGuide";
+import Bookmarks from "./pages/Bookmarks";
+import SearchResults from "./pages/SearchResults";
+import ActivityFeed from "./pages/ActivityFeed";
+import UserProfile from "./pages/UserProfile";
 
 // ✨ Import new enhanced components
 import EnhancedDashboard from "./components/EnhancedDashboard";
@@ -300,6 +304,10 @@ const App = () => {
 
                                 <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                                 <Route path="/premium/quiz/:id" element={<PremiumQuizQuestions />} />
+                                <Route path="/bookmarks" element={<Bookmarks />} />
+                                <Route path="/search" element={<SearchResults />} />
+                                <Route path="/activity" element={<ActivityFeed />} />
+                                <Route path="/profile" element={<UserProfile />} />
                             </Route>
                         </Routes>
                     </Suspense>

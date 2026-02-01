@@ -613,7 +613,7 @@ const UserReports = () => {
                     <div className="search-container">
                         <input
                             type="text"
-                            placeholder="🔍 Search reports..."
+                            placeholder="Search reports..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="search-input"

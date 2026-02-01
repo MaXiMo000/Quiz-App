@@ -124,6 +124,39 @@ export const respondToFriendRequest = async (req, res) => {
             await UserQuiz.findByIdAndUpdate(friendRequest.recipient, {
                 $push: { "social.friends": friendRequest.requester }
             });
+
+            // ✅ Create friend added notification and activity for both users
+            try {
+                const { createActivity } = await import("../controllers/activityController.js");
+                const { createNotification } = await import("../controllers/notificationController.js");
+
+                const requesterUser = await UserQuiz.findById(friendRequest.requester).select("name");
+                const recipientUser = await UserQuiz.findById(friendRequest.recipient).select("name");
+
+                // Notify requester
+                await createActivity(friendRequest.requester, "friend_added", {
+                    friendId: friendRequest.recipient,
+                    friendName: recipientUser?.name || "Friend"
+                });
+
+                await createNotification(friendRequest.requester, "friend_request", "New Friend!", `${recipientUser?.name || "User"} accepted your friend request!`, {
+                    userId: friendRequest.recipient,
+                    friendName: recipientUser?.name || "Friend"
+                });
+
+                // Notify recipient
+                await createActivity(friendRequest.recipient, "friend_added", {
+                    friendId: friendRequest.requester,
+                    friendName: requesterUser?.name || "Friend"
+                });
+
+                await createNotification(friendRequest.recipient, "friend_request", "New Friend!", `You are now friends with ${requesterUser?.name || "User"}!`, {
+                    userId: friendRequest.requester,
+                    friendName: requesterUser?.name || "Friend"
+                });
+            } catch (error) {
+                logger.error({ message: "Error creating friend added activity/notification", error: error.message });
+            }
         }
 
         // Remove from pending requests

@@ -14,7 +14,8 @@ import { aiQuestionLimiter } from "../middleware/rateLimiting.js";
 
 // Quiz Routes
 router.get("/quizzes", verifyToken, cache, getQuizzes);
-router.get("/quizzes/:id", verifyToken, cache, getQuizById);
+// ⚠️ No cache for getQuizById - authorization check must run every time to prevent unauthorized access
+router.get("/quizzes/:id", verifyToken, getQuizById);
 router.post("/quizzes", verifyToken, clearCacheByPattern("/api/quizzes"), createQuiz);
 router.post("/quizzes/:id/questions", verifyToken, clearCacheByPattern("/api/quizzes"), addQuestion);
 router.delete("/quizzes/delete/quiz", verifyToken, clearCacheByPattern("/api/quizzes"), deleteQuiz);

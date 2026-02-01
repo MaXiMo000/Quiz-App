@@ -56,6 +56,17 @@ export const getSmartRecommendations = async (req, res) => {
             )
             .slice(0, 10);
 
+        // Initialize preferences if they don't exist
+        if (!user.preferences) {
+            user.preferences = {
+                favoriteCategories: [],
+                preferredDifficulty: "medium",
+                studyTime: "afternoon",
+                weakAreas: [],
+                strongAreas: []
+            };
+        }
+
         logger.info(`Successfully generated ${uniqueRecommendations.length} smart recommendations for user ${userId}`);
         return sendSuccess(res, {
             recommendations: uniqueRecommendations,
@@ -63,8 +74,8 @@ export const getSmartRecommendations = async (req, res) => {
                 level: user.level,
                 xp: user.xp,
                 preferences: user.preferences,
-                weakAreas: user.preferences.weakAreas,
-                strongAreas: user.preferences.strongAreas
+                weakAreas: user.preferences.weakAreas || [],
+                strongAreas: user.preferences.strongAreas || []
             }
         }, "Smart recommendations fetched successfully");
 
@@ -735,7 +746,23 @@ export const updateUserPreferences = async (req, res) => {
             user.performanceHistory = user.performanceHistory.slice(-50);
         }
 
+        // Initialize preferences if they don't exist
+        if (!user.preferences) {
+            user.preferences = {
+                favoriteCategories: [],
+                preferredDifficulty: "medium",
+                studyTime: "afternoon",
+                weakAreas: [],
+                strongAreas: []
+            };
+        }
+
         // Update preferences based on performance
+        // Guard against division by zero
+        if (!totalQuestions || totalQuestions === 0) {
+            logger.warn(`Invalid totalQuestions (${totalQuestions}) for user ${userId}, skipping preference update`);
+            return sendValidationError(res, { totalQuestions: "Total questions must be greater than 0" }, "Invalid quiz data");
+        }
         const performancePercentage = score / totalQuestions;
 
         // Update favorite categories

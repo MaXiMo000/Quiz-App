@@ -40,6 +40,9 @@ import { initializeRealTimeQuiz } from "./controllers/realTimeQuizController.js"
 // Phase 5: Advanced Learning Path Engine
 import learningPathRoutes from "./routes/learningPathRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import searchRoutes from "./routes/searchRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import activityRoutes from "./routes/activityRoutes.js";
 
 // Import the daily challenge reset function
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
@@ -305,6 +308,9 @@ app.use("/api/real-time-quiz", realTimeQuizRoutes);
 // Phase 5: Advanced Learning Path Engine
 app.use("/api/learning-paths", learningPathRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/search", searchRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/activity", activityRoutes);
 
 // Global error handler
 app.use(errorHandler);
@@ -380,6 +386,7 @@ const startServer = async () => {
 
         // Schedule daily challenge reset every hour (for more frequent checking)
         // This will check and reset challenges that were completed more than 24 hours ago
+        // Using async callback and setImmediate to prevent blocking the event loop
         cron.schedule("0 * * * *", () => {
             // Skip if previous execution is still running
             if (isDailyChallengeResetRunning) {
@@ -387,8 +394,8 @@ const startServer = async () => {
                 return;
             }
 
-            // Use process.nextTick to defer execution and prevent blocking
-            process.nextTick(async () => {
+            // Use setImmediate to yield control back to event loop before starting async work
+            setImmediate(async () => {
                 isDailyChallengeResetRunning = true;
                 logger.info("Running hourly daily challenge reset check...");
                 const startTime = Date.now();
@@ -421,7 +428,9 @@ const startServer = async () => {
             });
         }, {
             scheduled: true,
-            timezone: "UTC"
+            timezone: "UTC",
+            // Prevent cron from blocking - allow overlapping executions to be skipped
+            // The isDailyChallengeResetRunning flag already handles this
         });
 
         // Also run once at server startup to catch any challenges that should have been reset
@@ -448,6 +457,7 @@ const startServer = async () => {
 
         // Mark users as offline if they haven't been seen in 15 minutes
         // Runs every 5 minutes to keep status accurate
+        // Using setImmediate to prevent blocking the event loop
         cron.schedule("*/5 * * * *", () => {
             // Skip if previous execution is still running
             if (isOnlineStatusCleanupRunning) {
@@ -455,8 +465,8 @@ const startServer = async () => {
                 return;
             }
 
-            // Use process.nextTick to defer execution and prevent blocking
-            process.nextTick(async () => {
+            // Use setImmediate to yield control back to event loop before starting async work
+            setImmediate(async () => {
                 isOnlineStatusCleanupRunning = true;
                 const startTime = Date.now();
                 try {
@@ -497,7 +507,9 @@ const startServer = async () => {
             });
         }, {
             scheduled: true,
-            timezone: "UTC"
+            timezone: "UTC",
+            // Prevent cron from blocking - allow overlapping executions to be skipped
+            // The isOnlineStatusCleanupRunning flag already handles this
         });
     } catch (err) {
         logger.error({

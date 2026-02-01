@@ -47,7 +47,6 @@
 .premium-search-input {
     width: 100%;
     padding: 1rem 1.5rem;
-    padding-right: 3rem;
     background: var(--bg-secondary);
     border: 2px solid var(--card-border);
     border-radius: var(--radius-lg);
@@ -55,6 +54,25 @@
     font-size: 1rem;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    /* Remove any browser default icons */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: none !important;
+}
+
+.premium-search-input::-webkit-search-decoration,
+.premium-search-input::-webkit-search-cancel-button,
+.premium-search-input::-webkit-search-results-button,
+.premium-search-input::-webkit-search-results-decoration {
+    display: none !important;
+    -webkit-appearance: none !important;
+}
+
+.premium-search-input::before,
+.premium-search-input::after {
+    display: none !important;
+    content: "" !important;
 }
 
 .premium-search-clear {
@@ -814,9 +832,51 @@ html.premium-quizzes-page .main-content {
     z-index: 10;
 }
 
+.premium-quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+    gap: var(--space-sm);
+}
+
+.premium-bookmark-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--space-xs);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+    filter: grayscale(0);
+}
+
+.premium-bookmark-btn:hover {
+    transform: scale(1.2);
+    filter: grayscale(0) brightness(1.2);
+}
+
+.premium-bookmark-btn.bookmarked {
+    filter: grayscale(0);
+}
+
 .quiz-content {
     position: relative;
     z-index: 2;
+}
+
+.premium-quiz-header h3 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--warning);
+    margin-bottom: 0;
+    text-align: left;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 15px var(--warning-light);
+    flex: 1;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .premium-box h3 {
