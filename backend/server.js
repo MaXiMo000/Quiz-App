@@ -48,15 +48,18 @@ import activityRoutes from "./routes/activityRoutes.js";
 import { resetDailyChallenges } from "./controllers/gamificationController.js";
 import { connectRedis, redisClient } from "./config/redis.js";
 import { RedisStore } from "connect-redis";
+import MongoStore from "connect-mongo";
 import logger from "./utils/logger.js";
 
 const app = express();
 
-// 🔒 PRODUCTION: Trust proxy for Render/Heroku deployment
-// This is required for express-rate-limit to work correctly behind a proxy
+// 🔒 PRODUCTION: Trust proxy for Render/Heroku (use number of proxies, not true)
+// express-rate-limit rejects trust proxy === true as insecure (spoofable X-Forwarded-For).
+// Render uses 1 proxy; set TRUST_PROXY_COUNT in env if your host uses more.
 if (process.env.RENDER || process.env.NODE_ENV === "production") {
-    app.set("trust proxy", true);
-    logger.info("Trust proxy enabled for production deployment");
+    const proxyCount = parseInt(process.env.TRUST_PROXY_COUNT || "1", 10) || 1;
+    app.set("trust proxy", proxyCount);
+    logger.info(`Trust proxy set to ${proxyCount} for production deployment`);
 }
 
 // 🔒 SECURITY: Apply security headers
@@ -241,131 +244,111 @@ const sessionConfig = {
     }
 };
 
-// Use Redis store in production, MemoryStore in development
-// IMPORTANT: RedisStore will be set after Redis connection is established
-// This prevents errors if Redis is unavailable at startup
-let useRedisStore = false;
-if (process.env.NODE_ENV === "production" || process.env.RENDER) {
-    // Will be set after Redis connection is verified
-    useRedisStore = true;
-    logger.info("Redis session store will be configured after connection");
-} else {
-    logger.info("Using MemoryStore for development");
-}
-
-app.use(session(sessionConfig));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Test Route
-app.get("/ping", (req, res) => {
-    res.status(200).send("Server is awake");
-});
-
-// CORS Debug Route (remove in production)
-app.get("/debug/cors", (req, res) => {
-    const origin = req.headers.origin;
-    const allowedOrigins = [
-        process.env.FRONTEND_URL,
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000"
-    ].filter(Boolean);
-
-    res.json({
-        timestamp: new Date().toISOString(),
-        origin: origin,
-        allowedOrigins: allowedOrigins,
-        isOriginAllowed: allowedOrigins.some(allowed =>
-            allowed === origin || allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")
-        ),
-        headers: req.headers,
-        method: req.method
-    });
-});
-
-// Routes
-app.use("/api/users/login", authLimiter); // Apply auth rate limiting
-app.use("/api/users/register", authLimiter); // Apply auth rate limiting
-app.use("/api/users", userRoutes);
-app.use("/api", apiRoutes);
-app.use("/api/written-tests", writtenTestRoutes);
-app.use("/api/analytics", analyticsRoutes);
-app.use("/api", dashboardRoutes);
-app.use("/api/intelligence", intelligenceRoutes); // Phase 2: Intelligence Layer
-app.use("/api/debug", debugRoutes); // Temporary debug routes - REMOVE IN PRODUCTION
-
-// Phase 3: Social & Gamification Routes
-app.use("/api/social", socialRoutes);
-app.use("/api/study-groups", studyGroupRoutes);
-app.use("/api/gamification", gamificationRoutes);
-
-// Phase 4: Next-Gen Features
-app.use("/api/ai-study-buddy", aiStudyBuddyRoutes);
-app.use("/api/real-time-quiz", realTimeQuizRoutes);
-
-// Phase 5: Advanced Learning Path Engine
-app.use("/api/learning-paths", learningPathRoutes);
-app.use("/api/reviews", reviewRoutes);
-app.use("/api/search", searchRoutes);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/activity", activityRoutes);
-
-// Global error handler
-app.use(errorHandler);
-
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({
-        error: "Not Found",
-        message: `Route ${req.method} ${req.path} not found`,
-        timestamp: new Date().toISOString()
-    });
-});
+// Session store is set in startServer() after MongoDB/Redis connect so we never use MemoryStore in production.
+const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER;
 
 // MongoDB Connection
 const PORT = process.env.PORT || 4000;
 
 const startServer = async () => {
     try {
-        // Connect Redis first (but don't fail if unavailable)
+        // Connect to MongoDB first (needed for MongoStore fallback and app data)
+        await mongoose.connect(process.env.MONGO_URI);
+        logger.info("Connected to MongoDB");
+
+        // Then try Redis (optional)
         let redisConnected = false;
         try {
             await connectRedis();
             redisConnected = true;
-
-            // Configure Redis session store if Redis is connected and in production
-            if (useRedisStore && redisClient && redisClient.isOpen) {
-                // Update session config with Redis store
-                sessionConfig.store = new RedisStore({
-                    client: redisClient,
-                    prefix: "quiz-app:session:",
-                    ttl: 24 * 60 * 60, // 24 hours in seconds
-                    disableTouch: true, // Improve performance
-                });
-                logger.info("✅ Redis session store configured successfully");
-            } else if (useRedisStore) {
-                logger.warn("⚠️ Redis not available - falling back to MemoryStore (sessions won't persist across restarts)");
-            }
         } catch (redisError) {
             logger.error("Failed to connect to Redis", {
                 message: redisError.message,
                 code: redisError.code
             });
-            if (useRedisStore) {
-                logger.warn("⚠️ Falling back to MemoryStore for sessions (Redis unavailable)");
-            }
-            redisConnected = false;
         }
 
-        // Connect to MongoDB
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+        // Set session store: Redis in prod if available, else MongoStore in prod, else MemoryStore only in dev
+        if (isProduction && redisClient?.isOpen) {
+            sessionConfig.store = new RedisStore({
+                client: redisClient,
+                prefix: "quiz-app:session:",
+                ttl: 24 * 60 * 60, // 24 hours in seconds
+                disableTouch: true,
+            });
+            logger.info("✅ Redis session store configured");
+        } else if (isProduction) {
+            sessionConfig.store = MongoStore.create({
+                client: mongoose.connection.getClient(),
+                dbName: process.env.MONGO_DB_NAME || undefined,
+                collectionName: "sessions",
+            });
+            logger.info("✅ Mongo session store configured (production, Redis unavailable)");
+        } else {
+            logger.info("Using MemoryStore for development");
+        }
+
+        // Mount session and passport only after store is set (avoids production MemoryStore warning)
+        app.use(session(sessionConfig));
+        app.use(passport.initialize());
+        app.use(passport.session());
+
+        // Test route
+        app.get("/ping", (req, res) => {
+            res.status(200).send("Server is awake");
         });
 
-        logger.info("Connected to MongoDB");
+        // CORS debug route
+        app.get("/debug/cors", (req, res) => {
+            const origin = req.headers.origin;
+            const allowedOrigins = [
+                process.env.FRONTEND_URL,
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "http://localhost:3000",
+                "http://127.0.0.1:3000"
+            ].filter(Boolean);
+            res.json({
+                timestamp: new Date().toISOString(),
+                origin: origin,
+                allowedOrigins: allowedOrigins,
+                isOriginAllowed: allowedOrigins.some(allowed =>
+                    allowed === origin || allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")
+                ),
+                headers: req.headers,
+                method: req.method
+            });
+        });
+
+        // API routes
+        app.use("/api/users/login", authLimiter);
+        app.use("/api/users/register", authLimiter);
+        app.use("/api/users", userRoutes);
+        app.use("/api", apiRoutes);
+        app.use("/api/written-tests", writtenTestRoutes);
+        app.use("/api/analytics", analyticsRoutes);
+        app.use("/api", dashboardRoutes);
+        app.use("/api/intelligence", intelligenceRoutes);
+        app.use("/api/debug", debugRoutes);
+        app.use("/api/social", socialRoutes);
+        app.use("/api/study-groups", studyGroupRoutes);
+        app.use("/api/gamification", gamificationRoutes);
+        app.use("/api/ai-study-buddy", aiStudyBuddyRoutes);
+        app.use("/api/real-time-quiz", realTimeQuizRoutes);
+        app.use("/api/learning-paths", learningPathRoutes);
+        app.use("/api/reviews", reviewRoutes);
+        app.use("/api/search", searchRoutes);
+        app.use("/api/notifications", notificationRoutes);
+        app.use("/api/activity", activityRoutes);
+
+        app.use(errorHandler);
+        app.use((req, res) => {
+            res.status(404).json({
+                error: "Not Found",
+                message: `Route ${req.method} ${req.path} not found`,
+                timestamp: new Date().toISOString()
+            });
+        });
 
         // ===================== START HTTP SERVER WITH SOCKET.IO =====================
         const server = createServer(app);

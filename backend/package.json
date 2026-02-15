@@ -25,6 +25,7 @@
     "axios": "^1.8.3",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
+    "connect-mongo": "^6.0.0",
     "connect-redis": "^9.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
