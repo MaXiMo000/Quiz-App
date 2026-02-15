@@ -8,6 +8,8 @@ import {
 import LearningAnalytics from "../models/LearningAnalytics.js";
 import CognitiveMetrics from "../models/CognitiveMetrics.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError, sendNotFound, sendValidationError } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 // Phase 2: Intelligence Layer Controller
 
@@ -20,7 +22,7 @@ export const getSmartRecommendations = async (req, res) => {
         const user = await UserQuiz.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Get user's recent performance
@@ -54,21 +56,32 @@ export const getSmartRecommendations = async (req, res) => {
             )
             .slice(0, 10);
 
+        // Initialize preferences if they don't exist
+        if (!user.preferences) {
+            user.preferences = {
+                favoriteCategories: [],
+                preferredDifficulty: "medium",
+                studyTime: "afternoon",
+                weakAreas: [],
+                strongAreas: []
+            };
+        }
+
         logger.info(`Successfully generated ${uniqueRecommendations.length} smart recommendations for user ${userId}`);
-        res.json({
+        return sendSuccess(res, {
             recommendations: uniqueRecommendations,
             userProfile: {
                 level: user.level,
                 xp: user.xp,
                 preferences: user.preferences,
-                weakAreas: user.preferences.weakAreas,
-                strongAreas: user.preferences.strongAreas
+                weakAreas: user.preferences.weakAreas || [],
+                strongAreas: user.preferences.strongAreas || []
             }
-        });
+        }, "Smart recommendations fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting smart recommendations for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error", message: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -302,7 +315,7 @@ export const getAdaptiveDifficulty = async (req, res) => {
 
         const user = await UserQuiz.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Get all user's reports first
@@ -373,11 +386,11 @@ export const getAdaptiveDifficulty = async (req, res) => {
         };
 
         logger.info(`Successfully calculated adaptive difficulty for user ${userId}: ${response.recommendedDifficulty}`);
-        res.json(response);
+        return sendSuccess(res, response, "Adaptive difficulty calculated successfully");
 
     } catch (error) {
         logger.error({ message: `Error calculating adaptive difficulty for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error", message: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -389,7 +402,7 @@ export const getLearningAnalytics = async (req, res) => {
         const user = await UserQuiz.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Get comprehensive performance data
@@ -418,11 +431,11 @@ export const getLearningAnalytics = async (req, res) => {
         };
 
         logger.info(`Successfully fetched learning analytics for user ${userId}`);
-        res.json(analytics);
+        return sendSuccess(res, analytics, "Learning analytics fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting learning analytics for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error", message: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -441,9 +454,7 @@ export const trackUserPerformance = async (req, res) => {
             if (timeSpent === undefined || timeSpent === null) missingFields.push('timeSpent');
 
             logger.warn(`Missing required fields for performance tracking: quizId=${quizId}, score=${score}, totalQuestions=${totalQuestions}, timeSpent=${timeSpent}`);
-            return res.status(400).json({
-                error: `Missing required fields: ${missingFields.join(', ')}. All fields are required for performance tracking.`
-            });
+            return sendValidationError(res, { missingFields }, `Missing required fields: ${missingFields.join(', ')}. All fields are required for performance tracking.`);
         }
 
         await trackLearningAnalytics(userId, quizId, {
@@ -456,10 +467,10 @@ export const trackUserPerformance = async (req, res) => {
         });
 
         logger.info(`Successfully tracked performance for user ${userId}`);
-        res.json({ message: "Performance tracked successfully" });
+        return sendSuccess(res, null, "Performance tracked successfully");
     } catch (error) {
         logger.error({ message: `Error tracking user performance for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -716,7 +727,7 @@ export const updateUserPreferences = async (req, res) => {
 
         const user = await UserQuiz.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Add to performance history
@@ -735,7 +746,23 @@ export const updateUserPreferences = async (req, res) => {
             user.performanceHistory = user.performanceHistory.slice(-50);
         }
 
+        // Initialize preferences if they don't exist
+        if (!user.preferences) {
+            user.preferences = {
+                favoriteCategories: [],
+                preferredDifficulty: "medium",
+                studyTime: "afternoon",
+                weakAreas: [],
+                strongAreas: []
+            };
+        }
+
         // Update preferences based on performance
+        // Guard against division by zero
+        if (!totalQuestions || totalQuestions === 0) {
+            logger.warn(`Invalid totalQuestions (${totalQuestions}) for user ${userId}, skipping preference update`);
+            return sendValidationError(res, { totalQuestions: "Total questions must be greater than 0" }, "Invalid quiz data");
+        }
         const performancePercentage = score / totalQuestions;
 
         // Update favorite categories
@@ -778,13 +805,12 @@ export const updateUserPreferences = async (req, res) => {
         await user.save();
 
         logger.info(`Successfully updated preferences for user ${userId}`);
-        res.json({
-            message: "User preferences updated successfully",
+        return sendSuccess(res, {
             preferences: user.preferences
-        });
+        }, "User preferences updated successfully");
 
     } catch (error) {
         logger.error({ message: `Error updating user preferences for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };

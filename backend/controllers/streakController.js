@@ -1,6 +1,8 @@
 import UserQuiz from '../models/User.js';
 import XPLog from '../models/XPLog.js';
 import logger from '../utils/logger.js';
+import { sendSuccess, sendError, sendNotFound } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 /**
  * Get user's study streak and daily goals progress
@@ -11,7 +13,7 @@ export const getStreakAndGoals = async (req, res) => {
         const user = await UserQuiz.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return sendNotFound(res, "User");
         }
 
         // Calculate current streak - use UTC to avoid timezone issues
@@ -152,7 +154,7 @@ export const getStreakAndGoals = async (req, res) => {
         // Get longest streak
         const longestStreak = user.stats?.longestStreak || currentStreak;
 
-        res.json({
+        return sendSuccess(res, {
             currentStreak,
             longestStreak,
             lastQuizDate: user.lastQuizDate,
@@ -164,10 +166,10 @@ export const getStreakAndGoals = async (req, res) => {
                 xp: todayXPAmount,
                 timeMinutes: timeSpentToday
             }
-        });
+        }, "Streak and goals fetched successfully");
     } catch (error) {
         logger.error('Error fetching streak and goals:', error);
-        res.status(500).json({ error: 'Failed to fetch streak and goals data' });
+        throw new AppError('Failed to fetch streak and goals data', 500);
     }
 };
 
@@ -181,7 +183,7 @@ export const updateDailyGoals = async (req, res) => {
 
         const user = await UserQuiz.findById(userId);
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return sendNotFound(res, "User");
         }
 
         // Validate goals
@@ -194,13 +196,10 @@ export const updateDailyGoals = async (req, res) => {
         user.dailyGoals = dailyGoals;
         await user.save();
 
-        res.json({
-            message: 'Daily goals updated successfully',
-            dailyGoals
-        });
+        return sendSuccess(res, { dailyGoals }, 'Daily goals updated successfully');
     } catch (error) {
         logger.error('Error updating daily goals:', error);
-        res.status(500).json({ error: 'Failed to update daily goals' });
+        throw new AppError('Failed to update daily goals', 500);
     }
 };
 
@@ -215,7 +214,7 @@ export const updateDailyActivity = async (req, res) => {
 
         const user = await UserQuiz.findById(userId);
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return sendNotFound(res, "User");
         }
 
         // Use UTC dates to avoid timezone issues
@@ -284,13 +283,12 @@ export const updateDailyActivity = async (req, res) => {
         user.lastQuizDate = new Date();
         await user.save();
 
-        res.json({
-            message: 'Daily activity updated',
+        return sendSuccess(res, {
             dailyActivity: user.dailyActivity,
             currentStreak: user.quizStreak
-        });
+        }, 'Daily activity updated');
     } catch (error) {
         logger.error('Error updating daily activity:', error);
-        res.status(500).json({ error: 'Failed to update daily activity' });
+        throw new AppError('Failed to update daily activity', 500);
     }
 };

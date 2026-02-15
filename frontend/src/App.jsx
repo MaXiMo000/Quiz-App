@@ -8,6 +8,7 @@ import GoogleAuth from "./components/GoogleAuth";
 import OfflineBanner from "./components/OfflineBanner"; // ✅ Offline status banner
 import pwaManager from './utils/pwaUtils'; // ✅ PWA management utilities
 import { useNetworkStatus } from './hooks/useNetworkStatus'; // ✅ Network status detection
+import { getUserFromStorage } from './utils/localStorage'; // ✅ Safe localStorage access
 
 // ✅ PWA Debug utilities (development only)
 if (import.meta.env.DEV) {
@@ -52,6 +53,10 @@ import XPLeaderboard from "./pages/XPLeaderboard";
 import StudyStreakPage from "./pages/StudyStreakPage";
 import ThemePage from "./pages/ThemePage";
 import HelpGuide from "./pages/HelpGuide";
+import Bookmarks from "./pages/Bookmarks";
+import SearchResults from "./pages/SearchResults";
+import ActivityFeed from "./pages/ActivityFeed";
+import UserProfile from "./pages/UserProfile";
 
 // ✨ Import new enhanced components
 import EnhancedDashboard from "./components/EnhancedDashboard";
@@ -81,9 +86,29 @@ const App = () => {
 
     // 🔒 SECURITY: Removed unnecessary user state and logging
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        if (storedUser) {
-            // User data is available in localStorage when needed
+        try {
+            // Double-check that getUserFromStorage exists (defensive programming)
+            if (typeof getUserFromStorage === 'function') {
+                const storedUser = getUserFromStorage();
+                if (storedUser) {
+                    // User data is available in localStorage when needed
+                }
+            } else {
+                // Fallback: safe manual parsing if utility function is not available
+                try {
+                    const userItem = localStorage.getItem('user');
+                    if (userItem && userItem !== 'null' && userItem !== 'undefined' && userItem !== '') {
+                        JSON.parse(userItem);
+                    }
+                } catch (parseError) {
+                    // Silently ignore parse errors
+                }
+            }
+        } catch (error) {
+            // Silently handle any localStorage errors - don't break the app
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error accessing user from storage:', error);
+            }
         }
     }, []);
 
@@ -279,6 +304,10 @@ const App = () => {
 
                                 <Route path="/premium/quizzes" element={<PremiumQuizzes />} />
                                 <Route path="/premium/quiz/:id" element={<PremiumQuizQuestions />} />
+                                <Route path="/bookmarks" element={<Bookmarks />} />
+                                <Route path="/search" element={<SearchResults />} />
+                                <Route path="/activity" element={<ActivityFeed />} />
+                                <Route path="/profile" element={<UserProfile />} />
                             </Route>
                         </Routes>
                     </Suspense>

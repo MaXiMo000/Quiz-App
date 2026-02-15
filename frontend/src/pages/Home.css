@@ -18,6 +18,60 @@
     animation: pageSlideIn 1s ease-out;
 }
 
+/* Home Header Wrapper - Contains Search and Notification */
+.home-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+    padding: var(--space-xs) var(--space-md);
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    flex-wrap: wrap;
+}
+
+/* Global Search Wrapper - Only on Home Page */
+.home-search-wrapper {
+    flex: 1;
+    min-width: 300px;
+    max-width: 600px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* Notification Wrapper - Only on Home Page */
+.home-notification-wrapper {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.home-search-wrapper::before,
+.home-search-wrapper::after {
+    display: none !important;
+    content: "" !important;
+    background-image: none !important;
+}
+
+.home-search-wrapper .search-input-wrapper::before,
+.home-search-wrapper .search-input-wrapper::after {
+    display: none !important;
+    content: "" !important;
+    background-image: none !important;
+}
+
+.home-search-wrapper .search-input::before,
+.home-search-wrapper .search-input::after {
+    display: none !important;
+    content: "" !important;
+    background-image: none !important;
+}
+
 @keyframes pageSlideIn {
     from {
         opacity: 0;
@@ -230,9 +284,10 @@
 .hero-section {
     text-align: center;
     margin-bottom: 3rem;
+    margin-top: 0;
     position: relative;
     z-index: 1;
-    padding: 2rem 0;
+    padding: 1rem 0;
 }
 
 .welcome-title {

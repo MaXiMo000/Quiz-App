@@ -22,8 +22,8 @@ router.get("/adaptive-difficulty", verifyToken, cache, getAdaptiveDifficulty);
 // Learning Analytics & Performance Predictions
 router.get("/analytics", verifyToken, cache, getLearningAnalytics);
 
-// Update User Preferences (called after quiz completion)
-router.post("/preferences", verifyToken, clearCacheByPattern("/api/recommendations"), updateUserPreferences);
+// Update User Preferences (called after quiz completion - auto-update based on performance)
+router.post("/preferences", verifyToken, clearCacheByPattern("/api/recommendations"), clearCacheByPattern("/api/users"), updateUserPreferences);
 
 router.post("/track-performance", verifyToken, clearCacheByPattern("/api/analytics"), trackUserPerformance);
 

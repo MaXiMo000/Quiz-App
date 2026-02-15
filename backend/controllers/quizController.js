@@ -3,6 +3,15 @@ import UserQuiz from "../models/User.js";
 import { createInitialReviewSchedules } from "../services/reviewScheduler.js";
 import logger from "../utils/logger.js";
 import mongoose from "mongoose";
+import AppError from "../utils/AppError.js";
+import {
+    sendSuccess,
+    sendError,
+    sendNotFound,
+    sendForbidden,
+    sendValidationError,
+    sendCreated
+} from "../utils/responseHelper.js";
 
 export const getQuizzes = async (req, res) => {
     logger.info(`Getting quizzes for user ${req.user.id} with role ${req.user.role}`);
@@ -19,7 +28,7 @@ export const getQuizzes = async (req, res) => {
         // Ensure userId is properly converted to ObjectId for comparison
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             logger.error(`Invalid ObjectId format for userId: ${userId}`);
-            return res.status(400).json({ error: "Invalid user ID format" });
+            return sendValidationError(res, { userId: "Invalid user ID format" });
         }
 
         const userObjectId = new mongoose.Types.ObjectId(userId);
@@ -55,10 +64,10 @@ export const getQuizzes = async (req, res) => {
         }
 
         logger.info(`✅ Successfully fetched ${quizzes.length} quizzes for user ${userId} with role ${role}`);
-        res.json(quizzes);
+        return sendSuccess(res, quizzes, `Successfully fetched ${quizzes.length} quizzes`);
     } catch (error) {
         logger.error({ message: `Error getting quizzes for user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error" });
+        throw new AppError("Failed to fetch quizzes", 500);
     }
 };
 
@@ -72,7 +81,7 @@ export const createQuiz = async (req, res) => {
 
         if (role !== "admin" && role !== "premium") {
             logger.warn(`User ${userId} with role ${role} attempted to create a quiz`);
-            return res.status(403).json({ message: "Only admins or premium users can create quizzes" });
+            return sendForbidden(res, "Only admins or premium users can create quizzes");
         }
 
         let createdBy = { _id: null, name: "Admin" };
@@ -81,7 +90,7 @@ export const createQuiz = async (req, res) => {
             const user = await UserQuiz.findById(userId);
             if (!user) {
                 logger.warn(`User not found: ${userId} when creating quiz`);
-                return res.status(404).json({ message: "User not found" });
+                return sendNotFound(res, "User");
             }
             createdBy = { _id: user._id, name: user.name };
         }
@@ -98,10 +107,10 @@ export const createQuiz = async (req, res) => {
 
         const savedQuiz = await newQuiz.save();
         logger.info(`Quiz ${savedQuiz._id} created successfully by user ${userId}`);
-        res.status(201).json(savedQuiz);
+        return sendCreated(res, savedQuiz, "Quiz created successfully");
     } catch (error) {
         logger.error({ message: `Error creating quiz by user ${req.user.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error" });
+        throw new AppError("Failed to create quiz", 500);
     }
 };
 
@@ -113,7 +122,7 @@ export const deleteQuiz = async (req, res) => {
 
         if (!title) {
             logger.warn("Quiz title is required for deletion");
-            return res.status(400).json({ message: "Quiz title is required" });
+            return sendValidationError(res, { title: "Quiz title is required" });
         }
 
         // Find the quiz by title
@@ -121,7 +130,7 @@ export const deleteQuiz = async (req, res) => {
 
         if (!quizItem) {
             logger.warn(`Quiz not found for deletion with title: ${title}`);
-            return res.status(404).json({ message: "Quiz not found" });
+            return sendNotFound(res, "Quiz");
         }
 
         // Permission check
@@ -130,23 +139,23 @@ export const deleteQuiz = async (req, res) => {
                 // Check if the user is the creator
                 if (!quizItem.createdBy || !quizItem.createdBy._id || quizItem.createdBy._id.toString() !== userId) {
                     logger.warn(`User ${userId} (premium) tried to delete quiz "${title}" which they do not own.`);
-                    return res.status(403).json({ message: "You can only delete your own quizzes." });
+                    return sendForbidden(res, "You can only delete your own quizzes.");
                 }
             } else {
                 // Regular users cannot delete quizzes
                 logger.warn(`User ${userId} (${role}) tried to delete quiz "${title}".`);
-                return res.status(403).json({ message: "You do not have permission to delete quizzes." });
+                return sendForbidden(res, "You do not have permission to delete quizzes.");
             }
         }
 
         // Delete the quiz
         await Quiz.deleteOne({ title });
         logger.info(`Quiz with title "${title}" deleted successfully`);
-        return res.status(200).json({ message: "Quiz deleted successfully!" });
+        return sendSuccess(res, null, "Quiz deleted successfully");
 
     } catch (error) {
         logger.error({ message: `Error deleting quiz with title: ${req.query.title}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error deleting quiz", error: error.message });
+        throw new AppError("Failed to delete quiz", 500);
     }
 };
 
@@ -157,7 +166,7 @@ export async function addQuestion(req, res) {
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id} when adding question`);
-            return res.status(404).json({ message: "Quiz not found" });
+            return sendNotFound(res, "Quiz");
         }
 
         // Permission check
@@ -165,10 +174,10 @@ export async function addQuestion(req, res) {
             if (role === 'premium') {
                 if (!quiz.createdBy || !quiz.createdBy._id || quiz.createdBy._id.toString() !== userId) {
                     logger.warn(`User ${userId} (premium) tried to add question to quiz "${quiz.title}" which they do not own.`);
-                    return res.status(403).json({ message: "You can only add questions to your own quizzes." });
+                    return sendForbidden(res, "You can only add questions to your own quizzes.");
                 }
             } else {
-                return res.status(403).json({ message: "You do not have permission to add questions." });
+                return sendForbidden(res, "You do not have permission to add questions.");
             }
         }
 
@@ -190,10 +199,10 @@ export async function addQuestion(req, res) {
 
         await quiz.save();
         logger.info(`Successfully added question to quiz ${req.params.id}`);
-        res.json(quiz);
+        return sendSuccess(res, quiz, "Question added successfully");
     } catch (error) {
         logger.error({ message: `Error adding question to quiz ${req.params.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error adding question", error });
+        throw new AppError("Failed to add question", 500);
     }
 }
 
@@ -206,13 +215,13 @@ export async function getQuizById(req, res) {
         // SECURITY: Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(quizId)) {
             logger.warn(`Invalid quiz ID format: ${quizId}`);
-            return res.status(400).json({ message: "Invalid quiz ID format" });
+            return sendValidationError(res, { quizId: "Invalid quiz ID format" });
         }
 
         const quiz = await Quiz.findById(quizId);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id}`);
-            return res.status(404).json({ message: "Quiz not found" });
+            return sendNotFound(res, "Quiz");
         }
 
         // Authorization check: Premium users can only access their own quizzes or admin quizzes
@@ -228,14 +237,14 @@ export async function getQuizById(req, res) {
 
             if (!isAdminQuiz && !isUserQuiz) {
                 logger.warn(`Premium user ${userId} attempted to access quiz ${req.params.id} created by ${quizCreatorId}`);
-                return res.status(403).json({ message: "Access denied. You can only access your own quizzes or admin quizzes." });
+                return sendForbidden(res, "Access denied. You can only access your own quizzes or admin quizzes.");
             }
         } else if (role === "user") {
             // Regular users can only access admin quizzes
             const quizCreatorId = quiz.createdBy?._id;
             if (quizCreatorId !== null) {
                 logger.warn(`Regular user ${userId} attempted to access quiz ${req.params.id} created by ${quizCreatorId}`);
-                return res.status(403).json({ message: "Access denied. You can only access admin quizzes." });
+                return sendForbidden(res, "Access denied. You can only access admin quizzes.");
             }
         }
         // Admin can access all quizzes (no check needed)
@@ -246,10 +255,10 @@ export async function getQuizById(req, res) {
         }
 
         logger.info(`Successfully fetched quiz ${req.params.id} for user ${userId}`);
-        res.json(quiz);
+        return sendSuccess(res, quiz, "Quiz fetched successfully");
     } catch (error) {
         logger.error({ message: `Error fetching quiz ${req.params.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error fetching quiz", error });
+        throw new AppError("Failed to fetch quiz", 500);
     }
 }
 
@@ -260,7 +269,7 @@ export async function deleteQuestion(req, res) {
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) {
             logger.warn(`Quiz not found: ${req.params.id} when deleting question`);
-            return res.status(404).json({ message: "Quiz not found" });
+            return sendNotFound(res, "Quiz");
         }
 
         // Permission check
@@ -268,17 +277,17 @@ export async function deleteQuestion(req, res) {
             if (role === 'premium') {
                 if (!quiz.createdBy || !quiz.createdBy._id || quiz.createdBy._id.toString() !== userId) {
                     logger.warn(`User ${userId} (premium) tried to delete question from quiz "${quiz.title}" which they do not own.`);
-                    return res.status(403).json({ message: "You can only delete questions from your own quizzes." });
+                    return sendForbidden(res, "You can only delete questions from your own quizzes.");
                 }
             } else {
-                return res.status(403).json({ message: "You do not have permission to delete questions." });
+                return sendForbidden(res, "You do not have permission to delete questions.");
             }
         }
 
         const questionIndex = req.params.questionIndex;
         if (questionIndex < 0 || questionIndex >= quiz.questions.length) {
             logger.warn(`Invalid question index ${questionIndex} for quiz ${req.params.id}`);
-            return res.status(400).json({ message: "Invalid question index" });
+            return sendValidationError(res, { questionIndex: "Invalid question index" });
         }
 
         // Phase 2: Update difficulty distribution before removing question
@@ -295,10 +304,10 @@ export async function deleteQuestion(req, res) {
 
         await quiz.save();
         logger.info(`Successfully deleted question at index ${questionIndex} from quiz ${req.params.id}`);
-        res.json({ message: "Question deleted successfully", quiz });
+        return sendSuccess(res, quiz, "Question deleted successfully");
     } catch (error) {
         logger.error({ message: `Error deleting question from quiz ${req.params.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error deleting question", error });
+        throw new AppError("Failed to delete question", 500);
     }
 }
 
@@ -311,7 +320,7 @@ export async function updateQuizStats(req, res) {
         const quiz = await Quiz.findById(quizId);
         if (!quiz) {
             logger.warn(`Quiz not found: ${quizId} when updating stats`);
-            return res.status(404).json({ message: "Quiz not found" });
+            return sendNotFound(res, "Quiz");
         }
 
         // Update quiz statistics
@@ -334,18 +343,15 @@ export async function updateQuizStats(req, res) {
         await quiz.save();
 
         logger.info(`Successfully updated stats for quiz ${quizId}`);
-        res.json({
-            message: "Quiz statistics updated successfully",
-            stats: {
-                totalAttempts: quiz.totalAttempts,
-                averageScore: Math.round(quiz.averageScore * 100),
-                averageTime: Math.round(quiz.averageTime),
-                popularityScore: Math.round(quiz.popularityScore * 100)
-            }
-        });
+        return sendSuccess(res, {
+            totalAttempts: quiz.totalAttempts,
+            averageScore: Math.round(quiz.averageScore * 100),
+            averageTime: Math.round(quiz.averageTime),
+            popularityScore: Math.round(quiz.popularityScore * 100)
+        }, "Quiz statistics updated successfully");
 
     } catch (error) {
         logger.error({ message: `Error updating quiz stats for quiz ${req.body.quizId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error updating quiz stats", error });
+        throw new AppError("Failed to update quiz statistics", 500);
     }
 }

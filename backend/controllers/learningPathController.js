@@ -4,6 +4,8 @@ import User from "../models/User.js";
 import Report from "../models/Report.js";
 import { seedLearningPaths } from "../utils/seedLearningPaths.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError, sendValidationError, sendNotFound } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 // ===================== LEARNING PATHS =====================
 
@@ -40,11 +42,11 @@ export const getLearningPaths = async (req, res) => {
         // Enhance paths with user quiz history and recommended paths
         const pathsWithProgress = await enhancePathsWithUserData(paths, userProgress, userId);
 
-        res.json({ paths: pathsWithProgress });
+        return sendSuccess(res, { paths: pathsWithProgress }, "Learning paths fetched successfully");
 
     } catch (error) {
         logger.error({ message: "Error getting learning paths", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error", error: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -57,14 +59,14 @@ export const getLearningPath = async (req, res) => {
         // SECURITY: Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(pathId)) {
             logger.warn(`Invalid path ID format: ${pathId}`);
-            return res.status(400).json({ message: "Invalid path ID format" });
+            return sendValidationError(res, { pathId: "Invalid path ID format" }, "Invalid path ID format");
         }
 
         const path = await LearningPath.findById(pathId)
             .populate("createdBy._id", "name");
 
         if (!path) {
-            return res.status(404).json({ message: "Learning path not found" });
+            return sendNotFound(res, "Learning path");
         }
 
         // Get user's progress
@@ -81,15 +83,15 @@ export const getLearningPath = async (req, res) => {
         // Calculate available nodes (unlocked based on prerequisites)
         const availableNodes = calculateAvailableNodes(path, userProgress);
 
-        res.json({
+        return sendSuccess(res, {
             path: path.toObject(),
             userProgress: userProgress.toObject(),
             availableNodes
-        });
+        }, "Learning path fetched successfully");
 
     } catch (error) {
         logger.error({ message: "Error getting learning path", pathId: req.params.pathId, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error", error: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -101,7 +103,7 @@ export const startLearningPath = async (req, res) => {
 
         const path = await LearningPath.findById(pathId);
         if (!path) {
-            return res.status(404).json({ message: "Learning path not found" });
+            return sendNotFound(res, "Learning path");
         }
 
         // Check if user already has progress
@@ -114,7 +116,7 @@ export const startLearningPath = async (req, res) => {
 
         if (userProgress) {
             if (userProgress.status === "completed") {
-                return res.status(400).json({ message: "Learning path already completed" });
+                return sendError(res, "Learning path already completed", 400);
             }
 
             // Resume existing progress
@@ -132,14 +134,13 @@ export const startLearningPath = async (req, res) => {
             await path.save();
         }
 
-        res.json({
-            message: "Learning path started successfully",
+        return sendSuccess(res, {
             userProgress: userProgress.toObject()
-        });
+        }, "Learning path started successfully");
 
     } catch (error) {
         logger.error({ message: "Error starting learning path", pathId: req.params.pathId, userId: req.user.id, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error", error: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -156,13 +157,13 @@ export const updateNodeProgress = async (req, res) => {
         });
 
         if (!userProgress) {
-            return res.status(404).json({ message: "User progress not found" });
+            return sendNotFound(res, "User progress");
         }
 
         // Find node progress
         let nodeProgress = userProgress.nodeProgress.find(n => n.nodeId === nodeId);
         if (!nodeProgress) {
-            return res.status(404).json({ message: "Node not found" });
+            return sendNotFound(res, "Node");
         }
 
         // Update node progress
@@ -207,15 +208,14 @@ export const updateNodeProgress = async (req, res) => {
         // Generate adaptive recommendations
         const recommendations = await generateAdaptiveRecommendations(userProgress);
 
-        res.json({
-            message: "Node progress updated successfully",
+        return sendSuccess(res, {
             userProgress: userProgress.toObject(),
             recommendations
-        });
+        }, "Node progress updated successfully");
 
     } catch (error) {
         logger.error({ message: "Error updating node progress", pathId: req.params.pathId, nodeId: req.params.nodeId, userId: req.user.id, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error", error: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -266,11 +266,11 @@ export const getLearningAnalytics = async (req, res) => {
             upcomingReviews: getUpcomingReviews(userPaths)
         };
 
-        res.json({ analytics });
+        return sendSuccess(res, { analytics }, "Learning analytics fetched successfully");
 
     } catch (error) {
         logger.error({ message: "Error getting learning analytics", userId: req.user.id, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error", error: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -285,11 +285,11 @@ export const getUserCompetencies = async (req, res) => {
             .populate("competency")
             .sort({ currentLevel: -1 });
 
-        res.json({ competencies: userCompetencies });
+        return sendSuccess(res, { competencies: userCompetencies }, "User competencies fetched successfully");
 
     } catch (error) {
         logger.error({ message: "Error getting user competencies", userId: req.user.id, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error", error: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -299,7 +299,7 @@ export const updateCompetencyFromQuiz = async (req, res) => {
         const userId = req.user.id;
         const { quizId, score, competencies } = req.body;
 
-        if (!competencies || competencies.length === 0) return res.json({ message: "No competencies to update" });
+        if (!competencies || competencies.length === 0) return sendSuccess(res, null, "No competencies to update");
 
         for (const competencyName of competencies) {
             let userCompetency = await UserCompetency.findOne({
@@ -346,11 +346,11 @@ export const updateCompetencyFromQuiz = async (req, res) => {
             }
         }
 
-        res.json({ message: "Competencies updated successfully" });
+        return sendSuccess(res, null, "Competencies updated successfully");
 
     } catch (error) {
         logger.error({ message: "Error updating competency", userId: req.user.id, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error", error: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 

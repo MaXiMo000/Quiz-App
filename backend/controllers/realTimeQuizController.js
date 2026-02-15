@@ -2,6 +2,8 @@ import { Server } from "socket.io";
 import Quiz from "../models/Quiz.js";
 import UserQuiz from "../models/User.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError, sendNotFound } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 // In-memory store for active quiz rooms
 const activeRooms = new Map();
@@ -57,13 +59,79 @@ class QuizRoom {
 }
 
 export const initializeRealTimeQuiz = (server) => {
+    // Define allowed origins (matching Express CORS configuration)
+    // Always include localhost origins for development
+    const allowedOrigins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+    ];
+
+    // Add production URL if it exists and is different
+    if (process.env.FRONTEND_URL && !allowedOrigins.includes(process.env.FRONTEND_URL)) {
+        allowedOrigins.push(process.env.FRONTEND_URL);
+    }
+
+    logger.info({
+        message: "Initializing Socket.IO server",
+        allowedOrigins: allowedOrigins.join(", "),
+        transports: ["websocket", "polling"],
+        nodeEnv: process.env.NODE_ENV
+    });
+
     const io = new Server(server, {
         cors: {
-            origin: process.env.FRONTEND_URL || "http://localhost:5173",
-            methods: ["GET", "POST"],
-            credentials: true
-        }
+            origin: (origin, callback) => {
+                // Allow requests with no origin (like mobile apps or curl requests)
+                if (!origin) {
+                    logger.debug("Socket.IO: Allowing request with no origin");
+                    return callback(null, true);
+                }
+
+                // Normalize origin (remove trailing slash)
+                const normalizedOrigin = origin.replace(/\/$/, "");
+
+                // Check if origin is allowed
+                const matchedOrigin = allowedOrigins.find(allowedOrigin => {
+                    const normalizedAllowed = allowedOrigin.replace(/\/$/, "");
+                    return normalizedAllowed === normalizedOrigin;
+                });
+
+                if (matchedOrigin) {
+                    logger.debug(`Socket.IO: Allowing origin ${origin}`);
+                    // IMPORTANT: Return the actual requested origin, not just true
+                    // This ensures Socket.IO sends back the correct Access-Control-Allow-Origin header
+                    callback(null, origin);
+                } else {
+                    logger.warn({
+                        message: "Socket.IO CORS blocked origin",
+                        origin,
+                        normalizedOrigin,
+                        allowedOrigins: allowedOrigins.join(", ")
+                    });
+                    callback(new Error(`Origin ${origin} not allowed by CORS`));
+                }
+            },
+            methods: ["GET", "POST", "OPTIONS"],
+            allowedHeaders: [
+                "Content-Type",
+                "Authorization",
+                "X-Requested-With",
+                "Accept",
+                "Origin",
+                "Cache-Control"
+            ],
+            credentials: true,
+            optionsSuccessStatus: 200
+        },
+        transports: ["websocket", "polling"], // Allow both transports
+        allowEIO3: true, // Allow Engine.IO v3 clients for compatibility
+        pingTimeout: 60000, // Increase timeout for slow connections
+        pingInterval: 25000 // Standard ping interval
     });
+
+    logger.info("Socket.IO server initialized successfully");
 
     // Socket.IO middleware for authentication
     io.use(async (socket, next) => {
@@ -606,11 +674,11 @@ export const getRoomStatus = async (req, res) => {
 
         if (!room) {
             logger.warn(`Room not found: ${roomId} when getting status`);
-            return res.status(404).json({ message: "Room not found" });
+            return sendNotFound(res, "Room");
         }
 
         logger.info(`Successfully fetched status for room ${roomId}`);
-        res.json({
+        return sendSuccess(res, {
             room: {
                 id: room.id,
                 hostId: room.hostId,
@@ -625,10 +693,10 @@ export const getRoomStatus = async (req, res) => {
                     questionCount: room.quiz.questions.length
                 } : null
             }
-        });
+        }, "Room status fetched successfully");
     } catch (error) {
         logger.error({ message: `Error getting room status for room ${req.params.roomId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -650,9 +718,9 @@ export const getActiveRooms = async (req, res) => {
         });
 
         logger.info(`Successfully fetched ${rooms.length} active rooms`);
-        res.json({ rooms });
+        return sendSuccess(res, { rooms }, "Active rooms fetched successfully");
     } catch (error) {
         logger.error({ message: "Error getting active rooms", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Server error" });
+        throw new AppError("Server error", 500);
     }
 };

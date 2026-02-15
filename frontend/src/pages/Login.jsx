@@ -90,23 +90,41 @@ const Login = () => {
             const res = await axios.post(`/api/users/login`, { email, password }, {
                 headers: { "Content-Type": "application/json" }
             });
-            // ✅ Save token and user to localStorage
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("user", JSON.stringify(res.data.user));
+
+            // ✅ Response is automatically normalized by axios interceptor
+            // Backend returns: { status, statusCode, message, data: { token, user } }
+            // Interceptor extracts: res.data = { token, user }
+            const responseData = res.data;
+
+            if (!responseData || !responseData.token || !responseData.user) {
+                throw new Error("Invalid response format");
+            }
+
+            // ✅ Save token and user to localStorage using safe methods
+            localStorage.setItem("token", responseData.token);
+            try {
+                localStorage.setItem("user", JSON.stringify(responseData.user));
+            } catch (storageError) {
+                console.error("Error saving user to localStorage:", storageError);
+                showError("Failed to save user data. Please try again.");
+                setLoading(false);
+                return;
+            }
 
             // ✅ Apply theme immediately after login
-            const userTheme = res.data.user.selectedTheme || "Default";
+            const userTheme = responseData.user.selectedTheme || "Default";
             changeTheme(userTheme);
 
             // ✅ Navigate based on role
-            if (res.data.user.role === "admin") {
+            if (responseData.user.role === "admin") {
                 navigate("/admin");
             } else {
                 navigate("/");
             }
-        // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            showError("Login Failed");
+            console.error("Login error:", error);
+            const errorMessage = error.response?.data?.message || error.message || "Login Failed";
+            showError(errorMessage);
         } finally {
             setLoading(false);
         }

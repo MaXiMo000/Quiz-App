@@ -42,6 +42,16 @@
   box-sizing: border-box;
 }
 
+.layout-header {
+  margin-bottom: var(--space-lg);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+  flex-wrap: wrap;
+}
+
 /* Hide main-content padding and adjust layout when quiz is in fullscreen */
 body.quiz-fullscreen .main-content {
   padding: 0 !important;
@@ -371,7 +381,6 @@ body.quiz-fullscreen .main-content {
   margin: 0;
   box-sizing: border-box;
   animation: fadeIn 0.3s ease;
-}
   width: 100vw;
   height: 100vh;
 }

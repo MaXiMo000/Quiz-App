@@ -3,6 +3,8 @@ import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
 import logger from "../utils/logger.js";
 import mongoose from "mongoose";
+import { sendSuccess, sendError, sendValidationError, sendNotFound, sendUnauthorized, sendForbidden } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 // Achievement system data - Expanded with many more achievements
 const ACHIEVEMENTS = {
@@ -128,20 +130,20 @@ export const getDashboardData = async (req, res) => {
         // SECURITY: Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             logger.warn(`Invalid user ID format: ${userId}`);
-            return res.status(400).json({ message: "Invalid user ID format" });
+            return sendValidationError(res, { userId: "Invalid user ID format" }, "Invalid user ID format");
         }
 
         // SECURITY: Authorization check - users can only access their own dashboard unless admin
         if (requestingUserRole !== "admin" && requestingUserId !== userId) {
             logger.warn(`User ${requestingUserId} attempted to access dashboard for user ${userId}`);
-            return res.status(403).json({ message: "Access denied. You can only access your own dashboard." });
+            return sendForbidden(res, "Access denied. You can only access your own dashboard.");
         }
 
         // Get user data
         const user = await UserQuiz.findById(userId);
         if (!user) {
             logger.warn(`User not found with ID: ${userId}`);
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Get all user reports using the user's name (since reports use username)
@@ -191,7 +193,7 @@ export const getDashboardData = async (req, res) => {
         const streakData = await getStreakData(user.name);
 
         logger.info(`Successfully fetched dashboard data for user ${userId}`);
-        res.json({
+        return sendSuccess(res, {
             totalQuizzes,
             completedQuizzes,
             averageScore,
@@ -204,11 +206,11 @@ export const getDashboardData = async (req, res) => {
             streakData,
             userLevel: user.level || 1,
             userXP: Math.round(user.xp) || 0
-        });
+        }, "Dashboard data fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error fetching dashboard data for user ${req.params.userId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error fetching dashboard data", error: error.message });
+        throw new AppError("Error fetching dashboard data", 500);
     }
 };
 
@@ -528,13 +530,13 @@ export const getUserLeaderboardPosition = async (req, res) => {
         // SECURITY: Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             logger.warn(`Invalid user ID format: ${userId}`);
-            return res.status(400).json({ message: "Invalid user ID format" });
+            return sendValidationError(res, { userId: "Invalid user ID format" }, "Invalid user ID format");
         }
 
         // SECURITY: Authorization check - users can only access their own position unless admin
         if (requestingUserRole !== "admin" && requestingUserId !== userId) {
             logger.warn(`User ${requestingUserId} attempted to access leaderboard position for user ${userId}`);
-            return res.status(403).json({ message: "Access denied. You can only access your own leaderboard position." });
+            return sendForbidden(res, "Access denied. You can only access your own leaderboard position.");
         }
 
         // Get all users sorted by XP
@@ -547,15 +549,15 @@ export const getUserLeaderboardPosition = async (req, res) => {
         const totalUsers = users.length;
 
         logger.info(`Successfully fetched leaderboard position for user ${userId}: ${position}/${totalUsers}`);
-        res.json({
+        return sendSuccess(res, {
             position,
             totalUsers,
             percentile: Math.round(((totalUsers - position) / totalUsers) * 100)
-        });
+        }, "Leaderboard position fetched successfully");
 
     } catch (error) {
         logger.error({ message: `Error getting leaderboard position for user ${req.params.userId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error getting leaderboard position", error: error.message });
+        throw new AppError("Error getting leaderboard position", 500);
     }
 };
 
@@ -1502,7 +1504,7 @@ export const getUserAchievementsEndpoint = async (req, res) => {
         // Check if req.user exists (should be set by verifyToken middleware)
         if (!req.user || !req.user.id) {
             logger.warn(`Unauthorized access attempt to achievements endpoint`);
-            return res.status(401).json({ message: "Unauthorized. Please log in." });
+            return sendUnauthorized(res, "Unauthorized. Please log in.");
         }
 
         const requestingUserId = req.user.id;
@@ -1511,19 +1513,19 @@ export const getUserAchievementsEndpoint = async (req, res) => {
         // SECURITY: Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             logger.warn(`Invalid user ID format: ${userId}`);
-            return res.status(400).json({ message: "Invalid user ID format" });
+            return sendValidationError(res, { userId: "Invalid user ID format" }, "Invalid user ID format");
         }
 
         // SECURITY: Authorization check - users can only access their own achievements unless admin
         if (requestingUserRole !== "admin" && requestingUserId !== userId) {
             logger.warn(`User ${requestingUserId} attempted to access achievements for user ${userId}`);
-            return res.status(403).json({ message: "Access denied. You can only access your own achievements." });
+            return sendForbidden(res, "Access denied. You can only access your own achievements.");
         }
 
         const user = await UserQuiz.findById(userId);
         if (!user) {
             logger.warn(`User not found with ID: ${userId} when fetching achievements`);
-            return res.status(404).json({ message: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         const reports = await Report.find({ username: user.name }).lean();
@@ -1532,10 +1534,10 @@ export const getUserAchievementsEndpoint = async (req, res) => {
         const achievements = await getUserAchievements(user.name, user, reports, currentStreak);
 
         logger.info(`Successfully fetched ${achievements.unlocked.length} unlocked achievements for user ${userId}`);
-        res.json(achievements);
+        return sendSuccess(res, achievements, "Achievements fetched successfully");
     } catch (error) {
         logger.error({ message: `Error fetching achievements for user ${req.params.userId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error fetching achievements", error: error.message });
+        throw new AppError("Error fetching achievements", 500);
     }
 };
 
@@ -1549,12 +1551,12 @@ export const getAllCategories = async (req, res) => {
         // Sort categories alphabetically
         const sortedCategories = categories.sort();
         logger.info(`Successfully fetched ${sortedCategories.length} categories`);
-        res.json({
+        return sendSuccess(res, {
             categories: sortedCategories,
             count: sortedCategories.length
-        });
+        }, "Categories fetched successfully");
     } catch (error) {
         logger.error({ message: "Error fetching categories", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error fetching categories", error: error.message });
+        throw new AppError("Error fetching categories", 500);
     }
 };

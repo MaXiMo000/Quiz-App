@@ -1,6 +1,8 @@
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError, sendNotFound } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 // Debug endpoint to check user XP and recent XP logs
 export const debugUserXP = async (req, res) => {
@@ -12,7 +14,7 @@ export const debugUserXP = async (req, res) => {
         const user = await UserQuiz.findById(userId);
         if (!user) {
             logger.warn(`User not found with ID: ${userId} for XP debug`);
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Get recent XP logs for this user
@@ -29,7 +31,7 @@ export const debugUserXP = async (req, res) => {
         const calculatedTotalXP = totalXPFromLogs[0]?.totalXP || 0;
 
         logger.info(`Successfully debugged XP for user ${userId}`);
-        res.json({
+        return sendSuccess(res, {
             user: {
                 _id: user._id,
                 name: user.name,
@@ -49,10 +51,10 @@ export const debugUserXP = async (req, res) => {
                 userCreated: user.createdAt,
                 xpLogsCount: xpLogs.length
             }
-        });
+        }, "XP debug information fetched successfully");
     } catch (error) {
         logger.error({ message: `Error debugging XP for user ${req.params.userId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error", details: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -65,7 +67,7 @@ export const resetUserXP = async (req, res) => {
         const user = await UserQuiz.findById(userId);
         if (!user) {
             logger.error(`User not found with ID: ${userId} for XP reset`);
-            return res.status(404).json({ error: "User not found" });
+            return sendNotFound(res, "User");
         }
 
         // Reset XP data
@@ -83,10 +85,10 @@ export const resetUserXP = async (req, res) => {
         // await XPLog.deleteMany({ user: userId });
 
         logger.warn(`Successfully reset XP for user ${userId}`);
-        res.json({ message: "User XP reset successfully", user });
+        return sendSuccess(res, { user }, "User XP reset successfully");
     } catch (error) {
         logger.error({ message: `Error resetting XP for user ${req.params.userId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error", details: error.message });
+        throw new AppError("Server error", 500);
     }
 };
 
@@ -136,13 +138,12 @@ export const fixGoogleOAuthUsers = async (req, res) => {
         }
 
         logger.info(`Fixed ${fixedCount} Google OAuth users successfully`);
-        res.json({
-            message: `Fixed ${fixedCount} users successfully`,
+        return sendSuccess(res, {
             totalFound: usersToFix.length,
             fixedUsers: usersToFix.map(u => ({ name: u.name, email: u.email }))
-        });
+        }, `Fixed ${fixedCount} users successfully`);
     } catch (error) {
         logger.error({ message: "Error fixing Google OAuth users", error: error.message, stack: error.stack });
-        res.status(500).json({ error: "Server error", details: error.message });
+        throw new AppError("Server error", 500);
     }
 };

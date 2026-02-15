@@ -1,0 +1,390 @@
+.notification-bell {
+    position: relative;
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+}
+
+.notification-bell:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    transform: scale(1.05);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--danger);
+    color: var(--text-light);
+    border-radius: var(--radius-full);
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
+    border: 2px solid var(--bg-dark);
+}
+
+.notification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--black-transparent-50);
+    z-index: 999;
+    backdrop-filter: blur(4px);
+}
+
+.notification-panel {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-width: 450px !important;
+    background: var(--card-bg-glass) !important;
+    backdrop-filter: blur(25px) !important;
+    border-left: 1px solid var(--card-border) !important;
+    box-shadow: var(--shadow-2xl) !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+.notification-panel > * {
+    position: relative !important;
+}
+
+/* Override any conflicting styles from App.css or other files */
+/* App.css has .notification-header with position: absolute and height: 4px - we override it */
+.notification-panel .notification-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 24px 32px !important;
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+    border-bottom: 2px solid var(--card-border) !important;
+    flex-shrink: 0 !important;
+    min-height: 100px !important;
+    height: auto !important;
+    max-height: none !important;
+    gap: 20px !important;
+    position: relative !important;
+    z-index: 10 !important;
+    background: var(--card-bg-glass) !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+}
+
+.notification-panel .notification-header h2 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: var(--text-light) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: 1 !important;
+    line-height: 1.4 !important;
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.notification-panel .notification-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-shrink: 0 !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.notification-panel .mark-all-read-btn {
+    background: var(--accent-light) !important;
+    color: var(--accent) !important;
+    border: 1px solid var(--accent) !important;
+    padding: 12px 20px !important;
+    border-radius: var(--radius-lg) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all var(--transition-normal) !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+}
+
+.notification-panel .mark-all-read-btn:hover {
+    background: var(--accent) !important;
+    color: var(--text-light) !important;
+}
+
+.notification-panel .close-btn {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-muted) !important;
+    font-size: 2rem !important;
+    cursor: pointer !important;
+    padding: 6px !important;
+    line-height: 1 !important;
+    transition: all var(--transition-fast) !important;
+    flex-shrink: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    position: relative !important;
+}
+
+.notification-panel .close-btn:hover {
+    color: var(--text-light) !important;
+    transform: scale(1.2) !important;
+}
+
+/* Override any conflicting styles - tabs must be below header */
+.notification-panel .notification-tabs {
+    display: flex !important;
+    gap: 6px !important;
+    padding: 20px 32px !important;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid var(--card-border) !important;
+    overflow-x: auto !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    position: relative !important;
+    z-index: 5 !important;
+    background: var(--card-bg-glass) !important;
+    clear: both !important;
+    min-height: 60px !important;
+    align-items: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+}
+
+.notification-panel .notification-tab {
+    background: transparent !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-muted) !important;
+    padding: 12px 20px !important;
+    border-radius: var(--radius-lg) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all var(--transition-normal) !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.notification-panel .notification-tab:hover {
+    background: var(--accent-light) !important;
+    color: var(--text-light) !important;
+    border-color: var(--accent) !important;
+}
+
+.notification-panel .notification-tab.active {
+    background: var(--gradient-primary) !important;
+    color: var(--text-light) !important;
+    border-color: var(--accent) !important;
+}
+
+.notification-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-md);
+}
+
+.notification-loading,
+.notification-empty {
+    text-align: center;
+    padding: var(--space-2xl);
+    color: var(--text-muted);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-md);
+}
+
+.notification-item {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.notification-item.unread {
+    background: var(--accent-light);
+    border-color: var(--accent);
+}
+
+.notification-item:hover {
+    transform: translateX(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: var(--space-xs);
+}
+
+.notification-message {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-xs);
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.notification-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    flex-shrink: 0;
+}
+
+.mark-read-btn,
+.delete-btn {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.mark-read-btn:hover {
+    background: var(--success-light);
+    color: var(--success);
+    border-color: var(--success);
+}
+
+.delete-btn:hover {
+    background: var(--danger-light);
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.load-more-btn {
+    width: 100%;
+    background: var(--card-bg-glass);
+    border: 1px solid var(--card-border);
+    color: var(--text-light);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    margin-top: var(--space-md);
+}
+
+.load-more-btn:hover:not(:disabled) {
+    background: var(--accent-light);
+    border-color: var(--accent);
+}
+
+.load-more-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .notification-panel {
+        max-width: 100%;
+    }
+
+    .notification-header {
+        padding: var(--space-md);
+        padding-bottom: var(--space-sm);
+        min-height: auto;
+        flex-wrap: wrap;
+    }
+
+    .notification-header h2 {
+        font-size: 1.25rem;
+        width: 100%;
+        margin-bottom: var(--space-xs);
+    }
+
+    .notification-header-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: var(--space-xs);
+    }
+
+    .mark-all-read-btn {
+        font-size: 0.75rem;
+        padding: var(--space-xs) var(--space-sm);
+    }
+
+    .notification-tabs {
+        padding: var(--space-sm) var(--space-md);
+        padding-top: var(--space-sm);
+    }
+
+    .notification-tab {
+        font-size: 0.75rem;
+        padding: var(--space-xs) var(--space-sm);
+    }
+}

@@ -270,12 +270,15 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                     <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
                                     <Link to="/enhanced-dashboard" onClick={handleLinkClick}>📈 Premium Dashboard</Link>
                                     <Link to="/intelligence-dashboard" onClick={handleLinkClick}>🧠 Intelligence Dashboard</Link>
+                                    <Link to="/profile" onClick={handleLinkClick}>👤 Profile & Settings</Link>
+                                    <Link to="/activity" onClick={handleLinkClick}>📝 Activity Feed</Link>
                                 </NavModule>
 
                                 {/* 2. Learning Module */}
                                 <NavModule title="Learning" icon="📚" defaultExpanded={true} delay={0.7}>
                                     <Link to="/user/test" onClick={handleLinkClick}>📚 Take Quizzes</Link>
                                     <Link to="/premium/quizzes" onClick={handleLinkClick}>➕ Add Quizzes</Link>
+                                    <Link to="/bookmarks" onClick={handleLinkClick}>⭐ Bookmarks</Link>
                                     <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
                                     <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>
@@ -324,11 +327,14 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                                 {/* 1. Personal Module */}
                                 <NavModule title="Personal" icon="👤" defaultExpanded={true} delay={0.6}>
                                     <Link to="/" onClick={handleLinkClick}>📊 Dashboard</Link>
+                                    <Link to="/profile" onClick={handleLinkClick}>👤 Profile & Settings</Link>
+                                    <Link to="/activity" onClick={handleLinkClick}>📝 Activity Feed</Link>
                                 </NavModule>
 
                                 {/* 2. Learning Module */}
                                 <NavModule title="Learning" icon="📚" defaultExpanded={true} delay={0.7}>
                                     <Link to="/user/test" onClick={handleLinkClick}>📚 Quizzes</Link>
+                                    <Link to="/bookmarks" onClick={handleLinkClick}>⭐ Bookmarks</Link>
                                     <Link to="/user/report" onClick={handleLinkClick}>📄 Reports</Link>
                                     <Link to="/achievements" onClick={handleLinkClick}>🏆 Achievements</Link>
                                     <Link to="/leaderboard" onClick={handleLinkClick}>🏆 LeaderBoard</Link>

@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { generateFromGemini } from "../utils/geminiHelper.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError, sendValidationError, sendNotFound, sendCreated } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 dotenv.config();
 
@@ -17,17 +19,17 @@ export async function createWrittenTest(req, res) {
         const { title, category, questions } = req.body;
         if (!title || !category) {
             logger.warn("Missing required fields for written test creation");
-            return res.status(400).json({ message: "Missing required fields" });
+            return sendValidationError(res, { title: "Title and category are required" }, "Missing required fields");
         }
 
         const writtenTest = new WrittenTest({ title, category, questions });
         await writtenTest.save();
 
         logger.info(`Successfully created written test with title: ${title}`);
-        res.status(200).json({ message: "Success!" });
+        return sendCreated(res, { testId: writtenTest._id }, "Written test created successfully");
     } catch (error) {
         logger.error({ message: `Error creating written test with title: ${req.body.title}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error creating written test", error });
+        throw new AppError("Error creating written test", 500);
     }
 }
 
@@ -36,10 +38,10 @@ export async function getWrittenTests(req, res) {
     try {
         const tests = await WrittenTest.find();
         logger.info(`Successfully fetched ${tests.length} written tests`);
-        res.json(tests);
+        return sendSuccess(res, tests, "Written tests fetched successfully");
     } catch (error) {
         logger.error({ message: "Error fetching written tests", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error fetching written tests", error });
+        throw new AppError("Error fetching written tests", 500);
     }
 }
 
@@ -52,7 +54,7 @@ export async function addQuestionToTest(req, res) {
         const test = await WrittenTest.findById(testId);
         if (!test) {
             logger.warn(`Written test not found: ${testId} when adding question`);
-            return res.status(404).json({ error: "Test not found" });
+            return sendNotFound(res, "Test");
         }
 
         test.questions.push({ question, marks });
@@ -61,10 +63,10 @@ export async function addQuestionToTest(req, res) {
 
         await test.save();
         logger.info(`Successfully added question to written test ${testId}`);
-        res.json(test);
+        return sendSuccess(res, test, "Question added successfully");
     } catch (error) {
         logger.error({ message: `Failed to add question to written test ${req.params.testId}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Failed to add question", error });
+        throw new AppError("Failed to add question", 500);
     }
 }
 
@@ -75,7 +77,7 @@ export async function scoreWrittenAnswer(req, res) {
 
         if (!answer || !question) {
             logger.warn("Answer and question are required for AI scoring");
-            return res.status(400).json({ message: "Answer and question are required" });
+            return sendValidationError(res, { answer: "Answer and question are required" }, "Answer and question are required");
         }
 
         const prompt = `
@@ -98,10 +100,10 @@ Feedback: Well-structured answer with key points covered.
         const score = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
 
         logger.info("Successfully scored written answer");
-        res.json({ score, feedback: geminiResponse.trim() });
+        return sendSuccess(res, { score, feedback: geminiResponse.trim() }, "Answer scored successfully");
     } catch (error) {
         logger.error({ message: "Error in AI scoring", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error in AI scoring", error });
+        throw new AppError("Error in AI scoring", 500);
     }
 }
 
@@ -112,22 +114,22 @@ export const deleteTest = async (req, res) => {
 
         if (!title) {
             logger.warn("Test title is required for deletion");
-            return res.status(400).json({ message: "Test title is required" });
+            return sendValidationError(res, { title: "Test title is required" }, "Test title is required");
         }
 
         const test = await WrittenTest.findOne({ title });
 
         if (!test) {
             logger.warn(`Written test not found for deletion with title: ${title}`);
-            return res.status(404).json({ message: "Test not found" });
+            return sendNotFound(res, "Test");
         }
 
         await WrittenTest.deleteOne({ title });
         logger.info(`Written test with title "${title}" deleted successfully`);
-        return res.status(200).json({ message: "Test deleted successfully!" });
+        return sendSuccess(res, null, "Test deleted successfully!");
     } catch (error) {
         logger.error({ message: `Error deleting written test with title: ${req.query.title}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error deleting test", error: error.message });
+        throw new AppError("Error deleting test", 500);
     }
 };
 
@@ -138,20 +140,20 @@ export async function getTestById(req, res) {
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             logger.warn(`Invalid ID format for written test: ${id}`);
-            return res.status(400).json({ message: "Invalid ID format" });
+            return sendValidationError(res, { id: "Invalid ID format" }, "Invalid ID format");
         }
 
         const test = await WrittenTest.findById(id);
         if (!test) {
             logger.warn(`Written test not found: ${id}`);
-            return res.status(404).json({ message: "Test not found" });
+            return sendNotFound(res, "Test");
         }
 
         logger.info(`Successfully fetched written test ${id}`);
-        res.json(test);
+        return sendSuccess(res, test, "Test fetched successfully");
     } catch (error) {
         logger.error({ message: `Error fetching written test ${req.params.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error fetching test", error });
+        throw new AppError("Error fetching test", 500);
     }
 }
 
@@ -161,13 +163,13 @@ export async function deleteQuestion(req, res) {
         const test = await WrittenTest.findById(req.params.id);
         if (!test) {
             logger.warn(`Written test not found: ${req.params.id} when deleting question`);
-            return res.status(404).json({ message: "Test not found" });
+            return sendNotFound(res, "Test");
         }
 
         const questionIndex = req.params.questionIndex;
         if (questionIndex < 0 || questionIndex >= test.questions.length) {
             logger.warn(`Invalid question index ${questionIndex} for written test ${req.params.id}`);
-            return res.status(400).json({ message: "Invalid question index" });
+            return sendValidationError(res, { questionIndex: "Invalid question index" }, "Invalid question index");
         }
 
         test.questions.splice(questionIndex, 1);
@@ -176,9 +178,9 @@ export async function deleteQuestion(req, res) {
 
         await test.save();
         logger.info(`Successfully deleted question at index ${questionIndex} from written test ${req.params.id}`);
-        res.json({ message: "Question deleted successfully", test });
+        return sendSuccess(res, { test }, "Question deleted successfully");
     } catch (error) {
         logger.error({ message: `Error deleting question from written test ${req.params.id}`, error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Error deleting question", error });
+        throw new AppError("Error deleting question", 500);
     }
 }

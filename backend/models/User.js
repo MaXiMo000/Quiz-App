@@ -4,6 +4,8 @@ const userSchema = new mongoose.Schema({
     name:     { type: String, required: true },
     email:    { type: String, required: true, unique: true },
     password: { type: String, required: false },
+    bio:      { type: String, default: "" },
+    avatarUrl: { type: String, default: "" },
     role:     { type: String, enum: ["admin", "user", "premium"], default: "user" },
     badges: { type: [String], default: [] },
     xp:       { type: Number, default: 0 },          // total XP
@@ -196,7 +198,11 @@ const userSchema = new mongoose.Schema({
     bookmarkedQuizzes: [{
         quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz", required: true },
         bookmarkedAt: { type: Date, default: Date.now }
-    }]
+    }],
+
+    // Account deletion
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
 }, { timestamps: true });
 
 export default mongoose.model("UserQuiz", userSchema);

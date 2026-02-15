@@ -1,6 +1,8 @@
 // Phase 2: Migration script to update existing quizzes with difficulty distribution
 import Quiz from "../models/Quiz.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 export const migrateQuizDifficultyDistribution = async () => {
     logger.info("Starting quiz difficulty distribution migration");
@@ -68,22 +70,15 @@ export const runMigration = async (req, res) => {
 
         if (result.success) {
             logger.info(`Migration API endpoint completed successfully, updated ${result.updatedCount} quizzes`);
-            res.json({
-                message: "Migration completed successfully",
+            return sendSuccess(res, {
                 updatedCount: result.updatedCount
-            });
+            }, "Migration completed successfully");
         } else {
             logger.error({ message: "Migration API endpoint failed", error: result.error });
-            res.status(500).json({
-                message: "Migration failed",
-                error: result.error
-            });
+            return sendError(res, "Migration failed", 500, { error: result.error });
         }
     } catch (error) {
         logger.error({ message: "Error running migration API endpoint", error: error.message, stack: error.stack });
-        res.status(500).json({
-            message: "Migration failed",
-            error: error.message
-        });
+        throw new AppError("Migration failed", 500);
     }
 };

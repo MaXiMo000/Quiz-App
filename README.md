@@ -2,6 +2,23 @@
 
 ---
 
+## 🚀 Quick Start
+
+**Start both servers automatically:**
+
+```bash
+npm run dev
+```
+
+Or use the shell script:
+```bash
+./start.sh
+```
+
+For more options, see [START_GUIDE.md](./START_GUIDE.md)
+
+---
+
 ## 🌐 Live Demo -->> [Click Here](https://quiz-app-cp2h.onrender.com/)
 
 * **Achievement System** ✅

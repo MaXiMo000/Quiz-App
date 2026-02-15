@@ -1,8 +1,9 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { getUserFromStorage } from "../utils/localStorage";
 
 const AuthWrapper = ({ children }) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUserFromStorage();
     return user ? children : <Navigate to="/login" />;
 };
 

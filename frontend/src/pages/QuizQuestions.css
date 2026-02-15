@@ -367,8 +367,8 @@
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border: 1px solid var(--warning-light) !important;
-    color: #FFFFFF !important; /* Bright white for maximum visibility */
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 255, 255, 0.3) !important;
+    color: var(--text-light) !important;
+    text-shadow: 0 2px 4px var(--black-transparent-75), 0 0 10px var(--white-transparent-30) !important;
     font-weight: 600 !important;
     font-size: 1.05rem !important;
     -webkit-font-smoothing: antialiased !important;
@@ -383,16 +383,16 @@
 
 .premium-info p,
 .premium-info p *:not(strong) {
-    color: #FFFFFF !important; /* Bright white for maximum visibility */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+    color: var(--text-light) !important;
+    text-shadow: 0 1px 2px var(--black-transparent-75) !important;
 }
 
 .premium-info p strong {
-    color: #FFD700 !important; /* Bright gold/yellow for maximum visibility */
+    color: var(--warning) !important;
     text-shadow:
-        0 0 20px rgba(255, 215, 0, 0.8),
-        0 0 10px rgba(255, 215, 0, 0.6),
-        0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        0 0 20px var(--warning-light),
+        0 0 10px var(--warning-light),
+        0 2px 4px var(--black-transparent-75) !important;
     font-weight: 800 !important;
     font-size: 1em !important;
     display: block !important;
@@ -450,11 +450,11 @@
 
 /* Premium info strong - consolidated and enhanced */
 .premium-info p strong {
-    color: #FFD700 !important; /* Bright gold/yellow for maximum visibility */
+    color: var(--warning) !important;
     text-shadow:
-        0 0 20px rgba(255, 215, 0, 0.8),
-        0 0 10px rgba(255, 215, 0, 0.6),
-        0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        0 0 20px var(--warning-light),
+        0 0 10px var(--warning-light),
+        0 2px 4px var(--black-transparent-75) !important;
     font-weight: 800 !important;
     font-size: 1em !important;
     display: block !important;

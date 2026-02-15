@@ -1,5 +1,7 @@
 import Report from "../models/Report.js";
 import logger from "../utils/logger.js";
+import { sendSuccess, sendError } from "../utils/responseHelper.js";
+import AppError from "../utils/AppError.js";
 
 // GET /api/analytics/question-stats
 export async function getQuestionStats(req, res) {
@@ -35,10 +37,10 @@ export async function getQuestionStats(req, res) {
 
         const result = await Report.aggregate(pipeline);
         logger.info(`Successfully fetched question stats for ${result.length} questions`);
-        res.json(result);
+        return sendSuccess(res, result, "Question stats fetched successfully");
     } catch (error) {
         logger.error({ message: "Error computing question stats", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Internal Server Error" });
+        throw new AppError("Internal Server Error", 500);
     }
 }
 
@@ -71,10 +73,10 @@ export async function getScoreTrends(req, res) {
 
         const result = await Report.aggregate(pipeline);
         logger.info(`Successfully fetched score trends for ${result.length} days`);
-        res.json(result);
+        return sendSuccess(res, result, "Score trends fetched successfully");
     } catch (error) {
         logger.error({ message: "Error getting score trends", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Internal Server Error" });
+        throw new AppError("Internal Server Error", 500);
     }
 }
 
@@ -123,9 +125,9 @@ export async function getTopicHeatmap(req, res) {
 
         const result = await Report.aggregate(pipeline);
         logger.info(`Successfully fetched topic heatmap for ${result.length} topics`);
-        res.json(result);
+        return sendSuccess(res, result, "Topic heatmap fetched successfully");
     } catch (error) {
         logger.error({ message: "Error generating topic heatmap", error: error.message, stack: error.stack });
-        res.status(500).json({ message: "Internal Server Error" });
+        throw new AppError("Internal Server Error", 500);
     }
 }
