@@ -12,11 +12,11 @@ const instance = axios.create({
     }
 });
 
-// Automatically attach token
+// Automatically attach token (never send "Bearer undefined" or "Bearer null")
 instance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
-        if (token) {
+        if (token && token.trim() !== '' && token !== 'undefined' && token !== 'null') {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;

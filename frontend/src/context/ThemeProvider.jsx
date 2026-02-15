@@ -12,12 +12,10 @@ export const ThemeProvider = ({ children }) => {
         setTheme(storedTheme);
         document.documentElement.setAttribute("data-theme", storedTheme);
 
-        // Check for active custom theme
-        const activeCustomTheme = localStorage.getItem('activeCustomTheme');
-        if (activeCustomTheme) {
+        // Check for active custom theme (use safe parse to avoid "undefined" / invalid JSON)
+        const customTheme = safeParseJSON('activeCustomTheme', null);
+        if (customTheme?.data) {
             try {
-                const customTheme = JSON.parse(activeCustomTheme);
-                if (customTheme.data) {
                     // Apply custom theme CSS variables
                     const root = document.documentElement;
                     const cssVarMap = {
@@ -94,7 +92,6 @@ export const ThemeProvider = ({ children }) => {
                             root.style.setProperty(cssVarMap[key], customTheme.data[key]);
                         }
                     });
-                }
             } catch (err) {
                 console.error('Error applying custom theme:', err);
             }
@@ -119,14 +116,12 @@ export const ThemeProvider = ({ children }) => {
         const intervalId = setInterval(() => {
             try {
                 const storedUser = safeParseJSON("user", null);
-                if (storedUser && storedUser.selectedTheme && storedUser.selectedTheme !== theme) {
-                    console.log('ThemeContext: User theme changed, updating to:', storedUser.selectedTheme);
+                if (storedUser && typeof storedUser === 'object' && storedUser.selectedTheme && storedUser.selectedTheme !== theme) {
                     setTheme(storedUser.selectedTheme);
                     document.documentElement.setAttribute("data-theme", storedUser.selectedTheme);
                 }
-            } catch (error) {
-                // Silently handle errors in interval to prevent console spam
-                console.error('Error checking theme in interval:', error);
+            } catch (_) {
+                // Never let interval throw – safeParseJSON should not throw; guard anyway
             }
         }, 1000);
 

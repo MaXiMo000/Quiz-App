@@ -10,32 +10,37 @@
  */
 export const safeParseJSON = (key, defaultValue = null) => {
     try {
-        // Check if localStorage is available
         if (typeof localStorage === 'undefined' || localStorage === null) {
             return defaultValue;
         }
 
         const item = localStorage.getItem(key);
-
-        // Handle all falsy and invalid cases
-        if (item === null ||
-            item === undefined ||
-            item === 'undefined' ||
-            item === 'null' ||
-            item === '') {
+        if (item == null) {
             return defaultValue;
         }
-
-        // Additional check: if item is not a string, return default
         if (typeof item !== 'string') {
             return defaultValue;
         }
 
-        // Try to parse JSON
-        const parsed = JSON.parse(item);
-        return parsed;
+        const trimmed = item.trim();
+        // Never pass invalid literals to JSON.parse (handles "undefined", "null", empty, whitespace)
+        if (trimmed === '' || trimmed === 'undefined' || trimmed === 'null') {
+            return defaultValue;
+        }
+        // Reject strings that look like the literal undefined/null (e.g. with BOM or odd chars)
+        if (/^\s*(undefined|null)\s*$/i.test(trimmed)) {
+            return defaultValue;
+        }
+
+        try {
+            return JSON.parse(item);
+        } catch (parseErr) {
+            if (process.env.NODE_ENV === 'development') {
+                console.warn(`safeParseJSON: invalid JSON for key "${key}"`, parseErr.message);
+            }
+            return defaultValue;
+        }
     } catch (error) {
-        // Silently return default value - don't spam console in production
         if (process.env.NODE_ENV === 'development') {
             console.error(`Error parsing JSON for key "${key}":`, error);
         }

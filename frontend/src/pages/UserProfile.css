@@ -22,11 +22,11 @@
 }
 
 .avatar-container {
-    width: 120px;
-    height: 120px;
+    width: 88px;
+    height: 88px;
     border-radius: var(--radius-full);
     overflow: hidden;
-    border: 3px solid var(--accent);
+    border: 2px solid var(--accent);
     flex-shrink: 0;
 }
 
@@ -43,7 +43,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
+    font-size: 2.25rem;
     font-weight: 700;
     color: var(--text-light);
 }
@@ -53,7 +53,7 @@
 }
 
 .profile-name {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--text-light);
     margin-bottom: var(--space-xs);
@@ -139,8 +139,8 @@
 }
 
 .stat-icon {
-    font-size: 1.8rem;
-    margin: 0 auto var(--space-md) auto;
+    font-size: 1.25rem;
+    margin: 0 auto var(--space-sm) auto;
     position: relative;
     z-index: 1;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
@@ -464,6 +464,19 @@
         text-align: center;
     }
 
+    .avatar-container {
+        width: 72px;
+        height: 72px;
+    }
+
+    .avatar-placeholder {
+        font-size: 1.75rem;
+    }
+
+    .profile-name {
+        font-size: 1.25rem;
+    }
+
     .profile-stats {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--space-md);
@@ -479,8 +492,8 @@
     }
 
     .stat-icon {
-        font-size: 1.5rem;
-        margin-bottom: var(--space-sm);
+        font-size: 1.1rem;
+        margin-bottom: var(--space-xs);
         margin-left: auto;
         margin-right: auto;
     }
