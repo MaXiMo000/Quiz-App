@@ -103,14 +103,13 @@ if (!isDevelopment) {
 // Stricter rate limiting for auth endpoints (also skip preflight and in development)
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 20, // ✅ PRODUCTION: Increased to 20 auth requests per 15 minutes (~1.3/min) - allows legitimate retries
+    max: 20,
     message: {
         error: "Too many authentication attempts, please try again later."
     },
-    skip: (req) => {
-        // Skip rate limiting for preflight requests and in development
-        return req.method === "OPTIONS" || isDevelopment;
-    }
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.method === "OPTIONS" || isDevelopment
 });
 
 // Middlewares
@@ -229,38 +228,46 @@ app.options("*", (req, res) => {
 });
 
 const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
+const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER;
 
-// Configure session with Redis store for production
+// Configure session (store set in startServer after DB/Redis connect)
 const sessionConfig = {
     secret: GOOGLE_SECRET,
     resave: false,
-    saveUninitialized: false, // Don't create session until something stored
-    name: "quiz-app-session", // Custom session name
+    saveUninitialized: false,
+    name: "quiz-app-session",
     cookie: {
-        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-        httpOnly: true, // Prevent XSS attacks
+        secure: isProduction,
+        httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax" // Allow cross-site requests in prod
+        sameSite: isProduction ? "none" : "lax"
     }
 };
-
-// Session store is set in startServer() after MongoDB/Redis connect so we never use MemoryStore in production.
-const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER;
 
 // MongoDB Connection
 const PORT = process.env.PORT || 4000;
 
 const startServer = async () => {
     try {
+        if (!process.env.MONGO_URI) {
+            logger.error("Server Startup Error: MONGO_URI is required");
+            process.exit(1);
+        }
+        if (!GOOGLE_SECRET || String(GOOGLE_SECRET).trim() === "") {
+            logger.error("Server Startup Error: GOOGLE_SECRET is required (session signing)");
+            process.exit(1);
+        }
+        if (GOOGLE_SECRET.length < 16) {
+            logger.warn("GOOGLE_SECRET should be at least 16 characters for production security");
+        }
+
         // Connect to MongoDB first (needed for MongoStore fallback and app data)
         await mongoose.connect(process.env.MONGO_URI);
         logger.info("Connected to MongoDB");
 
         // Then try Redis (optional)
-        let redisConnected = false;
         try {
             await connectRedis();
-            redisConnected = true;
         } catch (redisError) {
             logger.error("Failed to connect to Redis", {
                 message: redisError.message,
