@@ -150,11 +150,11 @@ const NotificationCenter = () => {
     };
 
     const tabs = [
-        { id: "all", label: "All" },
-        { id: "unread", label: "Unread" },
-        { id: "achievement", label: "Achievements" },
-        { id: "challenge", label: "Challenges" },
-        { id: "friend_request", label: "Social" }
+        { id: "all", label: "All", icon: "📋" },
+        { id: "unread", label: "Unread", icon: "📬" },
+        { id: "achievement", label: "Achievements", icon: "🏆" },
+        { id: "challenge", label: "Challenges", icon: "🎯" },
+        { id: "friend_request", label: "Social", icon: "👥" }
     ];
 
     const getNotificationIcon = (type) => {
@@ -226,17 +226,21 @@ const NotificationCenter = () => {
                                 </div>
                             </div>
 
-                            <div className="notification-tabs">
+                            <div className="notification-tabs hub-style-tabs" role="tablist" aria-label="Filter notifications">
                                 {tabs.map(tab => (
                                     <button
                                         key={tab.id}
-                                        className={`notification-tab ${activeTab === tab.id ? "active" : ""}`}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={activeTab === tab.id}
+                                        className={`notification-tab hub-style-tab ${activeTab === tab.id ? "active" : ""}`}
                                         onClick={() => {
                                             setActiveTab(tab.id);
                                             setCurrentPage(1);
                                         }}
                                     >
-                                        {tab.label}
+                                        <span className="notification-tab-icon" aria-hidden>{tab.icon}</span>
+                                        <span className="notification-tab-label">{tab.label}</span>
                                     </button>
                                 ))}
                             </div>
@@ -257,40 +261,54 @@ const NotificationCenter = () => {
                                                 className={`notification-item ${notification.read ? "read" : "unread"}`}
                                                 initial={{ opacity: 0, x: 20 }}
                                                 animate={{ opacity: 1, x: 0 }}
-                                                onClick={() => handleNotificationClick(notification)}
                                             >
-                                                <div className="notification-icon">
-                                                    {getNotificationIcon(notification.type)}
-                                                </div>
-                                                <div className="notification-content">
-                                                    <div className="notification-title">{notification.title}</div>
-                                                    <div className="notification-message">{notification.message}</div>
-                                                    <div className="notification-time">
-                                                        {new Date(notification.createdAt).toLocaleString()}
+                                                <div
+                                                    className="notification-item-body"
+                                                    onClick={() => handleNotificationClick(notification)}
+                                                    role="button"
+                                                    tabIndex={0}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter" || e.key === " ") {
+                                                            e.preventDefault();
+                                                            handleNotificationClick(notification);
+                                                        }
+                                                    }}
+                                                >
+                                                    <div className="notification-icon">
+                                                        {getNotificationIcon(notification.type)}
+                                                    </div>
+                                                    <div className="notification-content">
+                                                        <div className="notification-title">{notification.title}</div>
+                                                        <div className="notification-message">{notification.message}</div>
+                                                        <div className="notification-time">
+                                                            {new Date(notification.createdAt).toLocaleString()}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="notification-actions">
+                                                <div className="notification-item-footer">
                                                     {!notification.read && (
                                                         <button
-                                                            className="mark-read-btn"
+                                                            type="button"
+                                                            className="notification-footer-btn notification-footer-btn-read"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 handleMarkAsRead(notification._id);
                                                             }}
-                                                            aria-label="Mark as read"
                                                         >
-                                                            ✓
+                                                            <span className="notification-footer-btn-icon" aria-hidden>✓</span>
+                                                            Mark read
                                                         </button>
                                                     )}
                                                     <button
-                                                        className="delete-btn"
+                                                        type="button"
+                                                        className="notification-footer-btn notification-footer-btn-remove"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleDelete(notification._id);
                                                         }}
-                                                        aria-label="Delete"
                                                     >
-                                                        ×
+                                                        <span className="notification-footer-btn-icon" aria-hidden>×</span>
+                                                        Remove
                                                     </button>
                                                 </div>
                                             </motion.div>

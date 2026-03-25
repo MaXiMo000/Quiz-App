@@ -31,6 +31,7 @@ const AdminQuizzes = lazy(() => import("./pages/AdminQuizzes"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
 const UserQuizzes = lazy(() => import("./pages/UserQuiz"));
 const TakeQuiz = lazy(() => import("./pages/TakeQuiz"));
+const QuizWrongAnswersReview = lazy(() => import("./pages/QuizWrongAnswersReview"));
 const UserReports = lazy(() => import("./pages/UserReports"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -279,6 +280,7 @@ const App = () => {
                                 <Route path="/admin/written-test/report" element={<AdminWrittenTestReports />} />
                                 <Route path="/user/test" element={<UserQuizzes />} />
                                 <Route path="/user/test/:id" element={<TakeQuiz />} />
+                                <Route path="/user/quiz-review/:id" element={<QuizWrongAnswersReview />} />
                                 <Route path="/user/report" element={<UserReports />} />
                                 <Route path="/report/:id" element={<UserReportsCheck />} />
                                 <Route path="/written-tests" element={<UserWrittenTests />} />

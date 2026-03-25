@@ -148,6 +148,17 @@ self.addEventListener('activate', event => {
     );
 });
 
+/** Vite (dev or preview) module URLs must never go through SW — breaks dynamic import() */
+function isViteBundlerRequest(url) {
+    const p = url.pathname;
+    if (p.startsWith('/src/')) return true;
+    if (p.startsWith('/@vite/') || p.startsWith('/@fs/') || p.startsWith('/@id/')) return true;
+    if (p === '/@react-refresh') return true;
+    if (p.includes('/node_modules/')) return true;
+    if (url.search.includes('import')) return true;
+    return false;
+}
+
 // Fetch event - implement caching strategies
 self.addEventListener('fetch', event => {
     const { request } = event;
@@ -155,6 +166,11 @@ self.addEventListener('fetch', event => {
 
     // Skip non-GET requests and chrome-extension requests
     if (request.method !== 'GET' || url.protocol === 'chrome-extension:') {
+        return;
+    }
+
+    // Let Vite / dev server handle source modules (avoid "Failed to fetch dynamically imported module")
+    if (isViteBundlerRequest(url)) {
         return;
     }
 

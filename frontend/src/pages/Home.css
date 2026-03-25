@@ -51,6 +51,78 @@
     justify-content: flex-end;
 }
 
+/* Mobile / narrow: search + bell on one row (bell top-right, not wrapped below) */
+@media (max-width: 768px) {
+    .home-header-wrapper {
+        --home-header-control-height: 48px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        column-gap: 0.85rem;
+        row-gap: 0.5rem;
+        padding: var(--space-sm) var(--space-sm) var(--space-xs);
+        margin-bottom: var(--space-md);
+        flex-wrap: unset;
+    }
+
+    .home-search-wrapper {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .home-search-wrapper .global-search {
+        max-width: none;
+        width: 100%;
+        margin: 0;
+    }
+
+    /* Same *outer* height: fixed box + border-box (input line-height can’t grow the field) */
+    .home-search-wrapper .search-input-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        min-height: var(--home-header-control-height);
+    }
+
+    .home-search-wrapper .search-input {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: var(--home-header-control-height);
+        min-height: var(--home-header-control-height);
+        max-height: var(--home-header-control-height);
+        padding: 0 2.75rem 0 0.875rem;
+        font-size: 0.9375rem;
+        /* 48px box − 1px top & bottom border → single-line vertical center */
+        line-height: calc(var(--home-header-control-height) - 2px);
+        border-radius: var(--radius-lg);
+        box-sizing: border-box;
+        margin: 0;
+        vertical-align: top;
+    }
+
+    .home-notification-wrapper {
+        justify-self: end;
+        align-self: center;
+    }
+
+    .home-notification-wrapper .notification-bell {
+        width: var(--home-header-control-height) !important;
+        height: var(--home-header-control-height) !important;
+        min-width: var(--home-header-control-height) !important;
+        min-height: var(--home-header-control-height) !important;
+        max-width: var(--home-header-control-height) !important;
+        max-height: var(--home-header-control-height) !important;
+        padding: 0 !important;
+        border-width: 1px;
+        border-radius: var(--radius-lg);
+        font-size: 1.2rem;
+        box-sizing: border-box !important;
+    }
+}
+
 .home-search-wrapper::before,
 .home-search-wrapper::after {
     display: none !important;
