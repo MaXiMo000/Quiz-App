@@ -3,6 +3,7 @@ const router = Router();
 import { getQuizzes, createQuiz, addQuestion, deleteQuiz, getQuizById, deleteQuestion, updateQuizStats } from "../controllers/quizController.js";
 import { getReports, createReport, getReportsUser, deleteReport, getReportsUserID, getTopScorers } from "../controllers/reportController.js";
 import { generateQuizQuestions, generateAdaptiveQuestions } from "../controllers/aiQuestionController.js";
+import { getWrongAnswerInsights } from "../controllers/quizReviewInsightsController.js";
 import { getWrittenTestReports, createWrittenTestReport, getWrittenTestReportsUser, deleteWrittenTestReport, getWrittenReportsUserID } from "../controllers/writtenTestReportController.js";
 import { getWeeklyXP, getMonthlyXP } from "../controllers/leaderboardController.js";
 import { runMigration } from "../controllers/migrationController.js";
@@ -10,9 +11,12 @@ import { cleanupEmptyChallenges, cleanupEmptyTournaments } from "../controllers/
 import reviewRoutes from "./reviewRoutes.js";
 import { verifyToken } from "../middleware/auth.js";
 import cache, { clearCacheByPattern } from "../middleware/cache.js";
-import { aiQuestionLimiter } from "../middleware/rateLimiting.js";
+import { aiQuestionLimiter, aiLimiter } from "../middleware/rateLimiting.js";
 
 // Quiz Routes
+// Must be before /quizzes/:id so "review-insights" is not captured as :id
+router.post("/quizzes/review-insights", verifyToken, aiLimiter, getWrongAnswerInsights);
+
 router.get("/quizzes", verifyToken, cache, getQuizzes);
 // ⚠️ No cache for getQuizById - authorization check must run every time to prevent unauthorized access
 router.get("/quizzes/:id", verifyToken, getQuizById);

@@ -7,6 +7,7 @@ import Spinner from "../components/Spinner";
 import Loading from "../components/Loading";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
+import { saveQuizReviewSession } from "../utils/quizReviewSession";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 const TakeQuiz = () => {
@@ -80,6 +81,51 @@ const TakeQuiz = () => {
         setIsFullScreen(false);
     }, [hasAutoSubmitted]);
 
+    /** Exit browser fullscreen only — no auto-submit (use after quiz complete / when navigating away) */
+    const leaveFullscreenOnly = useCallback(() => {
+        try {
+            const el =
+                document.fullscreenElement ||
+                document.webkitFullscreenElement ||
+                document.mozFullScreenElement ||
+                document.msFullscreenElement;
+            if (el) {
+                let p = null;
+                if (document.exitFullscreen) p = document.exitFullscreen();
+                else if (document.webkitExitFullscreen) p = document.webkitExitFullscreen();
+                else if (document.mozCancelFullScreen) p = document.mozCancelFullScreen();
+                else if (document.msExitFullscreen) p = document.msExitFullscreen();
+                if (p && typeof p.catch === "function") p.catch(() => {});
+            }
+        } catch {
+            /* ignore */
+        }
+        setIsFullScreen(false);
+    }, []);
+
+    // Leaving the page (any navigation) should not leave the document stuck in fullscreen
+    useEffect(() => {
+        return () => {
+            try {
+                const el =
+                    document.fullscreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.msFullscreenElement;
+                if (el) {
+                    let p = null;
+                    if (document.exitFullscreen) p = document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) p = document.webkitExitFullscreen();
+                    else if (document.mozCancelFullScreen) p = document.mozCancelFullScreen();
+                    else if (document.msExitFullscreen) p = document.msExitFullscreen();
+                    if (p && typeof p.catch === "function") p.catch(() => {});
+                }
+            } catch {
+                /* ignore */
+            }
+        };
+    }, []);
+
     // Navigation handlers (must be defined before keyboard shortcuts)
     const handleNext = useCallback(() => {
         recordAnswerTime();
@@ -135,6 +181,7 @@ const TakeQuiz = () => {
                 e.preventDefault();
                 e.stopPropagation();
                 setShowReviewModal(false);
+                leaveFullscreenOnly();
                 navigate("/user/test");
             } else if (showResultModal) {
                 // Result modal is handled by its own close button
@@ -189,7 +236,7 @@ const TakeQuiz = () => {
                 toggleTimerPause();
             }
         },
-    }, [showReviewModal, showResultModal, currentQuestion, quiz, exitFullScreen, navigate, hasAutoSubmitted, handlePrev, handleNext, toggleTimerPause, isQuizCompleted, timeLeft]);
+    }, [showReviewModal, showResultModal, currentQuestion, quiz, exitFullScreen, leaveFullscreenOnly, navigate, hasAutoSubmitted, handlePrev, handleNext, toggleTimerPause, isQuizCompleted, timeLeft]);
 
     const optionLetters = useMemo(() => ["A", "B", "C", "D"], []);
     const currentQ = useMemo(() => quiz?.questions?.[currentQuestion], [quiz, currentQuestion]);
@@ -382,7 +429,8 @@ const TakeQuiz = () => {
                 userAnswerText,
                 correctAnswer: q.correctAnswer,
                 correctAnswerText,
-                answerTime: answerTimes[idx] || 0
+                answerTime: answerTimes[idx] || 0,
+                difficulty: q.difficulty || "medium"
             };
         });
 
@@ -485,6 +533,8 @@ const TakeQuiz = () => {
                 console.warn("Could not refresh user data:", userError.message);
             }
 
+            setReviewQuestions(detailedQuestions);
+
             // Mark quiz as completed and show result modal
             setIsQuizCompleted(true);
             setShowResultModal(true);
@@ -514,6 +564,8 @@ const TakeQuiz = () => {
                 existingData.push(localQuizData);
                 localStorage.setItem('pendingQuizSubmissions', JSON.stringify(existingData));
 
+
+                setReviewQuestions(detailedQuestions);
 
                 // Mark quiz as completed and show result modal even if backend failed
                 setIsQuizCompleted(true);
@@ -668,7 +720,8 @@ const TakeQuiz = () => {
                 userAnswerText,
                 correctAnswer: q.correctAnswer,
                 correctAnswerText,
-                answerTime: answerTimes[idx] || 0
+                answerTime: answerTimes[idx] || 0,
+                difficulty: q.difficulty || "medium"
             };
         });
 
@@ -995,30 +1048,63 @@ const TakeQuiz = () => {
                             Would you like to generate more questions based on your performance?
                         </p>
 
-                        <div className="modal-actions" role="group" aria-label="Quiz completion actions">
+                        <div className="modal-actions result-completion-actions" role="group" aria-label="Quiz completion actions">
                             <button
-                                className="review-btn"
+                                type="button"
+                                className="review-btn result-action-btn"
                                 onClick={() => {
+                                    leaveFullscreenOnly();
                                     setShowResultModal(false);
                                     setShowReviewModal(true);
                                 }}
                                 aria-label="Review quiz answers and explanations"
                             >
-                                📖 Review Quiz
+                                <span className="result-action-emoji" aria-hidden>📖</span>
+                                <span className="result-action-label">Review Quiz</span>
                             </button>
                             <button
-                                className="generate-btn"
-                                onClick={() => navigate(`/adaptive/${id}?performance=${performanceLevel}`)}
+                                type="button"
+                                className="study-mistakes-btn result-action-btn"
+                                onClick={() => {
+                                    leaveFullscreenOnly();
+                                    saveQuizReviewSession({
+                                        quizId: id,
+                                        quizTitle: quiz?.title || "Quiz",
+                                        category: quiz?.category || "General",
+                                        score,
+                                        total: finalScore,
+                                        questions: reviewQuestions
+                                    });
+                                    navigate(`/user/quiz-review/${id}`);
+                                }}
+                                aria-label="Open deep-dive page for wrong answers and download PDF report"
+                            >
+                                <span className="result-action-emoji" aria-hidden>📘</span>
+                                <span className="result-action-label">Study mistakes &amp; PDF</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="generate-btn result-action-btn"
+                                onClick={() => {
+                                    leaveFullscreenOnly();
+                                    navigate(`/adaptive/${id}?performance=${performanceLevel}`);
+                                }}
                                 aria-label="Generate more adaptive quiz questions"
                             >
-                                🚀 Generate More
+                                <span className="result-action-emoji" aria-hidden>🚀</span>
+                                <span className="result-action-label">Generate More</span>
                             </button>
                             <button
-                                className="reports-btn"
-                                onClick={() => navigate("/user/report")}
+                                type="button"
+                                className="reports-btn result-action-btn"
+                                onClick={() => {
+                                    leaveFullscreenOnly();
+                                    navigate("/user/report");
+                                }}
                                 aria-label="View all quiz reports"
                             >
-                                📊 Go to Reports
+                                <span className="result-action-emoji" aria-hidden>📊</span>
+                                <span className="result-action-label">Go to Reports</span>
                             </button>
                         </div>
                     </div>
@@ -1028,6 +1114,7 @@ const TakeQuiz = () => {
             {/* Quiz Review Modal */}
             {showReviewModal && (
                 <div className="modal-overlay" onClick={() => {
+                    leaveFullscreenOnly();
                     setShowReviewModal(false);
                     navigate("/user/test");
                 }}>
@@ -1035,8 +1122,10 @@ const TakeQuiz = () => {
                         <div className="review-header">
                             <h2>📖 Quiz Review</h2>
                             <button
+                                type="button"
                                 className="close-review-btn"
                                 onClick={() => {
+                                    leaveFullscreenOnly();
                                     setShowReviewModal(false);
                                     navigate("/user/test");
                                 }}
@@ -1090,8 +1179,30 @@ const TakeQuiz = () => {
                         </div>
                         <div className="review-footer">
                             <button
+                                type="button"
+                                className="study-mistakes-btn"
+                                style={{ marginRight: "0.75rem" }}
+                                onClick={() => {
+                                    leaveFullscreenOnly();
+                                    saveQuizReviewSession({
+                                        quizId: id,
+                                        quizTitle: quiz?.title || "Quiz",
+                                        category: quiz?.category || "General",
+                                        score,
+                                        total: finalScore,
+                                        questions: reviewQuestions
+                                    });
+                                    setShowReviewModal(false);
+                                    navigate(`/user/quiz-review/${id}`);
+                                }}
+                            >
+                                📘 Study mistakes &amp; PDF
+                            </button>
+                            <button
+                                type="button"
                                 className="close-review-btn-large"
                                 onClick={() => {
+                                    leaveFullscreenOnly();
                                     setShowReviewModal(false);
                                     navigate("/user/test");
                                 }}
