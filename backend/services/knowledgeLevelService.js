@@ -1,6 +1,8 @@
 /**
  * Derives recommended question difficulty from past quiz reports, level, prefs, and weak cross-topic signals.
  * Used by adaptive / intelligent quiz generation.
+ *
+ * **Algorithm overview (confidence, modes, blending):** see `docs/ADAPTIVE_DIFFICULTY_AND_CONFIDENCE.md`.
  */
 import mongoose from "mongoose";
 import Report from "../models/Report.js";

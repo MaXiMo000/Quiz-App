@@ -242,6 +242,11 @@ const AdaptiveQuiz = () => {
                                     <span>Lv.{knowledgeProfile.userLevel ?? 1}</span>
                                 </li>
                             </ul>
+                            <p className="adaptive-knowledge-footnote">
+                                <strong>Confidence</strong> measures how much we trust this topic estimate from your{" "}
+                                <strong>saved report history</strong> (scores and timing), not a prediction for your
+                                next attempt.
+                            </p>
                         ) : (
                             <p className="adaptive-knowledge-empty">
                                 Complete a few quizzes in this category to unlock smarter difficulty estimates.
@@ -283,14 +288,18 @@ const AdaptiveQuiz = () => {
                                         </span>
                                     </div>
                                     <div className="adaptive-plan-chip" role="listitem">
-                                        <span className="adaptive-plan-chip-label">Latest quiz result</span>
+                                        <span className="adaptive-plan-chip-label">Latest session tier</span>
                                         {autoPlan.ignoreUrlPerformance ? (
                                             <>
                                                 <span className="adaptive-plan-performance adaptive-plan-performance--neutral">
-                                                    Not used
+                                                    Not blended in
                                                 </span>
                                                 <span className="adaptive-plan-chip-hint">
-                                                    Not used for difficulty — we use preference and level only.
+                                                    Smart mode still uses your <strong>saved quiz reports</strong> in this
+                                                    topic, plus level and preferences — that’s what drives recommended
+                                                    difficulty and confidence above. We only skip mixing in your{" "}
+                                                    <strong>last attempt’s</strong> performance band; choose{" "}
+                                                    <strong>Blended</strong> to combine both.
                                                 </span>
                                             </>
                                         ) : autoPlan.hasSessionSignal ? (
@@ -371,8 +380,9 @@ const AdaptiveQuiz = () => {
                     <div className="adaptive-mode-shortcuts" role="group" aria-label="Generation mode">
                         <span className="adaptive-mode-shortcuts-label">Mode</span>
                         <p className="adaptive-mode-shortcuts-hint">
-                            Pick <strong>how</strong> difficulty is blended. The session level (needs support → strong)
-                            comes from your <strong>latest quiz result</strong> on this device — you don’t set it here.
+                            <strong>Smart</strong> uses your topic history, level, and preferences (no latest session tier).{" "}
+                            <strong>Blended</strong> and <strong>Session only</strong> use the session level from your
+                            last finished quiz on this device — you don’t pick it manually here.
                         </p>
                         <div className="adaptive-mode-shortcuts-row">
                             <button

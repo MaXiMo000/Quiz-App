@@ -1,6 +1,7 @@
 /**
  * Shared signals for POST /api/adaptive — matches backend difficultyMode + performance contract.
  * @see backend/services/knowledgeLevelService.js — resolveAdaptiveDifficulty
+ * @see docs/ADAPTIVE_DIFFICULTY_AND_CONFIDENCE.md — full algorithm write-up
  */
 
 export const ADAPTIVE_MODES = /** @type {const} */ (["performance", "intelligent", "blended"]);

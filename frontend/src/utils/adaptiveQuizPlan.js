@@ -9,7 +9,7 @@ import {
  * @property {"performance"|"intelligent"|"blended"} difficultyMode
  * @property {"low"|"medium"|"high"} performance
  * @property {boolean} hasSessionSignal
- * @property {boolean} ignoreUrlPerformance
+ * @property {boolean} ignoreUrlPerformance True when latest session tier is not blended (intelligent mode only). Topic report history is still used for the profile.
  * @property {"low"|"medium"|"high"|null} urlPerformanceFromLink
  * @property {string} title
  * @property {string} detail
@@ -19,6 +19,8 @@ import {
 
 /**
  * Decide difficultyMode + performance for POST /api/adaptive.
+ *
+ * Full pipeline (confidence, backend resolution): `docs/ADAPTIVE_DIFFICULTY_AND_CONFIDENCE.md`
  *
  * Priority:
  * 1. Explicit `difficultyMode` in URL (performance | intelligent | blended)
