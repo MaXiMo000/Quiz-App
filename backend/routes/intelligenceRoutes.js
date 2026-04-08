@@ -2,6 +2,7 @@ import express from "express";
 import {
     getSmartRecommendations,
     getAdaptiveDifficulty,
+    getQuizKnowledgeProfile,
     getLearningAnalytics,
     updateUserPreferences,
     trackUserPerformance
@@ -18,6 +19,9 @@ router.get("/recommendations", verifyToken, cache, getSmartRecommendations);
 
 // Adaptive Difficulty System
 router.get("/adaptive-difficulty", verifyToken, cache, getAdaptiveDifficulty);
+
+// Per-quiz knowledge profile (for intelligent question generation)
+router.get("/quiz-knowledge-profile", verifyToken, getQuizKnowledgeProfile);
 
 // Learning Analytics & Performance Predictions
 router.get("/analytics", verifyToken, cache, getLearningAnalytics);

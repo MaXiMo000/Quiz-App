@@ -1,6 +1,15 @@
+import mongoose from "mongoose";
 import UserQuiz from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
+import {
+    getCategoryReportsForUser,
+    computeRecommendedDifficultyFromReports,
+    getKnowledgeProfileForQuiz,
+    getRelatedReports,
+    difficultyPriorFromAuthoredQuizzes,
+} from "../services/knowledgeLevelService.js";
+import { getReportCategoryKey, resolveQuizCategoryKey, normalizeCategoryKey } from "../utils/categoryKey.js";
 import {
     trackLearningAnalytics,
     trackCognitiveMetrics,
@@ -104,6 +113,14 @@ function getQuizFilter(userId, userRole) {
     }
 }
 
+/** Match quizzes whose category/tags/title normalizes to one of the given keys */
+async function findQuizzesMatchingCategoryKeys(baseFilter, normalizedKeys, limit) {
+    const set = new Set((normalizedKeys || []).filter(Boolean));
+    if (set.size === 0) return [];
+    const candidates = await Quiz.find(baseFilter).limit(250).lean();
+    return candidates.filter((q) => set.has(resolveQuizCategoryKey(q))).slice(0, limit);
+}
+
 // Helper function: Category-based recommendations
 async function getCategoryBasedRecommendations(user, recentReports, userId, userRole) {
     const recommendations = [];
@@ -111,8 +128,7 @@ async function getCategoryBasedRecommendations(user, recentReports, userId, user
     // Analyze user's favorite categories from recent performance
     const categoryStats = {};
     recentReports.forEach(report => {
-        // Extract category from quiz name or use a default categorization
-        const category = extractCategoryFromQuizName(report.quizName);
+        const category = getReportCategoryKey(report);
         if (!categoryStats[category]) {
             categoryStats[category] = { total: 0, correct: 0 };
         }
@@ -127,17 +143,14 @@ async function getCategoryBasedRecommendations(user, recentReports, userId, user
 
     if (goodCategories.length > 0) {
         const baseFilter = getQuizFilter(userId, userRole);
-        const categoryQuizzes = await Quiz.find({
-            ...baseFilter,
-            category: { $in: goodCategories }
-        }).limit(3);
+        const categoryQuizzes = await findQuizzesMatchingCategoryKeys(baseFilter, goodCategories, 3);
 
         categoryQuizzes.forEach(quiz => {
             recommendations.push({
                 quiz,
                 reason: "based_on_favorite_category",
                 confidence: 0.8,
-                description: `Recommended because you perform well in ${quiz.category}`
+                description: `Recommended because you perform well in ${quiz.category || resolveQuizCategoryKey(quiz)}`
             });
         });
     }
@@ -222,7 +235,7 @@ async function getWeaknessImprovementRecommendations(user, recentReports, userId
     const categoryPerformance = {};
 
     recentReports.forEach(report => {
-        const category = extractCategoryFromQuizName(report.quizName);
+        const category = getReportCategoryKey(report);
         if (!categoryPerformance[category]) {
             categoryPerformance[category] = { total: 0, correct: 0 };
         }
@@ -239,17 +252,14 @@ async function getWeaknessImprovementRecommendations(user, recentReports, userId
 
     if (weakAreas.length > 0) {
         const baseFilter = getQuizFilter(userId, userRole);
-        const improvementQuizzes = await Quiz.find({
-            ...baseFilter,
-            category: { $in: weakAreas }
-        }).limit(2);
+        const improvementQuizzes = await findQuizzesMatchingCategoryKeys(baseFilter, weakAreas, 2);
 
         improvementQuizzes.forEach(quiz => {
             recommendations.push({
                 quiz,
                 reason: "weakness_improvement",
                 confidence: 0.9,
-                description: `Recommended to improve your performance in ${quiz.category}`
+                description: `Recommended to improve your performance in ${quiz.category || resolveQuizCategoryKey(quiz)}`
             });
         });
     }
@@ -283,29 +293,6 @@ async function getPopularQuizzesForLevel(user, userId, userRole) {
     return recommendations;
 }
 
-// Helper function to extract category from quiz name
-function extractCategoryFromQuizName(quizName) {
-    const lowercaseName = quizName.toLowerCase();
-
-    if (lowercaseName.includes("math") || lowercaseName.includes("algebra") || lowercaseName.includes("geometry") || lowercaseName.includes("calculus") || lowercaseName.includes("statistics")) {
-        return "mathematics";
-    } else if (lowercaseName.includes("science") || lowercaseName.includes("physics") || lowercaseName.includes("chemistry") || lowercaseName.includes("biology")) {
-        return "science";
-    } else if (lowercaseName.includes("history")) {
-        return "history";
-    } else if (lowercaseName.includes("literature") || lowercaseName.includes("english")) {
-        return "literature";
-    } else if (lowercaseName.includes("geography")) {
-        return "geography";
-    } else if (lowercaseName.includes("programming") || lowercaseName.includes("coding") || lowercaseName.includes("computer") || lowercaseName.includes("java") || lowercaseName.includes("python") || lowercaseName.includes("javascript") || lowercaseName.includes("c++") || lowercaseName.includes("software")) {
-        return "programming";
-    } else if (lowercaseName.includes("sports")) {
-        return "sports";
-    } else {
-        return "general";
-    }
-}
-
 // 2. Adaptive Difficulty System
 export const getAdaptiveDifficulty = async (req, res) => {
     logger.info(`Getting adaptive difficulty for user ${req.user.id} and category ${req.query.category}`);
@@ -318,78 +305,83 @@ export const getAdaptiveDifficulty = async (req, res) => {
             return sendNotFound(res, "User");
         }
 
-        // Get all user's reports first
-        const allReports = await Report.find({
-            username: user.name
-        }).sort({ createdAt: -1 });
+        const categoryKey = category ? normalizeCategoryKey(category) : "general";
 
-        let categoryReports;
-        if (category && category.toLowerCase() !== "general") {
-            // Filter reports by category extracted from quiz names
-            categoryReports = allReports.filter(report => {
-                const reportCategory = extractCategoryFromQuizName(report.quizName);
-                return reportCategory.toLowerCase() === category.toLowerCase();
-            }).slice(0, 5);
-        } else {
-            // For 'general' category, get all recent reports
-            categoryReports = allReports.slice(0, 5);
-        }
+        const [categoryReports, allReports, authoredPrior] = await Promise.all([
+            getCategoryReportsForUser(user.name, categoryKey),
+            Report.find({ username: user.name }).sort({ createdAt: -1 }).limit(25).lean(),
+            difficultyPriorFromAuthoredQuizzes(userId),
+        ]);
+        const relatedReports = await getRelatedReports(user.name, categoryKey, allReports);
 
-        let recommendedDifficulty = "medium";
-        let confidence = 0.5;
-
-        if (categoryReports.length >= 3) {
-            const avgScore = categoryReports.reduce((sum, report) =>
-                sum + (report.score / report.total), 0) / categoryReports.length;
-
-            if (avgScore >= 0.85) {
-                recommendedDifficulty = "hard";
-                confidence = 0.9;
-            } else if (avgScore >= 0.65) {
-                recommendedDifficulty = "medium";
-                confidence = 0.8;
-            } else {
-                recommendedDifficulty = "easy";
-                confidence = 0.7;
-            }
-        } else if (categoryReports.length > 0) {
-            // If we have some data but less than 3 quizzes, use it with lower confidence
-            const avgScore = categoryReports.reduce((sum, report) =>
-                sum + (report.score / report.total), 0) / categoryReports.length;
-
-            if (avgScore >= 0.8) {
-                recommendedDifficulty = "medium";
-                confidence = 0.6;
-            } else if (avgScore < 0.5) {
-                recommendedDifficulty = "easy";
-                confidence = 0.6;
-            } else {
-                recommendedDifficulty = "medium";
-                confidence = 0.5;
-            }
-        } else {
-            // No reports found, use user preference if available
-            if (user.preferences?.preferredDifficulty) {
-                recommendedDifficulty = user.preferences.preferredDifficulty;
-                confidence = 0.3;
-            } else {
-                recommendedDifficulty = "medium";
-                confidence = 0.2;
-            }
-        }
+        const {
+            recommendedDifficulty,
+            confidence,
+            confidenceTier,
+            basedOnQuizzes,
+            dataSource,
+            averageAdjustedScore,
+        } = computeRecommendedDifficultyFromReports(categoryReports, user.preferences?.preferredDifficulty, {
+            userLevel: user.level ?? 1,
+            allReports,
+            relatedReports,
+            authoredDifficultyPrior: authoredPrior?.score ?? null,
+        });
 
         const response = {
             recommendedDifficulty,
             confidence,
-            basedOnQuizzes: categoryReports.length,
-            category: category || "general"
+            confidenceTier,
+            basedOnQuizzes,
+            category: categoryKey,
+            dataSource,
+            averageAdjustedScore,
         };
 
-        logger.info(`Successfully calculated adaptive difficulty for user ${userId}: ${response.recommendedDifficulty}`);
+        logger.info(
+            `Adaptive difficulty for user ${userId}: ${recommendedDifficulty} (source: ${dataSource}, confidence: ${confidence})`
+        );
         return sendSuccess(res, response, "Adaptive difficulty calculated successfully");
 
     } catch (error) {
         logger.error({ message: `Error calculating adaptive difficulty for user ${req.user.id}`, error: error.message, stack: error.stack });
+        throw new AppError("Server error", 500);
+    }
+};
+
+/** Knowledge profile for a specific quiz (intelligent generation UI). */
+export const getQuizKnowledgeProfile = async (req, res) => {
+    logger.info(`Quiz knowledge profile for user ${req.user.id}, quiz ${req.query.quizId}`);
+    try {
+        const { quizId } = req.query;
+        if (!quizId) {
+            return sendValidationError(res, { quizId: "quizId is required" }, "quizId is required");
+        }
+        if (!mongoose.Types.ObjectId.isValid(quizId)) {
+            return sendValidationError(res, { quizId: "Invalid quiz id" }, "Invalid quiz id");
+        }
+
+        const quiz = await Quiz.findById(quizId).select("title category").lean();
+        if (!quiz) {
+            return sendNotFound(res, "Quiz");
+        }
+
+        const profile = await getKnowledgeProfileForQuiz(req.user.id, quiz);
+        if (!profile) {
+            return sendNotFound(res, "User");
+        }
+
+        return sendSuccess(
+            res,
+            {
+                ...profile,
+                quizId: quiz._id,
+                quizTitle: quiz.title,
+            },
+            "Knowledge profile computed"
+        );
+    } catch (error) {
+        logger.error({ message: "getQuizKnowledgeProfile error", error: error.message, stack: error.stack });
         throw new AppError("Server error", 500);
     }
 };
@@ -577,7 +569,7 @@ function calculateStrengths(reports) {
     const categoryStats = {};
 
     reports.forEach(report => {
-        const category = extractCategoryFromQuizName(report.quizName);
+        const category = getReportCategoryKey(report);
         if (!categoryStats[category]) {
             categoryStats[category] = { total: 0, correct: 0, count: 0 };
         }
@@ -600,7 +592,7 @@ function calculateWeaknesses(reports) {
     const categoryStats = {};
 
     reports.forEach(report => {
-        const category = extractCategoryFromQuizName(report.quizName);
+        const category = getReportCategoryKey(report);
         if (!categoryStats[category]) {
             categoryStats[category] = { total: 0, correct: 0, count: 0 };
         }

@@ -8,6 +8,7 @@ import Loading from "../components/Loading";
 import { useNotification } from "../hooks/useNotification";
 import NotificationModal from "../components/NotificationModal";
 import { addToQuizHistory } from "../utils/quizHistory";
+import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
 
 const SearchResults = () => {
     const [searchParams] = useSearchParams();
@@ -52,6 +53,7 @@ const SearchResults = () => {
         switch (result.type) {
             case "quiz":
                 addToQuizHistory({ _id: result._id });
+                markQuizFullscreenOnLoad();
                 navigate(`/user/test/${result._id}`);
                 break;
             case "report":

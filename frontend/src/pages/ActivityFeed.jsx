@@ -8,6 +8,7 @@ import Loading from "../components/Loading";
 import { useNotification } from "../hooks/useNotification";
 import NotificationModal from "../components/NotificationModal";
 import { addToQuizHistory } from "../utils/quizHistory";
+import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
 
 const ActivityFeed = () => {
     const navigate = useNavigate();
@@ -102,6 +103,7 @@ const ActivityFeed = () => {
             case "quiz_completed":
                 if (activity.data?.quizId) {
                     addToQuizHistory({ _id: activity.data.quizId });
+                    markQuizFullscreenOnLoad();
                     navigate(`/user/test/${activity.data.quizId}`);
                 }
                 break;

@@ -8,7 +8,11 @@ const questionSchema = new mongoose.Schema({
         type: String,
         enum: ["easy", "medium", "hard"],
         default: "medium"
-    }
+    },
+    explanation: { type: String, default: "" },
+    bloomLevel: { type: String, default: "" },
+    /** Optional quality hint from AI pipeline (0–1) */
+    _qualityScore: { type: Number, min: 0, max: 1, default: null },
 });
 
 const quizSchema = new mongoose.Schema({

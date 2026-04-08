@@ -6,6 +6,7 @@ import { useNotification } from '../hooks/useNotification';
 import NotificationModal from './NotificationModal';
 import GroupSettingsModal from './GroupSettingsModal';
 import './StudyGroups.css';
+import { markQuizFullscreenOnLoad } from '../utils/quizFullscreen.js';
 
 // Enhanced Quiz Activity Component
 const QuizActivity = React.memo(({ activity, onTakeQuiz }) => {
@@ -604,6 +605,7 @@ const StudyGroups = () => {
 
     const handleQuizClick = (quizId) => {
         if (quizId) {
+            markQuizFullscreenOnLoad();
             navigate(`/user/test/${quizId}`);
         }
     };

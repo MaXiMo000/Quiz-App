@@ -13,39 +13,18 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { addToQuizHistory } from "../utils/quizHistory";
 import { debounce } from "../utils/componentUtils";
 import CustomDropdown from "../components/CustomDropdown";
+import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
+import { readLastQuizSession, buildAdaptiveGeneratorPath } from "../utils/adaptiveQuizSignals.js";
 
 // Memoized Quiz Card Component
 const QuizCard = memo(({ quiz, index, isBookmarked, onBookmark, onShare, navigate }) => {
     const handleStartQuiz = (e) => {
         e.stopPropagation();
         addToQuizHistory(quiz);
-
-        // Enter fullscreen first (using user gesture from button click), then navigate
-        const enterFullScreen = () => {
-            const element = document.documentElement;
-            if (element.requestFullscreen) {
-                element.requestFullscreen().then(() => {
-                    navigate(`/user/test/${quiz._id}`);
-                }).catch(err => {
-                    console.warn("Fullscreen failed:", err);
-                    // Navigate anyway if fullscreen fails
-                    navigate(`/user/test/${quiz._id}`);
-                });
-            } else if (element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-                navigate(`/user/test/${quiz._id}`);
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-                navigate(`/user/test/${quiz._id}`);
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-                navigate(`/user/test/${quiz._id}`);
-            } else {
-                // Fullscreen not supported, just navigate
-                navigate(`/user/test/${quiz._id}`);
-            }
-        };
-        enterFullScreen();
+        // Fullscreen cannot survive a client-side route change — TakeQuiz shows a start overlay
+        // that calls requestFullscreen() on a click in the same document.
+        markQuizFullscreenOnLoad();
+        navigate(`/user/test/${quiz._id}`);
     };
 
     return (
@@ -144,6 +123,9 @@ const UserQuiz = () => {
     });
     const itemsPerPage = 10;
 
+    /** Quiz selected for “intelligent” / adaptive generator (User Quiz list) */
+    const [smartQuizId, setSmartQuizId] = useState("");
+
     // Debounced search query for filtering
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
     const debouncedSetSearch = useRef(
@@ -224,6 +206,18 @@ const UserQuiz = () => {
 
         return filtered;
     }, [quizzes, debouncedSearchQuery, categoryFilter, sortBy]);
+
+    // Keep smart-generator selection in sync with filtered list
+    useEffect(() => {
+        if (!filteredQuizzes.length) {
+            setSmartQuizId("");
+            return;
+        }
+        const stillValid = filteredQuizzes.some((q) => q._id === smartQuizId);
+        if (!stillValid) {
+            setSmartQuizId(filteredQuizzes[0]._id);
+        }
+    }, [filteredQuizzes, smartQuizId]);
 
     // Pagination calculations
     const totalPages = Math.max(1, Math.ceil(filteredQuizzes.length / itemsPerPage));
@@ -423,6 +417,70 @@ const UserQuiz = () => {
                     Choose a quiz to test your knowledge and skills
                 </p>
             </div>
+
+            {filteredQuizzes.length > 0 && (
+                <div className="user-quiz-smart-panel">
+                    <div className="user-quiz-smart-header">
+                        <span className="user-quiz-smart-icon" aria-hidden>
+                            🧠
+                        </span>
+                        <div>
+                            <h3 className="user-quiz-smart-title">Intelligent question generation</h3>
+                            <p className="user-quiz-smart-desc">
+                                Add AI questions matched to <strong>your level</strong> using past scores in
+                                each topic, your preferences, and XP level — same engine as after you finish a
+                                quiz. Pick a quiz, then open the generator.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="user-quiz-smart-actions">
+                        <CustomDropdown
+                            value={smartQuizId}
+                            onChange={(e) => setSmartQuizId(e.target.value)}
+                            options={filteredQuizzes.map((q) => ({
+                                value: q._id,
+                                label: q.title || "Untitled quiz",
+                            }))}
+                            className="user-quiz-smart-dropdown"
+                            ariaLabel="Select quiz for intelligent generation"
+                        />
+                        <button
+                            type="button"
+                            className="user-quiz-smart-btn user-quiz-smart-btn-primary"
+                            disabled={!smartQuizId}
+                            onClick={() =>
+                                smartQuizId &&
+                                navigate(`/adaptive/${smartQuizId}?difficultyMode=intelligent`)
+                            }
+                        >
+                            Smart (your history)
+                        </button>
+                        <button
+                            type="button"
+                            className="user-quiz-smart-btn user-quiz-smart-btn-secondary"
+                            disabled={!smartQuizId}
+                            onClick={() => {
+                                if (!smartQuizId) return;
+                                const last = readLastQuizSession();
+                                if (last?.performance) {
+                                    navigate(
+                                        buildAdaptiveGeneratorPath(smartQuizId, {
+                                            difficultyMode: "blended",
+                                        })
+                                    );
+                                } else {
+                                    showSuccess(
+                                        "No recent quiz in this browser — open Smart (your history) or finish a quiz first."
+                                    );
+                                    navigate(buildAdaptiveGeneratorPath(smartQuizId, { difficultyMode: "intelligent" }));
+                                }
+                            }}
+                        >
+                            Smart + last session
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Search, Filter, and Sort Controls */}
             <div className="quiz-controls">

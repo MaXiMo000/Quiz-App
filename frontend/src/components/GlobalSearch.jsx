@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import { debounce } from "../utils/componentUtils";
+import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
 import "./GlobalSearch.css";
 
 const GlobalSearch = () => {
@@ -100,6 +101,7 @@ const GlobalSearch = () => {
     const handleResultClick = (result) => {
         switch (result.type) {
             case "quiz":
+                markQuizFullscreenOnLoad();
                 navigate(`/user/test/${result._id}`);
                 break;
             case "report":

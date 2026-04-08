@@ -21,14 +21,8 @@ jest.mock("../../models/Report.js", () => ({
 
 // Mock the AI service
 jest.mock("../../services/aiQuestionGenerator.js", () => ({
-    generateMCQ: jest.fn(),
-    generateTrueFalse: jest.fn(),
-    generateAdaptiveQuestions: jest.fn(),
-}));
-
-// Mock the content quality checker
-jest.mock("../../services/contentQualityChecker.js", () => ({
-    validateQuestion: jest.fn().mockReturnValue(true),
+    generateMCQWithContext: jest.fn(),
+    generateTrueFalseWithContext: jest.fn(),
 }));
 
 // Mock the verifyToken middleware

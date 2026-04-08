@@ -14,6 +14,7 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { getRecentQuizzes } from "../utils/quizHistory";
 import GlobalSearch from "../components/GlobalSearch";
 import NotificationCenter from "../components/NotificationCenter";
+import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -324,16 +325,8 @@ const Home = () => {
                                 transition={{ delay: 1.2 + (index * 0.1), duration: 0.5 }}
                                 whileHover={{ scale: 1.05, y: -5 }}
                                 onClick={() => {
-                                    const element = document.documentElement;
-                                    if (element.requestFullscreen) {
-                                        element.requestFullscreen().then(() => {
-                                            navigate(`/user/test/${quiz._id}`);
-                                        }).catch(() => {
-                                            navigate(`/user/test/${quiz._id}`);
-                                        });
-                                    } else {
-                                        navigate(`/user/test/${quiz._id}`);
-                                    }
+                                    markQuizFullscreenOnLoad();
+                                    navigate(`/user/test/${quiz._id}`);
                                 }}
                             >
                                 <div className="quiz-preview-icon">🎯</div>
@@ -377,22 +370,15 @@ const Home = () => {
                                 transition={{ delay: 1.3 + (index * 0.1), duration: 0.5 }}
                                 whileHover={{ scale: 1.05, y: -5 }}
                                 onClick={() => {
-                                    const element = document.documentElement;
-                                    if (element.requestFullscreen) {
-                                        element.requestFullscreen().then(() => {
-                                            navigate(`/user/test/${quiz._id}`);
-                                        }).catch(() => {
-                                            navigate(`/user/test/${quiz._id}`);
-                                        });
-                                    } else {
-                                        navigate(`/user/test/${quiz._id}`);
-                                    }
+                                    markQuizFullscreenOnLoad();
+                                    navigate(`/user/test/${quiz._id}`);
                                 }}
                                 role="button"
                                 tabIndex={0}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault();
+                                        markQuizFullscreenOnLoad();
                                         navigate(`/user/test/${quiz._id}`);
                                     }
                                 }}
