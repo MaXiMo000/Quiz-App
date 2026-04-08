@@ -1,4 +1,5 @@
 import Report from "../models/Report.js";
+import Quiz from "../models/Quiz.js";
 import moment from "moment";
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
@@ -68,7 +69,7 @@ export const unlockThemesForLevel = (user) => {
 export async function createReport(req, res) {
     logger.info(`Creating report for user ${req.body.username}`);
     try {
-        const { username, quizName, score, total, questions } = req.body;
+        const { username, quizName, score, total, questions, quizCategory, quizId: rawQuizId } = req.body;
         const userId = req.user?.id; // Get user ID from JWT token
 
         if (!username || !quizName || !questions || questions.length === 0) {
@@ -80,7 +81,58 @@ export async function createReport(req, res) {
             return sendValidationError(res, errors);
         }
 
-        const report = new Report({ username, quizName, score, total, questions });
+        let resolvedCategory = typeof quizCategory === "string" ? quizCategory.trim() : "";
+        let quizObjectId = null;
+        let sessionDifficulty =
+            ["easy", "medium", "hard"].includes(req.body.difficulty) ? req.body.difficulty : undefined;
+        let questionsForReport = questions;
+
+        if (rawQuizId && mongoose.Types.ObjectId.isValid(rawQuizId)) {
+            quizObjectId = rawQuizId;
+            const qz = await Quiz.findById(rawQuizId).select("category questions.question questions.difficulty").lean();
+            if (qz) {
+                if (!resolvedCategory && qz.category?.trim()) {
+                    resolvedCategory = qz.category.trim();
+                }
+                if (!sessionDifficulty && Array.isArray(qz.questions) && qz.questions.length > 0) {
+                    const counts = { easy: 0, medium: 0, hard: 0 };
+                    for (const qq of qz.questions) {
+                        if (qq?.difficulty && counts[qq.difficulty] != null) {
+                            counts[qq.difficulty]++;
+                        }
+                    }
+                    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                    if (top[1] > 0) {
+                        sessionDifficulty = top[0];
+                    }
+                }
+                if (qz.questions?.length) {
+                    const qDiffMap = {};
+                    for (const qq of qz.questions) {
+                        const key = String(qq.question ?? "").trim().toLowerCase();
+                        if (key && ["easy", "medium", "hard"].includes(qq?.difficulty)) {
+                            qDiffMap[key] = qq.difficulty;
+                        }
+                    }
+                    questionsForReport = questions.map((q) => {
+                        const k = String(q.questionText ?? "").trim().toLowerCase();
+                        const perQDiff = k && qDiffMap[k] ? qDiffMap[k] : undefined;
+                        return perQDiff ? { ...q, difficulty: perQDiff } : { ...q };
+                    });
+                }
+            }
+        }
+
+        const report = new Report({
+            username,
+            quizName,
+            score,
+            total,
+            questions: questionsForReport,
+            ...(resolvedCategory ? { quizCategory: resolvedCategory } : {}),
+            ...(quizObjectId ? { quizId: quizObjectId } : {}),
+            ...(sessionDifficulty ? { difficulty: sessionDifficulty } : {}),
+        });
         await report.save();
 
         // ✅ Use user ID from JWT token first, fallback to username lookup

@@ -17,6 +17,8 @@ Or use the shell script:
 
 For more options, see [START_GUIDE.md](./START_GUIDE.md)
 
+**Adaptive difficulty (confidence, modes, blending):** [docs/ADAPTIVE_DIFFICULTY_AND_CONFIDENCE.md](./docs/ADAPTIVE_DIFFICULTY_AND_CONFIDENCE.md)
+
 ---
 
 ## 🌐 Live Demo -->> [Click Here](https://quiz-app-cp2h.onrender.com/)

@@ -1003,6 +1003,19 @@ html.admin-quizzes-page .main-content {
     text-shadow: 0 0 15px var(--accent-light);
 }
 
+.admin-ai-difficulty-hint {
+    margin: 0 0 0.5rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--text-muted, #94a3b8);
+    text-align: center;
+}
+
+.admin-ai-difficulty-hint code {
+    font-size: 0.78em;
+    word-break: break-word;
+}
+
 /* Admin Form Styles */
 .admin-modal-box input.admin-input,
 .admin-modal-box select.admin-select,

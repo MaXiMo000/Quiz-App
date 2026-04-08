@@ -21,15 +21,15 @@ jest.mock("../../models/Report.js", () => ({
 
 // Mock the AI service
 jest.mock("../../services/aiQuestionGenerator.js", () => ({
-    generateMCQ: jest.fn(),
-    generateTrueFalse: jest.fn(),
-    generateAdaptiveQuestions: jest.fn(),
+    generateMCQWithContext: jest.fn(),
+    generateTrueFalseWithContext: jest.fn(),
 }));
 
-// Mock the content quality checker
-jest.mock("../../services/contentQualityChecker.js", () => ({
-    validateQuestion: jest.fn().mockReturnValue(true),
+jest.mock("../../services/knowledgeLevelService.js", () => ({
+    resolveAdaptiveDifficulty: jest.fn(),
 }));
+
+import { resolveAdaptiveDifficulty } from "../../services/knowledgeLevelService.js";
 
 // Mock the verifyToken middleware
 jest.mock("../../middleware/auth.js", () => ({
@@ -47,6 +47,11 @@ app.post("/api/ai/generate-adaptive", generateAdaptiveQuestions);
 describe("AI Question Controller", () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        resolveAdaptiveDifficulty.mockResolvedValue({
+            difficulty: "medium",
+            source: "category",
+            profile: { recommendedDifficulty: "medium", confidence: 0.7 },
+        });
     });
 
     describe("generateQuizQuestions", () => {

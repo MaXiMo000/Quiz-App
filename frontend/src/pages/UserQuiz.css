@@ -1474,3 +1474,107 @@
         box-sizing: border-box !important;
     }
 }
+
+/* Intelligent / adaptive generation entry (User Quiz list) */
+.user-quiz-smart-panel {
+    max-width: 1200px;
+    margin: 0 auto 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--card-border));
+    background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent-light) 18%, var(--card-bg-glass)),
+        color-mix(in srgb, var(--accent2-transparent-15) 40%, var(--card-bg-glass))
+    );
+    box-shadow: var(--shadow-lg);
+}
+
+.user-quiz-smart-header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.user-quiz-smart-icon {
+    font-size: 2rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.user-quiz-smart-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-light);
+}
+
+.user-quiz-smart-desc {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.user-quiz-smart-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+}
+
+.user-quiz-smart-dropdown {
+    flex: 1 1 220px;
+    min-width: 180px;
+}
+
+.user-quiz-smart-btn {
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+
+.user-quiz-smart-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.user-quiz-smart-btn-primary {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.user-quiz-smart-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.user-quiz-smart-btn-secondary {
+    background: color-mix(in srgb, var(--card-bg-glass) 90%, transparent);
+    color: var(--text-light);
+    border: 1px solid var(--card-border);
+}
+
+.user-quiz-smart-btn-secondary:hover:not(:disabled) {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+    .user-quiz-smart-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .user-quiz-smart-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

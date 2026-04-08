@@ -1,24 +1,73 @@
 import Quiz from "../models/Quiz.js";
+import UserQuiz from "../models/User.js";
 import mongoose from "mongoose";
-import {
-  generateMCQ,
-  generateTrueFalse,
-} from "../services/aiQuestionGenerator.js";
-import { validateQuestion } from "../services/contentQualityChecker.js";
+import { generateMCQWithContext, generateTrueFalseWithContext } from "../services/aiQuestionGenerator.js";
+import { resolveAdaptiveDifficulty } from "../services/knowledgeLevelService.js";
 import logger from "../utils/logger.js";
 import { sendSuccess, sendError, sendValidationError, sendNotFound } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
+const ALLOWED_AI_DIFFICULTIES = /** @type {const} */ (["easy", "medium", "hard"]);
+const ALLOWED_RESOLVE_MODES = /** @type {const} */ (["performance", "intelligent", "blended"]);
+const ALLOWED_PERFORMANCE = /** @type {const} */ (["low", "medium", "high"]);
+
+/**
+ * Explicit body.difficulty wins. Otherwise same resolver as /api/adaptive (profile + optional session blend).
+ */
+async function resolveDifficultyForStandardGenerate(reqBody, userId, quiz) {
+    const raw = reqBody?.difficulty;
+    if (raw != null && raw !== "") {
+        const d = String(raw).toLowerCase().trim();
+        if (ALLOWED_AI_DIFFICULTIES.includes(d)) {
+            return {
+                difficulty: d,
+                source: "explicit_body",
+                difficultyMode: null,
+                profile: null,
+            };
+        }
+    }
+
+    const dmRaw = String(reqBody?.difficultyMode || "").toLowerCase().trim();
+    const difficultyMode = ALLOWED_RESOLVE_MODES.includes(dmRaw) ? dmRaw : "intelligent";
+
+    const pRaw = String(reqBody?.performance || "").toLowerCase().trim();
+    const performance = ALLOWED_PERFORMANCE.includes(pRaw) ? pRaw : "medium";
+
+    if (!userId) {
+        return {
+            difficulty: "medium",
+            source: "fallback_no_user",
+            difficultyMode,
+            profile: null,
+        };
+    }
+
+    const resolved = await resolveAdaptiveDifficulty({ difficultyMode, performance }, userId, quiz);
+    return {
+        difficulty: resolved.difficulty,
+        source: resolved.source,
+        difficultyMode,
+        profile: resolved.profile || null,
+    };
+}
+
 // ✅ General MCQ Generator
 export const generateQuizQuestions = async (req, res) => {
-    logger.info(`Generating ${req.body.numQuestions} ${req.body.questionType} questions for quiz ${req.params.id} on topic "${req.body.topic}"`);
+    logger.info(
+        `Generating ${req.body.numQuestions} ${req.body.questionType} questions for quiz ${req.params.id} on topic "${req.body.topic}"`
+    );
     try {
         const { topic, numQuestions, questionType = "mcq" } = req.body;
         const { id } = req.params;
 
         if (!topic || !numQuestions) {
             logger.warn("Missing topic or numQuestions for AI question generation");
-            return sendValidationError(res, { topic: "Topic and number of questions are required" }, "Topic and number of questions are required");
+            return sendValidationError(
+                res,
+                { topic: "Topic and number of questions are required" },
+                "Topic and number of questions are required"
+            );
         }
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -32,75 +81,52 @@ export const generateQuizQuestions = async (req, res) => {
             return sendNotFound(res, "Quiz");
         }
 
-        const existingQuestions = new Set(
-            quiz.questions.map((q) => q.question.trim().toLowerCase())
+        const userId = req.user?.id;
+        const resolvedDiff = await resolveDifficultyForStandardGenerate(req.body, userId, quiz);
+        const difficulty = resolvedDiff.difficulty;
+
+        logger.info(
+            `Standard AI generate quiz ${id}: difficulty=${difficulty} source=${resolvedDiff.source} mode=${resolvedDiff.difficultyMode ?? "n/a"}`
         );
-        let finalQuestions = [];
 
-        // Generate questions with retry logic to ensure we get enough unique questions
-        const MAX_ATTEMPTS = 3;
-        const GENERATION_MULTIPLIER = 1.5; // Generate 1.5x requested to account for duplicates/invalid
+        const existingTexts = quiz.questions.map((q) => q.question.trim());
 
-        for (let attempt = 0; attempt < MAX_ATTEMPTS && finalQuestions.length < numQuestions; attempt++) {
-            // Calculate how many more questions we need
-            const remainingNeeded = numQuestions - finalQuestions.length;
-            // Generate extra questions to account for duplicates/invalid ones
-            const questionsToGenerate = Math.ceil(remainingNeeded * GENERATION_MULTIPLIER);
-
-            let parsed;
-            try {
-                if (questionType === "mcq") {
-                    parsed = await generateMCQ(topic, questionsToGenerate);
-                } else if (questionType === "true_false") {
-                    parsed = await generateTrueFalse(topic, questionsToGenerate);
-                } else {
-                    logger.warn(`Invalid question type for AI question generation: ${questionType}`);
-                    return sendValidationError(res, { questionType: "Invalid question type" }, "Invalid question type");
-                }
-            } catch (error) {
-                logger.error(`Error generating questions on attempt ${attempt + 1}:`, error.message);
-                if (attempt === MAX_ATTEMPTS - 1) {
-                    throw error; // Re-throw on last attempt
-                }
-                continue; // Try again
+        let finalQuestions;
+        try {
+            if (questionType === "mcq") {
+                const { questions } = await generateMCQWithContext(
+                    topic,
+                    numQuestions,
+                    difficulty,
+                    existingTexts
+                );
+                finalQuestions = questions;
+            } else if (questionType === "true_false") {
+                const { questions } = await generateTrueFalseWithContext(
+                    topic,
+                    numQuestions,
+                    difficulty,
+                    existingTexts
+                );
+                finalQuestions = questions;
+            } else {
+                logger.warn(`Invalid question type for AI question generation: ${questionType}`);
+                return sendValidationError(res, { questionType: "Invalid question type" }, "Invalid question type");
             }
-
-            // Filter out duplicates and invalid questions
-            const newUnique = parsed.questions.filter((q) => {
-                const normalized = q.question.trim().toLowerCase();
-                const isUnique = !existingQuestions.has(normalized);
-                const isValid = validateQuestion(q);
-
-                if (!isUnique) {
-                    logger.debug(`Duplicate question filtered: ${q.question.substring(0, 50)}...`);
-                }
-                if (!isValid) {
-                    logger.debug(`Invalid question filtered: ${q.question.substring(0, 50)}...`);
-                }
-
-                return isUnique && isValid;
-            });
-
-            // Normalize difficulty and add to final list
-            newUnique.forEach((q) => {
-                const normalized = q.question.trim().toLowerCase();
-                if (!["easy", "medium", "hard"].includes(q.difficulty)) {
-                    q.difficulty = "medium";
-                }
-                existingQuestions.add(normalized);
-            });
-
-            finalQuestions.push(...newUnique);
-
-            logger.info(`Attempt ${attempt + 1}: Generated ${parsed.questions.length} questions, ${newUnique.length} unique, ${finalQuestions.length} total collected`);
+        } catch (error) {
+            logger.error(`Error generating questions:`, error.message);
+            throw error;
         }
 
-        if (finalQuestions.length === 0) {
-            logger.warn("No new unique questions could be generated by AI after all attempts");
-            return sendError(res, "No new unique questions could be generated. The quiz may already have similar questions, or the AI failed to generate valid questions.", 400);
+        if (!finalQuestions.length) {
+            logger.warn("No new unique questions could be generated by AI");
+            return sendError(
+                res,
+                "No new unique questions could be generated. The quiz may already have similar questions, or the AI failed to generate valid questions.",
+                400
+            );
         }
 
-        // Take only the requested number of questions
         const questionsToAdd = finalQuestions.slice(0, numQuestions);
         quiz.questions.push(...questionsToAdd);
         quiz.totalMarks = quiz.questions.length;
@@ -109,23 +135,47 @@ export const generateQuizQuestions = async (req, res) => {
 
         await quiz.save();
         const addedCount = questionsToAdd.length;
-        logger.info(`Successfully added ${addedCount} new questions to quiz ${id} (requested: ${numQuestions}, generated: ${finalQuestions.length})`);
-        return sendSuccess(res, {
-            questions: questionsToAdd,
-            requested: numQuestions,
-            added: addedCount
-        }, `${addedCount} new questions added successfully${addedCount < numQuestions ? ` (requested ${numQuestions}, but only ${addedCount} unique questions could be generated)` : ''}`);
+        logger.info(
+            `Successfully added ${addedCount} new questions to quiz ${id} (requested: ${numQuestions}, generated: ${finalQuestions.length})`
+        );
+        return sendSuccess(
+            res,
+            {
+                questions: questionsToAdd,
+                requested: numQuestions,
+                added: addedCount,
+                usedDifficulty: difficulty,
+                difficultySource: resolvedDiff.source,
+                difficultyMode: resolvedDiff.difficultyMode,
+                knowledgeProfile: resolvedDiff.profile || undefined,
+            },
+            `${addedCount} new questions added successfully${
+                addedCount < numQuestions
+                    ? ` (requested ${numQuestions}, but only ${addedCount} unique questions could be generated)`
+                    : ""
+            }`
+        );
     } catch (err) {
         logger.error({ message: "Error generating AI questions", error: err.message, stack: err.stack });
         throw new AppError("Internal server error", 500);
     }
 };
 
-// ✅ Adaptive MCQ Generator
+// ✅ Adaptive MCQ Generator (performance / intelligent / blended difficulty)
 export const generateAdaptiveQuestions = async (req, res) => {
-    logger.info(`Generating ${req.body.numQuestions} adaptive questions for quiz ${req.body.quizId} based on performance: ${req.body.performance}`);
+    const {
+        performance = "medium",
+        quizId,
+        numQuestions = 5,
+        difficultyMode = "performance",
+    } = req.body;
+
+    logger.info(
+        `Generating ${numQuestions} adaptive questions for quiz ${quizId} mode=${difficultyMode} performance=${performance}`
+    );
     try {
-        const { performance, quizId, numQuestions = 5 } = req.body;
+        const allowedModes = ["performance", "intelligent", "blended"];
+        const mode = allowedModes.includes(difficultyMode) ? difficultyMode : "performance";
 
         const quiz = await Quiz.findById(quizId);
         if (!quiz) {
@@ -134,71 +184,30 @@ export const generateAdaptiveQuestions = async (req, res) => {
         }
 
         const topic = quiz.category;
-        const difficulty =
-            performance === "low" ? "easy" : performance === "high" ? "hard" : "medium";
+        const userId = req.user?.id;
+        const resolved = await resolveAdaptiveDifficulty({ difficultyMode: mode, performance }, userId, quiz);
+        const difficulty = resolved.difficulty;
 
-        const existingQuestions = new Set(
-            quiz.questions.map((q) => q.question.trim().toLowerCase())
-        );
-        let finalQuestions = [];
+        const existingTexts = quiz.questions.map((q) => q.question.trim());
 
-        // Generate questions with retry logic to ensure we get enough unique questions
-        const MAX_ATTEMPTS = 3;
-        const GENERATION_MULTIPLIER = 1.5; // Generate 1.5x requested to account for duplicates/invalid
-
-        for (let attempt = 0; attempt < MAX_ATTEMPTS && finalQuestions.length < numQuestions; attempt++) {
-            // Calculate how many more questions we need
-            const remainingNeeded = numQuestions - finalQuestions.length;
-            // Generate extra questions to account for duplicates/invalid ones
-            const questionsToGenerate = Math.ceil(remainingNeeded * GENERATION_MULTIPLIER);
-
-            let parsed;
-            try {
-                parsed = await generateMCQ(topic, questionsToGenerate, difficulty);
-            } catch (error) {
-                logger.error(`Error generating adaptive questions on attempt ${attempt + 1}:`, error.message);
-                if (attempt === MAX_ATTEMPTS - 1) {
-                    throw error; // Re-throw on last attempt
-                }
-                continue; // Try again
-            }
-
-            // Filter out duplicates and invalid questions
-            const newUnique = parsed.questions.filter((q) => {
-                const normalized = q.question.trim().toLowerCase();
-                const isUnique = !existingQuestions.has(normalized);
-                const isValid = validateQuestion(q);
-
-                if (!isUnique) {
-                    logger.debug(`Duplicate adaptive question filtered: ${q.question.substring(0, 50)}...`);
-                }
-                if (!isValid) {
-                    logger.debug(`Invalid adaptive question filtered: ${q.question.substring(0, 50)}...`);
-                }
-
-                return isUnique && isValid;
-            });
-
-            // Normalize difficulty and add to final list
-            newUnique.forEach((q) => {
-                const normalized = q.question.trim().toLowerCase();
-                if (!["easy", "medium", "hard"].includes(q.difficulty)) {
-                    q.difficulty = difficulty; // Use the requested difficulty if not set
-                }
-                existingQuestions.add(normalized);
-            });
-
-            finalQuestions.push(...newUnique);
-
-            logger.info(`Attempt ${attempt + 1}: Generated ${parsed.questions.length} adaptive questions, ${newUnique.length} unique, ${finalQuestions.length} total collected`);
+        let finalQuestions;
+        try {
+            const { questions } = await generateMCQWithContext(topic, numQuestions, difficulty, existingTexts);
+            finalQuestions = questions;
+        } catch (error) {
+            logger.error(`Error generating adaptive questions:`, error.message);
+            throw error;
         }
 
-        if (finalQuestions.length === 0) {
+        if (!finalQuestions.length) {
             logger.warn("No new unique adaptive questions could be generated by AI after all attempts");
-            return sendError(res, "No new unique adaptive questions could be generated. The quiz may already have similar questions, or the AI failed to generate valid questions.", 400);
+            return sendError(
+                res,
+                "No new unique adaptive questions could be generated. The quiz may already have similar questions, or the AI failed to generate valid questions.",
+                400
+            );
         }
 
-        // Take only the requested number of questions
         const questionsToAdd = finalQuestions.slice(0, numQuestions);
         quiz.questions.push(...questionsToAdd);
         quiz.totalMarks = quiz.questions.length;
@@ -207,14 +216,63 @@ export const generateAdaptiveQuestions = async (req, res) => {
 
         await quiz.save();
         const addedCount = questionsToAdd.length;
-        logger.info(`Successfully added ${addedCount} new adaptive questions to quiz ${quizId} (requested: ${numQuestions}, generated: ${finalQuestions.length})`);
-        return sendSuccess(res, {
-            questions: questionsToAdd,
-            requested: numQuestions,
-            added: addedCount
-        }, `${addedCount} adaptive questions added successfully${addedCount < numQuestions ? ` (requested ${numQuestions}, but only ${addedCount} unique questions could be generated)` : ''}`);
+        logger.info(
+            `Successfully added ${addedCount} new adaptive questions to quiz ${quizId} (requested: ${numQuestions}, generated: ${finalQuestions.length})`
+        );
+
+        if (userId) {
+            try {
+                await UserQuiz.findByIdAndUpdate(userId, {
+                    $push: {
+                        performanceHistory: {
+                            $each: [
+                                {
+                                    quizId,
+                                    category: quiz.category || "general",
+                                    difficulty,
+                                    score: null,
+                                    totalQuestions: addedCount,
+                                    timeSpent: 0,
+                                    date: new Date(),
+                                },
+                            ],
+                            $slice: -80,
+                        },
+                    },
+                    $set: {
+                        "intelligence.adaptiveDifficulty": difficulty,
+                        "intelligence.lastAnalyzed": new Date(),
+                    },
+                });
+            } catch (userErr) {
+                logger.warn({ message: "Could not update user knowledge snapshot", error: userErr.message });
+            }
+        }
+
+        return sendSuccess(
+            res,
+            {
+                questions: questionsToAdd,
+                requested: numQuestions,
+                added: addedCount,
+                usedDifficulty: difficulty,
+                difficultyMode: mode,
+                effectiveDifficultyMode: resolved.source,
+                difficultySource: resolved.source,
+                knowledgeProfile: resolved.profile || undefined,
+            },
+            `${addedCount} adaptive questions added successfully${
+                addedCount < numQuestions
+                    ? ` (requested ${numQuestions}, but only ${addedCount} unique questions could be generated)`
+                    : ""
+            }`
+        );
     } catch (err) {
-        logger.error({ message: "Error generating adaptive AI questions", error: err.message, stack: err.stack });
+        logger.error({
+            message: "Error generating adaptive AI questions",
+            error: err.message,
+            stack: err.stack,
+        });
         throw new AppError("Internal server error", 500);
     }
 };

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "../utils/axios";
 import { useNotification } from "../hooks/useNotification";
 import "./NotificationCenter.css";
+import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
 
 const NotificationCenter = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -130,6 +131,7 @@ const NotificationCenter = () => {
 
         // Navigate based on notification type
         if (notification.data?.quizId) {
+            markQuizFullscreenOnLoad();
             navigate(`/user/test/${notification.data.quizId}`);
         } else if (notification.data?.reportId) {
             navigate(`/report/${notification.data.reportId}`);

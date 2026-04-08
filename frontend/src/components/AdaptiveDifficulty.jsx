@@ -155,6 +155,24 @@ const AdaptiveDifficulty = ({ user, onDifficultyChange }) => {
                         <span className="detail-label">Category:</span>
                         <span className="detail-value">{adaptiveData.category}</span>
                     </div>
+                    {adaptiveData.dataSource != null && adaptiveData.dataSource !== "" && (
+                        <div className="detail-item">
+                            <span className="detail-label">Signal source:</span>
+                            <span className="detail-value">{String(adaptiveData.dataSource)}</span>
+                        </div>
+                    )}
+                    {adaptiveData.confidenceTier != null && adaptiveData.confidenceTier !== "" && (
+                        <div className="detail-item">
+                            <span className="detail-label">Trust tier:</span>
+                            <span className="detail-value">
+                                {adaptiveData.confidenceTier === "high"
+                                    ? "High — show recommendation as primary"
+                                    : adaptiveData.confidenceTier === "medium"
+                                      ? "Medium — show with context"
+                                      : "Low — suggest taking more quizzes to tune"}
+                            </span>
+                        </div>
+                    )}
                 </div>
             </motion.div>
 

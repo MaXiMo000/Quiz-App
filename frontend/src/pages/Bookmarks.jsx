@@ -11,6 +11,7 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { debounce } from "../utils/componentUtils";
 import CustomDropdown from "../components/CustomDropdown";
 import { addToQuizHistory } from "../utils/quizHistory";
+import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
 
 const Bookmarks = () => {
     const navigate = useNavigate();
@@ -149,16 +150,8 @@ const Bookmarks = () => {
     const handleStartQuiz = (quizId) => {
         if (!quizId) return;
         addToQuizHistory({ _id: quizId });
-        const element = document.documentElement;
-        if (element.requestFullscreen) {
-            element.requestFullscreen().then(() => {
-                navigate(`/user/test/${quizId}`);
-            }).catch(() => {
-                navigate(`/user/test/${quizId}`);
-            });
-        } else {
-            navigate(`/user/test/${quizId}`);
-        }
+        markQuizFullscreenOnLoad();
+        navigate(`/user/test/${quizId}`);
     };
 
     if (loading) return <Loading fullScreen={true} />;

@@ -262,7 +262,11 @@ const QuizWrongAnswersReview = () => {
                     <button
                         type="button"
                         className="quiz-review-btn"
-                        onClick={() => navigate(`/adaptive/${session.quizId}?performance=low`)}
+                        onClick={() =>
+                            navigate(
+                                `/adaptive/${session.quizId}?difficultyMode=blended&performance=low`
+                            )
+                        }
                     >
                         🚀 Adaptive practice
                     </button>

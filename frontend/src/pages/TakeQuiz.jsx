@@ -9,6 +9,12 @@ import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
 import { saveQuizReviewSession } from "../utils/quizReviewSession";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { consumeQuizFullscreenFlag } from "../utils/quizFullscreen.js";
+import {
+    persistLastQuizSession,
+    scoreToPerformance,
+    buildAdaptiveGeneratorPath,
+} from "../utils/adaptiveQuizSignals.js";
 
 const TakeQuiz = () => {
     const { id } = useParams();
@@ -37,11 +43,15 @@ const TakeQuiz = () => {
     const [isQuizCompleted, setIsQuizCompleted] = useState(false);
     const [retryCount, setRetryCount] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    /** One tap after navigation requests fullscreen (same-document user gesture). */
+    const [awaitingFullscreenStart, setAwaitingFullscreenStart] = useState(false);
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [reviewQuestions, setReviewQuestions] = useState([]);
     const autoSubmitRef = useRef(false);
     const isSubmittingRef = useRef(false);
     const autoSubmitQuizRef = useRef(null);
+    /** True only when quiz data is loaded + init delay passed — avoids auto-submit before `quiz` exists */
+    const canAutoSubmitRef = useRef(false);
     const answersLengthRef = useRef(0);
     const isSubmitButtonClicked = useRef(false);
 
@@ -58,30 +68,7 @@ const TakeQuiz = () => {
         setQuestionStartTime(Date.now());
     }, [questionStartTime, currentQuestion]);
 
-    // ✅ Exit Fullscreen Mode (must be defined before keyboard shortcuts)
-    // This function exits fullscreen and optionally triggers auto-submit if needed
-    const exitFullScreen = useCallback(() => {
-        // Auto-submit before exiting fullscreen (if ref is set)
-        if (!hasAutoSubmitted && !isSubmittingRef.current && autoSubmitQuizRef.current) {
-            autoSubmitQuizRef.current("Close button clicked");
-        }
-
-        // Exit fullscreen with error handling
-        try {
-            // Check if document is still active before trying to exit fullscreen
-            if (document.visibilityState === 'visible' && document.hasFocus()) {
-                if (document.exitFullscreen) document.exitFullscreen();
-                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-                else if (document.msExitFullscreen) document.msExitFullscreen();
-            }
-        } catch {
-            // Silently handle fullscreen exit errors
-        }
-        setIsFullScreen(false);
-    }, [hasAutoSubmitted]);
-
-    /** Exit browser fullscreen only — no auto-submit (use after quiz complete / when navigating away) */
+    /** Exit browser fullscreen only — safe when not in fullscreen or document inactive */
     const leaveFullscreenOnly = useCallback(() => {
         try {
             const el =
@@ -102,6 +89,44 @@ const TakeQuiz = () => {
         }
         setIsFullScreen(false);
     }, []);
+
+    // ✅ Exit fullscreen (X / flow): auto-submit first if needed, then leave fullscreen
+    const exitFullScreen = useCallback(() => {
+        if (
+            !hasAutoSubmitted &&
+            !isSubmittingRef.current &&
+            autoSubmitQuizRef.current &&
+            canAutoSubmitRef.current
+        ) {
+            autoSubmitQuizRef.current("Close button clicked");
+        }
+        leaveFullscreenOnly();
+    }, [hasAutoSubmitted, leaveFullscreenOnly]);
+
+    /** Request fullscreen from a click on this page (required after SPA navigation). */
+    const enterQuizFullscreenFromUserGesture = useCallback(async () => {
+        const el = document.documentElement;
+        try {
+            if (el.requestFullscreen) await el.requestFullscreen().catch(() => {});
+            else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen().catch(() => {});
+            else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+            else if (el.msRequestFullscreen) el.msRequestFullscreen();
+        } catch {
+            /* ignore */
+        }
+        setAwaitingFullscreenStart(false);
+    }, []);
+
+    /** Leave gate: previous SPA step if possible, else quiz list */
+    const handleFullscreenGateGoBack = useCallback(() => {
+        setAwaitingFullscreenStart(false);
+        const idx = window.history.state?.idx;
+        if (typeof idx === "number" && idx > 0) {
+            navigate(-1);
+        } else {
+            navigate("/user/test");
+        }
+    }, [navigate]);
 
     // Leaving the page (any navigation) should not leave the document stuck in fullscreen
     useEffect(() => {
@@ -190,7 +215,12 @@ const TakeQuiz = () => {
                 // Always exit fullscreen when Escape is pressed (unless submitting)
                 if (!hasAutoSubmitted && !isSubmittingRef.current) {
                     // Trigger auto-submit if needed (for quiz security)
-                    if (autoSubmitQuizRef.current && !showResultModal && !showReviewModal) {
+                    if (
+                        autoSubmitQuizRef.current &&
+                        canAutoSubmitRef.current &&
+                        !showResultModal &&
+                        !showReviewModal
+                    ) {
                         autoSubmitQuizRef.current("Escape key pressed");
                     }
                     // Exit fullscreen
@@ -284,6 +314,24 @@ const TakeQuiz = () => {
         fetchQuiz();
     }, [fetchQuiz]);
 
+    /** Persist for adaptive generator (blended / next-quiz) — TTL in adaptiveQuizSignals */
+    useEffect(() => {
+        if (!showResultModal || score == null || finalScore == null || !id) return;
+        persistLastQuizSession({
+            quizId: id,
+            score,
+            total: finalScore,
+            performance: performanceLevel,
+        });
+    }, [showResultModal, score, finalScore, id, performanceLevel]);
+
+    // After navigation from User Quiz / Home, show one-tap start so fullscreen uses a valid user gesture
+    useEffect(() => {
+        if (loading || !quiz) return;
+        if (consumeQuizFullscreenFlag()) {
+            setAwaitingFullscreenStart(true);
+        }
+    }, [loading, quiz]);
 
     // Listen for fullscreen changes
     useEffect(() => {
@@ -322,7 +370,13 @@ const TakeQuiz = () => {
                         document.msFullscreenElement
                     );
 
-                    if (stillNotFullscreen && !hasAutoSubmitted && !isSubmittingRef.current && !isSubmitButtonClicked.current) {
+                    if (
+                        stillNotFullscreen &&
+                        !hasAutoSubmitted &&
+                        !isSubmittingRef.current &&
+                        !isSubmitButtonClicked.current &&
+                        canAutoSubmitRef.current
+                    ) {
                         if (autoSubmitQuizRef.current) {
                             autoSubmitQuizRef.current("Escape key pressed");
                         }
@@ -365,7 +419,13 @@ const TakeQuiz = () => {
 
                 // Auto-submit on Escape in fullscreen (legacy behavior for quiz security)
                 // Note: The useKeyboardShortcuts hook will handle exiting fullscreen
-                if (isCurrentlyFullscreen && autoSubmitQuizRef.current && !showResultModal && !showReviewModal) {
+                if (
+                    isCurrentlyFullscreen &&
+                    autoSubmitQuizRef.current &&
+                    canAutoSubmitRef.current &&
+                    !showResultModal &&
+                    !showReviewModal
+                ) {
                     // Trigger auto-submit, but don't prevent the hook handler from exiting fullscreen
                     autoSubmitQuizRef.current("Escape key pressed");
                     // The hook handler will call exitFullScreen() after this
@@ -396,6 +456,11 @@ const TakeQuiz = () => {
 
     // Auto-submit function for interruption scenarios
     const autoSubmitQuiz = useCallback(async (reason = "Quiz interrupted") => {
+        // Never run before quiz JSON is loaded (fullscreen/escape can fire during first paint)
+        if (!quiz?.questions?.length || !isQuizInitialized) {
+            return;
+        }
+
         // Set ref for exitFullScreen to use
         autoSubmitQuizRef.current = autoSubmitQuiz;
 
@@ -444,11 +509,7 @@ const TakeQuiz = () => {
             // Update UI states (same as regular submit)
             setScore(scoreAchieved);
             setFinalScore(totalMarks);
-            setPerformanceLevel(
-                scoreAchieved >= totalMarks * 0.7 ? "high"
-                : scoreAchieved >= totalMarks * 0.4 ? "medium"
-                : "low"
-            );
+            setPerformanceLevel(scoreToPerformance(scoreAchieved, totalMarks));
 
             // Save the report with error handling
             try {
@@ -456,6 +517,8 @@ const TakeQuiz = () => {
                 await axios.post(`/api/reports`, {
                     username: user?.name,
                     quizName: quiz.title,
+                    quizCategory: quiz.category || "",
+                    quizId: id,
                     score: scoreAchieved,
                     total: totalMarks,
                     questions: detailedQuestions,
@@ -550,6 +613,8 @@ const TakeQuiz = () => {
                 const localQuizData = {
                     username: user?.name,
                     quizName: quiz.title,
+                    quizCategory: quiz.category || "",
+                    quizId: id,
                     score: scoreAchieved,
                     total: totalMarks,
                     questions: detailedQuestions,
@@ -578,7 +643,7 @@ const TakeQuiz = () => {
             setIsAutoSubmitting(false);
             isSubmittingRef.current = false;
         }
-    }, [quiz, answers, answerTimes, optionLetters, id, recordAnswerTime, hasAutoSubmitted]);
+    }, [quiz, answers, answerTimes, optionLetters, id, recordAnswerTime, hasAutoSubmitted, isQuizInitialized]);
 
     // Auto-submit event listeners
     useEffect(() => {
@@ -621,6 +686,8 @@ const TakeQuiz = () => {
                     const data = {
                         username: user.name,
                         quizName: quiz.title,
+                        quizCategory: quiz.category || "",
+                        quizId: id,
                         score: scoreAchieved,
                         total: totalMarks,
                         questions: detailedQuestions,
@@ -651,8 +718,29 @@ const TakeQuiz = () => {
             }, 1000); // 1 second delay to ensure quiz is properly loaded
 
             return () => clearTimeout(timer);
+        } else {
+            setIsQuizInitialized(false);
         }
     }, [quiz]);
+
+    // Ref used by fullscreen / escape handlers (avoids stale closure before quiz fetch completes)
+    useEffect(() => {
+        canAutoSubmitRef.current = Boolean(
+            quiz?.questions?.length &&
+                isQuizInitialized &&
+                !hasAutoSubmitted &&
+                !isQuizCompleted &&
+                !showResultModal &&
+                !showReviewModal
+        );
+    }, [
+        quiz,
+        isQuizInitialized,
+        hasAutoSubmitted,
+        isQuizCompleted,
+        showResultModal,
+        showReviewModal,
+    ]);
 
     // Set autoSubmitQuizRef early to ensure it's available
     useEffect(() => {
@@ -660,11 +748,6 @@ const TakeQuiz = () => {
             autoSubmitQuizRef.current = autoSubmitQuiz;
         }
     }, [autoSubmitQuiz]);
-
-    // Also set ref immediately when autoSubmitQuiz changes (for immediate availability)
-    if (autoSubmitQuiz) {
-        autoSubmitQuizRef.current = autoSubmitQuiz;
-    }
 
     // Update answers length ref whenever answers change
     answersLengthRef.current = answers.length;
@@ -729,11 +812,7 @@ const TakeQuiz = () => {
         const scoreAchieved = Math.round((correctCount / quiz.questions.length) * totalMarks * 100) / 100; // Round to 2 decimal places
         setScore(scoreAchieved);
         setFinalScore(totalMarks);
-        setPerformanceLevel(
-            scoreAchieved >= totalMarks * 0.7 ? "high"
-            : scoreAchieved >= totalMarks * 0.4 ? "medium"
-            : "low"
-        );
+        setPerformanceLevel(scoreToPerformance(scoreAchieved, totalMarks));
 
         try {
             const user = JSON.parse(localStorage.getItem("user"));
@@ -742,6 +821,8 @@ const TakeQuiz = () => {
             await axios.post(`/api/reports`, {
                 username: user?.name,
                 quizName: quiz.title,
+                quizCategory: quiz.category || "",
+                quizId: id,
                 score: scoreAchieved,
                 total: totalMarks,
                 questions: detailedQuestions,
@@ -815,7 +896,7 @@ const TakeQuiz = () => {
             // Mark quiz as completed and stop timer
             setIsQuizCompleted(true);
             setShowResultModal(true);
-            exitFullScreen();
+            leaveFullscreenOnly();
         } catch (error) {
             console.error("Error saving report:", error);
             showError("Failed to save your score. Please try again.");
@@ -824,10 +905,22 @@ const TakeQuiz = () => {
             isSubmittingRef.current = false;
             setIsSubmitting(false);
         }
-    }, [quiz, answers, answerTimes, optionLetters, showError, id, recordAnswerTime, hasAutoSubmitted, exitFullScreen, isSubmitting]);
+    }, [
+        quiz,
+        answers,
+        answerTimes,
+        optionLetters,
+        showError,
+        id,
+        recordAnswerTime,
+        hasAutoSubmitted,
+        leaveFullscreenOnly,
+        isSubmitting,
+    ]);
 
     useEffect(() => {
         if (timeLeft === null) return;
+        if (awaitingFullscreenStart) return;
         if (timeLeft <= 0) {
             handleSubmit();
             return;
@@ -849,7 +942,15 @@ const TakeQuiz = () => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, handleSubmit, isQuizCompleted, hasAutoSubmitted, showResultModal, isTimerPaused]);
+    }, [
+        timeLeft,
+        handleSubmit,
+        isQuizCompleted,
+        hasAutoSubmitted,
+        showResultModal,
+        isTimerPaused,
+        awaitingFullscreenStart,
+    ]);
 
 
 
@@ -918,8 +1019,42 @@ const TakeQuiz = () => {
     if (!quiz) return <Loading fullScreen={true} />;
     if (!currentQ) return <Loading fullScreen={true} />;
 
+    const completionPercent =
+        showResultModal && finalScore != null && finalScore > 0 && score != null
+            ? Math.min(100, Math.max(0, Math.round((score / finalScore) * 100)))
+            : 0;
+
     return (
         <div className="quiz-container">
+            {awaitingFullscreenStart && (
+                <div
+                    className="take-quiz-fullscreen-gate"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="take-quiz-fullscreen-gate-title"
+                >
+                    <div className="take-quiz-fullscreen-gate-card">
+                        <h2 id="take-quiz-fullscreen-gate-title">Start quiz</h2>
+                        <p>
+                            Enter fullscreen for a focused attempt, or go back to your quizzes / the previous page.
+                        </p>
+                        <button
+                            type="button"
+                            className="take-quiz-fullscreen-gate-btn"
+                            onClick={enterQuizFullscreenFromUserGesture}
+                        >
+                            Enter fullscreen
+                        </button>
+                        <button
+                            type="button"
+                            className="take-quiz-fullscreen-gate-skip"
+                            onClick={handleFullscreenGateGoBack}
+                        >
+                            Go back
+                        </button>
+                    </div>
+                </div>
+            )}
             {/* Fullscreen exit button */}
             {isFullScreen && (
                 <button
@@ -1025,14 +1160,43 @@ const TakeQuiz = () => {
                             </div>
                         )}
 
-                        <div className="score-display">
-                            <div className="score-circle">
-                                <span className="score-number">{score}</span>
-                                <span className="score-divider">/</span>
-                                <span className="total-score">{finalScore}</span>
+                        <div
+                            className="score-display"
+                            role="group"
+                            aria-label={`Score ${score} out of ${finalScore}, ${completionPercent} percent correct`}
+                        >
+                            <p className="score-display-label">Your score</p>
+                            <div className="score-hero">
+                                <div className="score-circle">
+                                    <span className="score-number">{score}</span>
+                                    <span className="score-divider" aria-hidden>
+                                        /
+                                    </span>
+                                    <span className="total-score">{finalScore}</span>
+                                </div>
+                                <p className="score-subline">
+                                    {finalScore > 0
+                                        ? `${(score ?? 0) === 1 ? "1 answer" : `${score ?? 0} answers`} correct · ${finalScore} ${finalScore === 1 ? "question" : "questions"}`
+                                        : "No questions in this quiz"}
+                                </p>
                             </div>
-                            <div className="percentage-score">
-                                {Math.round((score / finalScore) * 100)}%
+                            <div className="score-meter">
+                                <div
+                                    className="score-progress-track"
+                                    role="progressbar"
+                                    aria-valuenow={completionPercent}
+                                    aria-valuemin={0}
+                                    aria-valuemax={100}
+                                    aria-label={`${completionPercent} percent correct`}
+                                >
+                                    <div
+                                        className="score-progress-fill"
+                                        style={{
+                                            width: `${completionPercent}%`,
+                                            minWidth: completionPercent > 0 ? 6 : undefined,
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -1045,7 +1209,8 @@ const TakeQuiz = () => {
                         </div>
 
                         <p className="result-message">
-                            Would you like to generate more questions based on your performance?
+                            Want more practice? <strong>Generate more</strong> below — difficulty will match how you did
+                            on this quiz (no extra steps).
                         </p>
 
                         <div className="modal-actions result-completion-actions" role="group" aria-label="Quiz completion actions">
@@ -1087,7 +1252,11 @@ const TakeQuiz = () => {
                                 className="generate-btn result-action-btn"
                                 onClick={() => {
                                     leaveFullscreenOnly();
-                                    navigate(`/adaptive/${id}?performance=${performanceLevel}`);
+                                    navigate(
+                                        buildAdaptiveGeneratorPath(id, {
+                                            difficultyMode: "blended",
+                                        })
+                                    );
                                 }}
                                 aria-label="Generate more adaptive quiz questions"
                             >
