@@ -10,6 +10,7 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import Loading from "../components/Loading";
 import { debounce } from "../utils/componentUtils";
 import CustomDropdown from "../components/CustomDropdown";
+import { getEffectiveSessionPerformance } from "../utils/adaptiveQuizSignals.js";
 
 // Memoized Premium Quiz Box Component
 const PremiumQuizBox = memo(({ quiz, index, isAdminQuiz, handleRestrictedAction, deleteQuiz, openAiQuestionModal, openAddQuestionModal, navigate, isBookmarked, onBookmark }) => {
@@ -139,12 +140,8 @@ const PremiumQuizBox = memo(({ quiz, index, isAdminQuiz, handleRestrictedAction,
             </div>
         </motion.div>
     );
-}, (prevProps, nextProps) => {
-    return (
-        prevProps.quiz._id === nextProps.quiz._id &&
-        prevProps.index === nextProps.index
-    );
 });
+// No custom propsAreEqual: we must re-render when totalMarks, duration, questions, etc. change (same _id).
 
 PremiumQuizBox.displayName = 'PremiumQuizBox';
 
@@ -399,9 +396,11 @@ const PremiumQuizzes = () => {
         },
     }, [searchQuery, currentPage, totalPages]);
 
-    const getQuiz = useCallback(async () => {
+    const getQuiz = useCallback(async (options = {}) => {
         try {
-            const response = await axios.get('/api/quizzes');
+            const response = await axios.get("/api/quizzes", {
+                params: options.bustCache ? { _t: Date.now() } : undefined,
+            });
             setQuizzes(response.data);
         } catch (error) {
             console.error("Error fetching quizzes:", error);
@@ -529,11 +528,18 @@ const PremiumQuizzes = () => {
 
         setIsGeneratingAI(true);
         try {
+            const performance = getEffectiveSessionPerformance(
+                new URLSearchParams(
+                    typeof window !== "undefined" && window.location ? window.location.search : ""
+                )
+            );
             const response = await axios.post(
                 `/api/quizzes/${selectedQuizId}/generate-questions`,
                 {
                     topic: aiTopic,
-                    numQuestions: Number(aiNumQuestions)
+                    numQuestions: Number(aiNumQuestions),
+                    difficultyMode: "blended",
+                    performance,
                 },
                 { headers: { "Content-Type": "application/json" } }
             );
@@ -542,9 +548,14 @@ const PremiumQuizzes = () => {
                 throw new Error(`Error Generating questions: ${response.status}`);
             }
 
-            showSuccess("AI-generated questions added successfully!");
+            const { added, usedDifficulty, difficultySource } = response.data || {};
+            showSuccess(
+                added != null && usedDifficulty
+                    ? `Added ${added} question(s) at ${String(usedDifficulty).toUpperCase()} difficulty (${difficultySource || "resolved"}).`
+                    : "AI-generated questions added successfully!"
+            );
             document.getElementById("ai_question_modal").close();
-            getQuiz();
+            getQuiz({ bustCache: true });
         } catch (error) {
             console.error("Error generating AI questions:", error);
             showError("Failed to generate AI questions.");
@@ -564,7 +575,7 @@ const PremiumQuizzes = () => {
         try {
             await axios.post('/api/quizzes', quizData);
             document.getElementById("create_quiz_modal").close();
-            getQuiz();
+            getQuiz({ bustCache: true });
         } catch (error) {
             console.error("Error creating quiz:", error);
             showError("Failed to create quiz. Check API response.");
@@ -591,7 +602,7 @@ const PremiumQuizzes = () => {
         try {
             await axios.post(`/api/quizzes/${selectedQuizId}/questions`, questionData);
             document.getElementById("add_question_modal").close();
-            getQuiz();
+            getQuiz({ bustCache: true });
         } catch (error) {
             console.error("Error adding question:", error);
             showError("Failed to add question. Check API response.");
@@ -605,7 +616,7 @@ const PremiumQuizzes = () => {
             const response = await axios.delete(`/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
             if (response.status === 200) {
                 showSuccess("Quiz deleted successfully!");
-                getQuiz();
+                getQuiz({ bustCache: true });
             }
         } catch (error) {
             console.error("Error deleting quiz:", error);
@@ -994,6 +1005,10 @@ const PremiumQuizzes = () => {
                             </span>
                             Premium AI Generation
                         </h3>
+
+                        <p className="premium-ai-difficulty-hint">
+                            Difficulty adapts from your profile and last quiz on this device.
+                        </p>
 
                         <input
                             type="text"

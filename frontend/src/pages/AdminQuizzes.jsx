@@ -11,6 +11,7 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { debounce } from "../utils/componentUtils";
 import { handlePageChangeWithScrollPreservation, restoreScrollPosition } from "../utils/paginationUtils";
 import Loading from "../components/Loading";
+import { getEffectiveSessionPerformance } from "../utils/adaptiveQuizSignals.js";
 
 // Memoized Quiz Box Component
 const AdminQuizBox = memo(({ quiz, index, openAddQuestionModal, openAiQuestionModal, deleteQuiz, navigate }) => {
@@ -121,13 +122,9 @@ const AdminQuizBox = memo(({ quiz, index, openAddQuestionModal, openAiQuestionMo
             <div className={isAdminQuiz ? "admin-bg-effect" : "premium-bg-effect"}></div>
         </motion.div>
     );
-}, (prevProps, nextProps) => {
-    return (
-        prevProps.quiz._id === nextProps.quiz._id &&
-        prevProps.index === nextProps.index &&
-        prevProps.quiz.questions?.length === nextProps.quiz.questions?.length
-    );
 });
+// No custom propsAreEqual: re-render when marks, duration, or questions change (not only length).
+
 AdminQuizBox.displayName = 'AdminQuizBox';
 
 const AdminQuizzes = () => {
@@ -262,9 +259,11 @@ const AdminQuizzes = () => {
         restoreScrollPosition(scrollPositionRef);
     }, [currentPage]);
 
-    const getQuiz = useCallback(async () => {
+    const getQuiz = useCallback(async (options = {}) => {
         try {
-            const response = await axios.get('/api/quizzes');
+            const response = await axios.get("/api/quizzes", {
+                params: options.bustCache ? { _t: Date.now() } : undefined,
+            });
             setQuizzes(response.data);
         } catch (error) {
             console.error("Error fetching quizzes:", error);
@@ -358,7 +357,7 @@ const AdminQuizzes = () => {
             const response = await axios.delete(`/api/quizzes/delete/quiz?title=${encodeURIComponent(title)}`);
             if (response.status === 200) {
                 showSuccess("Quiz deleted successfully!");
-                getQuiz();
+                getQuiz({ bustCache: true });
             }
         } catch (error) {
             console.error("Error deleting quiz:", error);
@@ -399,11 +398,18 @@ const AdminQuizzes = () => {
 
         setIsGeneratingAI(true);
         try {
+            const performance = getEffectiveSessionPerformance(
+                new URLSearchParams(
+                    typeof window !== "undefined" && window.location ? window.location.search : ""
+                )
+            );
             const response = await axios.post(
                 `/api/quizzes/${selectedQuizId}/generate-questions`,
                 {
                     topic: aiTopic,
-                    numQuestions: Number(aiNumQuestions)
+                    numQuestions: Number(aiNumQuestions),
+                    difficultyMode: "blended",
+                    performance,
                 },
                 { headers: { "Content-Type": "application/json" } }
             );
@@ -412,9 +418,14 @@ const AdminQuizzes = () => {
                 throw new Error(`Error Generating questions: ${response.status}`);
             }
 
-            showSuccess("AI-generated questions added successfully!");
+            const { added, usedDifficulty, difficultySource } = response.data || {};
+            showSuccess(
+                added != null && usedDifficulty
+                    ? `Added ${added} question(s) at ${String(usedDifficulty).toUpperCase()} difficulty (${difficultySource || "resolved"}).`
+                    : "AI-generated questions added successfully!"
+            );
             document.getElementById("ai_question_modal").close();
-            getQuiz();
+            getQuiz({ bustCache: true });
         } catch (error) {
             console.error("Error generating AI questions:", error);
             showError("Failed to generate AI questions.");
@@ -434,7 +445,7 @@ const AdminQuizzes = () => {
         try {
             await axios.post('/api/quizzes', quizData);
             document.getElementById("create_quiz_modal").close();
-            getQuiz();
+            getQuiz({ bustCache: true });
         } catch (error) {
             console.error("Error creating quiz:", error);
             showError("Failed to create quiz. Check API response.");
@@ -461,7 +472,7 @@ const AdminQuizzes = () => {
         try {
             await axios.post(`/api/quizzes/${selectedQuizId}/questions`, questionData);
             document.getElementById("add_question_modal").close();
-            getQuiz();
+            getQuiz({ bustCache: true });
         } catch (error) {
             console.error("Error adding question:", error);
             showError("Failed to add question. Check API response.");
@@ -776,6 +787,10 @@ const AdminQuizzes = () => {
                             </span>
                             AI Question Generation
                         </h3>
+
+                        <p className="admin-ai-difficulty-hint">
+                            Auto from profile + last quiz. Optional body field <code>difficulty</code> overrides.
+                        </p>
 
                         <input
                             type="text"

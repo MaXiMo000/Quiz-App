@@ -7,13 +7,58 @@ import logger from "../utils/logger.js";
 import { sendSuccess, sendError, sendValidationError, sendNotFound } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
+const ALLOWED_AI_DIFFICULTIES = /** @type {const} */ (["easy", "medium", "hard"]);
+const ALLOWED_RESOLVE_MODES = /** @type {const} */ (["performance", "intelligent", "blended"]);
+const ALLOWED_PERFORMANCE = /** @type {const} */ (["low", "medium", "high"]);
+
+/**
+ * Explicit body.difficulty wins. Otherwise same resolver as /api/adaptive (profile + optional session blend).
+ */
+async function resolveDifficultyForStandardGenerate(reqBody, userId, quiz) {
+    const raw = reqBody?.difficulty;
+    if (raw != null && raw !== "") {
+        const d = String(raw).toLowerCase().trim();
+        if (ALLOWED_AI_DIFFICULTIES.includes(d)) {
+            return {
+                difficulty: d,
+                source: "explicit_body",
+                difficultyMode: null,
+                profile: null,
+            };
+        }
+    }
+
+    const dmRaw = String(reqBody?.difficultyMode || "").toLowerCase().trim();
+    const difficultyMode = ALLOWED_RESOLVE_MODES.includes(dmRaw) ? dmRaw : "intelligent";
+
+    const pRaw = String(reqBody?.performance || "").toLowerCase().trim();
+    const performance = ALLOWED_PERFORMANCE.includes(pRaw) ? pRaw : "medium";
+
+    if (!userId) {
+        return {
+            difficulty: "medium",
+            source: "fallback_no_user",
+            difficultyMode,
+            profile: null,
+        };
+    }
+
+    const resolved = await resolveAdaptiveDifficulty({ difficultyMode, performance }, userId, quiz);
+    return {
+        difficulty: resolved.difficulty,
+        source: resolved.source,
+        difficultyMode,
+        profile: resolved.profile || null,
+    };
+}
+
 // ✅ General MCQ Generator
 export const generateQuizQuestions = async (req, res) => {
     logger.info(
         `Generating ${req.body.numQuestions} ${req.body.questionType} questions for quiz ${req.params.id} on topic "${req.body.topic}"`
     );
     try {
-        const { topic, numQuestions, questionType = "mcq", difficulty: difficultyRaw } = req.body;
+        const { topic, numQuestions, questionType = "mcq" } = req.body;
         const { id } = req.params;
 
         if (!topic || !numQuestions) {
@@ -36,6 +81,14 @@ export const generateQuizQuestions = async (req, res) => {
             return sendNotFound(res, "Quiz");
         }
 
+        const userId = req.user?.id;
+        const resolvedDiff = await resolveDifficultyForStandardGenerate(req.body, userId, quiz);
+        const difficulty = resolvedDiff.difficulty;
+
+        logger.info(
+            `Standard AI generate quiz ${id}: difficulty=${difficulty} source=${resolvedDiff.source} mode=${resolvedDiff.difficultyMode ?? "n/a"}`
+        );
+
         const existingTexts = quiz.questions.map((q) => q.question.trim());
 
         let finalQuestions;
@@ -44,7 +97,7 @@ export const generateQuizQuestions = async (req, res) => {
                 const { questions } = await generateMCQWithContext(
                     topic,
                     numQuestions,
-                    difficultyRaw ?? "medium",
+                    difficulty,
                     existingTexts
                 );
                 finalQuestions = questions;
@@ -52,7 +105,7 @@ export const generateQuizQuestions = async (req, res) => {
                 const { questions } = await generateTrueFalseWithContext(
                     topic,
                     numQuestions,
-                    difficultyRaw ?? "medium",
+                    difficulty,
                     existingTexts
                 );
                 finalQuestions = questions;
@@ -91,6 +144,10 @@ export const generateQuizQuestions = async (req, res) => {
                 questions: questionsToAdd,
                 requested: numQuestions,
                 added: addedCount,
+                usedDifficulty: difficulty,
+                difficultySource: resolvedDiff.source,
+                difficultyMode: resolvedDiff.difficultyMode,
+                knowledgeProfile: resolvedDiff.profile || undefined,
             },
             `${addedCount} new questions added successfully${
                 addedCount < numQuestions

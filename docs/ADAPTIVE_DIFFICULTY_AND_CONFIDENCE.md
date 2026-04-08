@@ -164,11 +164,28 @@ Skips profile entirely: `difficulty = performanceToDifficulty(performance)`, sou
 2. User just scored **0/5** → session **`low`** → `performanceToDifficulty` → **easy**.
 3. **Blended**: `blendDifficulties(easy, easy)` → **easy** → AI generates **easy** MCQs.
 
-If profile said **medium** and session **low** → `blendDifficulties(medium, easy)` → **easy** (rounded average of ranks 1 and 0 → 1? (0+1)/2=0.5 round=1 → medium). Let me verify: idx = round((1+0)/2)=round(0.5)=1 → medium. Good.
+If profile said **medium** and session **low** → `blendDifficulties(medium, easy)` → **medium** (average of ranks 1 and 0, rounded).
 
 ---
 
-## 6. Maintainers: where to tune behaviour
+## 6. `POST /api/quizzes/:id/generate-questions` (Premium / Admin AI)
+
+This route is **not** the browser “hardcoding” anything: an **`OPTIONS`** request to the same URL is the **CORS preflight** (automatic when the page on `http://localhost:5173` calls the API on `http://localhost:4000`). Your app does not need to send that `curl` yourself.
+
+**`POST` body (JSON):**
+
+| Field | Role |
+|--------|------|
+| `topic`, `numQuestions` | Required (unchanged). |
+| `difficulty` | Optional. If set to `easy` / `medium` / `hard`, that value is used (**explicit override**). |
+| `difficultyMode` | Optional: `intelligent` \| `blended` \| `performance`. If `difficulty` is omitted, defaults to **`intelligent`** on the server. The React app sends **`blended`** plus `performance` so it matches adaptive-style behaviour (profile + session tier). |
+| `performance` | Optional: `low` \| `medium` \| `high`. Used with `blended` / `performance` (same as `/api/adaptive`). |
+
+Resolution uses **`resolveAdaptiveDifficulty`** (same service as adaptive generation). The JSON response includes **`usedDifficulty`**, **`difficultySource`**, and optional **`knowledgeProfile`** for debugging/UI.
+
+---
+
+## 7. Maintainers: where to tune behaviour
 
 - **Pass / fail bands** for *recommended* difficulty: `SCORE_THRESHOLDS` in `aiQuestionGenerator.js`.
 - **Session tiers** from score: `scoreToPerformance` in `adaptiveQuizSignals.js` (keep aligned with any badge copy on the results modal).

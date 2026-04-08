@@ -205,48 +205,53 @@ const AdaptiveQuiz = () => {
                             {profileLoading && <span className="adaptive-knowledge-loading">Updating…</span>}
                         </div>
                         {knowledgeProfile ? (
-                            <ul className="adaptive-knowledge-list">
-                                <li>
-                                    <span>Recommended</span>
-                                    <span className={`difficulty-tag ${knowledgeProfile.recommendedDifficulty}`}>
-                                        {knowledgeProfile.recommendedDifficulty}
-                                    </span>
-                                </li>
-                                <li>
-                                    <span>Confidence</span>
-                                    <span>{Math.round((knowledgeProfile.confidence || 0) * 100)}%</span>
-                                </li>
-                                <li>
-                                    <span>Based on</span>
-                                    <span>
-                                        {knowledgeProfile.basedOnQuizzes} past result(s) in this topic
-                                        <span className="adaptive-knowledge-cap"> (max 5 used)</span>
-                                    </span>
-                                </li>
-                                {knowledgeProfile.dataSource != null && knowledgeProfile.dataSource !== "" && (
+                            <>
+                                <ul className="adaptive-knowledge-list">
                                     <li>
-                                        <span>Data source</span>
-                                        <span>{String(knowledgeProfile.dataSource)}</span>
-                                    </li>
-                                )}
-                                {knowledgeProfile.confidenceTier != null && knowledgeProfile.confidenceTier !== "" && (
-                                    <li>
-                                        <span>Confidence tier</span>
-                                        <span className={`adaptive-tier adaptive-tier--${knowledgeProfile.confidenceTier}`}>
-                                            {knowledgeProfile.confidenceTier}
+                                        <span>Recommended</span>
+                                        <span className={`difficulty-tag ${knowledgeProfile.recommendedDifficulty}`}>
+                                            {knowledgeProfile.recommendedDifficulty}
                                         </span>
                                     </li>
-                                )}
-                                <li>
-                                    <span>Your level</span>
-                                    <span>Lv.{knowledgeProfile.userLevel ?? 1}</span>
-                                </li>
-                            </ul>
-                            <p className="adaptive-knowledge-footnote">
-                                <strong>Confidence</strong> measures how much we trust this topic estimate from your{" "}
-                                <strong>saved report history</strong> (scores and timing), not a prediction for your
-                                next attempt.
-                            </p>
+                                    <li>
+                                        <span>Confidence</span>
+                                        <span>{Math.round((knowledgeProfile.confidence || 0) * 100)}%</span>
+                                    </li>
+                                    <li>
+                                        <span>Based on</span>
+                                        <span>
+                                            {knowledgeProfile.basedOnQuizzes} past result(s) in this topic
+                                            <span className="adaptive-knowledge-cap"> (max 5 used)</span>
+                                        </span>
+                                    </li>
+                                    {knowledgeProfile.dataSource != null && knowledgeProfile.dataSource !== "" && (
+                                        <li>
+                                            <span>Data source</span>
+                                            <span>{String(knowledgeProfile.dataSource)}</span>
+                                        </li>
+                                    )}
+                                    {knowledgeProfile.confidenceTier != null &&
+                                        knowledgeProfile.confidenceTier !== "" && (
+                                            <li>
+                                                <span>Confidence tier</span>
+                                                <span
+                                                    className={`adaptive-tier adaptive-tier--${knowledgeProfile.confidenceTier}`}
+                                                >
+                                                    {knowledgeProfile.confidenceTier}
+                                                </span>
+                                            </li>
+                                        )}
+                                    <li>
+                                        <span>Your level</span>
+                                        <span>Lv.{knowledgeProfile.userLevel ?? 1}</span>
+                                    </li>
+                                </ul>
+                                <p className="adaptive-knowledge-footnote">
+                                    <strong>Confidence</strong> measures how much we trust this topic estimate from
+                                    your <strong>saved report history</strong> (scores and timing), not a prediction
+                                    for your next attempt.
+                                </p>
+                            </>
                         ) : (
                             <p className="adaptive-knowledge-empty">
                                 Complete a few quizzes in this category to unlock smarter difficulty estimates.
@@ -295,11 +300,8 @@ const AdaptiveQuiz = () => {
                                                     Not blended in
                                                 </span>
                                                 <span className="adaptive-plan-chip-hint">
-                                                    Smart mode still uses your <strong>saved quiz reports</strong> in this
-                                                    topic, plus level and preferences — that’s what drives recommended
-                                                    difficulty and confidence above. We only skip mixing in your{" "}
-                                                    <strong>last attempt’s</strong> performance band; choose{" "}
-                                                    <strong>Blended</strong> to combine both.
+                                                    Topic history above still drives difficulty; your last run’s band
+                                                    isn’t mixed in. Use <strong>Blended</strong> to add it.
                                                 </span>
                                             </>
                                         ) : autoPlan.hasSessionSignal ? (

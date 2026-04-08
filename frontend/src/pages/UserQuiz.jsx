@@ -82,14 +82,8 @@ const QuizCard = memo(({ quiz, index, isBookmarked, onBookmark, onShare, navigat
             </button>
         </motion.div>
     );
-}, (prevProps, nextProps) => {
-    // Custom comparison function for better memoization
-    return (
-        prevProps.quiz._id === nextProps.quiz._id &&
-        prevProps.isBookmarked === nextProps.isBookmarked &&
-        prevProps.index === nextProps.index
-    );
 });
+// Default memo shallow compare so question count / meta updates after refetch.
 
 QuizCard.displayName = 'QuizCard';
 

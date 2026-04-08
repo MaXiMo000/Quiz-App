@@ -1230,6 +1230,18 @@ html.premium-quizzes-page .main-content {
     text-shadow: 0 0 15px var(--warning-light);
 }
 
+.premium-ai-difficulty-hint {
+    margin: 0 0 0.25rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--text-muted, #94a3b8);
+    text-align: center;
+}
+
+.premium-ai-difficulty-hint strong {
+    color: var(--text-secondary, #cbd5e1);
+}
+
 /* Premium Form Styles */
 .premium-modal-box input,
 .premium-modal-box select {
