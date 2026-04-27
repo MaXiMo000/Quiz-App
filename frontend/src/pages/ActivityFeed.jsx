@@ -53,16 +53,17 @@ const ActivityFeed = () => {
             if (currentPage === 1) {
                 setActivities(newActivities);
             } else {
-                // Merge with existing activities
-                const merged = { ...activities };
-                Object.keys(newActivities).forEach(date => {
-                    if (merged[date]) {
-                        merged[date] = [...merged[date], ...newActivities[date]];
-                    } else {
-                        merged[date] = newActivities[date];
-                    }
+                setActivities((prev) => {
+                    const merged = { ...prev };
+                    Object.keys(newActivities).forEach((date) => {
+                        if (merged[date]) {
+                            merged[date] = [...merged[date], ...newActivities[date]];
+                        } else {
+                            merged[date] = newActivities[date];
+                        }
+                    });
+                    return merged;
                 });
-                setActivities(merged);
             }
 
             const totalActivities = Object.values(newActivities).reduce((sum, arr) => sum + arr.length, 0);
@@ -73,7 +74,7 @@ const ActivityFeed = () => {
         } finally {
             setLoading(false);
         }
-    }, [typeFilter, dateRange, currentPage, activities, showError]);
+    }, [typeFilter, dateRange, currentPage, showError]);
 
     const fetchStats = useCallback(async () => {
         try {
@@ -86,17 +87,11 @@ const ActivityFeed = () => {
 
     useEffect(() => {
         fetchActivities();
-    }, [typeFilter, dateRange]);
+    }, [fetchActivities]);
 
     useEffect(() => {
         fetchStats();
     }, [fetchStats]);
-
-    useEffect(() => {
-        if (currentPage > 1) {
-            fetchActivities();
-        }
-    }, [currentPage, fetchActivities]);
 
     const handleActivityClick = (activity) => {
         switch (activity.type) {

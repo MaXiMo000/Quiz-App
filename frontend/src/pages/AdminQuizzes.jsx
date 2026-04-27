@@ -247,7 +247,7 @@ const AdminQuizzes = () => {
             setCurrentPage(totalPages);
             localStorage.setItem("adminQuizzes_currentPage", totalPages.toString());
         }
-    }, [totalPages]);
+    }, [totalPages, currentPage]);
 
     // Persist currentPage to localStorage
     useEffect(() => {
@@ -386,7 +386,7 @@ const AdminQuizzes = () => {
             document.body.classList.remove('admin-quizzes-page');
             document.documentElement.classList.remove('admin-quizzes-page');
         };
-    }, []);
+    }, [getQuiz]);
 
 
     const handleAiSubmit = async (event) => {
