@@ -102,7 +102,7 @@ const AdaptiveQuiz = () => {
 
     const sessionPerformanceForApi = useMemo(
         () => getEffectiveSessionPerformance(query),
-        [location.search, query]
+        [query]
     );
 
     const handleGenerate = async () => {

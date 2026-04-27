@@ -114,7 +114,7 @@ export const generateQuizQuestions = async (req, res) => {
                 return sendValidationError(res, { questionType: "Invalid question type" }, "Invalid question type");
             }
         } catch (error) {
-            logger.error(`Error generating questions:`, error.message);
+            logger.error("Error generating questions:", error.message);
             throw error;
         }
 
@@ -195,7 +195,7 @@ export const generateAdaptiveQuestions = async (req, res) => {
             const { questions } = await generateMCQWithContext(topic, numQuestions, difficulty, existingTexts);
             finalQuestions = questions;
         } catch (error) {
-            logger.error(`Error generating adaptive questions:`, error.message);
+            logger.error("Error generating adaptive questions:", error.message);
             throw error;
         }
 
