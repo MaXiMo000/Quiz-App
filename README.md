@@ -487,3 +487,5 @@ npm run dev
 
 Got feedback, ideas, or want to collaborate?
 Open an issue or a pull request — all contributions are welcome! 🙌
+
+## Collaborator - Husandeep251
