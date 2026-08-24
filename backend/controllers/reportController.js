@@ -9,7 +9,6 @@ import logger from "../utils/logger.js";
 import AppError from "../utils/AppError.js";
 import {
     sendSuccess,
-    sendError,
     sendNotFound,
     sendValidationError,
     sendCreated
@@ -154,7 +153,7 @@ export async function createReport(req, res) {
             if (!user) {
                 // Try case-insensitive search
                 // SECURITY: Escape special regex characters to prevent ReDoS attacks
-                const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
                 user = await UserQuiz.findOne({
                     name: { $regex: new RegExp(`^${escapedUsername}$`, "i") }
                 });
@@ -357,10 +356,10 @@ export const getReportsUser = async (req, res) => {
         // Use dynamic ETag to prevent 304 responses
         const etagValue = `"reports-${username}-${Date.now()}-${Math.random().toString(36).substring(7)}"`;
         res.set({
-            'Cache-Control': 'private, no-cache, must-revalidate',
-            'ETag': etagValue,
-            'Last-Modified': new Date().toUTCString(),
-            'Pragma': 'no-cache'
+            "Cache-Control": "private, no-cache, must-revalidate",
+            "ETag": etagValue,
+            "Last-Modified": new Date().toUTCString(),
+            "Pragma": "no-cache"
         });
 
         return sendSuccess(res, reports, `Successfully fetched ${reports.length} reports`);
@@ -411,9 +410,9 @@ export const deleteReport = async (req, res) => {
 
         // Ensure no caching headers are set on DELETE responses
         res.set({
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0"
         });
 
         return sendSuccess(res, null, "Report deleted successfully");

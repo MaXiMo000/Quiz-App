@@ -304,7 +304,7 @@ export const searchUsers = async (req, res) => {
             .map(req => req.requester.toString());
 
         // SECURITY: Escape special regex characters to prevent ReDoS attacks
-        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
         // Search for users
         const users = await UserQuiz.find({

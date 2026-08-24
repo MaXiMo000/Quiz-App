@@ -251,7 +251,7 @@ async function generateAndFilter({ promptFn, topic, numRequested, difficulty, ex
         }
 
         for (const q of parsed.questions) {
-            const { valid, score, reasons } = scoreQuestion(q, type);
+            const { valid, score } = scoreQuestion(q, type);
 
             if (!valid) {
                 continue;

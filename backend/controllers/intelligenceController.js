@@ -17,7 +17,7 @@ import {
 import LearningAnalytics from "../models/LearningAnalytics.js";
 import CognitiveMetrics from "../models/CognitiveMetrics.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendNotFound, sendValidationError } from "../utils/responseHelper.js";
+import { sendSuccess, sendNotFound, sendValidationError } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 // Phase 2: Intelligence Layer Controller
@@ -440,13 +440,13 @@ export const trackUserPerformance = async (req, res) => {
         // Validate required fields (allow 0 values for score and timeSpent)
         if (!quizId || score === undefined || score === null || totalQuestions === undefined || totalQuestions === null || timeSpent === undefined || timeSpent === null) {
             const missingFields = [];
-            if (!quizId) missingFields.push('quizId');
-            if (score === undefined || score === null) missingFields.push('score');
-            if (totalQuestions === undefined || totalQuestions === null) missingFields.push('totalQuestions');
-            if (timeSpent === undefined || timeSpent === null) missingFields.push('timeSpent');
+            if (!quizId) missingFields.push("quizId");
+            if (score === undefined || score === null) missingFields.push("score");
+            if (totalQuestions === undefined || totalQuestions === null) missingFields.push("totalQuestions");
+            if (timeSpent === undefined || timeSpent === null) missingFields.push("timeSpent");
 
             logger.warn(`Missing required fields for performance tracking: quizId=${quizId}, score=${score}, totalQuestions=${totalQuestions}, timeSpent=${timeSpent}`);
-            return sendValidationError(res, { missingFields }, `Missing required fields: ${missingFields.join(', ')}. All fields are required for performance tracking.`);
+            return sendValidationError(res, { missingFields }, `Missing required fields: ${missingFields.join(", ")}. All fields are required for performance tracking.`);
         }
 
         await trackLearningAnalytics(userId, quizId, {

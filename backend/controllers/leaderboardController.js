@@ -2,7 +2,7 @@
 import XPLog from "../models/XPLog.js";
 import UserQuiz from "../models/User.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError } from "../utils/responseHelper.js";
+import { sendSuccess } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 export const getWeeklyXP = async (req, res) => {

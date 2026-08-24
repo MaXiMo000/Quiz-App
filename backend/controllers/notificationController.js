@@ -1,6 +1,6 @@
 import Notification from "../models/Notification.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendValidationError, sendNotFound } from "../utils/responseHelper.js";
+import { sendSuccess, sendValidationError, sendNotFound } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 import mongoose from "mongoose";
 

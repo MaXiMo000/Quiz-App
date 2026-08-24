@@ -3,7 +3,7 @@ import Quiz from "../models/Quiz.js";
 import Report from "../models/Report.js";
 import logger from "../utils/logger.js";
 import mongoose from "mongoose";
-import { sendSuccess, sendError, sendValidationError, sendNotFound, sendUnauthorized, sendForbidden } from "../utils/responseHelper.js";
+import { sendSuccess, sendValidationError, sendNotFound, sendUnauthorized, sendForbidden } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 // Achievement system data - Expanded with many more achievements
@@ -591,11 +591,10 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
     let lastPerfectDate = null;
     let perfectStreakCurrent = 0;
 
-    reports.forEach((report, index) => {
+    reports.forEach((report) => {
         const reportDate = new Date(report.createdAt);
         const dateKey = reportDate.toDateString();
         const dayOfWeek = reportDate.getDay(); // 0 = Sunday, 6 = Saturday
-        const hour = reportDate.getHours();
         const scorePercent = (report.score / report.total) * 100;
 
         // Track reports by date
@@ -871,7 +870,6 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
     let monthComplete = false;
 
     if (sortedDates.length >= 7) {
-        const last7Days = sortedDates.slice(-7);
         const today = new Date();
         let consecutiveDays = 0;
         for (let i = 6; i >= 0; i--) {
@@ -886,7 +884,6 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
     }
 
     if (sortedDates.length >= 30) {
-        const last30Days = sortedDates.slice(-30);
         const today = new Date();
         let consecutiveDays = 0;
         for (let i = 29; i >= 0; i--) {
@@ -903,7 +900,6 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
     // Check for perfect year (365 days with at least one perfect score)
     let perfectYear = false;
     if (sortedDates.length >= 365) {
-        const last365Days = sortedDates.slice(-365);
         const today = new Date();
         let perfectDays = 0;
         for (let i = 364; i >= 0; i--) {
@@ -923,7 +919,6 @@ const getUserAchievements = async (username, user, reports, currentStreak) => {
     let perfectStreak100 = false;
 
     // Calculate perfect streak from reports
-    let currentPerfectStreak = 0;
     let maxPerfectStreak = 0;
     const sortedReports = [...reports].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     const perfectByDate = {};
@@ -1503,7 +1498,7 @@ export const getUserAchievementsEndpoint = async (req, res) => {
 
         // Check if req.user exists (should be set by verifyToken middleware)
         if (!req.user || !req.user.id) {
-            logger.warn(`Unauthorized access attempt to achievements endpoint`);
+            logger.warn("Unauthorized access attempt to achievements endpoint");
             return sendUnauthorized(res, "Unauthorized. Please log in.");
         }
 

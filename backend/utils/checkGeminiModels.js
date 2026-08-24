@@ -154,7 +154,7 @@ export const checkAvailableModels = async () => {
 };
 
 // Run if called directly
-const isMainModule = process.argv[1] && process.argv[1].endsWith('checkGeminiModels.js');
+const isMainModule = process.argv[1] && process.argv[1].endsWith("checkGeminiModels.js");
 
 if (isMainModule) {
     checkAvailableModels()

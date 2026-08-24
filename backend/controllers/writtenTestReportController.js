@@ -1,6 +1,6 @@
 import WrittenTestReport from "../models/WrittenTestReport.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendValidationError, sendNotFound, sendCreated } from "../utils/responseHelper.js";
+import { sendSuccess, sendValidationError, sendNotFound, sendCreated } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 export async function getWrittenTestReports(req, res) {

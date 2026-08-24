@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 import AppError from "../utils/AppError.js";
 import {
     sendSuccess,
-    sendError,
     sendNotFound,
     sendForbidden,
     sendValidationError,
@@ -51,11 +50,11 @@ export const getQuizzes = async (req, res) => {
         if (quizzes.length > 0) {
             const creatorIds = quizzes.map(q => {
                 const creatorId = q.createdBy?._id;
-                return creatorId ? creatorId.toString() : 'null';
+                return creatorId ? creatorId.toString() : "null";
             });
             const uniqueIds = [...new Set(creatorIds)];
-            logger.debug(`Creator IDs in results: ${creatorIds.slice(0, 10).join(', ')}${creatorIds.length > 10 ? '...' : ''}`);
-            logger.debug(`Expected: Only ${userId} and null. Actual unique IDs: ${uniqueIds.join(', ')}`);
+            logger.debug(`Creator IDs in results: ${creatorIds.slice(0, 10).join(", ")}${creatorIds.length > 10 ? "..." : ""}`);
+            logger.debug(`Expected: Only ${userId} and null. Actual unique IDs: ${uniqueIds.join(", ")}`);
         }
         } else {
         // Regular users see only admin's quizzes
@@ -134,8 +133,8 @@ export const deleteQuiz = async (req, res) => {
         }
 
         // Permission check
-        if (role !== 'admin') {
-            if (role === 'premium') {
+        if (role !== "admin") {
+            if (role === "premium") {
                 // Check if the user is the creator
                 if (!quizItem.createdBy || !quizItem.createdBy._id || quizItem.createdBy._id.toString() !== userId) {
                     logger.warn(`User ${userId} (premium) tried to delete quiz "${title}" which they do not own.`);
@@ -170,8 +169,8 @@ export async function addQuestion(req, res) {
         }
 
         // Permission check
-        if (role !== 'admin') {
-            if (role === 'premium') {
+        if (role !== "admin") {
+            if (role === "premium") {
                 if (!quiz.createdBy || !quiz.createdBy._id || quiz.createdBy._id.toString() !== userId) {
                     logger.warn(`User ${userId} (premium) tried to add question to quiz "${quiz.title}" which they do not own.`);
                     return sendForbidden(res, "You can only add questions to your own quizzes.");
@@ -273,8 +272,8 @@ export async function deleteQuestion(req, res) {
         }
 
         // Permission check
-        if (role !== 'admin') {
-            if (role === 'premium') {
+        if (role !== "admin") {
+            if (role === "premium") {
                 if (!quiz.createdBy || !quiz.createdBy._id || quiz.createdBy._id.toString() !== userId) {
                     logger.warn(`User ${userId} (premium) tried to delete question from quiz "${quiz.title}" which they do not own.`);
                     return sendForbidden(res, "You can only delete questions from your own quizzes.");

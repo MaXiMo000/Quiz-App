@@ -15,17 +15,17 @@ import AppError from "../utils/AppError.js";
  * @returns {string} - Normalized IP address
  */
 const normalizeIP = (ip) => {
-    if (!ip || typeof ip !== 'string') return ip;
+    if (!ip || typeof ip !== "string") return ip;
 
     // Convert IPv6 loopback (::1) to IPv4 loopback (127.0.0.1) for consistency
-    if (ip === '::1' || ip === '::') {
-        return '127.0.0.1';
+    if (ip === "::1" || ip === "::") {
+        return "127.0.0.1";
     }
 
     // Extract IPv4 from IPv4-mapped IPv6 (::ffff:192.168.1.1 -> 192.168.1.1)
     const ipv4MappedMatch = ip.match(/^::ffff:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
     if (ipv4MappedMatch) {
-        return ip.replace(/^::ffff:/, '');
+        return ip.replace(/^::ffff:/, "");
     }
 
     return ip;
@@ -37,7 +37,7 @@ const normalizeIP = (ip) => {
  * @returns {boolean} - True if valid IP format
  */
 const isValidIP = (ip) => {
-    if (!ip || typeof ip !== 'string') return false;
+    if (!ip || typeof ip !== "string") return false;
 
     // Normalize first (convert ::1 to 127.0.0.1, etc.)
     const normalized = normalizeIP(ip);
@@ -73,8 +73,8 @@ const getClientIP = (req) => {
 
     // Check X-Real-IP header (set by trusted proxies like Nginx)
     // This is more reliable than X-Forwarded-For as it's set by the proxy, not the client
-    if (req.headers['x-real-ip']) {
-        const realIP = req.headers['x-real-ip'].trim();
+    if (req.headers["x-real-ip"]) {
+        const realIP = req.headers["x-real-ip"].trim();
         if (isValidIP(realIP)) {
             ip = realIP;
             logger.debug(`Using X-Real-IP: ${ip}`);
@@ -87,15 +87,15 @@ const getClientIP = (req) => {
     // Check X-Forwarded-For header (when behind proxy)
     // SECURITY WARNING: This header can be spoofed by clients if proxy isn't configured correctly
     // Only use if trust proxy is enabled and we're behind a known proxy
-    const forwarded = req.headers['x-forwarded-for'];
+    const forwarded = req.headers["x-forwarded-for"];
     if (forwarded) {
         // X-Forwarded-For can contain multiple IPs, take the first one (original client)
-        const ips = forwarded.split(',').map(ip => ip.trim());
+        const ips = forwarded.split(",").map(ip => ip.trim());
         const firstIP = ips[0];
 
         if (isValidIP(firstIP)) {
             // Only use if trust proxy is enabled (indicates we're behind a trusted proxy)
-            if (req.app.get('trust proxy')) {
+            if (req.app.get("trust proxy")) {
                 ip = firstIP;
                 logger.debug(`Using X-Forwarded-For (trust proxy enabled): ${ip}`);
                 return ip;
@@ -111,7 +111,7 @@ const getClientIP = (req) => {
     const remoteAddr = req.connection?.remoteAddress || req.socket?.remoteAddress;
     if (remoteAddr) {
         // Remove IPv6 prefix if present (::ffff:192.168.1.1 -> 192.168.1.1)
-        const cleanIP = remoteAddr.replace(/^::ffff:/, '');
+        const cleanIP = remoteAddr.replace(/^::ffff:/, "");
         if (isValidIP(cleanIP)) {
             ip = cleanIP;
             logger.debug(`Using connection.remoteAddress: ${ip}`);
@@ -121,13 +121,13 @@ const getClientIP = (req) => {
 
     // If no valid IP found, log warning and return 'unknown'
     logger.warn(`Could not extract valid IP address from request. Headers: ${JSON.stringify({
-        'x-forwarded-for': req.headers['x-forwarded-for'],
-        'x-real-ip': req.headers['x-real-ip'],
-        'req.ip': req.ip,
-        'remoteAddress': req.connection?.remoteAddress || req.socket?.remoteAddress
+        "x-forwarded-for": req.headers["x-forwarded-for"],
+        "x-real-ip": req.headers["x-real-ip"],
+        "req.ip": req.ip,
+        "remoteAddress": req.connection?.remoteAddress || req.socket?.remoteAddress
     })}`);
 
-    return 'unknown';
+    return "unknown";
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -154,7 +154,7 @@ export const registerUser = async (req, res) => {
         // ✅ Extract IP address during registration (with validation)
         const rawIP = getClientIP(req);
         const clientIP = normalizeIP(rawIP); // Normalize IPv6 loopback to IPv4
-        const userAgent = req.headers['user-agent'] || 'unknown';
+        const userAgent = req.headers["user-agent"] || "unknown";
 
         const newUser = new UserQuiz({
             name: name.trim(),
@@ -163,7 +163,7 @@ export const registerUser = async (req, res) => {
         });
 
         // SECURITY: Save IP address if valid (not 'unknown' or invalid format)
-        if (clientIP && clientIP !== 'unknown' && isValidIP(clientIP)) {
+        if (clientIP && clientIP !== "unknown" && isValidIP(clientIP)) {
             newUser.lastLoginIP = clientIP;
 
             // Initialize login IP history with registration IP
@@ -173,10 +173,10 @@ export const registerUser = async (req, res) => {
                 userAgent: userAgent
             }];
 
-            logger.info(`Saved IP address ${clientIP}${rawIP !== clientIP ? ` (normalized from ${rawIP})` : ''} for registration for user ${newUser._id} (${email})`);
+            logger.info(`Saved IP address ${clientIP}${rawIP !== clientIP ? ` (normalized from ${rawIP})` : ""} for registration for user ${newUser._id} (${email})`);
         } else {
             logger.warn(`Invalid or unknown IP address detected for registration: ${clientIP} (raw: ${rawIP}, email: ${email})`);
-            newUser.lastLoginIP = 'unknown';
+            newUser.lastLoginIP = "unknown";
         }
 
         await newUser.save();
@@ -216,10 +216,10 @@ export const loginUser = async (req, res) => {
         // This tracks IP changes even within the same day (VPN changes, mobile network switches, etc.)
         const rawIP = getClientIP(req);
         const clientIP = normalizeIP(rawIP); // Normalize IPv6 loopback to IPv4
-        const userAgent = req.headers['user-agent'] || 'unknown';
+        const userAgent = req.headers["user-agent"] || "unknown";
 
         // SECURITY: Only save if IP is valid (not 'unknown' or invalid format)
-        if (clientIP && clientIP !== 'unknown' && isValidIP(clientIP)) {
+        if (clientIP && clientIP !== "unknown" && isValidIP(clientIP)) {
             // Initialize loginIPHistory if it doesn't exist
             if (!user.loginIPHistory) {
                 user.loginIPHistory = [];
@@ -254,12 +254,12 @@ export const loginUser = async (req, res) => {
                     user.loginIPHistory = user.loginIPHistory.slice(-10);
                 }
 
-                logger.info(`Saved IP address ${clientIP}${rawIP !== clientIP ? ` (normalized from ${rawIP})` : ''} for login for user ${user._id} (${email})`);
+                logger.info(`Saved IP address ${clientIP}${rawIP !== clientIP ? ` (normalized from ${rawIP})` : ""} for login for user ${user._id} (${email})`);
 
                 // SECURITY: Check for suspicious IP changes (different IP from last login)
                 if (user.loginIPHistory.length > 1) {
                     const previousIP = user.loginIPHistory[user.loginIPHistory.length - 2]?.ip;
-                    if (previousIP && previousIP !== clientIP && previousIP !== 'unknown') {
+                    if (previousIP && previousIP !== clientIP && previousIP !== "unknown") {
                         logger.info(`IP address changed for user ${user._id}: ${previousIP} -> ${clientIP}`);
                     }
                 }
@@ -270,7 +270,7 @@ export const loginUser = async (req, res) => {
         } else {
             logger.warn(`Invalid or unknown IP address detected for login: ${clientIP} (raw: ${rawIP}, user: ${user._id}, email: ${email})`);
             // Still save as 'unknown' for tracking purposes
-            user.lastLoginIP = 'unknown';
+            user.lastLoginIP = "unknown";
         }
 
         // Check if this is a new day (different from last login day)
@@ -458,7 +458,7 @@ export const updateUserTheme = async (req, res) => {
 
         // Allow "Default" theme without validation, validate others
         if (theme !== "Default" && !user.unlockedThemes.includes(theme)) {
-            logger.warn(`User ${id} attempted to set theme to ${theme} which is not unlocked. User level: ${user.level}, Unlocked themes: ${user.unlockedThemes.join(', ')}`);
+            logger.warn(`User ${id} attempted to set theme to ${theme} which is not unlocked. User level: ${user.level}, Unlocked themes: ${user.unlockedThemes.join(", ")}`);
             return sendError(res, "Theme not unlocked yet. Level up to unlock more themes!", 403);
         }
 
@@ -484,7 +484,7 @@ export const saveCustomTheme = async (req, res) => {
         }
 
         // Validate theme name
-        if (typeof name !== 'string' || name.trim().length === 0) {
+        if (typeof name !== "string" || name.trim().length === 0) {
             return sendValidationError(res, { name: "Theme name must be a non-empty string" }, "Theme name must be a non-empty string");
         }
 
@@ -493,57 +493,57 @@ export const saveCustomTheme = async (req, res) => {
         }
 
         // Validate themeData is an object
-        if (typeof themeData !== 'object' || themeData === null || Array.isArray(themeData)) {
+        if (typeof themeData !== "object" || themeData === null || Array.isArray(themeData)) {
             return sendValidationError(res, { themeData: "Theme data must be an object" }, "Theme data must be an object");
         }
 
         // Validate required theme properties (core colors only)
-        const requiredProps = ['accent', 'accent2', 'bgDark', 'bgSecondary', 'textColor', 'textLight'];
+        const requiredProps = ["accent", "accent2", "bgDark", "bgSecondary", "textColor", "textLight"];
         const missingProps = requiredProps.filter(prop => !themeData[prop]);
         if (missingProps.length > 0) {
             return sendValidationError(res, {
-                themeData: `Missing required theme properties: ${missingProps.join(', ')}`
-            }, `Missing required theme properties: ${missingProps.join(', ')}`);
+                themeData: `Missing required theme properties: ${missingProps.join(", ")}`
+            }, `Missing required theme properties: ${missingProps.join(", ")}`);
         }
 
         // Set defaults for optional properties if not provided
         const defaultThemeData = {
-            bgTertiary: '#1a2332',
-            cardBg: 'rgba(26, 35, 50, 0.85)',
-            cardBgGlass: 'rgba(255, 255, 255, 0.03)',
-            cardBorder: 'rgba(255, 255, 255, 0.08)',
-            textMuted: '#94a3b8',
-            textDisabled: '#64748b',
-            accentLight: 'rgba(99, 102, 241, 0.15)',
-            accentHover: '#5855eb',
-            success: '#10b981',
-            successLight: 'rgba(16, 185, 129, 0.15)',
-            warning: '#f59e0b',
-            warningLight: 'rgba(245, 158, 11, 0.15)',
-            danger: '#ef4444',
-            dangerLight: 'rgba(239, 68, 68, 0.15)',
-            info: '#06b6d4',
-            infoLight: 'rgba(6, 182, 212, 0.15)',
-            borderColor: 'rgba(255, 255, 255, 0.1)',
-            borderFocus: themeData.accent || '#6366f1',
-            glassBg: 'rgba(255, 255, 255, 0.05)',
-            glassBorder: 'rgba(255, 255, 255, 0.1)',
-            shadow: 'rgba(0, 0, 0, 0.4)',
-            colorSidebarGradientStart: themeData.bgDark || '#0a0e1a',
-            colorSidebarGradientEnd: themeData.bgSecondary || '#141b2e',
-            colorScrollbarThumb: themeData.accent || '#6366f1',
-            colorScrollbarTrack: themeData.bgSecondary || '#141b2e',
-            colorSidebarShadow: 'rgba(0, 0, 0, 0.25)',
-            colorLogoutBg: themeData.danger || '#ef4444',
-            colorLogoutHoverBg: '#dc2626',
-            colorLogoutText: '#ffffff',
-            colorToggleBg: 'rgba(255, 255, 255, 0.05)',
-            colorToggleHoverBg: themeData.accentLight || 'rgba(99, 102, 241, 0.15)',
-            colorToggleText: '#ffffff',
-            colorCloseBtn: themeData.textColor || '#f1f5f9',
-            colorCloseBtnHover: themeData.danger || '#ef4444',
-            borderRadius: '1rem',
-            shadowIntensity: 'medium'
+            bgTertiary: "#1a2332",
+            cardBg: "rgba(26, 35, 50, 0.85)",
+            cardBgGlass: "rgba(255, 255, 255, 0.03)",
+            cardBorder: "rgba(255, 255, 255, 0.08)",
+            textMuted: "#94a3b8",
+            textDisabled: "#64748b",
+            accentLight: "rgba(99, 102, 241, 0.15)",
+            accentHover: "#5855eb",
+            success: "#10b981",
+            successLight: "rgba(16, 185, 129, 0.15)",
+            warning: "#f59e0b",
+            warningLight: "rgba(245, 158, 11, 0.15)",
+            danger: "#ef4444",
+            dangerLight: "rgba(239, 68, 68, 0.15)",
+            info: "#06b6d4",
+            infoLight: "rgba(6, 182, 212, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.1)",
+            borderFocus: themeData.accent || "#6366f1",
+            glassBg: "rgba(255, 255, 255, 0.05)",
+            glassBorder: "rgba(255, 255, 255, 0.1)",
+            shadow: "rgba(0, 0, 0, 0.4)",
+            colorSidebarGradientStart: themeData.bgDark || "#0a0e1a",
+            colorSidebarGradientEnd: themeData.bgSecondary || "#141b2e",
+            colorScrollbarThumb: themeData.accent || "#6366f1",
+            colorScrollbarTrack: themeData.bgSecondary || "#141b2e",
+            colorSidebarShadow: "rgba(0, 0, 0, 0.25)",
+            colorLogoutBg: themeData.danger || "#ef4444",
+            colorLogoutHoverBg: "#dc2626",
+            colorLogoutText: "#ffffff",
+            colorToggleBg: "rgba(255, 255, 255, 0.05)",
+            colorToggleHoverBg: themeData.accentLight || "rgba(99, 102, 241, 0.15)",
+            colorToggleText: "#ffffff",
+            colorCloseBtn: themeData.textColor || "#f1f5f9",
+            colorCloseBtnHover: themeData.danger || "#ef4444",
+            borderRadius: "1rem",
+            shadowIntensity: "medium"
         };
 
         // Merge provided theme data with defaults
@@ -593,7 +593,7 @@ export const saveCustomTheme = async (req, res) => {
 export const getCustomThemes = async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await UserQuiz.findById(id).select('customThemes level');
+        const user = await UserQuiz.findById(id).select("customThemes level");
 
         if (!user) {
             return sendNotFound(res, "User");
@@ -757,7 +757,7 @@ export const getBookmarkedQuizzes = async (req, res) => {
         const userId = req.user?.id;
 
         if (!userId) {
-            logger.error('No user ID in request');
+            logger.error("No user ID in request");
             return sendUnauthorized(res, "Unauthorized");
         }
 
@@ -766,7 +766,7 @@ export const getBookmarkedQuizzes = async (req, res) => {
             return sendValidationError(res, { userId: "Invalid user ID format" }, "Invalid user ID format");
         }
 
-        const user = await UserQuiz.findById(userId).select('bookmarkedQuizzes');
+        const user = await UserQuiz.findById(userId).select("bookmarkedQuizzes");
 
         if (!user) {
             return sendNotFound(res, "User");
@@ -794,7 +794,7 @@ export const getBookmarkedQuizzes = async (req, res) => {
                     let quizIdValue = bookmark.quizId;
 
                     // If quizId is an object with _id, extract it
-                    if (quizIdValue && typeof quizIdValue === 'object' && quizIdValue._id) {
+                    if (quizIdValue && typeof quizIdValue === "object" && quizIdValue._id) {
                         quizIdValue = quizIdValue._id;
                     }
 
@@ -829,7 +829,7 @@ export const getBookmarkedQuizzes = async (req, res) => {
                         bookmarkedAt: bookmark.bookmarkedAt
                     };
                 } catch (populateError) {
-                    logger.warn(`Error populating quiz for bookmark ${bookmark?._id || 'unknown'}: ${populateError.message}`);
+                    logger.warn(`Error populating quiz for bookmark ${bookmark?._id || "unknown"}: ${populateError.message}`);
                     return null; // Skip invalid bookmarks
                 }
             })
@@ -845,7 +845,7 @@ export const getBookmarkedQuizzes = async (req, res) => {
         }, "Bookmarked quizzes fetched successfully");
     } catch (err) {
         logger.error({
-            message: `Error fetching bookmarked quizzes for user ${req.user?.id || 'unknown'}`,
+            message: `Error fetching bookmarked quizzes for user ${req.user?.id || "unknown"}`,
             error: err.message,
             stack: err.stack,
             userId: req.user?.id,
@@ -863,10 +863,10 @@ export const getUserProfile = async (req, res) => {
 
         // Set cache-control headers to prevent browser caching
         res.set({
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-            'ETag': `"${Date.now()}-${Math.random().toString(36).substring(7)}"`
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "ETag": `"${Date.now()}-${Math.random().toString(36).substring(7)}"`
         });
 
         const user = await UserQuiz.findById(userId)

@@ -1,6 +1,6 @@
 import Report from "../models/Report.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError } from "../utils/responseHelper.js";
+import { sendSuccess } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 // GET /api/analytics/question-stats

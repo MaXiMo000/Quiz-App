@@ -1,11 +1,22 @@
 {
   "_comment": [
     "Recorded lint debt, so the number can only go down.",
-    "Most of the backend count is auto-fixable (`npx eslint . --fix`); it is",
-    "left for its own change rather than mixed into unrelated work.",
-    "Fix some, then lower these — the ratchet fails if they grow, and also if",
-    "they shrink without this file being updated."
+    "Backend went 334 -> 1: 309 were auto-fixable (277 quotes, 32 semicolons) and",
+    "the rest were unused variables removed by hand. The one remaining is an",
+    "unused mock in studyGroupController.test.js, which goes when that suite is",
+    "repaired.",
+    "Frontend is untouched: none of its findings are auto-fixable, and the 29",
+    "react-hooks/exhaustive-deps ones need judgement -- adding a dependency can",
+    "turn a working effect into an infinite loop.",
+    "Fix some, then lower these. The ratchet fails if they grow, and also if they",
+    "shrink without this file being updated."
   ],
-  "backend": { "errors": 334, "warnings": 0 },
-  "frontend": { "errors": 29, "warnings": 29 }
+  "backend": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "frontend": {
+    "errors": 29,
+    "warnings": 29
+  }
 }

@@ -510,21 +510,21 @@ const calculateTournamentStatus = (tournament) => {
 
     // If tournament has ended
     if (now > tournamentEnd) {
-        return 'completed';
+        return "completed";
     }
 
     // If tournament is in progress
     if (now >= tournamentStart && now <= tournamentEnd) {
-        return 'in_progress';
+        return "in_progress";
     }
 
     // If registration period is open
     if (now >= registrationStart && now <= registrationEnd) {
-        return 'registration_open';
+        return "registration_open";
     }
 
     // If registration hasn't started yet or registration ended but tournament hasn't started
-    return 'upcoming';
+    return "upcoming";
 };
 
 // Get available tournaments
@@ -550,7 +550,7 @@ export const getAvailableTournaments = async (req, res) => {
 
             // Only include tournaments that are upcoming, registration_open, or in_progress
             // Exclude completed tournaments (where tournament has ended)
-            if (actualStatus === 'completed') {
+            if (actualStatus === "completed") {
                 return false;
             }
 

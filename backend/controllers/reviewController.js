@@ -1,6 +1,6 @@
 import { getReviewScheduleForUser, updateReviewSchedule } from "../services/reviewScheduler.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendValidationError } from "../utils/responseHelper.js";
+import { sendSuccess, sendValidationError } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 export const getReviewSchedule = async (req, res) => {

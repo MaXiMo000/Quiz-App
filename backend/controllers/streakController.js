@@ -1,7 +1,7 @@
-import UserQuiz from '../models/User.js';
-import XPLog from '../models/XPLog.js';
-import logger from '../utils/logger.js';
-import { sendSuccess, sendError, sendNotFound } from "../utils/responseHelper.js";
+import UserQuiz from "../models/User.js";
+import XPLog from "../models/XPLog.js";
+import logger from "../utils/logger.js";
+import { sendSuccess, sendNotFound } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 /**
@@ -63,7 +63,7 @@ export const getStreakAndGoals = async (req, res) => {
             {
                 $group: {
                     _id: null,
-                    totalXP: { $sum: '$xp' }
+                    totalXP: { $sum: "$xp" }
                 }
             }
         ]);
@@ -119,22 +119,22 @@ export const getStreakAndGoals = async (req, res) => {
                 $match: {
                     user: user._id,
                     date: { $gte: thirtyDaysAgo },
-                    source: { $in: ['quiz', 'challenge', 'tournament'] }
+                    source: { $in: ["quiz", "challenge", "tournament"] }
                 }
             },
             {
                 $group: {
                     _id: {
-                        year: { $year: '$date' },
-                        month: { $month: '$date' },
-                        day: { $dayOfMonth: '$date' }
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                        day: { $dayOfMonth: "$date" }
                     },
                     count: { $sum: 1 },
-                    xp: { $sum: '$xp' }
+                    xp: { $sum: "$xp" }
                 }
             },
             {
-                $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 }
+                $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 }
             }
         ]);
 
@@ -143,7 +143,7 @@ export const getStreakAndGoals = async (req, res) => {
         streakHistory.forEach(item => {
             // Use UTC date constructor to match the date field in XPLog
             const date = new Date(Date.UTC(item._id.year, item._id.month - 1, item._id.day));
-            const dateKey = date.toISOString().split('T')[0];
+            const dateKey = date.toISOString().split("T")[0];
             calendarData[dateKey] = {
                 hasActivity: true,
                 quizCount: item.count,
@@ -168,8 +168,8 @@ export const getStreakAndGoals = async (req, res) => {
             }
         }, "Streak and goals fetched successfully");
     } catch (error) {
-        logger.error('Error fetching streak and goals:', error);
-        throw new AppError('Failed to fetch streak and goals data', 500);
+        logger.error("Error fetching streak and goals:", error);
+        throw new AppError("Failed to fetch streak and goals data", 500);
     }
 };
 
@@ -196,10 +196,10 @@ export const updateDailyGoals = async (req, res) => {
         user.dailyGoals = dailyGoals;
         await user.save();
 
-        return sendSuccess(res, { dailyGoals }, 'Daily goals updated successfully');
+        return sendSuccess(res, { dailyGoals }, "Daily goals updated successfully");
     } catch (error) {
-        logger.error('Error updating daily goals:', error);
-        throw new AppError('Failed to update daily goals', 500);
+        logger.error("Error updating daily goals:", error);
+        throw new AppError("Failed to update daily goals", 500);
     }
 };
 
@@ -286,9 +286,9 @@ export const updateDailyActivity = async (req, res) => {
         return sendSuccess(res, {
             dailyActivity: user.dailyActivity,
             currentStreak: user.quizStreak
-        }, 'Daily activity updated');
+        }, "Daily activity updated");
     } catch (error) {
-        logger.error('Error updating daily activity:', error);
-        throw new AppError('Failed to update daily activity', 500);
+        logger.error("Error updating daily activity:", error);
+        throw new AppError("Failed to update daily activity", 500);
     }
 };

@@ -3,7 +3,7 @@ import Report from "../models/Report.js";
 import UserQuiz from "../models/User.js";
 import StudyGroup from "../models/StudyGroup.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendValidationError } from "../utils/responseHelper.js";
+import { sendSuccess, sendValidationError } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 import mongoose from "mongoose";
 
@@ -26,8 +26,8 @@ export const globalSearch = async (req, res) => {
         const skip = (pageNum - 1) * limitNum;
 
         // Escape special regex characters to prevent ReDoS attacks
-        const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regexQuery = new RegExp(escapedQuery, 'i');
+        const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regexQuery = new RegExp(escapedQuery, "i");
 
         const results = {
             quizzes: [],
@@ -93,8 +93,8 @@ export const globalSearch = async (req, res) => {
                 // Log for debugging
                 logger.debug(`Search quizzes - User: ${userId}, Role: ${userRole}, Found: ${quizCount} quizzes`);
                 if (quizzes.length > 0) {
-                    const creatorIds = quizzes.map(q => q.createdBy?._id?.toString() || 'null');
-                    logger.debug(`Quiz creator IDs in search results: ${[...new Set(creatorIds)].join(', ')}`);
+                    const creatorIds = quizzes.map(q => q.createdBy?._id?.toString() || "null");
+                    logger.debug(`Quiz creator IDs in search results: ${[...new Set(creatorIds)].join(", ")}`);
                 }
 
                 results.quizzes = quizzes.map(quiz => ({

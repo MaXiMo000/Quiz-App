@@ -1,7 +1,7 @@
 import UserQuiz from "../models/User.js";
 import XPLog from "../models/XPLog.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendNotFound } from "../utils/responseHelper.js";
+import { sendSuccess, sendNotFound } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 // Debug endpoint to check user XP and recent XP logs

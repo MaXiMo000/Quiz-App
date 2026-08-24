@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { generateFromGemini } from "../utils/geminiHelper.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendValidationError, sendNotFound, sendCreated } from "../utils/responseHelper.js";
+import { sendSuccess, sendValidationError, sendNotFound, sendCreated } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 dotenv.config();

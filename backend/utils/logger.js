@@ -86,8 +86,8 @@ if (fileTransports.length > 0) {
   try {
     const logsPath = fs.existsSync("logs") ? fs.realpathSync("logs") : "logs (will be created)";
     logger.info(`📁 Log files will be saved to: ${logsPath}`);
-  } catch (error) {
-    logger.info(`📁 Log files will be saved to: logs/`);
+  } catch {
+    logger.info("📁 Log files will be saved to: logs/");
   }
 } else {
   logger.info("📁 Log files disabled (console only - Render deployment)");

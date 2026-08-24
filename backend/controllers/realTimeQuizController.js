@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import Quiz from "../models/Quiz.js";
 import UserQuiz from "../models/User.js";
 import logger from "../utils/logger.js";
-import { sendSuccess, sendError, sendNotFound } from "../utils/responseHelper.js";
+import { sendSuccess, sendNotFound } from "../utils/responseHelper.js";
 import AppError from "../utils/AppError.js";
 
 // In-memory store for active quiz rooms

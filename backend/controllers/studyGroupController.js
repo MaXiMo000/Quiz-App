@@ -253,7 +253,7 @@ export const searchStudyGroups = async (req, res) => {
 
         if (query) {
             // SECURITY: Escape special regex characters to prevent ReDoS attacks
-            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
             searchCriteria.$or = [
                 { name: { $regex: escapedQuery, $options: "i" } },
                 { description: { $regex: escapedQuery, $options: "i" } },
@@ -263,7 +263,7 @@ export const searchStudyGroups = async (req, res) => {
 
         if (category) {
             // SECURITY: Escape special regex characters to prevent ReDoS attacks
-            const escapedCategory = category.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const escapedCategory = category.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
             searchCriteria.category = { $regex: escapedCategory, $options: "i" };
         }
 

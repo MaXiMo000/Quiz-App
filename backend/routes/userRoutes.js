@@ -34,17 +34,17 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
  * @returns {string} - Normalized IP address
  */
 const normalizeIP = (ip) => {
-    if (!ip || typeof ip !== 'string') return ip;
+    if (!ip || typeof ip !== "string") return ip;
 
     // Convert IPv6 loopback (::1) to IPv4 loopback (127.0.0.1) for consistency
-    if (ip === '::1' || ip === '::') {
-        return '127.0.0.1';
+    if (ip === "::1" || ip === "::") {
+        return "127.0.0.1";
     }
 
     // Extract IPv4 from IPv4-mapped IPv6 (::ffff:192.168.1.1 -> 192.168.1.1)
     const ipv4MappedMatch = ip.match(/^::ffff:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
     if (ipv4MappedMatch) {
-        return ip.replace(/^::ffff:/, '');
+        return ip.replace(/^::ffff:/, "");
     }
 
     return ip;
@@ -56,7 +56,7 @@ const normalizeIP = (ip) => {
  * @returns {boolean} - True if valid IP format
  */
 const isValidIP = (ip) => {
-    if (!ip || typeof ip !== 'string') return false;
+    if (!ip || typeof ip !== "string") return false;
 
     // Normalize first (convert ::1 to 127.0.0.1, etc.)
     const normalized = normalizeIP(ip);
@@ -92,8 +92,8 @@ const getClientIP = (req) => {
 
     // Check X-Real-IP header (set by trusted proxies like Nginx)
     // This is more reliable than X-Forwarded-For as it's set by the proxy, not the client
-    if (req.headers['x-real-ip']) {
-        const realIP = req.headers['x-real-ip'].trim();
+    if (req.headers["x-real-ip"]) {
+        const realIP = req.headers["x-real-ip"].trim();
         if (isValidIP(realIP)) {
             ip = realIP;
             logger.debug(`Using X-Real-IP: ${ip}`);
@@ -106,15 +106,15 @@ const getClientIP = (req) => {
     // Check X-Forwarded-For header (when behind proxy)
     // SECURITY WARNING: This header can be spoofed by clients if proxy isn't configured correctly
     // Only use if trust proxy is enabled and we're behind a known proxy
-    const forwarded = req.headers['x-forwarded-for'];
+    const forwarded = req.headers["x-forwarded-for"];
     if (forwarded) {
         // X-Forwarded-For can contain multiple IPs, take the first one (original client)
-        const ips = forwarded.split(',').map(ip => ip.trim());
+        const ips = forwarded.split(",").map(ip => ip.trim());
         const firstIP = ips[0];
 
         if (isValidIP(firstIP)) {
             // Only use if trust proxy is enabled (indicates we're behind a trusted proxy)
-            if (req.app.get('trust proxy')) {
+            if (req.app.get("trust proxy")) {
                 ip = firstIP;
                 logger.debug(`Using X-Forwarded-For (trust proxy enabled): ${ip}`);
                 return ip;
@@ -130,7 +130,7 @@ const getClientIP = (req) => {
     const remoteAddr = req.connection?.remoteAddress || req.socket?.remoteAddress;
     if (remoteAddr) {
         // Remove IPv6 prefix if present (::ffff:192.168.1.1 -> 192.168.1.1)
-        const cleanIP = remoteAddr.replace(/^::ffff:/, '');
+        const cleanIP = remoteAddr.replace(/^::ffff:/, "");
         if (isValidIP(cleanIP)) {
             ip = cleanIP;
             logger.debug(`Using connection.remoteAddress: ${ip}`);
@@ -140,13 +140,13 @@ const getClientIP = (req) => {
 
     // If no valid IP found, log warning and return 'unknown'
     logger.warn(`Could not extract valid IP address from request. Headers: ${JSON.stringify({
-        'x-forwarded-for': req.headers['x-forwarded-for'],
-        'x-real-ip': req.headers['x-real-ip'],
-        'req.ip': req.ip,
-        'remoteAddress': req.connection?.remoteAddress || req.socket?.remoteAddress
+        "x-forwarded-for": req.headers["x-forwarded-for"],
+        "x-real-ip": req.headers["x-real-ip"],
+        "req.ip": req.ip,
+        "remoteAddress": req.connection?.remoteAddress || req.socket?.remoteAddress
     })}`);
 
-    return 'unknown';
+    return "unknown";
 };
 
 // Google OAuth Callback
@@ -161,7 +161,7 @@ router.get(
             // ✅ Save IP address for Google OAuth login (with validation)
             const rawIP = getClientIP(req);
             const clientIP = normalizeIP(rawIP); // Normalize IPv6 loopback to IPv4
-            const userAgent = req.headers['user-agent'] || 'unknown';
+            const userAgent = req.headers["user-agent"] || "unknown";
 
             const user = await UserQuiz.findById(userId);
             if (user) {
@@ -170,7 +170,7 @@ router.get(
                 user.lastSeen = new Date();
 
                 // SECURITY: Only save if IP is valid (not 'unknown' or invalid format)
-                if (clientIP && clientIP !== 'unknown' && isValidIP(clientIP)) {
+                if (clientIP && clientIP !== "unknown" && isValidIP(clientIP)) {
                     user.lastLoginIP = clientIP;
 
                     // Add to login IP history (keep last 10 logins)
@@ -189,19 +189,19 @@ router.get(
                     }
 
                     await user.save();
-                    logger.info(`Saved IP address ${clientIP}${rawIP !== clientIP ? ` (normalized from ${rawIP})` : ''} for Google OAuth login for user ${userId} (${user.email})`);
+                    logger.info(`Saved IP address ${clientIP}${rawIP !== clientIP ? ` (normalized from ${rawIP})` : ""} for Google OAuth login for user ${userId} (${user.email})`);
 
                     // SECURITY: Check for suspicious IP changes (different IP from last login)
                     if (user.loginIPHistory.length > 1) {
                         const previousIP = user.loginIPHistory[user.loginIPHistory.length - 2]?.ip;
-                        if (previousIP && previousIP !== clientIP && previousIP !== 'unknown') {
+                        if (previousIP && previousIP !== clientIP && previousIP !== "unknown") {
                             logger.info(`IP address changed for user ${userId}: ${previousIP} -> ${clientIP}`);
                         }
                     }
                 } else {
                     logger.warn(`Invalid or unknown IP address detected for Google OAuth login: ${clientIP} (raw: ${rawIP}, user: ${userId})`);
                     // Still save as 'unknown' for tracking purposes
-                    user.lastLoginIP = 'unknown';
+                    user.lastLoginIP = "unknown";
                     await user.save();
                 }
             } else {
@@ -216,7 +216,7 @@ router.get(
             logger.error({ message: "Error saving IP address for Google OAuth login", error: error.message, stack: error.stack });
             // Still redirect even if IP save fails
             const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
-            res.redirect(`${frontendURL}/google-auth?token=${req.user?.token || ''}`);
+            res.redirect(`${frontendURL}/google-auth?token=${req.user?.token || ""}`);
         }
     }
 );
@@ -229,10 +229,10 @@ router.get("/me", verifyToken, async (req, res) => {
     try {
         // Set cache-control headers to prevent browser caching
         res.set({
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-            'ETag': `"${Date.now()}-${Math.random().toString(36).substring(7)}"`
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "ETag": `"${Date.now()}-${Math.random().toString(36).substring(7)}"`
         });
 
         if (!req.user?.id) {
