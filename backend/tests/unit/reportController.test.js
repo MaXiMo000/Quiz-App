@@ -213,13 +213,11 @@ describe("Report Controller", () => {
         // Mock the Report save method to throw an error
         Report.prototype.save = jest.fn().mockRejectedValue(new Error("Database error"));
 
-        await createReport(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-            message: "Error saving report",
-            error: "Database error"
-        } }));
+        await expect(createReport(req, res)).rejects.toThrow();
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -239,13 +237,11 @@ describe("Report Controller", () => {
     it("should handle database errors", async () => {
       Report.find.mockRejectedValue(new Error("Database error"));
 
-      await getReports(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-        message: "Error fetching reports",
-        error: expect.any(Error)
-      } }));
+      await expect(getReports(req, res)).rejects.toThrow();
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -288,13 +284,11 @@ describe("Report Controller", () => {
         lean: jest.fn().mockRejectedValue(new Error("Database error"))
       });
 
-      await getReportsUser(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-        message: "Error retrieving reports",
-        error: expect.any(Error)
-      } }));
+      await expect(getReportsUser(req, res)).rejects.toThrow("Failed to retrieve reports");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -330,13 +324,11 @@ describe("Report Controller", () => {
       req.params = { id: "reportId123" };
       Report.findById.mockRejectedValue(new Error("Database error"));
 
-      await getReportsUserID(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-        message: "Error retrieving report",
-        error: expect.any(Error)
-      } }));
+      await expect(getReportsUserID(req, res)).rejects.toThrow("Failed to retrieve report");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 });

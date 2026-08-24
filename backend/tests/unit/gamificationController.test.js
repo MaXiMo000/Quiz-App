@@ -173,10 +173,11 @@ describe("Gamification Controller", () => {
                 populate: jest.fn().mockRejectedValue(new Error("Database error")),
             });
 
-            await getCurrentDailyChallenge(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({ message: "Server error" });
+            await expect(getCurrentDailyChallenge(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 

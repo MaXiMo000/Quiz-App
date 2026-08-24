@@ -99,13 +99,11 @@ describe("Dashboard Controller", () => {
         it("should handle database errors", async () => {
             UserQuiz.findById.mockRejectedValue(new Error("Database error"));
 
-            await getDashboardData(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-                message: "Error fetching dashboard data",
-                error: "Database error"
-            } }));
+            await expect(getDashboardData(req, res)).rejects.toThrow("Error fetching dashboard data");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 
@@ -125,13 +123,11 @@ describe("Dashboard Controller", () => {
         it("should handle database errors", async () => {
             Quiz.distinct.mockRejectedValue(new Error("Database error"));
 
-            await getAllCategories(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-                message: "Error fetching categories",
-                error: "Database error"
-            } }));
+            await expect(getAllCategories(req, res)).rejects.toThrow("Error fetching categories");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 });

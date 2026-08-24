@@ -9,6 +9,7 @@ import {
 } from "../../controllers/quizController.js";
 import Quiz from "../../models/Quiz.js";
 import UserQuiz from "../../models/User.js";
+import { ok, err } from "../helpers/envelope.js";
 
 jest.mock("../../models/Quiz.js", () => {
     const mockQuiz = jest.fn().mockImplementation((data) => ({
@@ -76,7 +77,7 @@ describe("Quiz Controller", () => {
       await createQuiz(req, res);
 
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(mockQuizData);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuizData));
     });
 
     it("should create a new quiz as premium user", async () => {
@@ -103,7 +104,7 @@ describe("Quiz Controller", () => {
 
       expect(UserQuiz.findById).toHaveBeenCalledWith("userId");
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(mockQuizData);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuizData));
     });
 
     it("should reject non-admin/premium users", async () => {
@@ -116,9 +117,7 @@ describe("Quiz Controller", () => {
       await createQuiz(req, res);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Only admins or premium users can create quizzes"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Only admins or premium users can create quizzes"));
     });
 
     it("should handle user not found for premium user", async () => {
@@ -133,9 +132,7 @@ describe("Quiz Controller", () => {
       await createQuiz(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "User not found"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("User not found"));
     });
 
     it("should handle database errors", async () => {
@@ -149,12 +146,11 @@ describe("Quiz Controller", () => {
         save: jest.fn().mockRejectedValue(new Error("Database error"))
       }));
 
-      await createQuiz(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        error: "Server error"
-      });
+      await expect(createQuiz(req, res)).rejects.toThrow("Failed to create quiz");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -168,7 +164,7 @@ describe("Quiz Controller", () => {
       await getQuizzes(req, res);
 
       expect(Quiz.find).toHaveBeenCalledWith();
-      expect(res.json).toHaveBeenCalledWith(mockQuizzes);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuizzes));
     });
 
     it("should return filtered quizzes for premium user", async () => {
@@ -186,7 +182,7 @@ describe("Quiz Controller", () => {
           { "createdBy._id": null }
         ]
       });
-      expect(res.json).toHaveBeenCalledWith(mockQuizzes);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuizzes));
     });
 
     it("should return only admin quizzes for regular user", async () => {
@@ -198,19 +194,18 @@ describe("Quiz Controller", () => {
       await getQuizzes(req, res);
 
       expect(Quiz.find).toHaveBeenCalledWith({ "createdBy._id": null });
-      expect(res.json).toHaveBeenCalledWith(mockQuizzes);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuizzes));
     });
 
     it("should handle database errors", async () => {
       req.user.role = "admin";
       Quiz.find.mockRejectedValue(new Error("Database error"));
 
-      await getQuizzes(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        error: "Server error"
-      });
+      await expect(getQuizzes(req, res)).rejects.toThrow("Failed to fetch quizzes");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -228,9 +223,9 @@ describe("Quiz Controller", () => {
       expect(Quiz.findOne).toHaveBeenCalledWith({ title: "Test Quiz" });
       expect(Quiz.deleteOne).toHaveBeenCalledWith({ title: "Test Quiz" });
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(ok({
         message: "Quiz deleted successfully!"
-      });
+      }));
     });
 
     it("should delete quiz successfully for premium owner", async () => {
@@ -268,9 +263,7 @@ describe("Quiz Controller", () => {
 
       expect(Quiz.deleteOne).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "You can only delete your own quizzes."
-      });
+      expect(res.json).toHaveBeenCalledWith(err("You can only delete your own quizzes."));
     });
 
     it("should prevent regular user from deleting quiz", async () => {
@@ -284,9 +277,7 @@ describe("Quiz Controller", () => {
 
       expect(Quiz.deleteOne).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "You do not have permission to delete quizzes."
-      });
+      expect(res.json).toHaveBeenCalledWith(err("You do not have permission to delete quizzes."));
     });
 
     it("should handle missing title", async () => {
@@ -295,9 +286,7 @@ describe("Quiz Controller", () => {
       await deleteQuiz(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Quiz title is required"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Quiz title is required"));
     });
 
     it("should handle quiz not found", async () => {
@@ -307,22 +296,18 @@ describe("Quiz Controller", () => {
       await deleteQuiz(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Quiz not found"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Quiz not found"));
     });
 
     it("should handle database errors", async () => {
       req.query = { title: "Test Quiz" };
       Quiz.findOne.mockRejectedValue(new Error("Database error"));
 
-      await deleteQuiz(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Error deleting quiz",
-        error: "Database error"
-      });
+      await expect(deleteQuiz(req, res)).rejects.toThrow("Failed to delete quiz");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -353,7 +338,7 @@ describe("Quiz Controller", () => {
 
       expect(Quiz.findById).toHaveBeenCalledWith("quizId");
       expect(mockQuiz.questions).toHaveLength(1);
-      expect(res.json).toHaveBeenCalledWith(mockQuiz);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuiz));
     });
 
     it("should add question for premium owner", async () => {
@@ -375,7 +360,7 @@ describe("Quiz Controller", () => {
       await addQuestion(req, res);
 
       expect(mockQuiz.questions).toHaveLength(1);
-      expect(res.json).toHaveBeenCalledWith(mockQuiz);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuiz));
     });
 
     it("should prevent premium user from adding question to others' quiz", async () => {
@@ -394,9 +379,7 @@ describe("Quiz Controller", () => {
       await addQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "You can only add questions to your own quizzes."
-      });
+      expect(res.json).toHaveBeenCalledWith(err("You can only add questions to your own quizzes."));
     });
 
     it("should prevent regular user from adding question", async () => {
@@ -409,9 +392,7 @@ describe("Quiz Controller", () => {
       await addQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "You do not have permission to add questions."
-      });
+      expect(res.json).toHaveBeenCalledWith(err("You do not have permission to add questions."));
     });
 
     it("should handle quiz not found", async () => {
@@ -423,9 +404,7 @@ describe("Quiz Controller", () => {
       await addQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Quiz not found"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Quiz not found"));
     });
 
     it("should handle database errors", async () => {
@@ -434,13 +413,11 @@ describe("Quiz Controller", () => {
 
       Quiz.findById.mockRejectedValue(new Error("Database error"));
 
-      await addQuestion(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Error adding question",
-        error: expect.any(Error)
-      });
+      await expect(addQuestion(req, res)).rejects.toThrow();
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -455,7 +432,7 @@ describe("Quiz Controller", () => {
       await getQuizById(req, res);
 
       expect(Quiz.findById).toHaveBeenCalledWith("quizId");
-      expect(res.json).toHaveBeenCalledWith(mockQuiz);
+      expect(res.json).toHaveBeenCalledWith(ok(mockQuiz));
     });
 
     it("should handle quiz not found", async () => {
@@ -467,9 +444,7 @@ describe("Quiz Controller", () => {
       await getQuizById(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Quiz not found"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Quiz not found"));
     });
 
     it("should handle database errors", async () => {
@@ -478,13 +453,11 @@ describe("Quiz Controller", () => {
 
       Quiz.findById.mockRejectedValue(new Error("Database error"));
 
-      await getQuizById(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Error fetching quiz",
-        error: expect.any(Error)
-      });
+      await expect(getQuizById(req, res)).rejects.toThrow();
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -511,10 +484,10 @@ describe("Quiz Controller", () => {
 
       expect(Quiz.findById).toHaveBeenCalledWith("quizId");
       expect(mockQuiz.questions).toHaveLength(1);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(ok({
         message: "Question deleted successfully",
         quiz: mockQuiz
-      });
+      }));
     });
 
     it("should delete question for premium owner", async () => {
@@ -535,10 +508,10 @@ describe("Quiz Controller", () => {
       await deleteQuestion(req, res);
 
       expect(mockQuiz.questions).toHaveLength(0);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(ok({
         message: "Question deleted successfully",
         quiz: mockQuiz
-      });
+      }));
     });
 
     it("should prevent premium user from deleting question of others' quiz", async () => {
@@ -557,9 +530,7 @@ describe("Quiz Controller", () => {
       await deleteQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "You can only delete questions from your own quizzes."
-      });
+      expect(res.json).toHaveBeenCalledWith(err("You can only delete questions from your own quizzes."));
     });
 
     it("should prevent regular user from deleting question", async () => {
@@ -572,9 +543,7 @@ describe("Quiz Controller", () => {
       await deleteQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "You do not have permission to delete questions."
-      });
+      expect(res.json).toHaveBeenCalledWith(err("You do not have permission to delete questions."));
     });
 
     it("should handle quiz not found", async () => {
@@ -585,9 +554,7 @@ describe("Quiz Controller", () => {
       await deleteQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Quiz not found"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Quiz not found"));
     });
 
     it("should handle invalid question index", async () => {
@@ -603,9 +570,7 @@ describe("Quiz Controller", () => {
       await deleteQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Invalid question index"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Invalid question index"));
     });
 
     it("should handle database errors", async () => {
@@ -613,13 +578,11 @@ describe("Quiz Controller", () => {
 
       Quiz.findById.mockRejectedValue(new Error("Database error"));
 
-      await deleteQuestion(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Error deleting question",
-        error: expect.any(Error)
-      });
+      await expect(deleteQuestion(req, res)).rejects.toThrow();
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 
@@ -651,7 +614,7 @@ describe("Quiz Controller", () => {
       expect(mockQuiz.averageTime).toBe(300);
       expect(mockQuiz.popularityScore).toBe(0.8);
       expect(mockQuiz.save).toHaveBeenCalled();
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(ok({
         message: "Quiz statistics updated successfully",
         stats: {
           totalAttempts: 1,
@@ -659,7 +622,7 @@ describe("Quiz Controller", () => {
           averageTime: 300,
           popularityScore: 80
         }
-      });
+      }));
     });
 
     it("should handle quiz not found", async () => {
@@ -675,9 +638,7 @@ describe("Quiz Controller", () => {
       await updateQuizStats(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Quiz not found"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Quiz not found"));
     });
 
     it("should handle database errors", async () => {
@@ -690,13 +651,11 @@ describe("Quiz Controller", () => {
 
       Quiz.findById.mockRejectedValue(new Error("Database error"));
 
-      await updateQuizStats(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Error updating quiz stats",
-        error: expect.any(Error)
-      });
+      await expect(updateQuizStats(req, res)).rejects.toThrow();
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
     });
   });
 });

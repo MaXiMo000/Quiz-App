@@ -109,10 +109,11 @@ describe("Learning Path Controller", () => {
                 sort: jest.fn().mockRejectedValue(new Error("Database error"))
             });
 
-            await getLearningPaths(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(err("Server error"));
+            await expect(getLearningPaths(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 
@@ -137,10 +138,11 @@ describe("Learning Path Controller", () => {
 
             req.params = { pathId: "lp1" };
 
-            await getLearningPath(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(err("Server error"));
+            await expect(getLearningPath(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 
@@ -184,10 +186,11 @@ describe("Learning Path Controller", () => {
 
             req.params = { pathId: "lp1" };
 
-            await startLearningPath(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(err("Server error"));
+            await expect(startLearningPath(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 
@@ -210,10 +213,11 @@ describe("Learning Path Controller", () => {
             req.params = { pathId: "lp1", nodeId: "node1" };
             req.body = { status: "completed", score: 85 };
 
-            await updateNodeProgress(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(err("Server error"));
+            await expect(updateNodeProgress(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 
@@ -224,10 +228,11 @@ describe("Learning Path Controller", () => {
                 sort: jest.fn().mockRejectedValue(new Error("Database error"))
             });
 
-            await getLearningAnalytics(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(err("Server error"));
+            await expect(getLearningAnalytics(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 });

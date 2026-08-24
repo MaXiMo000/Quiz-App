@@ -92,12 +92,11 @@ describe("Intelligence Controller", () => {
         it("should handle database errors gracefully", async () => {
             UserQuiz.findById.mockRejectedValue(new Error("Database error"));
 
-            await getSmartRecommendations(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-                error: "Server error"
-            } }));
+            await expect(getSmartRecommendations(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
 
         it("should handle user not found", async () => {
@@ -112,12 +111,11 @@ describe("Intelligence Controller", () => {
         it("should handle database errors", async () => {
             UserQuiz.findById.mockRejectedValue(new Error("Database error"));
 
-            await getSmartRecommendations(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-                error: "Server error"
-            } }));
+            await expect(getSmartRecommendations(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
     });
 
@@ -126,12 +124,11 @@ describe("Intelligence Controller", () => {
             req.query = { category: "Programming" };
             UserQuiz.findById.mockRejectedValue(new Error("Database error"));
 
-            await getAdaptiveDifficulty(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-                error: "Server error"
-            } }));
+            await expect(getAdaptiveDifficulty(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
 
         it("should handle user not found", async () => {
@@ -149,12 +146,11 @@ describe("Intelligence Controller", () => {
         it("should handle database errors gracefully", async () => {
             UserQuiz.findById.mockRejectedValue(new Error("Database error"));
 
-            await getLearningAnalytics(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-                error: "Server error"
-            } }));
+            await expect(getLearningAnalytics(req, res)).rejects.toThrow("Server error");
+      // The controller throws; error middleware renders it. Asserting the
+      // throw keeps this meaningful instead of asserting a body that is
+      // never written.
+      expect(res.json).not.toHaveBeenCalled();
         });
 
         it("should handle user not found", async () => {
