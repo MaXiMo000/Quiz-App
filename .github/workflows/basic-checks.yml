@@ -37,19 +37,17 @@ jobs:
     # happens. This job reported success on 2026-05-11 and since, while 149 of
     # 155 backend tests were failing. A check that cannot fail is not a check.
 
-    # Lint debt is real (backend 334 errors, frontend 58 problems) and is not
-    # being fixed in the same change as the security work. continue-on-error
-    # surfaces it as a warning on the run instead of hiding it behind a green
-    # tick -- unlike `|| echo`, the failure is visible and attributable.
-    - name: Run backend linting
-      continue-on-error: true
-      run: npm run lint
-      working-directory: backend
+    # Lint debt is real (backend 334 errors, frontend 29e/29w) and is not being
+    # fixed in the same change as the security work. It goes through the same
+    # ratchet as the tests: the real number is printed every run and can only
+    # go down. continue-on-error was tried here and is not good enough --
+    # GitHub records such a step's conclusion as "success", so the run still
+    # reads green and the failure is no more attributable than `|| echo` was.
+    - name: Backend lint (ratcheted)
+      run: node scripts/lint-ratchet.mjs backend
 
-    - name: Run frontend linting
-      continue-on-error: true
-      run: npm run lint
-      working-directory: frontend
+    - name: Frontend lint (ratcheted)
+      run: node scripts/lint-ratchet.mjs frontend
 
     # The backend suite has a backlog of assertions written against a response
     # shape the controllers no longer use. The ratchet pins the count so it can
