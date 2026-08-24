@@ -12,6 +12,7 @@ from "../../controllers/gamificationController.js";
 import DailyChallenge from "../../models/DailyChallenge.js";
 import Tournament from "../../models/Tournament.js";
 import UserQuiz from "../../models/User.js";
+import { ok, okMsg, err } from "../helpers/envelope.js";
 
 // Mock the isChallengeAvailableForUser function
 jest.mock("../../controllers/gamificationController.js", () => {
@@ -148,11 +149,9 @@ describe("Gamification Controller", () => {
 
             await getCurrentDailyChallenge(req, res);
 
-            expect(res.json).toHaveBeenCalledWith(
-                expect.objectContaining({
+            expect(res.json).toHaveBeenCalledWith(ok(expect.objectContaining({
                     challenges: expect.any(Array),
-                })
-            );
+                })));
         });
 
         it("should handle no challenges found", async () => {
@@ -162,10 +161,8 @@ describe("Gamification Controller", () => {
 
             await getCurrentDailyChallenge(req, res);
 
-            expect(res.json).toHaveBeenCalledWith({
-                message: "No daily challenges available today",
-                suggestion: "Check back later for new challenges!"
-            });
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith(err("Daily challenge not found"));
         });
 
         it("should handle database errors", async () => {
@@ -207,10 +204,8 @@ describe("Gamification Controller", () => {
             await joinDailyChallenge(req, res);
 
             expect(mockChallenge.save).toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Successfully joined daily challenge",
-                challenge: mockChallenge
-            });
+            expect(res.json).toHaveBeenCalledWith(
+                okMsg("Successfully joined daily challenge", { challenge: mockChallenge }));
         });
 
         it("should handle challenge not found", async () => {
@@ -221,7 +216,7 @@ describe("Gamification Controller", () => {
             await joinDailyChallenge(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({ message: "Challenge not found" });
+            expect(res.json).toHaveBeenCalledWith(err("Challenge not found"));
         });
 
         it("should handle user already joined", async () => {
@@ -240,7 +235,7 @@ describe("Gamification Controller", () => {
             await joinDailyChallenge(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({ message: "Already participating in this challenge" });
+            expect(res.json).toHaveBeenCalledWith(err("Already participating in this challenge"));
         });
     });
 
@@ -266,12 +261,11 @@ describe("Gamification Controller", () => {
 
             expect(mockChallenge.participants[0].progress).toBe(3);
             expect(mockChallenge.save).toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Progress updated",
+            expect(res.json).toHaveBeenCalledWith(okMsg("Progress updated", {
                 participant: expect.any(Object),
                 isCompleted: false,
                 rewards: null
-            });
+            }));
         });
 
     });
@@ -300,10 +294,8 @@ describe("Gamification Controller", () => {
             await createDailyChallenge(req, res);
 
             expect(res.status).toHaveBeenCalledWith(201);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Daily challenge created successfully",
-                challenge: mockChallenge
-            });
+            expect(res.json).toHaveBeenCalledWith(
+                okMsg("Daily challenge created successfully", mockChallenge));
         });
 
         it("should handle missing required fields", async () => {
@@ -324,9 +316,7 @@ describe("Gamification Controller", () => {
             await createDailyChallenge(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Title is required"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Title is required"));
         });
     });
 
@@ -355,9 +345,9 @@ describe("Gamification Controller", () => {
 
             await getAvailableTournaments(req, res);
 
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(ok({
                 tournaments: expect.any(Array)
-            });
+            }));
         });
     });
 
@@ -396,10 +386,8 @@ describe("Gamification Controller", () => {
                 quizScores: []
             });
             expect(mockTournament.save).toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Successfully registered for tournament",
-                tournament: mockTournament
-            });
+            expect(res.json).toHaveBeenCalledWith(
+                okMsg("Successfully registered for tournament", { tournament: mockTournament }));
         });
 
         it("should handle tournament full", async () => {
@@ -418,7 +406,7 @@ describe("Gamification Controller", () => {
             await registerForTournament(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({ message: "Tournament is full" });
+            expect(res.json).toHaveBeenCalledWith(err("Tournament is full"));
         });
     });
 
@@ -444,30 +432,35 @@ describe("Gamification Controller", () => {
 
             await getTournamentLeaderboard(req, res);
 
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(ok({
                 tournament: {
                     name: "Test Tournament",
                     status: "active",
                     settings: { entryFee: 0 }
                 },
                 leaderboard: expect.any(Array)
-            });
+            }));
         });
     });
 
     describe("resetDailyChallenges", () => {
         it("should reset daily challenges", async () => {
             req.user.role = "admin";
-            DailyChallenge.find.mockResolvedValue([]);
+            // resetDailyChallenges chains .populate("participants.user") onto
+            // find(), so the mock has to return a query-like object, not an
+            // array. It used to resolve straight to [].
+            DailyChallenge.find.mockReturnValue({
+                populate: jest.fn().mockResolvedValue([])
+            });
 
             await manualResetDailyChallenges(req, res);
 
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Daily challenge reset completed successfully",
-                usersReset: 0,
-                challengesModified: 0,
-                timestamp: expect.any(Date)
-            });
+            expect(res.json).toHaveBeenCalledWith(
+                okMsg("Daily challenge reset completed successfully", {
+                    usersReset: 0,
+                    challengesModified: 0,
+                    timestamp: expect.any(Date)
+                }));
         });
     });
 
