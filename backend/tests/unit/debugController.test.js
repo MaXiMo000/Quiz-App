@@ -1,117 +1,99 @@
+/**
+ * These assertions were written against a response shape the controllers no
+ * longer use. The repo standardised on utils/responseHelper -- every success
+ * is now {status, statusCode, message, data} and failures throw AppError
+ * rather than writing a body -- and the suite was never updated. CI could not
+ * report it because the workflow ran `npm test || echo "Tests failed"`, which
+ * exits 0 whatever happens.
+ *
+ * Rewritten against what the controllers actually do, plus the access-control
+ * assertions the endpoints never had.
+ */
 import { debugUserXP, resetUserXP, fixGoogleOAuthUsers } from "../../controllers/debugController.js";
 import UserQuiz from "../../models/User.js";
 import XPLog from "../../models/XPLog.js";
 
 jest.mock("../../models/User.js", () => ({
     __esModule: true,
-    default: {
-        findById: jest.fn(),
-        find: jest.fn(),
-    },
+    default: { findById: jest.fn(), find: jest.fn() },
 }));
 
 jest.mock("../../models/XPLog.js", () => ({
     __esModule: true,
-    default: {
-        find: jest.fn(),
-        aggregate: jest.fn(),
-        deleteMany: jest.fn(),
-    },
+    default: { find: jest.fn(), aggregate: jest.fn(), deleteMany: jest.fn() },
 }));
+
+/** The envelope every successful response is wrapped in. */
+const success = (dataMatcher) => expect.objectContaining({
+    status: "success",
+    data: dataMatcher,
+});
 
 describe("Debug Controller", () => {
     let req, res;
 
     beforeEach(() => {
-        req = {
-            params: { userId: "userId" },
-        };
-        res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
+        req = { params: { userId: "userId" }, user: { id: "admin1", role: "admin" } };
+        res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
+    afterEach(() => jest.clearAllMocks());
 
     describe("debugUserXP", () => {
-        it("should return user XP debug info", async () => {
-            const mockUser = {
-                _id: "userId",
-                name: "testuser",
-                xp: 100,
-                totalXP: 1000,
-                level: 1,
-                loginStreak: 0,
-                quizStreak: 0,
-                badges: [],
-                unlockedThemes: [],
-                selectedTheme: "Default",
-                lastLogin: new Date(),
-                lastQuizDate: new Date(),
-                createdAt: new Date(),
-            };
-            UserQuiz.findById.mockResolvedValue(mockUser);
+        const seedUser = (overrides = {}) => {
+            UserQuiz.findById.mockResolvedValue({
+                _id: "userId", name: "testuser", xp: 100, totalXP: 1000,
+                level: 1, loginStreak: 0, quizStreak: 0,
+                lastLogin: new Date(), lastQuizDate: new Date(),
+                createdAt: new Date(), ...overrides,
+            });
             XPLog.find.mockReturnValue({
-                sort: jest.fn().mockReturnValue({
-                    limit: jest.fn().mockResolvedValue([]),
-                }),
+                sort: jest.fn().mockReturnValue({ limit: jest.fn().mockResolvedValue([]) }),
             });
             XPLog.aggregate.mockResolvedValue([{ totalXP: 1000 }]);
+        };
 
+        it("returns the XP debug payload inside the standard envelope", async () => {
+            seedUser();
             await debugUserXP(req, res);
-
-            expect(res.json).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    user: expect.any(Object),
-                    recentXPLogs: expect.any(Array),
-                    calculatedTotalXP: 1000,
-                    xpMismatch: false,
-                })
-            );
+            expect(res.json).toHaveBeenCalledWith(success(expect.objectContaining({
+                user: expect.any(Object),
+                recentXPLogs: expect.any(Array),
+                calculatedTotalXP: 1000,
+                xpMismatch: false,
+            })));
         });
 
-        it("should handle user not found", async () => {
+        it("flags a mismatch between logged XP and stored totalXP", async () => {
+            seedUser({ totalXP: 7 });
+            await debugUserXP(req, res);
+            expect(res.json).toHaveBeenCalledWith(success(
+                expect.objectContaining({ xpMismatch: true })));
+        });
+
+        it("404s when the user does not exist", async () => {
             UserQuiz.findById.mockResolvedValue(null);
-
             await debugUserXP(req, res);
-
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                error: "User not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({ status: "error", message: "User not found" }));
         });
 
-        it("should handle database errors", async () => {
+        it("throws rather than reporting a 200 when the database fails", async () => {
             UserQuiz.findById.mockRejectedValue(new Error("Database error"));
-
-            await debugUserXP(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                error: "Server error",
-                details: "Database error"
-            });
+            await expect(debugUserXP(req, res)).rejects.toThrow("Server error");
+            expect(res.json).not.toHaveBeenCalled();
         });
     });
 
     describe("resetUserXP", () => {
-        it("should reset user XP successfully", async () => {
+        it("zeroes the progression fields and confirms", async () => {
             const mockUser = {
-                _id: "userId",
-                name: "testuser",
-                xp: 100,
-                totalXP: 1000,
-                level: 5,
-                loginStreak: 10,
-                quizStreak: 5,
-                lastLogin: new Date(),
-                lastQuizDate: new Date(),
-                save: jest.fn().mockResolvedValue(true)
+                _id: "userId", xp: 100, totalXP: 1000, level: 5,
+                loginStreak: 3, quizStreak: 2,
+                lastLogin: new Date(), lastQuizDate: new Date(),
+                save: jest.fn().mockResolvedValue(true),
             };
-
             UserQuiz.findById.mockResolvedValue(mockUser);
 
             await resetUserXP(req, res);
@@ -124,107 +106,65 @@ describe("Debug Controller", () => {
             expect(mockUser.lastLogin).toBeNull();
             expect(mockUser.lastQuizDate).toBeNull();
             expect(mockUser.save).toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({
-                message: "User XP reset successfully",
-                user: mockUser
-            });
+            expect(res.json).toHaveBeenCalledWith(success(
+                expect.objectContaining({ user: mockUser })));
         });
 
-        it("should handle user not found", async () => {
+        it("404s when the user does not exist", async () => {
             UserQuiz.findById.mockResolvedValue(null);
-
             await resetUserXP(req, res);
-
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                error: "User not found"
-            });
         });
 
-        it("should handle database errors", async () => {
+        it("throws when the database fails", async () => {
             UserQuiz.findById.mockRejectedValue(new Error("Database error"));
-
-            await resetUserXP(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                error: "Server error",
-                details: "Database error"
-            });
+            await expect(resetUserXP(req, res)).rejects.toThrow("Server error");
         });
     });
 
     describe("fixGoogleOAuthUsers", () => {
-        it("should fix Google OAuth users with missing fields", async () => {
-            const mockUsers = [
-                {
-                    _id: "user1",
-                    name: "user1",
-                    totalXP: null,
-                    quizStreak: null,
-                    lastLogin: null,
-                    lastQuizDate: null,
-                    save: jest.fn().mockResolvedValue(true)
-                },
-                {
-                    _id: "user2",
-                    name: "user2",
-                    totalXP: undefined,
-                    quizStreak: undefined,
-                    lastLogin: undefined,
-                    lastQuizDate: undefined,
-                    save: jest.fn().mockResolvedValue(true)
-                }
+        const seedTwo = () => {
+            const users = [
+                { name: "user1", email: "user1@example.com", xp: 50, save: jest.fn().mockResolvedValue(true) },
+                { name: "user2", email: "user2@example.com", xp: 0, save: jest.fn().mockResolvedValue(true) },
             ];
+            UserQuiz.find.mockResolvedValue(users);
+            return users;
+        };
 
-            UserQuiz.find.mockResolvedValue(mockUsers);
-
+        it("backfills the missing fields and reports counts", async () => {
+            const users = seedTwo();
             await fixGoogleOAuthUsers(req, res);
-
-            expect(mockUsers[0].totalXP).toBe(0);
-            expect(mockUsers[0].quizStreak).toBe(0);
-            expect(mockUsers[0].lastLogin).toBeNull();
-            expect(mockUsers[0].lastQuizDate).toBeNull();
-            expect(mockUsers[0].save).toHaveBeenCalled();
-
-            expect(mockUsers[1].totalXP).toBe(0);
-            expect(mockUsers[1].quizStreak).toBe(0);
-            expect(mockUsers[1].lastLogin).toBeNull();
-            expect(mockUsers[1].lastQuizDate).toBeNull();
-            expect(mockUsers[1].save).toHaveBeenCalled();
-
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Fixed 2 users successfully",
-                totalFound: 2,
-                fixedUsers: [
-                    { name: "user1", email: undefined },
-                    { name: "user2", email: undefined }
-                ]
-            });
+            expect(users[0].totalXP).toBe(50);
+            expect(users[0].quizStreak).toBe(0);
+            expect(users[0].save).toHaveBeenCalled();
+            expect(users[1].save).toHaveBeenCalled();
+            expect(res.json).toHaveBeenCalledWith(success(
+                expect.objectContaining({ totalFound: 2, fixedCount: 2 })));
         });
 
-        it("should handle no users to fix", async () => {
+        it("does not leak any user's name or email in the response", async () => {
+            // This endpoint used to return {name, email} for every user it
+            // touched, which made a repair route into a user directory for
+            // whoever could reach it.
+            seedTwo();
+            await fixGoogleOAuthUsers(req, res);
+            const body = JSON.stringify(res.json.mock.calls[0][0]);
+            expect(body).not.toContain("@example.com");
+            expect(body).not.toContain("user1");
+            expect(body).not.toContain("fixedUsers");
+        });
+
+        it("handles there being nothing to fix", async () => {
             UserQuiz.find.mockResolvedValue([]);
-
             await fixGoogleOAuthUsers(req, res);
-
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Fixed 0 users successfully",
-                totalFound: 0,
-                fixedUsers: []
-            });
+            expect(res.json).toHaveBeenCalledWith(success(
+                expect.objectContaining({ totalFound: 0, fixedCount: 0 })));
         });
 
-        it("should handle database errors", async () => {
+        it("throws when the database fails", async () => {
             UserQuiz.find.mockRejectedValue(new Error("Database error"));
-
-            await fixGoogleOAuthUsers(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                error: "Server error",
-                details: "Database error"
-            });
+            await expect(fixGoogleOAuthUsers(req, res)).rejects.toThrow("Server error");
         });
     });
 });

@@ -33,22 +33,34 @@ jobs:
         cd frontend
         npm ci
 
+    # Every step below used to end in `|| echo "..."`, which exits 0 whatever
+    # happens. This job reported success on 2026-05-11 and since, while 149 of
+    # 155 backend tests were failing. A check that cannot fail is not a check.
+
+    # Lint debt is real (backend 334 errors, frontend 58 problems) and is not
+    # being fixed in the same change as the security work. continue-on-error
+    # surfaces it as a warning on the run instead of hiding it behind a green
+    # tick -- unlike `|| echo`, the failure is visible and attributable.
     - name: Run backend linting
-      run: |
-        cd backend
-        npm run lint || echo "Linting failed"
+      continue-on-error: true
+      run: npm run lint
+      working-directory: backend
 
     - name: Run frontend linting
-      run: |
-        cd frontend
-        npm run lint || echo "Linting failed"
+      continue-on-error: true
+      run: npm run lint
+      working-directory: frontend
 
+    # The backend suite has a backlog of assertions written against a response
+    # shape the controllers no longer use. The ratchet pins the count so it can
+    # only go down, and fails outright if the suite does not run at all.
     - name: Run backend tests
-      run: |
-        cd backend
-        npm test || echo "Tests failed"
+      run: npm run test:ratchet
+      working-directory: backend
+      env:
+        JWT_SECRET: test_secret_for_ci
 
+    # The frontend suite passes 52/52, so it is held strictly. No tolerance here.
     - name: Run frontend tests
-      run: |
-        cd frontend
-        npm test || echo "Tests failed"
+      run: npm test
+      working-directory: frontend

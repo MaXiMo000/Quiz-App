@@ -16,7 +16,8 @@
     "test:coverage": "npx jest --coverage --maxWorkers=1",
     "start": "node --require dotenv/config server.js",
     "lint": "eslint .",
-    "check-models": "node --require dotenv/config utils/checkGeminiModels.js"
+    "check-models": "node --require dotenv/config utils/checkGeminiModels.js",
+    "test:ratchet": "node scripts/test-ratchet.mjs"
   },
   "keywords": [],
   "dependencies": {

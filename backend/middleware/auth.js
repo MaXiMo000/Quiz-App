@@ -40,3 +40,26 @@ export const verifyToken = (req, res, next) => {
         return res.status(403).json({ message: "Invalid or expired token." });
     }
 };
+
+/**
+ * Requires the caller to be an admin.
+ *
+ * verifyToken only proves somebody is logged in. Several controllers already
+ * did `req.user.role === "admin"` inline, but the routes under /api/debug did
+ * no ownership or role check at all -- so any authenticated user could read
+ * any other user's profile by id, reset any user's XP, level and streaks, and
+ * trigger a bulk repair whose response listed every affected user's name and
+ * email address.
+ *
+ * Use after verifyToken, which is what populates req.user.
+ */
+export const requireAdmin = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({ message: "Access denied. No token provided." });
+    }
+    if (req.user.role !== "admin") {
+        logger.warn({ message: "Non-admin blocked from an admin-only route", userId: req.user.id, path: req.originalUrl });
+        return res.status(403).json({ message: "Access denied. Admin only." });
+    }
+    next();
+};

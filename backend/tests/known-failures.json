@@ -1,0 +1,18 @@
+{
+  "_comment": [
+    "Known-failing tests, recorded so the number can only go down.",
+    "",
+    "The workflow used to run `npm test || echo \"Tests failed\"`, which exits 0",
+    "whatever happens -- so CI reported success on 2026-05-11 and since, over a",
+    "suite where 149 of 155 tests were failing. The cause is a single refactor:",
+    "the controllers standardised on utils/responseHelper (every success is now",
+    "{status, statusCode, message, data}, failures throw AppError) and the",
+    "assertions were never updated to match.",
+    "",
+    "These are stale assertions, not 140 product bugs. Fix a suite, then lower",
+    "the numbers below -- the ratchet fails the build if they go up, and also if",
+    "they go down without this file being updated."
+  ],
+  "failedSuites": 18,
+  "failedTests": 140
+}

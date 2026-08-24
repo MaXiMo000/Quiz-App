@@ -138,9 +138,12 @@ export const fixGoogleOAuthUsers = async (req, res) => {
         }
 
         logger.info(`Fixed ${fixedCount} Google OAuth users successfully`);
+        // Counts, not people. This previously returned the name and email of
+        // every user it touched, which turned a repair endpoint into a user
+        // directory for whoever called it.
         return sendSuccess(res, {
             totalFound: usersToFix.length,
-            fixedUsers: usersToFix.map(u => ({ name: u.name, email: u.email }))
+            fixedCount
         }, `Fixed ${fixedCount} users successfully`);
     } catch (error) {
         logger.error({ message: "Error fixing Google OAuth users", error: error.message, stack: error.stack });
