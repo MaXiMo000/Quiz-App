@@ -63,10 +63,10 @@ describe("Analytics Routes", () => {
 
             const res = await request(app).get("/api/analytics/question-stats");
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toBeInstanceOf(Array);
-            expect(res.body.length).toBe(2);
+            expect(res.body.data).toBeInstanceOf(Array);
+            expect(res.body.data.length).toBe(2);
 
-            const sortedBody = res.body.sort((a, b) => a.question.localeCompare(b.question));
+            const sortedBody = res.body.data.sort((a, b) => a.question.localeCompare(b.question));
 
             expect(sortedBody[0].question).toBe("What is 2+2?");
             expect(sortedBody[0].correctPercent).toBe(100);
@@ -115,16 +115,16 @@ describe("Analytics Routes", () => {
 
             const res = await request(app).get("/api/analytics/question-stats");
             expect(res.statusCode).toEqual(200);
-            expect(res.body.length).toBe(1);
-            expect(res.body[0].question).toBe("What is 2+2?");
-            expect(res.body[0].correctPercent).toBe(50); // 1 out of 2 correct
-            expect(res.body[0].avgTime).toBe(5); // (3 + 7) / 2
+            expect(res.body.data.length).toBe(1);
+            expect(res.body.data[0].question).toBe("What is 2+2?");
+            expect(res.body.data[0].correctPercent).toBe(50); // 1 out of 2 correct
+            expect(res.body.data[0].avgTime).toBe(5); // (3 + 7) / 2
         }, 30000);
 
         it("should handle empty database", async () => {
             const res = await request(app).get("/api/analytics/question-stats");
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual([]);
+            expect(res.body.data).toEqual([]);
         }, 30000);
     });
 
@@ -155,14 +155,14 @@ describe("Analytics Routes", () => {
                 .get("/api/analytics/score-trends");
 
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toBeInstanceOf(Array);
-            expect(res.body.length).toBe(2);
+            expect(res.body.data).toBeInstanceOf(Array);
+            expect(res.body.data.length).toBe(2);
         }, 30000);
 
         it("should handle empty database", async () => {
             const res = await request(app).get("/api/analytics/score-trends");
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual([]);
+            expect(res.body.data).toEqual([]);
         }, 30000);
     });
 
@@ -206,14 +206,14 @@ describe("Analytics Routes", () => {
 
             const res = await request(app).get("/api/analytics/topic-heatmap");
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toBeInstanceOf(Array);
-            expect(res.body.length).toBeGreaterThan(0);
+            expect(res.body.data).toBeInstanceOf(Array);
+            expect(res.body.data.length).toBeGreaterThan(0);
         }, 30000);
 
         it("should handle empty database", async () => {
             const res = await request(app).get("/api/analytics/topic-heatmap");
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual([]);
+            expect(res.body.data).toEqual([]);
         }, 30000);
     });
 });

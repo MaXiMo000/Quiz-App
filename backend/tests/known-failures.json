@@ -14,7 +14,7 @@
     "they go down without this file being updated.",
     "totalTests guards against a suite that stops loading: it contributes zero tests, so its failures disappear and the count looks like progress."
   ],
-  "failedSuites": 12,
+  "failedSuites": 11,
   "failedTests": 95,
-  "totalTests": 166
+  "totalTests": 173
 }

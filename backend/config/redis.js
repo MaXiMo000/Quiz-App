@@ -1,4 +1,8 @@
-import redis from "redis";
+// Named import, not default. redis v5 ships no default export in its CJS
+// interop, so `import redis from "redis"` is undefined under babel-jest
+// and every suite that transitively imports the cache middleware failed
+// to load. The named export exists in both CJS and native ESM.
+import { createClient } from "redis";
 import dotenv from "dotenv";
 import logger from "../utils/logger.js";
 
@@ -38,7 +42,7 @@ const redisConfig = {
 // Use Redis URL if available (for Redis Cloud)
 let redisClient;
 if (process.env.REDIS_URL) {
-  redisClient = redis.createClient({
+  redisClient = createClient({
     url: process.env.REDIS_URL,
     socket: {
       connectTimeout: 10000,
@@ -61,7 +65,7 @@ if (process.env.REDIS_URL) {
     pingInterval: 30000,
   });
 } else {
-  redisClient = redis.createClient(redisConfig);
+  redisClient = createClient(redisConfig);
 }
 
 // Enhanced error handling
