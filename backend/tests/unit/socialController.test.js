@@ -50,7 +50,8 @@ describe("Social Controller - Simple", () => {
             .send({});
 
         expect(res.statusCode).toBe(400);
-        expect(res.body).toEqual({
+        expect(res.body).toMatchObject({
+            status: "error",
             message: "Recipient ID is required"
         });
     }, 10000);
@@ -61,7 +62,8 @@ describe("Social Controller - Simple", () => {
             .send({ recipientId: "60c72b9f9b1d8c001f8e4a3a" });
 
         expect(res.statusCode).toBe(400);
-        expect(res.body).toEqual({
+        expect(res.body).toMatchObject({
+            status: "error",
             message: "Cannot send friend request to yourself"
         });
     }, 10000);
@@ -74,7 +76,8 @@ describe("Social Controller - Simple", () => {
             .send({ recipientId: "nonexistent" });
 
         expect(res.statusCode).toBe(404);
-        expect(res.body).toEqual({
+        expect(res.body).toMatchObject({
+            status: "error",
             message: "User not found"
         });
     }, 10000);

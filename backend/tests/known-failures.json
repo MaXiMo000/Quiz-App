@@ -13,6 +13,6 @@
     "the numbers below -- the ratchet fails the build if they go up, and also if",
     "they go down without this file being updated."
   ],
-  "failedSuites": 18,
-  "failedTests": 140
+  "failedSuites": 15,
+  "failedTests": 133
 }

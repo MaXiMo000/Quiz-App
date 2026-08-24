@@ -1,5 +1,6 @@
 import { createWrittenTestReport, getWrittenTestReports } from "../../controllers/writtenTestReportController.js";
 import WrittenTestReport from "../../models/WrittenTestReport.js";
+import { ok } from "../helpers/envelope.js";
 
 jest.mock("../../models/WrittenTestReport.js");
 
@@ -52,7 +53,7 @@ describe("WrittenTestReport Controller", () => {
 
       await getWrittenTestReports(req, res);
 
-      expect(res.json).toHaveBeenCalledWith([{}, {}]);
+      expect(res.json).toHaveBeenCalledWith(ok([{}, {}]));
     });
   });
 });

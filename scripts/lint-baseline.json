@@ -12,7 +12,7 @@
     "shrink without this file being updated."
   ],
   "backend": {
-    "errors": 1,
+    "errors": 0,
     "warnings": 0
   },
   "frontend": {

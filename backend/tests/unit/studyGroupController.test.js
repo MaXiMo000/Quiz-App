@@ -134,7 +134,8 @@ describe("Study Group Controller - Working", () => {
             });
 
         expect(res.statusCode).toBe(400);
-        expect(res.body).toEqual({
+        expect(res.body).toMatchObject({
+            status: "error",
             message: "Study group name must be at least 3 characters"
         });
     }, 10000);
@@ -146,7 +147,8 @@ describe("Study Group Controller - Working", () => {
             .post("/api/study-groups/nonexistent/join");
 
         expect(res.statusCode).toBe(404);
-        expect(res.body).toEqual({
+        expect(res.body).toMatchObject({
+            status: "error",
             message: "Study group not found"
         });
     }, 10000);
@@ -164,45 +166,6 @@ describe("Study Group Controller - Working", () => {
         UserQuiz.findById.mockResolvedValue(mockUser);
         UserQuiz.findByIdAndUpdate.mockResolvedValue(mockUser);
 
-        // Mock the StudyGroup constructor to return a proper instance
-        const mockStudyGroupInstance = {
-            _id: "groupId",
-            name: "JavaScript Study Group",
-            description: "Learning JavaScript together",
-            isPrivate: false,
-            maxMembers: 20,
-            creator: "60c72b9f9b1d8c001f8e4a3a",
-            members: [{
-                user: "60c72b9f9b1d8c001f8e4a3a",
-                role: "admin",
-                joinedAt: new Date()
-            }],
-            activities: [{
-                type: "member_joined",
-                user: "60c72b9f9b1d8c001f8e4a3a",
-                details: { message: "Study group created" },
-                timestamp: new Date()
-            }],
-            save: jest.fn().mockResolvedValue({
-                _id: "groupId",
-                name: "JavaScript Study Group",
-                description: "Learning JavaScript together",
-                isPrivate: false,
-                maxMembers: 20,
-                creator: "60c72b9f9b1d8c001f8e4a3a",
-                members: [{
-                    user: "60c72b9f9b1d8c001f8e4a3a",
-                    role: "admin",
-                    joinedAt: new Date()
-                }],
-                activities: [{
-                    type: "member_joined",
-                    user: "60c72b9f9b1d8c001f8e4a3a",
-                    details: { message: "Study group created" },
-                    timestamp: new Date()
-                }]
-            })
-        };
 
         // Reset the mock implementation for this test
         StudyGroup.mockImplementation((data) => ({
@@ -245,9 +208,19 @@ describe("Study Group Controller - Working", () => {
             });
 
         expect(res.statusCode).toBe(201);
-        expect(res.body).toEqual({
+        expect(res.body).toMatchObject({
+            status: "success",
             message: "Study group created successfully",
-            studyGroup: expect.any(Object)
+            // data is the group itself. Naming the fields rather than
+            // expect.any(Object) -- the original assertion would have passed
+            // on any object at all, including the wrong group.
+            data: expect.objectContaining({
+                name: "JavaScript Study Group",
+                description: "Learning JavaScript together",
+                isPrivate: false,
+                maxMembers: 20,
+                creator: "60c72b9f9b1d8c001f8e4a3a"
+            })
         });
     }, 10000);
 });
