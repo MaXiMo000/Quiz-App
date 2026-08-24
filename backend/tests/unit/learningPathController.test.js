@@ -8,6 +8,7 @@ import {
 import { LearningPath, UserPathProgress } from "../../models/LearningPath.js";
 import User from "../../models/User.js";
 import Report from "../../models/Report.js";
+import { ok, err } from "../helpers/envelope.js";
 
 jest.mock("../../models/LearningPath.js", () => ({
     __esModule: true,
@@ -97,11 +98,9 @@ describe("Learning Path Controller", () => {
 
             await getLearningPaths(req, res);
 
-            expect(res.json).toHaveBeenCalledWith(
-                expect.objectContaining({
+            expect(res.json).toHaveBeenCalledWith(ok(expect.objectContaining({
                     paths: expect.any(Array),
-                })
-            );
+                })));
         });
 
         it("should handle database errors", async () => {
@@ -113,9 +112,7 @@ describe("Learning Path Controller", () => {
             await getLearningPaths(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Server error"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Server error"));
         });
     });
 
@@ -130,9 +127,7 @@ describe("Learning Path Controller", () => {
             await getLearningPath(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Learning path not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Learning path not found"));
         });
 
         it("should handle database errors", async () => {
@@ -145,9 +140,7 @@ describe("Learning Path Controller", () => {
             await getLearningPath(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Server error"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Server error"));
         });
     });
 
@@ -160,9 +153,7 @@ describe("Learning Path Controller", () => {
             await startLearningPath(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Learning path not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Learning path not found"));
         });
 
         it("should handle already completed path", async () => {
@@ -185,9 +176,7 @@ describe("Learning Path Controller", () => {
             await startLearningPath(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Learning path already completed"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Learning path already completed"));
         });
 
         it("should handle database errors", async () => {
@@ -198,9 +187,7 @@ describe("Learning Path Controller", () => {
             await startLearningPath(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Server error"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Server error"));
         });
     });
 
@@ -214,9 +201,7 @@ describe("Learning Path Controller", () => {
             await updateNodeProgress(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "User progress not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("User progress not found"));
         });
 
         it("should handle database errors", async () => {
@@ -228,9 +213,7 @@ describe("Learning Path Controller", () => {
             await updateNodeProgress(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Server error"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Server error"));
         });
     });
 
@@ -244,9 +227,7 @@ describe("Learning Path Controller", () => {
             await getLearningAnalytics(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Server error"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Server error"));
         });
     });
 });

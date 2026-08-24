@@ -19,7 +19,7 @@ import reviewRoutes from "../routes/reviewRoutes.js";
 import User from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import ReviewSchedule from "../models/ReviewSchedule.js";
-import errorHandler from "../../services/errorHandler.js";
+import errorHandler from "../services/errorHandler.js";
 
 // Mock the verifyToken middleware
 jest.mock("../middleware/auth.js", () => ({

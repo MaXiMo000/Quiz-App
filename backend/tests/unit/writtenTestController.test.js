@@ -121,9 +121,10 @@ describe("Written Test Controller", () => {
                 });
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual({
-                message: "Success!"
-            });
+            expect(res.body).toMatchObject({
+            status: "success",
+            message: "Success!"
+        });
         });
 
         it("should handle missing required fields", async () => {
@@ -135,9 +136,10 @@ describe("Written Test Controller", () => {
                 });
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({
-                message: "Missing required fields"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Missing required fields"
+        });
         });
 
         it("should handle database errors", async () => {
@@ -153,10 +155,11 @@ describe("Written Test Controller", () => {
                 });
 
             expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Error creating written test",
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Error creating written test",
                 error: expect.any(Object)
-            });
+        });
         });
     });
 
@@ -189,10 +192,11 @@ describe("Written Test Controller", () => {
                 .get("/api/written-tests");
 
             expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Error fetching written tests",
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Error fetching written tests",
                 error: expect.any(Object)
-            });
+        });
         });
     });
 
@@ -248,9 +252,10 @@ describe("Written Test Controller", () => {
                 });
 
             expect(res.statusCode).toBe(404);
-            expect(res.body).toEqual({
-                error: "Test not found"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Test not found"
+        });
         });
 
         it("should handle missing required fields", async () => {
@@ -269,10 +274,11 @@ describe("Written Test Controller", () => {
                 });
 
             expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Failed to add question",
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Failed to add question",
                 error: expect.any(Object)
-            });
+        });
         });
     });
 
@@ -292,9 +298,10 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests?title=Test Title");
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual({
-                message: "Test deleted successfully!"
-            });
+            expect(res.body).toMatchObject({
+            status: "success",
+            message: "Test deleted successfully!"
+        });
             expect(WrittenTest.findOne).toHaveBeenCalledWith({ title: "Test Title" });
         });
 
@@ -305,9 +312,10 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests?title=Nonexistent");
 
             expect(res.statusCode).toBe(404);
-            expect(res.body).toEqual({
-                message: "Test not found"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Test not found"
+        });
             expect(WrittenTest.findOne).toHaveBeenCalledWith({ title: "Nonexistent" });
         });
 
@@ -316,9 +324,10 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests");
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({
-                message: "Test title is required"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Test title is required"
+        });
         });
     });
 
@@ -346,8 +355,9 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests/testId/questions/0");
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual({
-                message: "Question deleted successfully",
+            expect(res.body).toMatchObject({
+            status: "success",
+            message: "Question deleted successfully",
                 test: expect.objectContaining({
                     _id: "testId",
                     createdBy: "60c72b9f9b1d8c001f8e4a3a",
@@ -355,7 +365,7 @@ describe("Written Test Controller", () => {
                     totalMarks: 9,
                     duration: 0
                 })
-            });
+        });
             expect(mockTest.questions).toHaveLength(0);
             expect(mockTest.save).toHaveBeenCalled();
         });
@@ -367,9 +377,10 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests/nonexistent/questions/0");
 
             expect(res.statusCode).toBe(404);
-            expect(res.body).toEqual({
-                message: "Test not found"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Test not found"
+        });
         });
 
         it("should handle question not found", async () => {
@@ -385,9 +396,10 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests/testId/questions/5");
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({
-                message: "Invalid question index"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Invalid question index"
+        });
         });
 
         it("should handle unauthorized deletion", async () => {
@@ -409,10 +421,11 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests/testId/questions/0");
 
             expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Error deleting question",
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Error deleting question",
                 error: expect.any(Object)
-            });
+        });
         });
     });
 });

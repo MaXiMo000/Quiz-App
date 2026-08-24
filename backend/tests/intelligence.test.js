@@ -17,7 +17,7 @@ import User from "../models/User.js";
 import Report from "../models/Report.js";
 import LearningAnalytics from "../models/LearningAnalytics.js";
 import CognitiveMetrics from "../models/CognitiveMetrics.js";
-import errorHandler from "../../services/errorHandler.js";
+import errorHandler from "../services/errorHandler.js";
 
 // Mock the verifyToken middleware
 jest.mock("../middleware/auth.js", () => ({

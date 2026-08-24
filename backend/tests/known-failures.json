@@ -11,8 +11,10 @@
     "",
     "These are stale assertions, not 140 product bugs. Fix a suite, then lower",
     "the numbers below -- the ratchet fails the build if they go up, and also if",
-    "they go down without this file being updated."
+    "they go down without this file being updated.",
+    "totalTests guards against a suite that stops loading: it contributes zero tests, so its failures disappear and the count looks like progress."
   ],
   "failedSuites": 12,
-  "failedTests": 103
+  "failedTests": 95,
+  "totalTests": 166
 }

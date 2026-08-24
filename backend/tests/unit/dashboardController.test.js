@@ -2,6 +2,7 @@ import { getDashboardData, getAllCategories } from "../../controllers/dashboardC
 import UserQuiz from "../../models/User.js";
 import Report from "../../models/Report.js";
 import Quiz from "../../models/Quiz.js";
+import { ok, err } from "../helpers/envelope.js";
 
 jest.mock("../../models/User.js", () => ({
     __esModule: true,
@@ -77,15 +78,13 @@ describe("Dashboard Controller", () => {
 
             await getDashboardData(req, res);
 
-            expect(res.json).toHaveBeenCalledWith(
-                expect.objectContaining({
+            expect(res.json).toHaveBeenCalledWith(ok(expect.objectContaining({
                     totalQuizzes: 15,
                     completedQuizzes: 3,
                     averageScore: expect.any(Number),
                     userLevel: 1,
                     userXP: 100
-                })
-            );
+                })));
         });
 
         it("should handle user not found", async () => {
@@ -94,7 +93,7 @@ describe("Dashboard Controller", () => {
             await getDashboardData(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({ message: "User not found" });
+            expect(res.json).toHaveBeenCalledWith(err("User not found"));
         });
 
         it("should handle database errors", async () => {
@@ -103,10 +102,10 @@ describe("Dashboard Controller", () => {
             await getDashboardData(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
                 message: "Error fetching dashboard data",
                 error: "Database error"
-            });
+            } }));
         });
     });
 
@@ -117,10 +116,10 @@ describe("Dashboard Controller", () => {
 
             await getAllCategories(req, res);
 
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(ok({
                 categories: mockCategories,
                 count: mockCategories.length
-            });
+            }));
         });
 
         it("should handle database errors", async () => {
@@ -129,10 +128,10 @@ describe("Dashboard Controller", () => {
             await getAllCategories(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
                 message: "Error fetching categories",
                 error: "Database error"
-            });
+            } }));
         });
     });
 });

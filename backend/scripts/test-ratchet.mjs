@@ -47,6 +47,21 @@ if (r.numTotalTests === 0) {
   process.exit(1);
 }
 
+// The count of FAILING tests is not enough on its own. A suite that stops
+// loading contributes zero tests, so its failures vanish and the ratchet reads
+// it as an improvement. That happened here: a bad import path took two suites
+// out and the totals still looked better. Pin the total as well.
+if (r.numTotalTests < baseline.totalTests) {
+  console.error(`\nFAIL — only ${r.numTotalTests} tests were collected, expected at least ${baseline.totalTests}.`);
+  console.error("A suite has stopped loading. Its failures are not gone, they are hidden.");
+  for (const suite of r.testResults) {
+    if (suite.status !== "passed" && suite.assertionResults.length === 0) {
+      console.error(`  did not load: ${suite.name.split("/backend/").pop()}`);
+    }
+  }
+  process.exit(1);
+}
+
 console.log(`\nsuites: ${suites} failing (baseline ${baseline.failedSuites})`);
 console.log(`tests : ${tests} failing (baseline ${baseline.failedTests}), ` +
             `${r.numPassedTests} passing of ${r.numTotalTests}`);

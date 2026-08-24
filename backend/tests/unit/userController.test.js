@@ -4,6 +4,7 @@ import User from "../../models/User.js";
 import XPLog from "../../models/XPLog.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { ok } from "../helpers/envelope.js";
 
 jest.mock("../../models/User.js");
 jest.mock("../../models/XPLog.js");
@@ -43,10 +44,10 @@ describe("User Controller", () => {
       await registerUser(req, res);
 
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(ok({
         success: true,
         message: "User registered successfully!",
-      });
+      }));
     });
 
     it("should not register an existing user", async () => {
@@ -61,10 +62,10 @@ describe("User Controller", () => {
       await registerUser(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
         success: false,
         message: "User already exists",
-      });
+      } }));
     });
   });
 
@@ -98,12 +99,10 @@ describe("User Controller", () => {
 
       await loginUser(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(res.json).toHaveBeenCalledWith(ok(expect.objectContaining({
           message: "Login successful",
           token: "token",
-        })
-      );
+        })));
     }, 30000);
 
     it("should not login with invalid credentials", async () => {
@@ -120,9 +119,9 @@ describe("User Controller", () => {
       await loginUser(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
         error: "Invalid credentials",
-      });
+      } }));
     });
   });
 });
