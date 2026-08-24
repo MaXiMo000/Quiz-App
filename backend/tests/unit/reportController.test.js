@@ -4,6 +4,7 @@ import UserQuiz from "../../models/User.js";
 import XPLog from "../../models/XPLog.js";
 import Quiz from "../../models/Quiz.js";
 import mongoose from "mongoose";
+import { ok, err } from "../helpers/envelope.js";
 
 // Mock all models
 jest.mock("../../models/Report.js", () => {
@@ -131,7 +132,7 @@ describe("Report Controller", () => {
         await createReport(req, res);
 
         expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith(expect.any(Object));
+        expect(res.json).toHaveBeenCalledWith(ok(expect.any(Object)));
     });
 
     it("should handle missing required fields", async () => {
@@ -143,9 +144,7 @@ describe("Report Controller", () => {
         await createReport(req, res);
 
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({
-            message: "Missing required fields"
-        });
+        expect(res.json).toHaveBeenCalledWith(err("Missing required fields"));
     });
 
     it("should handle user not found", async () => {
@@ -174,9 +173,7 @@ describe("Report Controller", () => {
         await createReport(req, res);
 
         expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.json).toHaveBeenCalledWith({
-            message: "User not found"
-        });
+        expect(res.json).toHaveBeenCalledWith(err("User not found"));
     });
 
     it("should handle database errors", async () => {
@@ -219,10 +216,10 @@ describe("Report Controller", () => {
         await createReport(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
             message: "Error saving report",
             error: "Database error"
-        });
+        } }));
     });
   });
 
@@ -236,7 +233,7 @@ describe("Report Controller", () => {
 
       await getReports(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(mockReports);
+      expect(res.json).toHaveBeenCalledWith(ok(mockReports));
     });
 
     it("should handle database errors", async () => {
@@ -245,10 +242,10 @@ describe("Report Controller", () => {
       await getReports(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
         message: "Error fetching reports",
         error: expect.any(Error)
-      });
+      } }));
     });
   });
 
@@ -266,7 +263,7 @@ describe("Report Controller", () => {
       await getReportsUser(req, res);
 
       expect(Report.find).toHaveBeenCalledWith({ username: "testuser" });
-      expect(res.json).toHaveBeenCalledWith(mockReports);
+      expect(res.json).toHaveBeenCalledWith(ok(mockReports));
     });
 
     it("should return all reports when no username provided", async () => {
@@ -282,7 +279,7 @@ describe("Report Controller", () => {
       await getReportsUser(req, res);
 
       expect(Report.find).toHaveBeenCalledWith({});
-      expect(res.json).toHaveBeenCalledWith(mockReports);
+      expect(res.json).toHaveBeenCalledWith(ok(mockReports));
     });
 
     it("should handle database errors", async () => {
@@ -294,10 +291,10 @@ describe("Report Controller", () => {
       await getReportsUser(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
         message: "Error retrieving reports",
         error: expect.any(Error)
-      });
+      } }));
     });
   });
 
@@ -316,7 +313,7 @@ describe("Report Controller", () => {
       await getReportsUserID(req, res);
 
       expect(Report.findById).toHaveBeenCalledWith("reportId123");
-      expect(res.json).toHaveBeenCalledWith(mockReport);
+      expect(res.json).toHaveBeenCalledWith(ok(mockReport));
     });
 
     it("should handle report not found", async () => {
@@ -326,9 +323,7 @@ describe("Report Controller", () => {
       await getReportsUserID(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Report not found"
-      });
+      expect(res.json).toHaveBeenCalledWith(err("Report not found"));
     });
 
     it("should handle database errors", async () => {
@@ -338,10 +333,10 @@ describe("Report Controller", () => {
       await getReportsUserID(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
         message: "Error retrieving report",
         error: expect.any(Error)
-      });
+      } }));
     });
   });
 });

@@ -1,3 +1,9 @@
+// Must come first: this patches express's Router so a rejected promise
+// from an async handler reaches the error middleware. Without it, on
+// express 4, `throw new AppError(...)` inside an async controller becomes
+// an unhandled rejection and the client gets NO response at all -- the
+// request hangs until it times out. There are 134 such throw sites.
+import "express-async-errors";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";

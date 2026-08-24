@@ -1,3 +1,4 @@
+import "express-async-errors";
 import request from "supertest";
 import express from "express";
 
@@ -107,6 +108,7 @@ jest.mock("../../models/Quiz.js", () => ({
 import { createStudyGroup, joinStudyGroup, getStudyGroupDetails } from "../../controllers/studyGroupController.js";
 import StudyGroup from "../../models/StudyGroup.js";
 import UserQuiz from "../../models/User.js";
+import errorHandler from "../../services/errorHandler.js";
 
 const app = express();
 app.use(express.json());
@@ -120,6 +122,10 @@ app.use((req, res, next) => {
 app.post("/api/study-groups", createStudyGroup);
 app.post("/api/study-groups/:groupId/join", joinStudyGroup);
 app.get("/api/study-groups/:groupId", getStudyGroupDetails);
+
+// Mirrors server.js: thrown AppErrors are rendered by this, not by
+// the controller writing a body itself.
+app.use(errorHandler);
 
 describe("Study Group Controller - Working", () => {
     beforeEach(() => {

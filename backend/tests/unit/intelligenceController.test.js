@@ -64,6 +64,7 @@ jest.mock("../../services/analyticsService.js", () => ({
 
 // Import the mocked functions
 import { trackLearningAnalytics, trackCognitiveMetrics } from "../../services/analyticsService.js";
+import { ok, err } from "../helpers/envelope.js";
 
 // Mock the verifyToken middleware
 jest.mock("../../middleware/auth.js", () => ({
@@ -94,9 +95,9 @@ describe("Intelligence Controller", () => {
             await getSmartRecommendations(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
                 error: "Server error"
-            });
+            } }));
         });
 
         it("should handle user not found", async () => {
@@ -105,9 +106,7 @@ describe("Intelligence Controller", () => {
             await getSmartRecommendations(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "User not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("User not found"));
         });
 
         it("should handle database errors", async () => {
@@ -116,9 +115,9 @@ describe("Intelligence Controller", () => {
             await getSmartRecommendations(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
                 error: "Server error"
-            });
+            } }));
         });
     });
 
@@ -130,9 +129,9 @@ describe("Intelligence Controller", () => {
             await getAdaptiveDifficulty(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
                 error: "Server error"
-            });
+            } }));
         });
 
         it("should handle user not found", async () => {
@@ -142,9 +141,7 @@ describe("Intelligence Controller", () => {
             await getAdaptiveDifficulty(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "User not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("User not found"));
         });
     });
 
@@ -155,9 +152,9 @@ describe("Intelligence Controller", () => {
             await getLearningAnalytics(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
                 error: "Server error"
-            });
+            } }));
         });
 
         it("should handle user not found", async () => {
@@ -166,9 +163,7 @@ describe("Intelligence Controller", () => {
             await getLearningAnalytics(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "User not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("User not found"));
         });
     });
 
@@ -193,9 +188,9 @@ describe("Intelligence Controller", () => {
             expect(trackCognitiveMetrics).toHaveBeenCalledWith("60c72b9f9b1d8c001f8e4a3a", "quizId", {
                 responseTime: 30
             });
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(ok({
                 message: "Performance tracked successfully"
-            });
+            }));
         });
 
         it("should handle missing required fields", async () => {
@@ -207,9 +202,9 @@ describe("Intelligence Controller", () => {
             await trackUserPerformance(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
                 error: "Missing required fields: quizId, score, totalQuestions, and timeSpent are required"
-            });
+            } }));
         });
     });
 
@@ -240,10 +235,10 @@ describe("Intelligence Controller", () => {
             await updateUserPreferences(req, res);
 
             expect(mockUser.save).toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(ok({
                 message: "User preferences updated successfully",
                 preferences: mockUser.preferences
-            });
+            }));
         });
 
         it("should handle user not found", async () => {
@@ -261,9 +256,7 @@ describe("Intelligence Controller", () => {
             await updateUserPreferences(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "User not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("User not found"));
         });
     });
 });

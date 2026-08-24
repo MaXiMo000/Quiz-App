@@ -1,7 +1,9 @@
+import "express-async-errors";
 import request from "supertest";
 import express from "express";
 import analyticsRoutes from "../../routes/analyticsRoutes.js";
 import Report from "../../models/Report.js";
+import errorHandler from "../../services/errorHandler.js";
 
 // Mock the verifyToken middleware
 jest.mock("../../middleware/auth.js", () => ({
@@ -14,6 +16,10 @@ jest.mock("../../middleware/auth.js", () => ({
 const app = express();
 app.use(express.json());
 app.use("/api/analytics", analyticsRoutes);
+
+// Mirrors server.js: thrown AppErrors are rendered by this, not by
+// the controller writing a body itself.
+app.use(errorHandler);
 
 describe("Analytics Routes", () => {
     beforeEach(async () => {

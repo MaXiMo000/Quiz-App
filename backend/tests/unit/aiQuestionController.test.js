@@ -1,3 +1,4 @@
+import "express-async-errors";
 import request from "supertest";
 import express from "express";
 import { generateQuizQuestions, generateAdaptiveQuestions } from "../../controllers/aiQuestionController.js";
@@ -30,6 +31,7 @@ jest.mock("../../services/knowledgeLevelService.js", () => ({
 }));
 
 import { resolveAdaptiveDifficulty } from "../../services/knowledgeLevelService.js";
+import errorHandler from "../../services/errorHandler.js";
 
 // Mock the verifyToken middleware
 jest.mock("../../middleware/auth.js", () => ({
@@ -43,6 +45,10 @@ const app = express();
 app.use(express.json());
 app.post("/api/ai/generate-questions/:id", generateQuizQuestions);
 app.post("/api/ai/generate-adaptive", generateAdaptiveQuestions);
+
+// Mirrors server.js: thrown AppErrors are rendered by this, not by
+// the controller writing a body itself.
+app.use(errorHandler);
 
 describe("AI Question Controller", () => {
     beforeEach(() => {
@@ -64,9 +70,10 @@ describe("AI Question Controller", () => {
                 });
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({
-                error: "Topic and number of questions are required"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Topic and number of questions are required"
+        });
         });
 
         it("should handle invalid quiz ID", async () => {
@@ -79,9 +86,10 @@ describe("AI Question Controller", () => {
                 });
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({
-                error: "Invalid quiz ID"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Invalid quiz ID"
+        });
         });
 
         it("should handle quiz not found", async () => {
@@ -96,9 +104,10 @@ describe("AI Question Controller", () => {
                 });
 
             expect(res.statusCode).toBe(404);
-            expect(res.body).toEqual({
-                error: "Quiz not found"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Quiz not found"
+        });
         });
 
         it("should handle invalid question type", async () => {
@@ -119,9 +128,10 @@ describe("AI Question Controller", () => {
                 });
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({
-                error: "Invalid question type"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Invalid question type"
+        });
         });
 
     });
@@ -137,9 +147,10 @@ describe("AI Question Controller", () => {
                 });
 
             expect(res.statusCode).toBe(404);
-            expect(res.body).toEqual({
-                error: "Quiz not found"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Quiz not found"
+        });
         });
 
         it("should handle quiz not found", async () => {
@@ -154,9 +165,10 @@ describe("AI Question Controller", () => {
                 });
 
             expect(res.statusCode).toBe(404);
-            expect(res.body).toEqual({
-                error: "Quiz not found"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Quiz not found"
+        });
         });
 
         it("should handle database errors", async () => {
@@ -171,10 +183,11 @@ describe("AI Question Controller", () => {
                 });
 
             expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                error: "Internal server error",
+            expect(res.body).toMatchObject({
+            status: "error",
+            error: "Internal server error",
                 details: "Database error"
-            });
+        });
         });
     });
 });

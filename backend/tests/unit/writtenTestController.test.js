@@ -1,3 +1,4 @@
+import "express-async-errors";
 import request from "supertest";
 import express from "express";
 import {
@@ -10,6 +11,7 @@ import {
     deleteQuestion
 } from "../../controllers/writtenTestController.js";
 import WrittenTest from "../../models/WrittenTest.js";
+import errorHandler from "../../services/errorHandler.js";
 
 // Mock the models
 jest.mock("../../models/WrittenTest.js", () => {
@@ -88,6 +90,10 @@ app.post("/api/written-tests/:testId/score", scoreWrittenAnswer);
 app.delete("/api/written-tests", deleteTest);
 app.get("/api/written-tests/:id", getTestById);
 app.delete("/api/written-tests/:testId/questions/:questionIndex", deleteQuestion);
+
+// Mirrors server.js: thrown AppErrors are rendered by this, not by
+// the controller writing a body itself.
+app.use(errorHandler);
 
 describe("Written Test Controller", () => {
     beforeEach(() => {

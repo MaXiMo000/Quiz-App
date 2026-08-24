@@ -1,7 +1,9 @@
+import "express-async-errors";
 import request from "supertest";
 import express from "express";
 import { getReviewSchedule, updateReview } from "../../controllers/reviewController.js";
 import { getReviewScheduleForUser, updateReviewSchedule } from "../../services/reviewScheduler.js";
+import errorHandler from "../../services/errorHandler.js";
 
 // Mock the reviewScheduler service
 jest.mock("../../services/reviewScheduler.js", () => ({
@@ -20,6 +22,10 @@ app.use((req, res, next) => {
 
 app.get("/api/review/schedule", getReviewSchedule);
 app.put("/api/review/:reviewId", updateReview);
+
+// Mirrors server.js: thrown AppErrors are rendered by this, not by
+// the controller writing a body itself.
+app.use(errorHandler);
 
 describe("Review Controller", () => {
     beforeEach(() => {
@@ -63,15 +69,15 @@ describe("Review Controller", () => {
                 .get("/api/review/schedule");
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toHaveLength(2);
-            expect(res.body[0]._id).toBe("reviewId1");
-            expect(res.body[0].user).toBe("60c72b9f9b1d8c001f8e4a3a");
-            expect(res.body[0].quiz).toBe("quizId1");
-            expect(res.body[0].question).toBe("What is JavaScript?");
-            expect(res.body[0].interval).toBe(1);
-            expect(res.body[0].easeFactor).toBe(2.5);
-            expect(res.body[0].repetitions).toBe(0);
-            expect(res.body[0].status).toBe("pending");
+            expect(res.body.data).toHaveLength(2);
+            expect(res.body.data[0]._id).toBe("reviewId1");
+            expect(res.body.data[0].user).toBe("60c72b9f9b1d8c001f8e4a3a");
+            expect(res.body.data[0].quiz).toBe("quizId1");
+            expect(res.body.data[0].question).toBe("What is JavaScript?");
+            expect(res.body.data[0].interval).toBe(1);
+            expect(res.body.data[0].easeFactor).toBe(2.5);
+            expect(res.body.data[0].repetitions).toBe(0);
+            expect(res.body.data[0].status).toBe("pending");
             expect(getReviewScheduleForUser).toHaveBeenCalledWith("60c72b9f9b1d8c001f8e4a3a");
         });
 
@@ -97,15 +103,15 @@ describe("Review Controller", () => {
                 .query({ due: "true" });
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toHaveLength(1);
-            expect(res.body[0]._id).toBe("reviewId1");
-            expect(res.body[0].user).toBe("60c72b9f9b1d8c001f8e4a3a");
-            expect(res.body[0].quiz).toBe("quizId1");
-            expect(res.body[0].question).toBe("What is JavaScript?");
-            expect(res.body[0].interval).toBe(1);
-            expect(res.body[0].easeFactor).toBe(2.5);
-            expect(res.body[0].repetitions).toBe(0);
-            expect(res.body[0].status).toBe("pending");
+            expect(res.body.data).toHaveLength(1);
+            expect(res.body.data[0]._id).toBe("reviewId1");
+            expect(res.body.data[0].user).toBe("60c72b9f9b1d8c001f8e4a3a");
+            expect(res.body.data[0].quiz).toBe("quizId1");
+            expect(res.body.data[0].question).toBe("What is JavaScript?");
+            expect(res.body.data[0].interval).toBe(1);
+            expect(res.body.data[0].easeFactor).toBe(2.5);
+            expect(res.body.data[0].repetitions).toBe(0);
+            expect(res.body.data[0].status).toBe("pending");
         });
 
         it("should handle database errors", async () => {
@@ -115,9 +121,10 @@ describe("Review Controller", () => {
                 .get("/api/review/schedule");
 
             expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Internal Server Error"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Internal Server Error"
+        });
         });
 
         it("should return empty array when no reviews found", async () => {
@@ -127,7 +134,7 @@ describe("Review Controller", () => {
                 .get("/api/review/schedule");
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual([]);
+            expect(res.body.data).toEqual([]);
         });
     });
 
@@ -152,14 +159,14 @@ describe("Review Controller", () => {
                 .send({ quizId: "quizId", questionId: "questionId", quality: 4 });
 
             expect(res.statusCode).toBe(200);
-            expect(res.body._id).toBe("reviewId");
-            expect(res.body.user).toBe("60c72b9f9b1d8c001f8e4a3a");
-            expect(res.body.quiz).toBe("quizId");
-            expect(res.body.question).toBe("What is JavaScript?");
-            expect(res.body.interval).toBe(1);
-            expect(res.body.easeFactor).toBe(2.5);
-            expect(res.body.repetitions).toBe(0);
-            expect(res.body.status).toBe("pending");
+            expect(res.body.data._id).toBe("reviewId");
+            expect(res.body.data.user).toBe("60c72b9f9b1d8c001f8e4a3a");
+            expect(res.body.data.quiz).toBe("quizId");
+            expect(res.body.data.question).toBe("What is JavaScript?");
+            expect(res.body.data.interval).toBe(1);
+            expect(res.body.data.easeFactor).toBe(2.5);
+            expect(res.body.data.repetitions).toBe(0);
+            expect(res.body.data.status).toBe("pending");
             expect(updateReviewSchedule).toHaveBeenCalledWith("60c72b9f9b1d8c001f8e4a3a", "quizId", "questionId", 4);
         });
 
@@ -184,8 +191,8 @@ describe("Review Controller", () => {
                 .send({ quizId: "quizId", questionId: "questionId", quality: 1 });
 
             expect(res1.statusCode).toBe(200);
-            expect(res1.body._id).toBe("reviewId");
-            expect(res1.body.user).toBe("60c72b9f9b1d8c001f8e4a3a");
+            expect(res1.body.data._id).toBe("reviewId");
+            expect(res1.body.data.user).toBe("60c72b9f9b1d8c001f8e4a3a");
 
             // Test with quality 5 (perfect)
             const res2 = await request(app)
@@ -193,8 +200,8 @@ describe("Review Controller", () => {
                 .send({ quizId: "quizId", questionId: "questionId", quality: 5 });
 
             expect(res2.statusCode).toBe(200);
-            expect(res2.body._id).toBe("reviewId");
-            expect(res2.body.user).toBe("60c72b9f9b1d8c001f8e4a3a");
+            expect(res2.body.data._id).toBe("reviewId");
+            expect(res2.body.data.user).toBe("60c72b9f9b1d8c001f8e4a3a");
         });
 
         it("should handle service errors", async () => {
@@ -205,9 +212,10 @@ describe("Review Controller", () => {
                 .send({ quizId: "quizId", questionId: "questionId", quality: 4 });
 
             expect(res.statusCode).toBe(500);
-            expect(res.body).toEqual({
-                message: "Internal Server Error"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Internal Server Error"
+        });
         });
 
         it("should handle missing required parameters", async () => {
@@ -216,9 +224,10 @@ describe("Review Controller", () => {
                 .send({});
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual({
-                message: "Missing required parameters: quizId, questionId, and quality are required"
-            });
+            expect(res.body).toMatchObject({
+            status: "error",
+            message: "Missing required parameters: quizId, questionId, and quality are required"
+        });
         });
     });
 });

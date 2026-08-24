@@ -1,6 +1,7 @@
 import { getWeeklyXP, getMonthlyXP, getAllTimeXP } from "../../controllers/leaderboardController.js";
 import UserQuiz from "../../models/User.js";
 import XPLog from "../../models/XPLog.js";
+import { ok } from "../helpers/envelope.js";
 
 // Mock the models
 jest.mock("../../models/XPLog.js", () => ({
@@ -52,10 +53,10 @@ describe("Leaderboard Controller", () => {
 
         await getWeeklyXP(req, res);
 
-        expect(res.json).toHaveBeenCalledWith([
+        expect(res.json).toHaveBeenCalledWith(ok([
             { username: "User1", xp: 100 },
             { username: "User2", xp: 200 },
-        ]);
+        ]));
     });
     });
 
@@ -77,21 +78,21 @@ describe("Leaderboard Controller", () => {
 
             await getMonthlyXP(req, res);
 
-            expect(res.json).toHaveBeenCalledWith([
+            expect(res.json).toHaveBeenCalledWith(ok([
                 { username: "User1", xp: 1000 },
                 { username: "User2", xp: 2000 },
-            ]);
+            ]));
         });
 
         it("should handle database errors", async () => {
             XPLog.aggregate = jest.fn().mockRejectedValue(new Error("Database error"));
 
-            await getMonthlyXP(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Server error"
-            });
+            // The controller throws now rather than writing a 500 body; the
+            // error middleware is what renders it. Asserting the throw keeps
+            // this test meaningful instead of asserting a response that no
+            // longer happens.
+            await expect(getMonthlyXP(req, res)).rejects.toThrow("Server error");
+            expect(res.json).not.toHaveBeenCalled();
         });
     });
 
@@ -118,11 +119,11 @@ describe("Leaderboard Controller", () => {
 
             await getAllTimeXP(req, res);
 
-            expect(res.json).toHaveBeenCalledWith([
+            expect(res.json).toHaveBeenCalledWith(ok([
                 { username: "User1", xp: 5000 },
                 { username: "User2", xp: 3000 },
                 { username: "User3", xp: 1000 },
-            ]);
+            ]));
         });
 
         it("should handle empty leaderboard", async () => {
@@ -130,18 +131,18 @@ describe("Leaderboard Controller", () => {
 
             await getAllTimeXP(req, res);
 
-            expect(res.json).toHaveBeenCalledWith([]);
+            expect(res.json).toHaveBeenCalledWith(ok([]));
         });
 
         it("should handle database errors", async () => {
             XPLog.aggregate = jest.fn().mockRejectedValue(new Error("Database error"));
 
-            await getAllTimeXP(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Server error"
-            });
+            // The controller throws now rather than writing a 500 body; the
+            // error middleware is what renders it. Asserting the throw keeps
+            // this test meaningful instead of asserting a response that no
+            // longer happens.
+            await expect(getAllTimeXP(req, res)).rejects.toThrow("Server error");
+            expect(res.json).not.toHaveBeenCalled();
         });
     });
 

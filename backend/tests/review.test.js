@@ -1,3 +1,4 @@
+import "express-async-errors";
 import mongoose from "mongoose";
 import request from "supertest";
 
@@ -18,6 +19,7 @@ import reviewRoutes from "../routes/reviewRoutes.js";
 import User from "../models/User.js";
 import Quiz from "../models/Quiz.js";
 import ReviewSchedule from "../models/ReviewSchedule.js";
+import errorHandler from "../../services/errorHandler.js";
 
 // Mock the verifyToken middleware
 jest.mock("../middleware/auth.js", () => ({
@@ -30,6 +32,10 @@ jest.mock("../middleware/auth.js", () => ({
 const app = express();
 app.use(express.json());
 app.use("/api/reviews", reviewRoutes);
+
+// Mirrors server.js: thrown AppErrors are rendered by this, not by
+// the controller writing a body itself.
+app.use(errorHandler);
 
 describe("Review Routes", () => {
   afterEach(async () => {

@@ -1,4 +1,5 @@
 import { getRoomStatus, getActiveRooms } from "../../controllers/realTimeQuizController.js";
+import { ok, err } from "../helpers/envelope.js";
 
 // Mock the logger
 jest.mock("../../utils/logger.js", () => ({
@@ -31,9 +32,7 @@ describe("Real-time Quiz Controller", () => {
             await getRoomStatus(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Room not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Room not found"));
         });
 
         it("should handle room not found", async () => {
@@ -42,9 +41,7 @@ describe("Real-time Quiz Controller", () => {
             await getRoomStatus(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Room not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Room not found"));
         });
 
         it("should handle server errors", async () => {
@@ -60,9 +57,7 @@ describe("Real-time Quiz Controller", () => {
 
             // The function should handle the error gracefully
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Room not found"
-            });
+            expect(res.json).toHaveBeenCalledWith(err("Room not found"));
         });
     });
 
@@ -70,9 +65,7 @@ describe("Real-time Quiz Controller", () => {
         it("should return active rooms successfully", async () => {
             await getActiveRooms(req, res);
 
-            expect(res.json).toHaveBeenCalledWith({
-                rooms: []
-            });
+            expect(res.json).toHaveBeenCalledWith(ok({ rooms: [] }));
         });
 
         it("should handle server errors", async () => {
@@ -85,9 +78,9 @@ describe("Real-time Quiz Controller", () => {
             await getActiveRooms(req, res);
 
             // The function should handle the error gracefully
-            expect(res.json).toHaveBeenCalledWith({
+            expect(res.json).toHaveBeenCalledWith(ok({
                 rooms: []
-            });
+            }));
         });
     });
 });
