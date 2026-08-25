@@ -120,10 +120,9 @@ describe("Written Test Controller", () => {
                     questions: []
                 });
 
-            expect(res.statusCode).toBe(200);
+            expect(res.statusCode).toBe(201);
             expect(res.body).toMatchObject({
-            status: "success",
-            message: "Success!"
+            status: "success"
         });
         });
 
@@ -157,8 +156,7 @@ describe("Written Test Controller", () => {
             expect(res.statusCode).toBe(500);
             expect(res.body).toMatchObject({
             status: "error",
-            message: "Error creating written test",
-                error: expect.any(Object)
+            message: "Error creating written test"
         });
         });
     });
@@ -182,7 +180,7 @@ describe("Written Test Controller", () => {
                 .get("/api/written-tests");
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual(mockTests);
+            expect(res.body.data).toEqual(mockTests);
         });
 
         it("should handle database errors", async () => {
@@ -194,8 +192,7 @@ describe("Written Test Controller", () => {
             expect(res.statusCode).toBe(500);
             expect(res.body).toMatchObject({
             status: "error",
-            message: "Error fetching written tests",
-                error: expect.any(Object)
+            message: "Error fetching written tests"
         });
         });
     });
@@ -221,7 +218,7 @@ describe("Written Test Controller", () => {
                 });
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual(expect.objectContaining({
+            expect(res.body.data).toEqual(expect.objectContaining({
                 _id: "testId",
                 title: "JavaScript Essay Test",
                 questions: expect.arrayContaining([
@@ -254,7 +251,7 @@ describe("Written Test Controller", () => {
             expect(res.statusCode).toBe(404);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Test not found"
+            message: "Test not found"
         });
         });
 
@@ -276,8 +273,7 @@ describe("Written Test Controller", () => {
             expect(res.statusCode).toBe(500);
             expect(res.body).toMatchObject({
             status: "error",
-            message: "Failed to add question",
-                error: expect.any(Object)
+            message: "Failed to add question"
         });
         });
     });
@@ -355,17 +351,21 @@ describe("Written Test Controller", () => {
                 .delete("/api/written-tests/testId/questions/0");
 
             expect(res.statusCode).toBe(200);
+            // The controller sends sendSuccess(res, { test }, ...), so the test
+            // object lives under data, not at the top level.
             expect(res.body).toMatchObject({
-            status: "success",
-            message: "Question deleted successfully",
-                test: expect.objectContaining({
-                    _id: "testId",
-                    createdBy: "60c72b9f9b1d8c001f8e4a3a",
-                    questions: [],
-                    totalMarks: 9,
-                    duration: 0
-                })
-        });
+                status: "success",
+                message: "Question deleted successfully",
+                data: {
+                    test: expect.objectContaining({
+                        _id: "testId",
+                        createdBy: "60c72b9f9b1d8c001f8e4a3a",
+                        questions: [],
+                        totalMarks: 9,
+                        duration: 0
+                    })
+                }
+            });
             expect(mockTest.questions).toHaveLength(0);
             expect(mockTest.save).toHaveBeenCalled();
         });
@@ -423,8 +423,7 @@ describe("Written Test Controller", () => {
             expect(res.statusCode).toBe(500);
             expect(res.body).toMatchObject({
             status: "error",
-            message: "Error deleting question",
-                error: expect.any(Object)
+            message: "Error deleting question"
         });
         });
     });

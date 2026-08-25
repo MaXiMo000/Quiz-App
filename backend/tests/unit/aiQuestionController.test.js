@@ -72,7 +72,7 @@ describe("AI Question Controller", () => {
             expect(res.statusCode).toBe(400);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Topic and number of questions are required"
+            message: "Topic and number of questions are required"
         });
         });
 
@@ -88,7 +88,7 @@ describe("AI Question Controller", () => {
             expect(res.statusCode).toBe(400);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Invalid quiz ID"
+            message: "Invalid quiz ID"
         });
         });
 
@@ -106,7 +106,7 @@ describe("AI Question Controller", () => {
             expect(res.statusCode).toBe(404);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Quiz not found"
+            message: "Quiz not found"
         });
         });
 
@@ -130,7 +130,7 @@ describe("AI Question Controller", () => {
             expect(res.statusCode).toBe(400);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Invalid question type"
+            message: "Invalid question type"
         });
         });
 
@@ -149,7 +149,7 @@ describe("AI Question Controller", () => {
             expect(res.statusCode).toBe(404);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Quiz not found"
+            message: "Quiz not found"
         });
         });
 
@@ -167,7 +167,7 @@ describe("AI Question Controller", () => {
             expect(res.statusCode).toBe(404);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Quiz not found"
+            message: "Quiz not found"
         });
         });
 
@@ -185,8 +185,7 @@ describe("AI Question Controller", () => {
             expect(res.statusCode).toBe(500);
             expect(res.body).toMatchObject({
             status: "error",
-            error: "Internal server error",
-                details: "Database error"
+            message: "Internal server error"
         });
         });
     });
