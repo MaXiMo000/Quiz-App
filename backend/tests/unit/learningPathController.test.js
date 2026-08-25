@@ -10,6 +10,10 @@ import User from "../../models/User.js";
 import Report from "../../models/Report.js";
 import { ok, err } from "../helpers/envelope.js";
 
+// learningPathController validates ObjectId format on pathId.
+const VALID_PATH_ID = "507f1f77bcf86cd799439021";
+const MISSING_PATH_ID = "507f1f77bcf86cd799439022";
+
 jest.mock("../../models/LearningPath.js", () => ({
     __esModule: true,
     LearningPath: {
@@ -123,7 +127,7 @@ describe("Learning Path Controller", () => {
                 populate: jest.fn().mockResolvedValue(null)
             });
 
-            req.params = { pathId: "nonexistent" };
+            req.params = { pathId: MISSING_PATH_ID };
 
             await getLearningPath(req, res);
 
@@ -136,7 +140,7 @@ describe("Learning Path Controller", () => {
                 populate: jest.fn().mockRejectedValue(new Error("Database error"))
             });
 
-            req.params = { pathId: "lp1" };
+            req.params = { pathId: VALID_PATH_ID };
 
             await expect(getLearningPath(req, res)).rejects.toThrow("Server error");
       // The controller throws; error middleware renders it. Asserting the
@@ -150,7 +154,7 @@ describe("Learning Path Controller", () => {
         it("should handle path not found", async () => {
             LearningPath.findById.mockResolvedValue(null);
 
-            req.params = { pathId: "nonexistent" };
+            req.params = { pathId: MISSING_PATH_ID };
 
             await startLearningPath(req, res);
 
@@ -173,7 +177,7 @@ describe("Learning Path Controller", () => {
             LearningPath.findById.mockResolvedValue(mockPath);
             UserPathProgress.findOne.mockResolvedValue(mockProgress);
 
-            req.params = { pathId: "lp1" };
+            req.params = { pathId: VALID_PATH_ID };
 
             await startLearningPath(req, res);
 
@@ -184,7 +188,7 @@ describe("Learning Path Controller", () => {
         it("should handle database errors", async () => {
             LearningPath.findById.mockRejectedValue(new Error("Database error"));
 
-            req.params = { pathId: "lp1" };
+            req.params = { pathId: VALID_PATH_ID };
 
             await expect(startLearningPath(req, res)).rejects.toThrow("Server error");
       // The controller throws; error middleware renders it. Asserting the
@@ -198,7 +202,7 @@ describe("Learning Path Controller", () => {
         it("should handle user progress not found", async () => {
             UserPathProgress.findOne.mockResolvedValue(null);
 
-            req.params = { pathId: "lp1", nodeId: "node1" };
+            req.params = { pathId: VALID_PATH_ID, nodeId: "node1" };
             req.body = { status: "completed", score: 85 };
 
             await updateNodeProgress(req, res);
@@ -210,7 +214,7 @@ describe("Learning Path Controller", () => {
         it("should handle database errors", async () => {
             UserPathProgress.findOne.mockRejectedValue(new Error("Database error"));
 
-            req.params = { pathId: "lp1", nodeId: "node1" };
+            req.params = { pathId: VALID_PATH_ID, nodeId: "node1" };
             req.body = { status: "completed", score: 85 };
 
             await expect(updateNodeProgress(req, res)).rejects.toThrow("Server error");

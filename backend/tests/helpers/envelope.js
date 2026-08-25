@@ -41,9 +41,11 @@ export const err = (message) =>
  * failed"; the specific complaint moved into `errors[field]`. Both are
  * asserted -- dropping the specific one would let any validation error pass.
  */
-export const invalid = (field, message) =>
+export const invalid = (field, message, envelopeMessage = "Validation failed") =>
     expect.objectContaining({
         status: "error",
-        message: "Validation failed",
+        // sendValidationError takes an optional message override, so some
+        // routes report something more specific than "Validation failed".
+        message: envelopeMessage,
         errors: expect.objectContaining({ [field]: message }),
     });

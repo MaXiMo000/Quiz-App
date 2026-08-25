@@ -55,7 +55,7 @@ describe("Review Routes", () => {
     it("should return the review schedule for the user", async () => {
       const res = await request(app).get("/api/reviews");
       expect(res.statusCode).toEqual(200);
-      expect(res.body).toBeInstanceOf(Array);
+      expect(res.body.data).toBeInstanceOf(Array);
     }, 30000);
   });
 
@@ -80,7 +80,7 @@ describe("Review Routes", () => {
       });
 
       expect(res.statusCode).toEqual(200);
-      expect(res.body).toHaveProperty("nextReviewDate");
+      expect(res.body.data).toHaveProperty("nextReviewDate");
 
       const reviewSchedule = await ReviewSchedule.findOne({
         user: user._id,

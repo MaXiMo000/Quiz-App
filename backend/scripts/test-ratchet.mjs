@@ -83,4 +83,6 @@ if (tests < baseline.failedTests || suites < baseline.failedSuites) {
   process.exit(1);
 }
 
-console.log("\nok — known failures unchanged. Debt is still debt; nothing got worse.");
+console.log(baseline.failedTests === 0
+  ? `\nok — all ${r.numPassedTests} tests passing, none failing.`
+  : "\nok — known failures unchanged. Debt is still debt; nothing got worse.");

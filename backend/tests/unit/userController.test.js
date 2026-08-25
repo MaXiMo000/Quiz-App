@@ -4,7 +4,7 @@ import User from "../../models/User.js";
 import XPLog from "../../models/XPLog.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { ok } from "../helpers/envelope.js";
+import { okMsg, err, invalid } from "../helpers/envelope.js";
 
 jest.mock("../../models/User.js");
 jest.mock("../../models/XPLog.js");
@@ -17,10 +17,20 @@ describe("User Controller", () => {
   beforeEach(() => {
     req = {
       body: {},
+      // registerUser/loginUser call getClientIP(req), which reads
+      // req.headers and req.socket. With only `body` present that threw and
+      // the catch reported a generic 500.
+      headers: {},
+      ip: "127.0.0.1",
+      connection: { remoteAddress: "127.0.0.1" },
+      socket: { remoteAddress: "127.0.0.1" },
     };
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
+      // userController sets headers on the response; without res.set the call
+      // threw and the catch reported it as a generic 500.
+      set: jest.fn().mockReturnThis(),
     };
   });
 
@@ -44,10 +54,8 @@ describe("User Controller", () => {
       await registerUser(req, res);
 
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(ok({
-        success: true,
-        message: "User registered successfully!",
-      }));
+      expect(res.json).toHaveBeenCalledWith(
+        okMsg("User registered successfully!", { userId: undefined }));
     });
 
     it("should not register an existing user", async () => {
@@ -62,10 +70,8 @@ describe("User Controller", () => {
       await registerUser(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-        success: false,
-        message: "User already exists",
-      } }));
+      expect(res.json).toHaveBeenCalledWith(
+        invalid("email", "User already exists", "User already exists"));
     });
   });
 
@@ -99,9 +105,10 @@ describe("User Controller", () => {
 
       await loginUser(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(ok(expect.objectContaining({
-          message: "Login successful",
+      expect(res.json).toHaveBeenCalledWith(okMsg("Login successful",
+        expect.objectContaining({
           token: "token",
+          user: expect.objectContaining({ email: "test@example.com" }),
         })));
     }, 30000);
 
@@ -118,10 +125,10 @@ describe("User Controller", () => {
 
       await loginUser(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-        error: "Invalid credentials",
-      } }));
+      // 401 Unauthorized, not 400. The controller corrected this and the
+      // test still expected the old code.
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith(err("Invalid credentials"));
     });
   });
 });

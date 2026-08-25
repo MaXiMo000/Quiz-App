@@ -63,12 +63,12 @@ describe("Intelligence Routes", () => {
 
       const res = await request(app).get("/api/intelligence/analytics");
       expect(res.statusCode).toEqual(200);
-      expect(res.body).toHaveProperty("overview");
-      expect(res.body.overview.totalQuizzes).toBe(1);
-      expect(res.body.overview.averageScore).toBe(50);
-      expect(res.body).toHaveProperty("trends");
-      expect(res.body).toHaveProperty("predictions");
-      expect(res.body.advanced).toBeDefined();
+      expect(res.body.data).toHaveProperty("overview");
+      expect(res.body.data.overview.totalQuizzes).toBe(1);
+      expect(res.body.data.overview.averageScore).toBe(50);
+      expect(res.body.data).toHaveProperty("trends");
+      expect(res.body.data).toHaveProperty("predictions");
+      expect(res.body.data.advanced).toBeDefined();
     }, 30000);
   });
 

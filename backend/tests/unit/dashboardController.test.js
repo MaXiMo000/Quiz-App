@@ -3,6 +3,11 @@ import UserQuiz from "../../models/User.js";
 import Report from "../../models/Report.js";
 import Quiz from "../../models/Quiz.js";
 import { ok, err } from "../helpers/envelope.js";
+import { query } from "../helpers/query.js";
+
+// dashboardController validates ObjectId format before querying, so a
+// literal VALID_USER_ID 400s and never reaches the logic under test.
+const VALID_USER_ID = "507f191e810c19729de860ea";
 
 jest.mock("../../models/User.js", () => ({
     __esModule: true,
@@ -37,9 +42,9 @@ describe("Dashboard Controller", () => {
 
     beforeEach(() => {
         req = {
-            params: { userId: "userId" },
+            params: { userId: VALID_USER_ID },
             query: {},
-            user: { id: "userId" },
+            user: { id: VALID_USER_ID },
         };
         res = {
             status: jest.fn().mockReturnThis(),
@@ -51,7 +56,7 @@ describe("Dashboard Controller", () => {
     describe("getDashboardData", () => {
         it("should return dashboard data with user info and quiz stats", async () => {
             const mockUser = {
-                _id: "userId",
+                _id: VALID_USER_ID,
                 name: "testuser",
                 xp: 100,
                 totalXP: 1000,
@@ -66,14 +71,24 @@ describe("Dashboard Controller", () => {
                 role: "user"
             };
 
+            // getStudyTimeData does report.questions.reduce(...), and the
+            // streak/progress helpers date-sort on createdAt. Without those
+            // fields the controller threw and the 500 masked the cause.
             const mockReports = [
-                { score: 8, total: 10, quizName: "Quiz 1" },
-                { score: 6, total: 10, quizName: "Quiz 2" },
-                { score: 9, total: 10, quizName: "Quiz 3" },
+                { score: 8, total: 10, quizName: "Quiz 1", questions: [], createdAt: new Date() },
+                { score: 6, total: 10, quizName: "Quiz 2", questions: [], createdAt: new Date() },
+                { score: 9, total: 10, quizName: "Quiz 3", questions: [], createdAt: new Date() },
             ];
 
             UserQuiz.findById.mockResolvedValue(mockUser);
-            Report.find.mockResolvedValue(mockReports);
+            // getDashboardData and its helpers query Report several ways:
+            // awaited directly, and chained through .sort().limit().lean().
+            Report.find.mockImplementation(() => query(mockReports));
+            // These are mocked but were never given return values, so they
+            // handed back undefined and the first chained call threw -- which
+            // the controller's catch turned into a generic 500.
+            Quiz.find.mockImplementation(() => query([]));
+            UserQuiz.find.mockImplementation(() => query([]));
             Quiz.countDocuments.mockResolvedValue(15);
 
             await getDashboardData(req, res);

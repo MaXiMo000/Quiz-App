@@ -64,7 +64,7 @@ jest.mock("../../services/analyticsService.js", () => ({
 
 // Import the mocked functions
 import { trackLearningAnalytics, trackCognitiveMetrics } from "../../services/analyticsService.js";
-import { ok, err } from "../helpers/envelope.js";
+import { okMsg, err } from "../helpers/envelope.js";
 
 // Mock the verifyToken middleware
 jest.mock("../../middleware/auth.js", () => ({
@@ -184,9 +184,7 @@ describe("Intelligence Controller", () => {
             expect(trackCognitiveMetrics).toHaveBeenCalledWith("60c72b9f9b1d8c001f8e4a3a", "quizId", {
                 responseTime: 30
             });
-            expect(res.json).toHaveBeenCalledWith(ok({
-                message: "Performance tracked successfully"
-            }));
+            expect(res.json).toHaveBeenCalledWith(okMsg("Performance tracked successfully"));
         });
 
         it("should handle missing required fields", async () => {
@@ -198,9 +196,16 @@ describe("Intelligence Controller", () => {
             await trackUserPerformance(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "error", ...{
-                error: "Missing required fields: quizId, score, totalQuestions, and timeSpent are required"
-            } }));
+            // The message now names only the fields actually missing, and the
+            // list of them is machine-readable under errors.missingFields.
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                status: "error",
+                message: "Missing required fields: score, totalQuestions, timeSpent. "
+                    + "All fields are required for performance tracking.",
+                errors: expect.objectContaining({
+                    missingFields: ["score", "totalQuestions", "timeSpent"]
+                })
+            }));
         });
     });
 
@@ -231,10 +236,8 @@ describe("Intelligence Controller", () => {
             await updateUserPreferences(req, res);
 
             expect(mockUser.save).toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith(ok({
-                message: "User preferences updated successfully",
-                preferences: mockUser.preferences
-            }));
+            expect(res.json).toHaveBeenCalledWith(
+                okMsg("User preferences updated successfully", { preferences: mockUser.preferences }));
         });
 
         it("should handle user not found", async () => {

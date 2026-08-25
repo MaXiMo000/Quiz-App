@@ -67,6 +67,10 @@ describe("Report Controller", () => {
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
+      // getReportsUser sets cache-control headers before responding. Without
+      // res.set the call threw, and the controller's catch turned it into a
+      // generic 500 that looked like a query failure.
+      set: jest.fn().mockReturnThis(),
     };
   });
 
@@ -144,7 +148,14 @@ describe("Report Controller", () => {
         await createReport(req, res);
 
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith(err("Missing required fields"));
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+            status: "error",
+            message: "Validation failed",
+            errors: expect.objectContaining({
+                quizName: "Quiz name is required",
+                questions: "Questions are required"
+            })
+        }));
     });
 
     it("should handle user not found", async () => {
