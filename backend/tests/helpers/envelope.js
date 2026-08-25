@@ -35,3 +35,15 @@ export const err = (message) =>
         status: "error",
         ...(message === undefined ? {} : { message }),
     });
+
+/**
+ * Validation failure. The envelope's `message` is the generic "Validation
+ * failed"; the specific complaint moved into `errors[field]`. Both are
+ * asserted -- dropping the specific one would let any validation error pass.
+ */
+export const invalid = (field, message) =>
+    expect.objectContaining({
+        status: "error",
+        message: "Validation failed",
+        errors: expect.objectContaining({ [field]: message }),
+    });

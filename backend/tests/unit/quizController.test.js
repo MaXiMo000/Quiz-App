@@ -9,7 +9,15 @@ import {
 } from "../../controllers/quizController.js";
 import Quiz from "../../models/Quiz.js";
 import UserQuiz from "../../models/User.js";
-import { ok, err } from "../helpers/envelope.js";
+import { ok, okMsg, err, invalid } from "../helpers/envelope.js";
+import mongoose from "mongoose";
+
+// quizController validates ObjectId format before it touches the database
+// (a deliberate guard). Tests that pass "quizId" get a 400 and never reach
+// the logic they mean to exercise, so ids here are real ObjectIds.
+const VALID_QUIZ_ID = "507f1f77bcf86cd799439011";
+const MISSING_QUIZ_ID = "507f1f77bcf86cd799439012";
+const VALID_USER_ID = "507f191e810c19729de860ea";
 
 jest.mock("../../models/Quiz.js", () => {
     const mockQuiz = jest.fn().mockImplementation((data) => ({
@@ -169,16 +177,22 @@ describe("Quiz Controller", () => {
 
     it("should return filtered quizzes for premium user", async () => {
       req.user.role = "premium";
-      req.user.id = "userId";
+      // Must be a real ObjectId: the controller validates it and then builds
+      // the filter from `new ObjectId(userId)`, so "userId" 400s before any
+      // query happens.
+      req.user.id = VALID_USER_ID;
       const mockQuizzes = [{ _id: "quiz1" }, { _id: "quiz2" }];
 
-      Quiz.find.mockResolvedValue(mockQuizzes);
+      // The premium branch chains .lean() onto find().
+      Quiz.find.mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockQuizzes)
+      });
 
       await getQuizzes(req, res);
 
       expect(Quiz.find).toHaveBeenCalledWith({
         $or: [
-          { "createdBy._id": "userId" },
+          { "createdBy._id": new mongoose.Types.ObjectId(VALID_USER_ID) },
           { "createdBy._id": null }
         ]
       });
@@ -223,9 +237,7 @@ describe("Quiz Controller", () => {
       expect(Quiz.findOne).toHaveBeenCalledWith({ title: "Test Quiz" });
       expect(Quiz.deleteOne).toHaveBeenCalledWith({ title: "Test Quiz" });
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(ok({
-        message: "Quiz deleted successfully!"
-      }));
+      expect(res.json).toHaveBeenCalledWith(okMsg("Quiz deleted successfully"));
     });
 
     it("should delete quiz successfully for premium owner", async () => {
@@ -286,7 +298,7 @@ describe("Quiz Controller", () => {
       await deleteQuiz(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(err("Quiz title is required"));
+      expect(res.json).toHaveBeenCalledWith(invalid("title", "Quiz title is required"));
     });
 
     it("should handle quiz not found", async () => {
@@ -423,20 +435,32 @@ describe("Quiz Controller", () => {
 
   describe("getQuizById", () => {
     it("should return quiz by id", async () => {
-      req.params = { id: "quizId" };
+      req.params = { id: VALID_QUIZ_ID };
       req.user = { id: "userId" };
-      const mockQuiz = { _id: "quizId", title: "Test Quiz" };
+      const mockQuiz = { _id: VALID_QUIZ_ID, title: "Test Quiz" };
 
       Quiz.findById.mockResolvedValue(mockQuiz);
 
       await getQuizById(req, res);
 
-      expect(Quiz.findById).toHaveBeenCalledWith("quizId");
+      expect(Quiz.findById).toHaveBeenCalledWith(VALID_QUIZ_ID);
       expect(res.json).toHaveBeenCalledWith(ok(mockQuiz));
     });
 
+    it("should reject an id that is not a valid ObjectId", async () => {
+      // The guard itself, which nothing covered. Without this the suite would
+      // pass just as happily if the validation were deleted.
+      req.params = { id: "not-an-object-id" };
+      req.user = { id: "userId" };
+
+      await getQuizById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(Quiz.findById).not.toHaveBeenCalled();
+    });
+
     it("should handle quiz not found", async () => {
-      req.params = { id: "nonExistentId" };
+      req.params = { id: MISSING_QUIZ_ID };
       req.user = { id: "userId" };
 
       Quiz.findById.mockResolvedValue(null);
@@ -448,7 +472,7 @@ describe("Quiz Controller", () => {
     });
 
     it("should handle database errors", async () => {
-      req.params = { id: "quizId" };
+      req.params = { id: VALID_QUIZ_ID };
       req.user = { id: "userId" };
 
       Quiz.findById.mockRejectedValue(new Error("Database error"));
@@ -484,10 +508,8 @@ describe("Quiz Controller", () => {
 
       expect(Quiz.findById).toHaveBeenCalledWith("quizId");
       expect(mockQuiz.questions).toHaveLength(1);
-      expect(res.json).toHaveBeenCalledWith(ok({
-        message: "Question deleted successfully",
-        quiz: mockQuiz
-      }));
+      expect(res.json).toHaveBeenCalledWith(
+        okMsg("Question deleted successfully", mockQuiz));
     });
 
     it("should delete question for premium owner", async () => {
@@ -508,10 +530,8 @@ describe("Quiz Controller", () => {
       await deleteQuestion(req, res);
 
       expect(mockQuiz.questions).toHaveLength(0);
-      expect(res.json).toHaveBeenCalledWith(ok({
-        message: "Question deleted successfully",
-        quiz: mockQuiz
-      }));
+      expect(res.json).toHaveBeenCalledWith(
+        okMsg("Question deleted successfully", mockQuiz));
     });
 
     it("should prevent premium user from deleting question of others' quiz", async () => {
@@ -570,7 +590,7 @@ describe("Quiz Controller", () => {
       await deleteQuestion(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(err("Invalid question index"));
+      expect(res.json).toHaveBeenCalledWith(invalid("questionIndex", "Invalid question index"));
     });
 
     it("should handle database errors", async () => {
@@ -614,14 +634,11 @@ describe("Quiz Controller", () => {
       expect(mockQuiz.averageTime).toBe(300);
       expect(mockQuiz.popularityScore).toBe(0.8);
       expect(mockQuiz.save).toHaveBeenCalled();
-      expect(res.json).toHaveBeenCalledWith(ok({
-        message: "Quiz statistics updated successfully",
-        stats: {
+      expect(res.json).toHaveBeenCalledWith(okMsg("Quiz statistics updated successfully", {
           totalAttempts: 1,
           averageScore: 80,
           averageTime: 300,
           popularityScore: 80
-        }
       }));
     });
 
