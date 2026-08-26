@@ -7,7 +7,6 @@ import "./UserProfile.css";
 import Loading from "../components/Loading";
 import { useNotification } from "../hooks/useNotification";
 import NotificationModal from "../components/NotificationModal";
-import { getUserFromStorage } from "../utils/localStorage";
 
 const UserProfile = () => {
     const navigate = useNavigate();

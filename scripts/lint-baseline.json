@@ -2,12 +2,18 @@
   "_comment": [
     "Recorded lint debt, so the number can only go down.",
     "Backend went 334 -> 1: 309 were auto-fixable (277 quotes, 32 semicolons) and",
-    "the rest were unused variables removed by hand. The one remaining is an",
-    "unused mock in studyGroupController.test.js, which goes when that suite is",
-    "repaired.",
-    "Frontend is untouched: none of its findings are auto-fixable, and the 29",
-    "react-hooks/exhaustive-deps ones need judgement -- adding a dependency can",
-    "turn a working effect into an infinite loop.",
+    "the rest were unused variables removed by hand. It is at 0 now.",
+    "Frontend errors went 29 -> 0. The note that used to sit here said its 29",
+    "findings were the react-hooks/exhaustive-deps ones needing judgement. That",
+    "described the 29 WARNINGS. The 29 ERRORS were a different list entirely:",
+    "20 unused variables, 4 uses of `process.env.NODE_ENV` in a Vite app, 3",
+    "lexical declarations in switch cases, one hook called below an early",
+    "return, and one test assertion that was constant-true. Reading the count",
+    "instead of the findings is how the interesting ones stayed hidden behind a",
+    "number that looked like formatting debt.",
+    "The 29 warnings are genuinely exhaustive-deps and are genuinely judgement:",
+    "adding a dependency can turn a working effect into an infinite loop. They",
+    "stay until each one is read on its own.",
     "Fix some, then lower these. The ratchet fails if they grow, and also if they",
     "shrink without this file being updated."
   ],
@@ -16,7 +22,7 @@
     "warnings": 0
   },
   "frontend": {
-    "errors": 29,
+    "errors": 0,
     "warnings": 29
   }
 }

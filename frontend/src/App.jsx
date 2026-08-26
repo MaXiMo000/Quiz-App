@@ -101,13 +101,13 @@ const App = () => {
                     if (userItem && userItem !== 'null' && userItem !== 'undefined' && userItem !== '') {
                         JSON.parse(userItem);
                     }
-                } catch (parseError) {
+                } catch {
                     // Silently ignore parse errors
                 }
             }
         } catch (error) {
             // Silently handle any localStorage errors - don't break the app
-            if (process.env.NODE_ENV === 'development') {
+            if (import.meta.env.DEV) {
                 console.error('Error accessing user from storage:', error);
             }
         }

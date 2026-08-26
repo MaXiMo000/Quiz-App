@@ -12,7 +12,7 @@ import { handlePageChangeWithScrollPreservation, restoreScrollPosition } from ".
 import "./Leaderboard.css";
 
 // Memoized Leaderboard Row Component
-const LeaderboardRow = memo(({ user, rank, index, quizName }) => {
+const LeaderboardRow = memo(({ user, rank, quizName }) => {
     const getMedal = (rank) => {
         if (rank === 1) return "🥇";
         if (rank === 2) return "🥈";
@@ -235,10 +235,11 @@ const Leaderboard = () => {
                 switch (sortBy) {
                     case "username":
                         return (a.username || '').localeCompare(b.username || '');
-                    case "percentage":
+                    case "percentage": {
                         const aPct = a.total > 0 ? (a.score / a.total) * 100 : 0;
                         const bPct = b.total > 0 ? (b.score / b.total) * 100 : 0;
                         return bPct - aPct;
+                    }
                     case "score":
                     default:
                         return b.score - a.score;

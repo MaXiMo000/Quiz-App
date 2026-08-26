@@ -7,7 +7,7 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false, error: null, errorInfo: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 
@@ -34,7 +34,7 @@ class ErrorBoundary extends React.Component {
             <p className="error-boundary-message">
               We're sorry, but something unexpected happened. Please try refreshing the page.
             </p>
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <details className="error-boundary-details">
                 <summary>Error Details (Development Only)</summary>
                 <pre className="error-boundary-stack">

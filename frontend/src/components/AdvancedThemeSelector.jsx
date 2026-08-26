@@ -362,7 +362,6 @@ const AdvancedThemeSelector = () => {
         }
 
         // Handle regular theme preview
-        const requiredLevel = themeLevels[themeName];
         const isUnlocked = themeName === "Default" || unlocked.includes(themeName);
         if (isUnlocked && themeName !== currentTheme) {
             setPreviewTheme(themeName);
@@ -862,7 +861,7 @@ const AdvancedThemeSelector = () => {
                 return;
             }
 
-            const response = await axios.post(`/api/users/${userId}/custom-theme`, {
+            await axios.post(`/api/users/${userId}/custom-theme`, {
                 name: customThemeName.trim(),
                 themeData: customTheme
             });

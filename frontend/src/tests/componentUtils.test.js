@@ -59,18 +59,31 @@ describe('Component Utility Functions', () => {
 
   it('should combine class names', () => {
     expect(classNames('btn', 'btn-primary')).toBe('btn btn-primary')
-    expect(classNames('btn', false && 'btn-disabled', 'btn-active')).toBe('btn btn-active')
+    expect(classNames('btn', false, 'btn-active')).toBe('btn btn-active')
     expect(classNames('btn', null, undefined, 'btn-primary')).toBe('btn btn-primary')
     expect(classNames()).toBe('')
   })
 
   it('should generate random colors', () => {
-    const color1 = getRandomColor()
-    const color2 = getRandomColor()
+    // `expect(color1).not.toBe(color2)` used to sit here, commented "very
+    // unlikely to be the same". The palette holds ten colours, so it is one in
+    // ten — measured at 2 failures in 25 runs of this file. CI holds this suite
+    // strictly and with no tolerance, so that is one in ten builds failing for
+    // a reason unrelated to anything anyone changed, which is how a strict
+    // suite gets argued back down to continue-on-error.
+    //
+    // The contract is "a colour from the palette", so that is what is asserted.
+    // Randomness is checked over enough draws to be about the distribution
+    // rather than about one coin landing twice.
+    const color = getRandomColor()
+    expect(typeof color).toBe('string')
+    expect(color).toMatch(/^#[0-9A-F]{6}$/i)
 
-    expect(typeof color1).toBe('string')
-    expect(color1).toMatch(/^#[0-9A-F]{6}$/i)
-    expect(color1).not.toBe(color2) // Very unlikely to be the same
+    const seen = new Set(Array.from({ length: 200 }, () => getRandomColor()))
+    seen.forEach((c) => expect(c).toMatch(/^#[0-9A-F]{6}$/i))
+    // 200 draws from ten colours miss one with probability 10 * 0.9^200,
+    // which is about 1 in 10^8 — a rate a build can live with.
+    expect(seen.size).toBeGreaterThan(1)
   })
 
   it('should format BEM class names', () => {

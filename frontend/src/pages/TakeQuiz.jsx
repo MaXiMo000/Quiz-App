@@ -56,7 +56,7 @@ const TakeQuiz = () => {
     const isSubmitButtonClicked = useRef(false);
 
     // Notification system
-    const { notification, showSuccess, showError, hideNotification } = useNotification();
+    const { notification, showError, hideNotification } = useNotification();
 
     // Record answer time function
     const recordAnswerTime = useCallback(() => {
@@ -1307,8 +1307,6 @@ const TakeQuiz = () => {
                         <div className="review-content">
                             {reviewQuestions.map((q, idx) => {
                                 const isCorrect = q.userAnswer === q.correctAnswer;
-                                const userOptionIndex = optionLetters.indexOf(q.userAnswer);
-                                const correctOptionIndex = optionLetters.indexOf(q.correctAnswer);
                                 return (
                                     <div key={idx} className={`review-question-card ${isCorrect ? 'correct' : 'incorrect'}`}>
                                         <div className="review-question-header">

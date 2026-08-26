@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import './AIStudyBuddyModals.css';
@@ -162,11 +162,14 @@ export const QuizCreatorModal = ({ isOpen, onClose, onSubmit, initialData = {} }
 
 // Quiz Preview Modal
 export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
-    if (!quiz) return null;
-
-    const previewQuestions = quiz.questions?.slice(0, 2) || [];
-
-    // Keyboard shortcuts
+    // Above the early return, because React matches hooks by call order and
+    // this component is mounted permanently by AIStudyBuddy with
+    // `quiz={modalData.quizPreview}` — null until somebody previews something.
+    // It survives today only because a render with *no* hooks is
+    // indistinguishable from a mount, so React re-mounts the hook rather than
+    // throwing. That is luck, not design: add one hook above this line and the
+    // null -> set transition becomes "Rendered more hooks than during the
+    // previous render", on the one interaction this component exists for.
     useKeyboardShortcuts({
         'Escape': () => {
             if (isOpen) {
@@ -174,6 +177,10 @@ export const QuizPreviewModal = ({ isOpen, onClose, quiz, onTakeQuiz }) => {
             }
         },
     }, [isOpen]);
+
+    if (!quiz) return null;
+
+    const previewQuestions = quiz.questions?.slice(0, 2) || [];
 
     const handleTakeQuiz = () => {
         if (onTakeQuiz) {

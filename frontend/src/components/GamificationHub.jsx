@@ -24,7 +24,7 @@ const GamificationHub = () => {
 
     // Leaderboard states
     const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
-    const [selectedTournamentId, setSelectedTournamentId] = useState(null);
+    const [, setSelectedTournamentId] = useState(null);
     const [leaderboardData, setLeaderboardData] = useState(null);
     const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
