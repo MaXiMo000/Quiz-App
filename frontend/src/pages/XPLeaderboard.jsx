@@ -5,7 +5,6 @@ import axios from "../utils/axios";
 import Loading from "../components/Loading";
 import NotificationModal from "../components/NotificationModal";
 import { useNotification } from "../hooks/useNotification";
-import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import "./Leaderboard.css";
 
 const XPLeaderboard = () => {

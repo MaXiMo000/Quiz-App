@@ -115,7 +115,7 @@ const StudyStreakGoals = () => {
     }
 
     const calendarDays = generateCalendarDays();
-    const { currentStreak, longestStreak, goalsProgress, todayActivity } = streakData;
+    const { currentStreak, longestStreak, goalsProgress } = streakData;
 
     return (
         <div className="study-streak-container">

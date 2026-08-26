@@ -35,13 +35,13 @@ export const safeParseJSON = (key, defaultValue = null) => {
         try {
             return JSON.parse(item);
         } catch (parseErr) {
-            if (process.env.NODE_ENV === 'development') {
+            if (import.meta.env.DEV) {
                 console.warn(`safeParseJSON: invalid JSON for key "${key}"`, parseErr.message);
             }
             return defaultValue;
         }
     } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
             console.error(`Error parsing JSON for key "${key}":`, error);
         }
         return defaultValue;

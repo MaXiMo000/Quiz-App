@@ -91,7 +91,6 @@ const ThemePage = () => {
     // Preview logic
     const [previewTheme, setPreviewTheme] = useState(null);
     const handlePreview = (themeName) => {
-        const requiredLevel = themeLevels[themeName];
         const isUnlocked = themeName === "Default" || unlocked.includes(themeName);
         if (isUnlocked && themeName !== currentTheme) {
             setPreviewTheme(themeName);

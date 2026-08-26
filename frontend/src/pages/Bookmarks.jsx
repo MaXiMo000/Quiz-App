@@ -8,7 +8,6 @@ import Loading from "../components/Loading";
 import { useNotification } from "../hooks/useNotification";
 import NotificationModal from "../components/NotificationModal";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
-import { debounce } from "../utils/componentUtils";
 import CustomDropdown from "../components/CustomDropdown";
 import { addToQuizHistory } from "../utils/quizHistory";
 import { markQuizFullscreenOnLoad } from "../utils/quizFullscreen.js";
@@ -22,7 +21,6 @@ const Bookmarks = () => {
     // Filter and sort states
     const [searchQuery, setSearchQuery] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
-    const [difficultyFilter, setDifficultyFilter] = useState("all");
     const [sortBy, setSortBy] = useState("date"); // date, title, category
     const [viewMode, setViewMode] = useState("grid"); // grid, list
     const [currentPage, setCurrentPage] = useState(1);

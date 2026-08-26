@@ -120,7 +120,7 @@ export const ThemeProvider = ({ children }) => {
                     setTheme(storedUser.selectedTheme);
                     document.documentElement.setAttribute("data-theme", storedUser.selectedTheme);
                 }
-            } catch (_) {
+            } catch {
                 // Never let interval throw – safeParseJSON should not throw; guard anyway
             }
         }, 1000);

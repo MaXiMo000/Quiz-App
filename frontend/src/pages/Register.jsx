@@ -60,7 +60,7 @@ const Register = () => {
                     delete newErrors.email;
                 }
                 break;
-            case 'password':
+            case 'password': {
                 const strength = getPasswordStrength(value);
                 if (!value) {
                     newErrors.password = 'Password is required';
@@ -80,6 +80,7 @@ const Register = () => {
                     }
                 }
                 break;
+            }
             case 'confirmPassword':
                 if (!value) {
                     newErrors.confirmPassword = 'Please confirm your password';

@@ -394,7 +394,7 @@ const UserReports = () => {
                         }
                         return;
                     }
-                } catch (err) {
+                } catch {
                     if (isMounted) {
                         setError("Error loading user data.");
                         setLoading(false);
