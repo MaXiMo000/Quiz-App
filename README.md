@@ -343,6 +343,11 @@ REDIS_PASSWORD=your_redis_password
 REDIS_DB=0
 REDIS_SSL=true
 REDIS_URL=redis://default:password@host:port
+
+# Tidewatch dashboard (github.com/MaXiMo000/tidewatch), optional: set to serve aggregate
+# health numbers (request rate, 5xx rate, p95 for the API, MongoDB, Redis and Gemini) at
+# GET /tidewatch/metrics to whoever holds this token (Bearer). Unset = the route does not exist.
+# TIDEWATCH_METRICS_TOKEN=
 ```
 
 Start the backend server:

@@ -56,6 +56,7 @@ import { connectRedis, redisClient } from "./config/redis.js";
 import { RedisStore } from "connect-redis";
 import MongoStore from "connect-mongo";
 import logger from "./utils/logger.js";
+import { tidewatchMetrics, watchMongo } from "./utils/tidewatchMetrics.js";
 
 const app = express();
 
@@ -67,6 +68,11 @@ if (process.env.RENDER || process.env.NODE_ENV === "production") {
     app.set("trust proxy", proxyCount);
     logger.info(`Trust proxy set to ${proxyCount} for production deployment`);
 }
+
+// Tidewatch dashboard: request timing + GET /tidewatch/metrics (aggregates only, Bearer
+// token). Only mounted when TIDEWATCH_METRICS_TOKEN is set; placed before request logging,
+// the rate limiter, CORS and sessions so polling never touches them.
+const tidewatchEnabled = tidewatchMetrics(app);
 
 // 🔒 SECURITY: Apply security headers
 app.use(requestLogger);
@@ -268,7 +274,9 @@ const startServer = async () => {
         }
 
         // Connect to MongoDB first (needed for MongoStore fallback and app data)
-        await mongoose.connect(process.env.MONGO_URI);
+        // monitorCommands lets Tidewatch time every query (durations only, never the query).
+        await mongoose.connect(process.env.MONGO_URI, tidewatchEnabled ? { monitorCommands: true } : {});
+        if (tidewatchEnabled) watchMongo(mongoose.connection.getClient());
         logger.info("Connected to MongoDB");
 
         // Then try Redis (optional)

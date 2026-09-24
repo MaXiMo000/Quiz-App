@@ -1,6 +1,6 @@
 {
   "_comment": [
-    "The backend suite is fully green: 0 failing tests, 0 failing suites, 174 collected.",
+    "The backend suite is fully green: 0 failing tests, 0 failing suites, 179 collected.",
     "These numbers are now a floor, not a debt record. The ratchet fails the build",
     "if a test starts failing, and also if totalTests drops -- a suite that stops",
     "loading contributes zero tests, so its failures would otherwise disappear",
@@ -9,5 +9,5 @@
   ],
   "failedSuites": 0,
   "failedTests": 0,
-  "totalTests": 174
+  "totalTests": 179
 }

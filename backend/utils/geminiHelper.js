@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { track } from "./tidewatchMetrics.js";
 import logger from "./logger.js";
 
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
@@ -119,9 +120,10 @@ export const generateFromGemini = async (prompt, options = {}) => {
 
                 // SECURITY: Ensure prompt doesn't contain sensitive data
                 // Prompt is already sanitized by calling functions
-                const result = await model.generateContent({
+                // Timed for the Tidewatch "ai" island (duration and failure only, never content).
+                const result = await track("ai", "service", () => model.generateContent({
                     contents: [{ parts: [{ text: prompt }] }]
-                });
+                }));
 
                 const responseText = result.response.text();
 

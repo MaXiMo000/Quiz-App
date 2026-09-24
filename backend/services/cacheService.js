@@ -1,15 +1,17 @@
 import { redisClient, isRedisConnected } from "../config/redis.js";
 import logger from "../utils/logger.js";
+import { track } from "../utils/tidewatchMetrics.js";
 
 // Helper function to add timeout to Redis operations
 const withTimeout = async (promise, timeoutMs = 5000, operation = "operation") => {
     try {
-        return await Promise.race([
+        // Timed for the Tidewatch "cache" island (duration and failure only, never keys or values).
+        return await track("cache", "cache", () => Promise.race([
             promise,
             new Promise((_, reject) =>
                 setTimeout(() => reject(new Error(`${operation} timeout after ${timeoutMs}ms`)), timeoutMs)
             )
-        ]);
+        ]));
     } catch (error) {
         if (error.message.includes("timeout")) {
             logger.warn({ message: `Redis ${operation} timed out`, timeout: timeoutMs });
